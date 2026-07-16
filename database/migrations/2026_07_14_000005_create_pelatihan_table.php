@@ -1,0 +1,20 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+return new class extends Migration {
+    public function up(): void {
+        Schema::create('pelatihan', function (Blueprint $table) {
+            $table->id();
+            $table->string('kode', 50)->unique();
+            $table->string('judul');
+            $table->longText('isi');
+            $table->string('gambar')->nullable();
+            $table->string('link_materi', 500)->nullable();
+            $table->foreignId('kategori_pelatihan_id')->constrained('kategori_pelatihan')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignId('instruktur_id')->constrained('instruktur')->restrictOnDelete()->cascadeOnUpdate();
+            $table->timestamps();
+        });
+    }
+    public function down(): void { Schema::dropIfExists('pelatihan'); }
+};
