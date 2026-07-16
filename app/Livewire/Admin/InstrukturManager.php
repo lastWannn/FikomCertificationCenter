@@ -2,122 +2,161 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use App\Models\Instruktur;
+use App\Services\Admin\InstrukturService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
-use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('layouts.app')]
+/**
+ * Livewire InstrukturManager
+ *
+ * Adaptasi dari project teman (riz) — InstrukturManager versi User+detail.
+ * Disesuaikan dengan arsitektur kita:
+ *   - Model Instruktur (bukan User + instrukturDetail)
+ *   - Tabel instruktur langsung (no_identitas, nama, email, no_hp, kelamin, alamat, keahlian)
+ *   - InstrukturService untuk logika bisnis
+ *   - Hashids untuk menyembunyikan ID (editingHashid bukan editingId)
+ *
+ * Keunggulan vs controller biasa:
+ *   - Form tambah/edit tampil inline tanpa page reload
+ *   - Validasi real-time langsung muncul di bawah field
+ *   - Konfirmasi hapus via wire:confirm bawaan
+ */
 class InstrukturManager extends Component
 {
-    public bool $showForm = false;
+    // ── State UI ──────────────────────────────────────────────
+    public bool    $showForm     = false;
+    public ?string $editingHashid = null;  // hashid, bukan ID numerik
 
-    public ?int $editingId = null;
-
+    // ── Form fields ───────────────────────────────────────────
     public string $no_identitas = '';
-
-    public string $nama = '';
-
-    public string $alamat = '';
-
-    public string $email = '';
-
-    public string $jenis_kelamin = '';
-
-    public string $no_hp = '';
-
-    public string $keahlian = '';
-
-    public string $password = '';
-
+    public string $nama         = '';
+    public string $email        = '';
+    public string $no_hp        = '';
+    public string $kelamin      = '';
+    public string $alamat       = '';
+    public string $keahlian     = '';
+    public string $password     = '';
     public string $password_confirmation = '';
 
+    // ── Computed: resolve hashid ke model (lazy) ──────────────
+    private function getEditingInstruktur(): ?Instruktur
+    {
+        return $this->editingHashid
+            ? Instruktur::findByHashid($this->editingHashid)
+            : null;
+    }
+
+    // ── Render ─────────────────────────────────────────────────
     public function render()
     {
         return view('livewire.admin.instruktur-manager', [
-            'instrukturs' => User::query()
-                ->where('role', 'instruktur')
-                ->with('instrukturDetail')
+            'instrukturs' => Instruktur::withCount('pelatihan')
                 ->orderBy('nama')
                 ->get(),
         ]);
     }
 
-    public function createNew()
+    // ── CRUD Actions ───────────────────────────────────────────
+    public function createNew(): void
     {
         $this->resetForm();
         $this->showForm = true;
     }
 
-    public function edit(int $id)
+    public function edit(string $hashid): void
     {
-        $instruktur = User::where('role', 'instruktur')->with('instrukturDetail')->findOrFail($id);
+        $instruktur = Instruktur::findByHashidOrFail($hashid);
 
-        $this->editingId = $instruktur->id;
-        $this->no_identitas = $instruktur->instrukturDetail->no_identitas;
-        $this->nama = $instruktur->nama;
-        $this->alamat = (string) $instruktur->instrukturDetail->alamat;
-        $this->email = $instruktur->email;
-        $this->jenis_kelamin = $instruktur->instrukturDetail->jenis_kelamin;
-        $this->no_hp = $instruktur->instrukturDetail->no_hp;
-        $this->keahlian = $instruktur->instrukturDetail->keahlian;
-        $this->password = '';
+        $this->editingHashid = $hashid;
+        $this->no_identitas  = $instruktur->no_identitas ?? '';
+        $this->nama          = $instruktur->nama;
+        $this->email         = $instruktur->email;
+        $this->no_hp         = $instruktur->no_hp;
+        $this->kelamin       = $instruktur->kelamin;
+        $this->alamat        = $instruktur->alamat ?? '';
+        $this->keahlian      = $instruktur->keahlian;
+        $this->password      = '';
         $this->password_confirmation = '';
-        $this->showForm = true;
+        $this->showForm      = true;
     }
 
-    public function save()
+    public function save(): void
     {
-        $passwordRules = $this->editingId
+        $editingId = $this->editingHashid
+            ? (app(\App\Services\HashidService::class)->decode($this->editingHashid, Instruktur::class))
+            : null;
+
+        $passwordRules = $editingId
             ? ['nullable', 'confirmed', Password::min(8)]
             : ['required', 'confirmed', Password::min(8)];
 
-        $data = $this->validate([
-            'no_identitas' => ['required', 'string', 'max:50', Rule::unique('instruktur_detail', 'no_identitas')->ignore($this->editingId, 'id_user')],
-            'nama' => ['required', 'string', 'max:255'],
-            'alamat' => ['nullable', 'string'],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->editingId)],
-            'jenis_kelamin' => ['required', 'in:Laki-laki,Perempuan'],
-            'no_hp' => ['required', 'string', 'max:20'],
-            'keahlian' => ['required', 'string', 'max:255'],
+        $this->validate([
+            'no_identitas' => [
+                'required', 'string', 'max:50',
+                Rule::unique('instruktur', 'no_identitas')->ignore($editingId),
+            ],
+            'nama'     => ['required', 'string', 'max:150'],
+            'email'    => ['required', 'email',
+                Rule::unique('instruktur', 'email')->ignore($editingId),
+            ],
+            'no_hp'    => ['required', 'string', 'max:20'],
+            'kelamin'  => ['required', 'in:L,P'],
+            'keahlian' => ['required', 'string', 'max:200'],
+            'alamat'   => ['nullable', 'string', 'max:500'],
             'password' => $passwordRules,
+        ], [
+            'no_identitas.unique' => 'No. identitas sudah terdaftar.',
+            'email.unique'        => 'Email sudah digunakan instruktur lain.',
+            'password.confirmed'  => 'Konfirmasi password tidak cocok.',
         ]);
 
-        unset($data['password_confirmation']);
+        $data = [
+            'no_identitas' => $this->no_identitas,
+            'nama'         => $this->nama,
+            'email'        => $this->email,
+            'no_hp'        => $this->no_hp,
+            'kelamin'      => $this->kelamin,
+            'alamat'       => $this->alamat ?: null,
+            'keahlian'     => $this->keahlian,
+            'password'     => $this->password ?: null,
+        ];
 
-        DB::transaction(function () use ($data) {
-            $user = User::updateOrCreate(
-                ['id' => $this->editingId],
-                array_filter([
-                    'nama' => $data['nama'],
-                    'email' => $data['email'],
-                    'role' => 'instruktur',
-                    'password' => filled($data['password']) ? Hash::make($data['password']) : null,
-                ], fn ($value) => $value !== null)
-            );
+        $service = app(InstrukturService::class);
 
-            $user->instrukturDetail()->updateOrCreate(['id_user' => $user->id], [
-                'no_identitas' => $data['no_identitas'],
-                'alamat' => $data['alamat'],
-                'jenis_kelamin' => $data['jenis_kelamin'],
-                'no_hp' => $data['no_hp'],
-                'keahlian' => $data['keahlian'],
-            ]);
-        });
+        if ($editingId) {
+            $instruktur = Instruktur::findOrFail($editingId);
+            $service->update($instruktur, $data);
+        } else {
+            $service->create($data);
+        }
 
         $this->resetForm();
         $this->showForm = false;
+
+        // Kirim event toast ke FCC modal system
+        $this->dispatch('fcc-toast', message: $editingId
+            ? 'Data instruktur berhasil diperbarui.'
+            : 'Instruktur berhasil ditambahkan.',
+            type: 'success'
+        );
     }
 
-    public function delete(int $id)
+    public function delete(string $hashid): void
     {
-        User::where('role', 'instruktur')->findOrFail($id)->delete();
+        $instruktur = Instruktur::findByHashidOrFail($hashid);
+
+        try {
+            app(InstrukturService::class)->delete($instruktur);
+            $this->dispatch('fcc-toast', message: 'Instruktur berhasil dihapus.', type: 'success');
+        } catch (\RuntimeException $e) {
+            $this->dispatch('fcc-toast', message: $e->getMessage(), type: 'error');
+        }
     }
 
-    public function cancel()
+    public function cancel(): void
     {
         $this->resetForm();
         $this->showForm = false;
@@ -126,8 +165,9 @@ class InstrukturManager extends Component
     private function resetForm(): void
     {
         $this->reset([
-            'editingId', 'no_identitas', 'nama', 'alamat', 'email',
-            'jenis_kelamin', 'no_hp', 'keahlian', 'password', 'password_confirmation',
+            'editingHashid', 'no_identitas', 'nama', 'email',
+            'no_hp', 'kelamin', 'alamat', 'keahlian',
+            'password', 'password_confirmation',
         ]);
         $this->resetErrorBag();
     }

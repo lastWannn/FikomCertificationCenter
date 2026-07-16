@@ -2,37 +2,63 @@
 
 namespace App\Providers;
 
+use App\Services\HashidService;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        //
+        // HashidService — singleton untuk performa (cache instance per-model)
+        $this->app->singleton(HashidService::class, fn() => new HashidService());
+        $this->app->alias(HashidService::class, 'hashids');
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
+        // Paksa HTTPS di production
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
 
-        Authenticate::redirectUsing(fn () => route('login'));
+        // Konsisten dengan APP_URL (penting untuk Hashid URL + Livewire request)
+        if ($appUrl = config('app.url')) {
+            URL::forceRootUrl($appUrl);
+        }
 
+        /**
+         * Livewire redirect: saat user belum login mencoba akses halaman auth-protected.
+         * Route 'auth.login' adalah Livewire component kita.
+         */
+        Authenticate::redirectUsing(fn(Request $request) => route('auth.login'));
+
+        /**
+         * Livewire redirect: saat user sudah login mencoba akses halaman guest.
+         * Cek setiap guard kita secara berurutan.
+         */
         RedirectIfAuthenticated::redirectUsing(function (Request $request) {
-            return route(match ($request->user()?->role) {
-                'instruktur' => 'instruktur.dashboard',
-                'peserta' => 'peserta.dashboard',
-                default => 'admin.dashboard',
-            });
+            // Cek guard admin
+            if (auth('admin')->check()) {
+                return route('admin.dashboard');
+            }
+
+            // Cek guard peserta
+            if (auth('peserta')->check()) {
+                return route('peserta.dashboard');
+            }
+
+            // Cek guard instruktur (jika ada dashboardnya)
+            if (auth('instruktur')->check()) {
+                return route_exists('instruktur.dashboard')
+                    ? route('instruktur.dashboard')
+                    : route('landing.index');
+            }
+
+            return route('landing.index');
         });
     }
 }

@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Illuminate\Auth\AuthenticationException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,10 +13,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Alias middleware
         $middleware->alias([
-            'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+            'auth.admin'   => \App\Http\Middleware\AuthAdmin::class,
+            'auth.peserta' => \App\Http\Middleware\AuthPeserta::class,
+            'guest.fcc'    => \App\Http\Middleware\GuestFcc::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // JSON untuk API
+        $exceptions->shouldRenderJsonWhen(fn (Request $request) => $request->is('api/*'));
+
+        // Redirect ke halaman login FCC jika belum auth
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            return redirect()->route('auth.login')
+                             ->with('error', 'Silakan masuk terlebih dahulu.');
+        });
     })->create();
