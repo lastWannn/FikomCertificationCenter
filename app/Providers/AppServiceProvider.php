@@ -26,7 +26,9 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // Konsisten dengan APP_URL (penting untuk Hashid URL + Livewire request)
-        if ($appUrl = config('app.url')) {
+        // Hanya dipaksa di production — di lokal biarkan Laravel deteksi otomatis
+        // dari request (mis. http://127.0.0.1:8000 saat pakai `php artisan serve`).
+        if (app()->environment('production') && ($appUrl = config('app.url'))) {
             URL::forceRootUrl($appUrl);
         }
 

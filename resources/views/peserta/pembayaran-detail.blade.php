@@ -396,6 +396,7 @@ $perpStatus = $pembayaran->status_perpanjangan;
 <script>
 window.PAGE_DATA = {!! json_encode([
     'expiry'  => $pembayaran->tgl_kadaluarsa?->toISOString(),
+    'serverTime' => now()->toISOString(),
     'isAktif' => $pembayaran->isAktif(),
 ]) !!};
 </script>

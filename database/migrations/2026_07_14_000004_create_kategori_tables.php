@@ -4,19 +4,13 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
-        Schema::create('kategori_pelatihan', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_kategori', 150);
-            $table->timestamps();
-        });
-        Schema::create('kategori_sertifikasi', function (Blueprint $table) {
+        Schema::create('kategori', function (Blueprint $table) {
             $table->id();
             $table->string('nama_kategori', 150);
             $table->timestamps();
         });
     }
     public function down(): void {
-        Schema::dropIfExists('kategori_pelatihan');
-        Schema::dropIfExists('kategori_sertifikasi');
+        Schema::dropIfExists('kategori');
     }
 };

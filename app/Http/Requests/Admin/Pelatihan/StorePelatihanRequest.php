@@ -6,7 +6,7 @@ class StorePelatihanRequest extends FormRequest {
     public function authorize(): bool { return true; }
     public function rules(): array {
         return ['kode'=>'required|string|max:20|unique:pelatihan,kode','judul'=>'required|string|max:255',
-                'isi'=>'required|string','kategori_pelatihan_id'=>'required|exists:kategori_pelatihan,id',
+                'isi'=>'required|string','kategori_id'=>'required|exists:kategori,id',
                 'instruktur_id'=>'required|exists:instruktur,id','gambar'=>'nullable|image|max:2048'];
     }
     public function messages(): array {

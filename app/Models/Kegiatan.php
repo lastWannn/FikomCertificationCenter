@@ -24,7 +24,7 @@ class Kegiatan extends Model {
             return $this->kegiatanPelatihan?->jadwalPelatihan;
         return $this->kegiatanSertifikasi?->jadwalSertifikasi;
     }
-    public function getJudulAttribute(): string { return $this->detail?->judul ?? '-'; }
+    public function getJudulAttribute(): string { return $this->jadwal?->nama_kegiatan ?? $this->detail?->judul ?? '-'; }
     public function getTerisiAttribute(): int {
         return $this->pendaftaran()
             ->whereIn('status_pendaftaran',['menunggu_pembayaran','menunggu_verifikasi','terdaftar'])

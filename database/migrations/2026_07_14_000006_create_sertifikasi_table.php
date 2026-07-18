@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->longText('isi');
             $table->string('gambar')->nullable();
             $table->string('link_materi', 500)->nullable();
-            $table->foreignId('kategori_sertifikasi_id')->constrained('kategori_sertifikasi')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignId('kategori_id')->constrained('kategori')->restrictOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

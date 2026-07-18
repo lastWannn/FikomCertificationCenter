@@ -49,10 +49,10 @@
                     <h3 style="font-size:15px;font-weight:800;color:#0F0F14;margin:0 0 18px;">Pengaturan</h3>
                     <div style="margin-bottom:14px;">
                         <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Kategori *</label>
-                        <select name="kategori_pelatihan_id" required class="fcc-input">
+                        <select name="kategori_id" required class="fcc-input">
                             <option value="">-- Pilih Kategori --</option>
                             @foreach($kategori as $k)
-                            <option value="{{ $k->id }}" {{ old('kategori_pelatihan_id',$pelatihan->kategori_pelatihan_id??'')==$k->id?'selected':'' }}>{{ $k->nama_kategori }}</option>
+                            <option value="{{ $k->id }}" {{ old('kategori_id',$pelatihan->kategori_id??'')==$k->id?'selected':'' }}>{{ $k->nama_kategori }}</option>
                             @endforeach
                         </select>
                     </div>

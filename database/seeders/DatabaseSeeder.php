@@ -6,6 +6,7 @@ use App\Models\Admin; use App\Models\Kontak;
 use App\Models\KontenHalaman; use App\Models\Mitra;
 class DatabaseSeeder extends Seeder {
     public function run(): void {
+        $this->call(KategoriSeeder::class);
         Admin::firstOrCreate(['email'=>'admin@fcc.ac.id'],['nama'=>'Admin FCC','password'=>Hash::make('password')]);
         Kontak::firstOrCreate(['email'=>'fcc@fikom.umi.ac.id'],['alamat'=>'Jl. Urip Sumoharjo No.225, Makassar 90232','telepon'=>'(0411) 455 855','email'=>'fcc@fikom.umi.ac.id','maps_embed'=>'']);
         foreach ([['beranda','Selamat Datang di FCC','Platform sertifikasi dan pelatihan profesional FIKOM UMI.'],

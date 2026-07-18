@@ -5,7 +5,7 @@ use App\Traits\HasHashid;
 class JadwalPelatihan extends Model {
     use HasHashid;
     protected $table='jadwal_pelatihan';
-    protected $fillable=['pelatihan_id','kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'];
+    protected $fillable=['pelatihan_id','nama_kegiatan','nama_jenis_biaya','nominal_biaya','kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'];
     protected $casts=['tgl_batas_daftar'=>'date','tgl_pelaksanaan'=>'date','kuota_peserta'=>'integer'];
     public function pelatihan()       { return $this->belongsTo(Pelatihan::class); }
     public function kegiatanPelatihan(){ return $this->hasOne(KegiatanPelatihan::class); }

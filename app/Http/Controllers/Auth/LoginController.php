@@ -20,7 +20,11 @@ class LoginController extends Controller
         try {
             $result   = $this->service->login($request->only('email','password'), $request->boolean('remember'));
             $request->session()->regenerate();
-            $redirect = $result['guard'] === 'admin' ? 'admin.dashboard' : 'peserta.dashboard';
+            $redirect = match ($result['guard']) {
+                'admin'      => 'admin.dashboard',
+                'instruktur' => route_exists('instruktur.dashboard') ? 'instruktur.dashboard' : 'landing.index',
+                default      => 'peserta.dashboard',
+            };
             return redirect()->route($redirect)
                 ->with('success', 'Selamat datang, '.$result['user']->nama.'!');
         } catch (ValidationException $e) {
@@ -33,7 +37,8 @@ class LoginController extends Controller
     {
         $request->validate(['email' => 'required|email'],['email.required'=>'Email wajib diisi.','email.email'=>'Format email tidak valid.']);
         $exists = \App\Models\Peserta::where('email',$request->email)->exists()
-               || \App\Models\Admin::where('email',$request->email)->exists();
+               || \App\Models\Admin::where('email',$request->email)->exists()
+               || \App\Models\Instruktur::where('email',$request->email)->exists();
         if (!$exists) {
             return back()->withErrors(['email' => 'Email tidak ditemukan dalam sistem kami.'])->withInput();
         }

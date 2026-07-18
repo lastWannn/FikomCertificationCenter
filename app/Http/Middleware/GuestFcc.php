@@ -16,6 +16,9 @@ class GuestFcc
         if (Auth::guard('peserta')->check()) {
             return redirect()->route('peserta.dashboard');
         }
+        if (Auth::guard('instruktur')->check()) {
+            return redirect()->route(route_exists('instruktur.dashboard') ? 'instruktur.dashboard' : 'landing.index');
+        }
         return $next($request);
     }
 }

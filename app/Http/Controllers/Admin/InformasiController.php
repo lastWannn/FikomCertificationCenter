@@ -1,27 +1,59 @@
 <?php
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Informasi\{StoreInformasiRequest, UpdateInformasiRequest};
 use App\Models\Informasi;
+use App\Services\Admin\InformasiService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-class InformasiController extends Controller {
-    public function index(Request $r) {
-        $q = Informasi::with('admin')->orderBy('created_at','desc');
-        if ($r->jenis) $q->where('jenis',$r->jenis);
-        return view('admin.lainnya.informasi',['informasi'=>$q->paginate(15)]);
+
+class InformasiController extends Controller
+{
+    public function __construct(private InformasiService $service) {}
+
+    public function index(Request $request)
+    {
+        $q = Informasi::with('admin')->orderBy('created_at', 'desc');
+        if ($request->jenis) {
+            $q->where('jenis', $request->jenis);
+        }
+        return view('admin.lainnya.informasi', [
+            'informasi' => $q->paginate(15)
+        ]);
     }
-    public function create() { return view('admin.lainnya.informasi-form'); }
-    public function store(Request $r) {
-        $r->validate(['judul'=>'required','isi'=>'required','jenis'=>'required|in:info,faq']);
-        Informasi::create(['judul'=>$r->judul,'isi'=>$r->isi,'jenis'=>$r->jenis,'admin_id'=>Auth::guard('admin')->id()]);
-        return redirect()->route('admin.informasi.index')->with('success','Informasi ditambahkan.');
+
+    public function create()
+    {
+        return view('admin.lainnya.informasi-form');
     }
-    public function show(Informasi $informasi) { return redirect()->route('admin.informasi.index'); }
-    public function edit(Informasi $informasi) { return view('admin.lainnya.informasi-form',compact('informasi')); }
-    public function update(Request $r, Informasi $informasi) {
-        $r->validate(['judul'=>'required','isi'=>'required','jenis'=>'required|in:info,faq']);
-        $informasi->update($r->only('judul','isi','jenis'));
-        return redirect()->route('admin.informasi.index')->with('success','Informasi diperbarui.');
+
+    public function store(StoreInformasiRequest $request)
+    {
+        $this->service->create($request->validated());
+        return redirect()->route('admin.informasi.index')
+            ->with('success', 'Informasi ditambahkan.');
     }
-    public function destroy(Informasi $informasi) { $informasi->delete(); return back()->with('success','Informasi dihapus.'); }
+
+    public function show(Informasi $informasi)
+    {
+        return redirect()->route('admin.informasi.index');
+    }
+
+    public function edit(Informasi $informasi)
+    {
+        return view('admin.lainnya.informasi-form', compact('informasi'));
+    }
+
+    public function update(UpdateInformasiRequest $request, Informasi $informasi)
+    {
+        $this->service->update($informasi, $request->validated());
+        return redirect()->route('admin.informasi.index')
+            ->with('success', 'Informasi diperbarui.');
+    }
+
+    public function destroy(Informasi $informasi)
+    {
+        $this->service->delete($informasi);
+        return back()->with('success', 'Informasi dihapus.');
+    }
 }

@@ -24,11 +24,14 @@ class JadwalPelatihanController extends Controller
     public function store(StoreJadwalPelatihanRequest $request, Pelatihan $pelatihan) {
         $jadwal = $this->service->store($pelatihan->id, $request->validated());
         if ($request->boolean('langsung_aktifkan')) {
-            $this->service->aktifkan($jadwal);
-            return redirect()->route('admin.kegiatan.index')
-                ->with('success','Jadwal dibuat dan langsung diaktifkan sebagai Kegiatan.');
+            $kegiatan = $this->service->aktifkan($jadwal);
+            if ($jadwal->nominal_biaya !== null) {
+                return redirect()->route('admin.kegiatan.show', $kegiatan->hashid)->with('success', 'Jadwal ditambahkan, langsung aktif, dan biaya diatur.');
+            }
+            return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
+                ->with('success', 'Jadwal ditambahkan dan langsung aktif. Silakan tentukan biaya pendaftarannya agar tidak terpublikasi sebagai kegiatan gratis.');
         }
-        return redirect()->route('admin.jadwal-pelatihan.index')
+        return redirect()->route('admin.pelatihan.show', $pelatihan->id)
             ->with('success','Jadwal pelatihan berhasil ditambahkan.');
     }
     public function edit(JadwalPelatihan $jadwal) {
@@ -36,7 +39,7 @@ class JadwalPelatihanController extends Controller
     }
     public function update(UpdateJadwalRequest $request, JadwalPelatihan $jadwal) {
         $this->service->update($jadwal, $request->validated());
-        return redirect()->route('admin.jadwal-pelatihan.index')->with('success','Jadwal berhasil diperbarui.');
+        return redirect()->route('admin.pelatihan.show', $jadwal->pelatihan_id)->with('success','Jadwal berhasil diperbarui.');
     }
     public function destroy(JadwalPelatihan $jadwal) {
         try {
@@ -48,11 +51,15 @@ class JadwalPelatihanController extends Controller
     }
     public function aktifkan(JadwalPelatihan $jadwal) {
         try {
-            $this->service->aktifkan($jadwal);
+            $kegiatan = $this->service->aktifkan($jadwal);
+            if ($jadwal->nominal_biaya !== null) {
+                return redirect()->route('admin.kegiatan.show', $kegiatan->hashid)->with('success', 'Kegiatan berhasil diaktifkan.');
+            }
+            return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
+                ->with('success', 'Kegiatan berhasil diaktifkan. Silakan tentukan biaya pendaftarannya agar tidak terpublikasi sebagai kegiatan gratis.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return redirect()->route('admin.kegiatan.index')->with('success','Jadwal berhasil diaktifkan sebagai Kegiatan.');
     }
     public function nonaktifkan(JadwalPelatihan $jadwal) {
         try {

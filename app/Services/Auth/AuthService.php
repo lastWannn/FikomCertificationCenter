@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\Auth;
 
-use App\Models\{Admin, Peserta};
+use App\Models\{Admin, Peserta, Instruktur};
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -28,6 +28,10 @@ class AuthService
             return ['guard' => 'peserta', 'user' => $peserta];
         }
 
+        if (Auth::guard('instruktur')->attempt($credentials, $remember)) {
+            return ['guard' => 'instruktur', 'user' => Auth::guard('instruktur')->user()];
+        }
+
         throw ValidationException::withMessages([
             'email' => 'Email atau password salah. Silakan periksa kembali.',
         ]);
@@ -37,5 +41,6 @@ class AuthService
     {
         Auth::guard('admin')->logout();
         Auth::guard('peserta')->logout();
+        Auth::guard('instruktur')->logout();
     }
 }

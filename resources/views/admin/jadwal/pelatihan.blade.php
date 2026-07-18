@@ -36,7 +36,12 @@
         @endphp
         <tr style="border-top:1px solid #F0F1F5;" class="tbl-row">
           <td style="padding:12px 14px;">
-            <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">{{ Str::limit($j->pelatihan->judul,35) }}</p>
+            <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">
+              {{ Str::limit($j->pelatihan->judul,35) }}
+              @if($j->nama_kegiatan)
+              <span style="font-size:10px;font-weight:600;color:#FFC81A;background:#131218;padding:1px 5px;border-radius:4px;margin-left:4px;">{{ $j->nama_kegiatan }}</span>
+              @endif
+            </p>
             <p style="margin:2px 0 0;font-size:10px;color:#9CA3B0;font-family:monospace;">{{ $j->pelatihan->kode }}</p>
           </td>
           <td style="padding:12px 14px;font-size:12px;color:#6B7280;">{{ $j->pelatihan->instruktur->nama ?? '—' }}</td>

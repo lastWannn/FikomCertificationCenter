@@ -700,3 +700,6 @@ input[type="file"].fcc-input::file-selector-button:hover { background:#1C1B22; }
     transition:all .35s ease;background:#FFF;
     display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
 }
+.hidden {
+    display: none !important;
+}

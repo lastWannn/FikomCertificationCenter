@@ -16,7 +16,7 @@
                 <select name="kegiatan_id" required class="fcc-input">
                     <option value="">-- Pilih Kegiatan --</option>
                     @foreach($kegiatan as $k)
-                    <option value="{{ $k->id }}" {{ (old('kegiatan_id',isset($biaya)?$biaya->kegiatan_id:''))==$k->id?'selected':'' }}>{{ $k->judul }}</option>
+                    <option value="{{ $k->id }}" {{ (old('kegiatan_id', $selected_kegiatan_id ?? (isset($biaya)?$biaya->kegiatan_id:''))) == $k->id ? 'selected' : '' }}>{{ $k->judul }}</option>
                     @endforeach
                 </select>
             </div>

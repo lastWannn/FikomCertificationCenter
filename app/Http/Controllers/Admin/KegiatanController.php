@@ -2,11 +2,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Kegiatan, BiayaKegiatan};
+use App\Http\Requests\Admin\Kegiatan\ToggleBiayaRequest;
+use App\Models\Kegiatan;
+use App\Services\Admin\KegiatanService;
 use Illuminate\Http\Request;
 
 class KegiatanController extends Controller
 {
+    public function __construct(private KegiatanService $service) {}
+
     public function index(Request $r)
     {
         $query = Kegiatan::with([
@@ -38,19 +42,19 @@ class KegiatanController extends Controller
 
     public function destroy(Kegiatan $kegiatan)
     {
-        if ($kegiatan->pendaftaran()->whereIn('status_pendaftaran',['terdaftar','menunggu_verifikasi'])->count() > 0) {
-            return back()->with('error', 'Kegiatan tidak bisa dihapus. Masih ada peserta aktif.');
+        try {
+            $this->service->delete($kegiatan);
+            return redirect()->route('admin.kegiatan.index')
+                ->with('success', 'Kegiatan berhasil dihapus.');
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
         }
-        $kegiatan->delete();
-        return redirect()->route('admin.kegiatan.index')
-            ->with('success', 'Kegiatan berhasil dihapus.');
     }
 
-    public function toggleBiaya(Request $r, Kegiatan $kegiatan)
+    public function toggleBiaya(ToggleBiayaRequest $request, Kegiatan $kegiatan)
     {
-        // Toggle gratis/berbayar: hapus semua biaya → jadi gratis
-        $r->validate(['aksi' => 'required|in:hapus_semua']);
-        $kegiatan->biaya()->delete();
+        $this->service->toggleBiaya($kegiatan);
         return back()->with('success', 'Semua biaya dihapus. Kegiatan sekarang gratis.');
     }
 }
+

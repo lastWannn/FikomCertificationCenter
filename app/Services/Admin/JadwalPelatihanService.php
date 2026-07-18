@@ -10,7 +10,7 @@ class JadwalPelatihanService
     public function store(int $pelatihanId, array $data): JadwalPelatihan
     {
         return JadwalPelatihan::create(array_merge(
-            collect($data)->only(['kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'])->toArray(),
+            collect($data)->only(['nama_kegiatan','nama_jenis_biaya','nominal_biaya','kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'])->toArray(),
             ['pelatihan_id' => $pelatihanId]
         ));
     }
@@ -18,7 +18,7 @@ class JadwalPelatihanService
     public function update(JadwalPelatihan $jadwal, array $data): JadwalPelatihan
     {
         $jadwal->update(
-            collect($data)->only(['kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'])->toArray()
+            collect($data)->only(['nama_kegiatan','nama_jenis_biaya','nominal_biaya','kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'])->toArray()
         );
         return $jadwal->fresh();
     }
@@ -64,6 +64,15 @@ class JadwalPelatihanService
                 'kegiatan_id'          => $kegiatan->id,
                 'jadwal_pelatihan_id'  => $jadwal->id,
             ]);
+
+            if ($jadwal->nominal_biaya !== null) {
+                \App\Models\BiayaKegiatan::create([
+                    'kegiatan_id' => $kegiatan->id,
+                    'nama_jenis'  => $jadwal->nama_jenis_biaya ?? 'Umum',
+                    'nominal'     => $jadwal->nominal_biaya,
+                ]);
+            }
+
             return $kegiatan;
         });
     }

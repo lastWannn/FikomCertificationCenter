@@ -7,6 +7,7 @@ use App\Livewire\Auth\Register as LivewireRegister;
 use App\Livewire\Admin\InstrukturManager as LivewireInstruktur;
 
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Instruktur\DashboardController as InstrukturDashboard;
 
 // Admin
 use App\Http\Controllers\Admin\{
@@ -249,4 +250,9 @@ Route::middleware('auth.peserta')->prefix('peserta')->name('peserta.')->group(fu
     Route::get('/qr/{pendaftaran}/cetak',[PesertaQr::class,'cetak'])->name('qr.cetak');
     // API Chart
     Route::get('/api/chart/aktivitas', [PesertaDashboard::class,'chartAktivitas'])->name('api.chart.aktivitas');
+});
+
+/* ── INSTRUKTUR ──────────────────────────────────────────────── */
+Route::middleware('auth.instruktur')->prefix('instruktur')->name('instruktur.')->group(function () {
+    Route::get('/', [InstrukturDashboard::class,'index'])->name('dashboard');
 });

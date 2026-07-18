@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Requests\Auth;
+use App\Rules\UniqueEmailAcrossRoles;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterRequest extends FormRequest {
     public function authorize(): bool { return true; }
     public function rules(): array {
-        return ['nama'=>'required|string|max:150','email'=>'required|email|unique:peserta,email',
+        return ['nama'=>'required|string|max:150','email'=>['required','email',new UniqueEmailAcrossRoles()],
                 'no_hp'=>'required|string|max:20','kelamin'=>'required|in:L,P',
                 'instansi'=>'nullable|string|max:200','password'=>['required','confirmed',Password::min(8)],
                 'agree'=>'accepted'];

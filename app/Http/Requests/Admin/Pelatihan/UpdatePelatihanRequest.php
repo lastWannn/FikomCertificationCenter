@@ -7,7 +7,7 @@ class UpdatePelatihanRequest extends FormRequest {
     public function rules(): array {
         $id = $this->route('pelatihan')?->id;
         return ['kode'=>"required|string|max:20|unique:pelatihan,kode,{$id}",'judul'=>'required|string|max:255',
-                'isi'=>'required|string','kategori_pelatihan_id'=>'required|exists:kategori_pelatihan,id',
+                'isi'=>'required|string','kategori_id'=>'required|exists:kategori,id',
                 'instruktur_id'=>'required|exists:instruktur,id','gambar'=>'nullable|image|max:2048'];
     }
 }

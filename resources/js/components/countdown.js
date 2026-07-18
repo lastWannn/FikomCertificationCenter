@@ -13,15 +13,26 @@
         const expiryStr = window.PAGE_DATA?.expiry;
         if (!expiryStr) return;
 
+        const serverTimeStr = window.PAGE_DATA?.serverTime;
+        const offset = serverTimeStr ? (new Date(serverTimeStr) - new Date()) : 0;
+
         const expiry = new Date(expiryStr);
 
         function tick() {
-            const diff = expiry - Date.now();
+            const nowAdjusted = Date.now() + offset;
+            const diff = expiry - nowAdjusted;
+
             if (diff <= 0) {
                 timerEl.textContent = 'KADALUARSA';
                 timerEl.style.color = '#EF4444';
-                // Reload untuk update status dari server
-                setTimeout(() => location.reload(), 2000);
+                
+                // Anti infinite reload loop: reload maks 1 kali per 10 detik
+                const lastReload = sessionStorage.getItem('last_countdown_reload');
+                const now = Date.now();
+                if (!lastReload || (now - parseInt(lastReload, 10) > 10000)) {
+                    sessionStorage.setItem('last_countdown_reload', String(now));
+                    setTimeout(() => location.reload(), 2000);
+                }
                 return;
             }
 

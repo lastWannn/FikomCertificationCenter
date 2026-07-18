@@ -15,9 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Alias middleware
         $middleware->alias([
-            'auth.admin'   => \App\Http\Middleware\AuthAdmin::class,
-            'auth.peserta' => \App\Http\Middleware\AuthPeserta::class,
-            'guest.fcc'    => \App\Http\Middleware\GuestFcc::class,
+            'auth.admin'      => \App\Http\Middleware\AuthAdmin::class,
+            'auth.peserta'    => \App\Http\Middleware\AuthPeserta::class,
+            'auth.instruktur' => \App\Http\Middleware\AuthInstruktur::class,
+            'guest.fcc'       => \App\Http\Middleware\GuestFcc::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

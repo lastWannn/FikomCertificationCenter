@@ -17,7 +17,7 @@
         @include('components.icon',['name'=>'plus','size'=>13]) Tambah Materi
       </a>
       <a href="{{ route('admin.jadwal-pelatihan.create', $pelatihan) }}" class="fcc-btn-gold" style="padding:9px 16px;font-size:13px;text-decoration:none;">
-        @include('components.icon',['name'=>'calendar','size'=>13]) Buat Jadwal
+        @include('components.icon',['name'=>'calendar','size'=>13]) Tambah Jadwal
       </a>
       <a href="{{ route('admin.pelatihan.edit', $pelatihan) }}" class="fcc-btn-dark" style="padding:9px 14px;font-size:13px;text-decoration:none;">
         @include('components.icon',['name'=>'edit','size'=>13,'style'=>'color:#FFC81A'])
@@ -41,7 +41,7 @@
           <div style="flex:1;min-width:0;">
             <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">{{ $m->judul_materi }}</p>
             <p style="margin:0;font-size:11px;color:#9CA3B0;">{{ $m->jam_pelajaran }} JP
-              @if($m->file_materi)&bull; <a href="{{ asset('storage/'.$m->file_materi) }}" target="_blank" style="color:#FFC81A;font-weight:600;text-decoration:none;">Lihat File</a>@endif
+              @if($m->file_materi)&bull; <a href="{{ \Illuminate\Support\Str::startsWith($m->file_materi, ['http://', 'https://']) ? $m->file_materi : asset('storage/'.$m->file_materi) }}" target="_blank" style="color:#FFC81A;font-weight:600;text-decoration:none;">Lihat Materi</a>@endif
             </p>
           </div>
           <div style="display:flex;gap:8px;flex-shrink:0;">
@@ -69,33 +69,53 @@
       <div class="fcc-card" style="padding:0;overflow:hidden;">
         <div style="padding:14px 18px;border-bottom:1px solid #E2E4EB;display:flex;justify-content:space-between;align-items:center;">
           <p style="margin:0;font-size:14px;font-weight:800;color:#131218;">Jadwal ({{ $pelatihan->jadwal->count() }})</p>
-          <a href="{{ route('admin.jadwal-pelatihan.create', $pelatihan) }}" style="font-size:12px;color:#FFC81A;font-weight:700;text-decoration:none;">+ Buat Jadwal</a>
+          <a href="{{ route('admin.jadwal-pelatihan.create', $pelatihan) }}" style="font-size:12px;color:#FFC81A;font-weight:700;text-decoration:none;">+ Tambah Jadwal</a>
         </div>
         @forelse($pelatihan->jadwal as $j)
         @php $kp = $j->kegiatanPelatihan; @endphp
         <div style="padding:12px 18px;border-top:1px solid #F0F1F5;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
             <div>
-              <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">{{ $j->tgl_pelaksanaan->format('d M Y') }}</p>
-              <p style="margin:2px 0 0;font-size:11px;color:#9CA3B0;">{{ $j->jam_mulai }} – {{ $j->jam_selesai }} &bull; Kuota: {{ $j->kuota_peserta }}</p>
-            </div>
-            <div style="text-align:right;">
-              @if($kp)
-              <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:rgba(16,185,129,.12);color:#10B981;">&#10003; Aktif</span>
-              <br>
-              <a href="{{ route('admin.kegiatan.show',$kp->kegiatan_id) }}" style="font-size:11px;color:#3B82F6;text-decoration:none;">Lihat Kegiatan</a>
+              @if($j->nama_kegiatan)
+              <p style="margin:0 0 3px;font-size:13.5px;font-weight:800;color:#131218;">{{ $j->nama_kegiatan }}</p>
+              <p style="margin:0;font-size:11.5px;color:#9CA3B0;">{{ $j->tgl_pelaksanaan->format('d M Y') }} &bull; {{ substr($j->jam_mulai, 0, 5) }} – {{ substr($j->jam_selesai, 0, 5) }} &bull; Kuota: {{ $j->kuota_peserta }}</p>
               @else
-              <form action="{{ route('admin.jadwal-pelatihan.aktifkan', $j) }}" method="POST">
-                @csrf
-                <button type="submit" style="background:#131218;border:none;color:#FFC81A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;cursor:pointer;" onclick="return confirm('Aktifkan jadwal ini?')">+ Aktifkan</button>
-              </form>
+              <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">{{ $j->tgl_pelaksanaan->format('d M Y') }}</p>
+              <p style="margin:2px 0 0;font-size:11px;color:#9CA3B0;">{{ substr($j->jam_mulai, 0, 5) }} – {{ substr($j->jam_selesai, 0, 5) }} &bull; Kuota: {{ $j->kuota_peserta }}</p>
               @endif
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="text-align:right;">
+                @if($kp)
+                <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:rgba(16,185,129,.12);color:#10B981;">&#10003; Aktif</span>
+                <br>
+                <a href="{{ route('admin.kegiatan.show',$kp->kegiatan_id) }}" style="font-size:11px;color:#3B82F6;text-decoration:none;">Lihat Kegiatan</a>
+                @else
+                <form action="{{ route('admin.jadwal-pelatihan.aktifkan', $j) }}" method="POST" style="display:inline;">
+                  @csrf
+                  <button type="submit" style="background:#131218;border:none;color:#FFC81A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;cursor:pointer;" onclick="return confirm('Aktifkan jadwal ini?')">+ Aktifkan</button>
+                </form>
+                @endif
+              </div>
+              <div style="display:flex;gap:6px;">
+                <a href="{{ route('admin.jadwal-pelatihan.edit',$j->id) }}" title="Edit" style="color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
+                   onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#9CA3B0'">
+                  @include('components.icon',['name'=>'edit','size'=>14])
+                </a>
+                <form action="{{ route('admin.jadwal-pelatihan.destroy',$j->id) }}" method="POST" onsubmit="return confirm('Hapus jadwal ini?')">
+                  @csrf @method('DELETE')
+                  <button type="submit" style="background:none;border:none;cursor:pointer;color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
+                          onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='#9CA3B0'">
+                    @include('components.icon',['name'=>'trash','size'=>14])
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
         @empty
         <div style="padding:18px;text-align:center;color:#9CA3B0;font-size:13px;">
-          Belum ada jadwal. <a href="{{ route('admin.jadwal-pelatihan.create', $pelatihan) }}" style="color:#FFC81A;font-weight:700;text-decoration:none;">Buat jadwal &rarr;</a>
+          Belum ada jadwal. <a href="{{ route('admin.jadwal-pelatihan.create', $pelatihan) }}" style="color:#FFC81A;font-weight:700;text-decoration:none;">Tambah jadwal &rarr;</a>
         </div>
         @endforelse
       </div>

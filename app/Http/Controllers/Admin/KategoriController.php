@@ -2,74 +2,42 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{KategoriPelatihan, KategoriSertifikasi};
+use App\Http\Requests\Admin\Kategori\{StoreKategoriRequest, UpdateKategoriRequest};
+use App\Models\Kategori;
+use App\Services\Admin\KategoriService;
 use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
+    public function __construct(private KategoriService $service) {}
+
     public function index()
     {
         return view('admin.kategori.index', [
-            'pelatihan'   => KategoriPelatihan::withCount('pelatihan')->orderBy('nama_kategori')->get(),
-            'sertifikasi' => KategoriSertifikasi::withCount('sertifikasi')->orderBy('nama_kategori')->get(),
+            'kategori' => Kategori::withCount(['pelatihan', 'sertifikasi'])->orderBy('nama_kategori')->get(),
         ]);
     }
 
-    public function store(Request $r)
+    public function store(StoreKategoriRequest $request)
     {
-        $r->validate([
-            'nama_kategori' => 'required|string|max:150',
-            'jenis'         => 'required|in:pelatihan,sertifikasi',
-        ]);
-        if ($r->jenis === 'pelatihan') {
-            KategoriPelatihan::create(['nama_kategori' => $r->nama_kategori]);
-        } else {
-            KategoriSertifikasi::create(['nama_kategori' => $r->nama_kategori]);
-        }
-        return back()->with('success', 'Kategori '.ucfirst($r->jenis).' berhasil ditambahkan.');
+        $this->service->create($request->validated());
+        return back()->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-    /**
-     * Update — $id sekarang adalah hashid, decode dulu.
-     */
-    public function update(Request $r, string $hashid)
+    public function update(UpdateKategoriRequest $request, string $hashid)
     {
-        $r->validate([
-            'nama_kategori' => 'required|string|max:150',
-            'jenis'         => 'required|in:pelatihan,sertifikasi',
-        ]);
-
-        if ($r->jenis === 'pelatihan') {
-            $kat = KategoriPelatihan::findByHashidOrFail($hashid);
-            $kat->update(['nama_kategori' => $r->nama_kategori]);
-        } else {
-            $kat = KategoriSertifikasi::findByHashidOrFail($hashid);
-            $kat->update(['nama_kategori' => $r->nama_kategori]);
-        }
+        $this->service->update($hashid, $request->validated());
         return back()->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    /**
-     * Destroy — $id sekarang adalah hashid, decode dulu.
-     */
-    public function destroy(string $hashid, Request $r)
+    public function destroy(string $hashid, Request $request)
     {
-        $r->validate(['jenis' => 'required|in:pelatihan,sertifikasi']);
-
-        if ($r->jenis === 'pelatihan') {
-            $kat = KategoriPelatihan::findByHashidOrFail($hashid);
-            if ($kat->pelatihan()->count()) {
-                return back()->with('error', 'Kategori masih digunakan oleh program pelatihan.');
-            }
-            $kat->delete();
-        } else {
-            $kat = KategoriSertifikasi::findByHashidOrFail($hashid);
-            if ($kat->sertifikasi()->count()) {
-                return back()->with('error', 'Kategori masih digunakan oleh program sertifikasi.');
-            }
-            $kat->delete();
+        try {
+            $this->service->delete($hashid);
+            return back()->with('success', 'Kategori dihapus.');
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Kategori dihapus.');
     }
 
     public function create() { return redirect()->route('admin.kategori.index'); }

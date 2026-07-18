@@ -38,16 +38,13 @@
               'items' => [
                   ['route'=>'admin.dashboard',           'icon'=>'layout-dashboard', 'label'=>'Dashboard'],
                   ['route'=>'admin.pelatihan.index',     'icon'=>'book-open',        'label'=>'Pelatihan'],
-                  ['route'=>'admin.jadwal-pelatihan.index','icon'=>'calendar',       'label'=>'Jadwal Pelatihan'],
                   ['route'=>'admin.sertifikasi.index',   'icon'=>'award',            'label'=>'Sertifikasi'],
-                  ['route'=>'admin.jadwal-sertifikasi.index','icon'=>'calendar',     'label'=>'Jadwal Sertifikasi'],
               ],
           ],
           [
               'label' => 'KEGIATAN',
               'items' => [
                   ['route'=>'admin.kegiatan.index',      'icon'=>'zap',              'label'=>'Kegiatan Aktif'],
-                  ['route'=>'admin.biaya.index',         'icon'=>'credit-card',      'label'=>'Biaya Kegiatan'],
                   ['route'=>'admin.arsip.index',         'icon'=>'archive',          'label'=>'Arsip Kegiatan'],
               ],
           ],
@@ -246,6 +243,17 @@
     </main>
   </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('click', function(e) {
+    const drop = document.getElementById('notif-drop');
+    if (drop && !drop.contains(e.target)) {
+        drop.classList.add('hidden');
+    }
+});
+</script>
+@endpush
 @endsection
 
 {{-- CSS Sidebar dimuat via resources/css/app.css --}}

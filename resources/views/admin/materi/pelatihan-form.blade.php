@@ -23,11 +23,25 @@
                onkeydown="if(event.key==='Enter')event.preventDefault();">
       </div>
       <div style="margin-bottom:20px;">
-        <label style="font-size:11px;font-weight:700;color:#9CA3B0;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">File Materi (PDF, PPT, ZIP, maks. 20MB)</label>
+        <label style="font-size:11px;font-weight:700;color:#9CA3B0;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">File / Link Tautan Materi (opsional)</label>
         @if($edit && $materi->file_materi)
-        <p style="font-size:12px;color:#6B7280;margin:0 0 6px;">File sekarang: <a href="{{ asset('storage/'.$materi->file_materi) }}" target="_blank" style="color:#FFC81A;font-weight:700;">Lihat File</a></p>
+        <p style="font-size:12px;color:#6B7280;margin:0 0 8px;">
+            Materi sekarang: 
+            <a href="{{ \Illuminate\Support\Str::startsWith($materi->file_materi, ['http://', 'https://']) ? $materi->file_materi : asset('storage/'.$materi->file_materi) }}" target="_blank" style="color:#FFC81A;font-weight:700;">Lihat</a>
+        </p>
         @endif
-        <input type="file" name="file_materi" accept=".pdf,.ppt,.pptx,.doc,.docx,.zip" class="fcc-input" style="padding:8px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+                <span style="font-size:11px;color:#9CA3B0;display:block;margin-bottom:4px;">Upload File</span>
+                <input type="file" name="file_materi" accept=".pdf,.ppt,.pptx,.doc,.docx,.zip" class="fcc-input" style="padding:8px;">
+                @error('file_materi')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+            </div>
+            <div>
+                <span style="font-size:11px;color:#9CA3B0;display:block;margin-bottom:4px;">Atau Tempel Tautan Link URL</span>
+                <input type="text" name="link_materi" value="{{ old('link_materi', ($edit && \Illuminate\Support\Str::startsWith($materi->file_materi, ['http://', 'https://'])) ? $materi->file_materi : '') }}" placeholder="https://drive.google.com/..." class="fcc-input">
+                @error('link_materi')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+            </div>
+        </div>
       </div>
       <div style="display:flex;gap:10px;">
         <button type="submit" class="fcc-btn-dark" style="padding:11px 24px;font-size:14px;">
