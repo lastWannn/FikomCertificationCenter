@@ -45,22 +45,22 @@
     </div>
 
     {{-- KANAN: PUTIH --}}
-    <div style="width:500px;min-width:500px;background:#FFFFFF;display:flex;flex-direction:column;
-        justify-content:center;padding:48px 48px;overflow-y:auto;">
-        <a href="{{ route('landing.index') }}" style="display:flex;align-items:center;gap:6px;color:#9CA3B0;font-size:13px;text-decoration:none;font-weight:500;margin-bottom:28px;transition:color .18s;"
-           onmouseover="this.style.color='#131218'" onmouseout="this.style.color='#9CA3B0'">
+    <div style="width:500px;min-width:500px;background:#0e0d14;display:flex;flex-direction:column;
+        justify-content:center;padding:48px 48px;overflow-y:auto;border-left:1px solid rgba(255,255,255,.05);">
+        <a href="{{ route('landing.index') }}" style="display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.5);font-size:13px;text-decoration:none;font-weight:500;margin-bottom:28px;transition:color .18s;"
+           onmouseover="this.style.color='#FFF'" onmouseout="this.style.color='rgba(255,255,255,.5)'">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
             Beranda
         </a>
         <div style="max-width:380px;margin:0 auto;width:100%;">
-            <h1 style="color:#131218;font-size:26px;font-weight:900;margin:0 0 6px;">Buat Akun</h1>
-            <p style="color:#9CA3B0;font-size:14px;margin:0 0 26px;">
+            <h1 style="color:#FFF;font-size:26px;font-weight:900;margin:0 0 6px;">Buat Akun</h1>
+            <p style="color:rgba(255,255,255,.5);font-size:14px;margin:0 0 26px;">
                 Sudah punya akun?
                 <a href="{{ route('auth.login') }}" style="color:#FFC81A;font-weight:700;text-decoration:none;">Masuk di sini</a>
             </p>
 
             @if($errors->any())
-            <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:12px 14px;margin-bottom:18px;color:#EF4444;font-size:13px;">
+            <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 14px;margin-bottom:18px;color:#EF4444;font-size:13px;">
                 <ul style="margin:0;padding:0 0 0 16px;">
                     @foreach($errors->all() as $err)<li>{{ $err }}</li>@endforeach
                 </ul>
@@ -71,42 +71,42 @@
                 @csrf
                 {{-- Nama --}}
                 <div style="margin-bottom:13px;">
-                    <label style="font-size:11px;font-weight:700;color:#9CA3B0;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Nama Lengkap <span style="color:#FFC81A;">*</span></label>
+                    <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Nama Lengkap <span style="color:#FFC81A;">*</span></label>
                     <div style="position:relative;">
-                        <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#C0C4CF;pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <input type="text" name="nama" value="{{ old('nama') }}" placeholder="Sesuai KTP" required class="fcc-input" style="padding-left:38px;" onkeydown="if(event.key==='Enter')event.preventDefault();">
+                        <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <input type="text" name="nama" value="{{ old('nama') }}" placeholder="Sesuai KTP" required class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;" onkeydown="if(event.key==='Enter')event.preventDefault();">
                     </div>
                 </div>
                 {{-- Email --}}
                 <div style="margin-bottom:13px;">
-                    <label style="font-size:11px;font-weight:700;color:#9CA3B0;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Email <span style="color:#FFC81A;">*</span></label>
+                    <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Email <span style="color:#FFC81A;">*</span></label>
                     <div style="position:relative;">
-                        <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#C0C4CF;pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        <input type="email" name="email" value="{{ old('email') }}" placeholder="email@example.com" required class="fcc-input" style="padding-left:38px;" onkeydown="if(event.key==='Enter')event.preventDefault();">
+                        <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <input type="email" name="email" value="{{ old('email') }}" placeholder="email@example.com" required class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;" onkeydown="if(event.key==='Enter')event.preventDefault();">
                     </div>
                 </div>
                 {{-- HP --}}
                 <div style="margin-bottom:13px;">
-                    <label style="font-size:11px;font-weight:700;color:#9CA3B0;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">No. HP <span style="color:#FFC81A;">*</span></label>
+                    <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">No. HP <span style="color:#FFC81A;">*</span></label>
                     <div style="position:relative;">
-                        <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#C0C4CF;pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.17 11.83 19.79 19.79 0 0 1 1.1 3.23 2 2 0 0 1 3.1 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></svg>
-                        <input type="tel" name="no_hp" value="{{ old('no_hp') }}" placeholder="08xxxxxxxxxx" required class="fcc-input" style="padding-left:38px;" onkeydown="if(event.key==='Enter')event.preventDefault();">
+                        <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.17 11.83 19.79 19.79 0 0 1 1.1 3.23 2 2 0 0 1 3.1 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></svg>
+                        <input type="tel" name="no_hp" value="{{ old('no_hp') }}" placeholder="08xxxxxxxxxx" required class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;" onkeydown="if(event.key==='Enter')event.preventDefault();">
                     </div>
                 </div>
                 {{-- Instansi --}}
                 <div style="margin-bottom:13px;">
-                    <label style="font-size:11px;font-weight:700;color:#9CA3B0;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Instansi / Asal</label>
-                    <input type="text" name="instansi" value="{{ old('instansi') }}" placeholder="Universitas / Perusahaan (opsional)" class="fcc-input" onkeydown="if(event.key==='Enter')event.preventDefault();">
+                    <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Instansi / Asal</label>
+                    <input type="text" name="instansi" value="{{ old('instansi') }}" placeholder="Universitas / Perusahaan (opsional)" class="fcc-input-dark" style="width:100%;box-sizing:border-box;" onkeydown="if(event.key==='Enter')event.preventDefault();">
                 </div>
                 {{-- Kelamin --}}
                 <div style="margin-bottom:13px;">
-                    <label style="font-size:11px;font-weight:700;color:#9CA3B0;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Jenis Kelamin <span style="color:#FFC81A;">*</span></label>
+                    <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Jenis Kelamin <span style="color:#FFC81A;">*</span></label>
                     <div style="display:flex;gap:10px;">
                         @foreach(['L'=>'Laki-laki','P'=>'Perempuan'] as $v=>$l)
                         <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 14px;
-                            border:1.5px solid #E2E4EB;border-radius:9px;cursor:pointer;font-size:14px;
-                            color:#131218;transition:border-color .18s;background:#F7F8FA;"
-                               onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E2E4EB'">
+                            border:1.5px solid rgba(255,255,255,.1);border-radius:9px;cursor:pointer;font-size:14px;
+                            color:#FFF;transition:all .18s;background:rgba(255,255,255,.04);"
+                               onmouseover="this.style.borderColor='#FFC81A';this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.background='rgba(255,255,255,.04)'">
                             <input type="radio" name="kelamin" value="{{ $v }}" required style="accent-color:#FFC81A;">
                             {{ $l }}
                         </label>
@@ -115,23 +115,23 @@
                 </div>
                 {{-- Password --}}
                 <div style="margin-bottom:13px;">
-                    <label style="font-size:11px;font-weight:700;color:#9CA3B0;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Password <span style="color:#FFC81A;">*</span></label>
+                    <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Password <span style="color:#FFC81A;">*</span></label>
                     <div style="position:relative;">
-                        <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#C0C4CF;pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        <input type="password" name="password" placeholder="Minimal 8 karakter" required class="fcc-input" style="padding-left:38px;" onkeydown="if(event.key==='Enter')event.preventDefault();">
+                        <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <input type="password" name="password" placeholder="Minimal 8 karakter" required class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;" onkeydown="if(event.key==='Enter')event.preventDefault();">
                     </div>
                 </div>
                 <div style="margin-bottom:18px;">
-                    <label style="font-size:11px;font-weight:700;color:#9CA3B0;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Konfirmasi Password <span style="color:#FFC81A;">*</span></label>
+                    <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Konfirmasi Password <span style="color:#FFC81A;">*</span></label>
                     <div style="position:relative;">
-                        <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#C0C4CF;pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        <input type="password" name="password_confirmation" placeholder="Ulangi password" required class="fcc-input" style="padding-left:38px;" onkeydown="if(event.key==='Enter')event.preventDefault();">
+                        <svg style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <input type="password" name="password_confirmation" placeholder="Ulangi password" required class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;" onkeydown="if(event.key==='Enter')event.preventDefault();">
                     </div>
                 </div>
                 {{-- Agree --}}
                 <div style="margin-bottom:22px;">
-                    <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#5A6275;line-height:1.6;">
-                        <input type="checkbox" name="agree" required style="accent-color:#131218;width:15px;height:15px;flex-shrink:0;margin-top:2px;">
+                    <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;">
+                        <input type="checkbox" name="agree" required style="accent-color:#FFC81A;width:15px;height:15px;flex-shrink:0;margin-top:2px;">
                         Saya menyetujui
                         <a href="#" style="color:#FFC81A;font-weight:700;text-decoration:none;">Syarat &amp; Ketentuan</a>
                         dan
@@ -139,8 +139,8 @@
                         FCC
                     </label>
                 </div>
-                <button type="submit" class="fcc-btn-dark" style="width:100%;justify-content:center;padding:13px;font-size:15px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5">
+                <button type="submit" class="fcc-btn-gold btn-shine" style="width:100%;justify-content:center;padding:13px;font-size:15px;border-radius:12px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/>
                         <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
                     </svg>

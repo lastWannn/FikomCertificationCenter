@@ -44,8 +44,8 @@ class PengaturanSeeder extends Seeder
 
         // 3. Mitra
         $mitras = [
-            ['nama_mitra' => 'Microsoft Indonesia', 'inisial' => 'MS', 'warna' => '#059669', 'urutan' => 2, 'logo' => 'mitra/microsoft.png'],
-            ['nama_mitra' => 'Cisco Systems', 'inisial' => 'CSC', 'warna' => '#0284C7', 'urutan' => 1, 'logo' => 'mitra/cisco.png'],
+            ['nama_mitra' => 'Microsoft', 'inisial' => 'MS', 'warna' => '#059669', 'urutan' => 2, 'logo' => 'mitra/microsoft.png'],
+            ['nama_mitra' => 'Cisco System', 'inisial' => 'CSC', 'warna' => '#0284C7', 'urutan' => 1, 'logo' => 'mitra/cisco.png'],
             ['nama_mitra' => 'MikroTik', 'inisial' => 'MIK', 'warna' => '#4B5563', 'urutan' => 3, 'logo' => 'mitra/mikrotik.png']
         ];
 

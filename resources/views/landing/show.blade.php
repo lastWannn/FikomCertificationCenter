@@ -14,10 +14,10 @@
         }
     }
 </style>
-<div style="padding-top:68px;background:#F7F8FA;min-height:100vh;">
+<div style="padding-top:68px;background:linear-gradient(180deg, #131218 0%, #0e0d14 120px, #0e0d14 100%);min-height:100vh;">
     <div style="max-width:1100px;margin:0 auto;padding:40px 24px;">
         <!-- Back Link -->
-        <a href="{{ route('landing.kegiatan') }}" style="display:inline-flex;align-items:center;gap:6px;color:#6B7280;font-size:13px;text-decoration:none;margin-bottom:24px;font-weight:600;transition:color 0.2s;" onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#6B7280'">
+        <a href="{{ route('landing.kegiatan') }}" style="display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.5);font-size:13px;text-decoration:none;margin-bottom:24px;font-weight:600;transition:color 0.2s;" onmouseover="this.style.color='#FFF'" onmouseout="this.style.color='rgba(255,255,255,.5)'">
             @include('components.icon',['name'=>'chevron-left','size'=>15]) Kembali ke Kegiatan
         </a>
 
@@ -25,7 +25,7 @@
         <div class="fcc-detail-grid">
             
             <!-- Left Side: Poster -->
-            <div class="fcc-card" style="overflow:hidden; border-radius:18px; border:1px solid #E2E4EB; background:#FFF; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
+            <div class="fcc-card-dark" style="overflow:hidden; border-radius:18px; border:1.5px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
                 @if($kegiatan->detail?->gambar)
                     <div style="position:relative; width:100%; aspect-ratio:3/4; overflow:hidden;">
                         <img src="{{ asset('storage/' . $kegiatan->detail->gambar) }}" alt="{{ $kegiatan->judul }}" style="width:100%; height:100%; object-fit:cover; display:block;" />
@@ -66,13 +66,13 @@
             </div>
 
             <!-- Right Side: Details & Actions -->
-            <div class="fcc-card" style="padding:32px; border-radius:18px; border:1px solid #E2E4EB; background:#FFF; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
+            <div class="fcc-card-dark" style="padding:32px; border-radius:18px; border:1.5px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
                 
                 <!-- Category and Registration Status -->
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
                     <span style="font-size:11px; font-weight:800; padding:4px 12px; border-radius:8px; text-transform:uppercase; letter-spacing:0.5px;
                         background:{{ $kegiatan->jenis_kegiatan==='pelatihan'?'rgba(255,200,26,.15)':'rgba(139,92,246,0.1)' }};
-                        color:{{ $kegiatan->jenis_kegiatan==='pelatihan'?'#B38F00':'#8B5CF6' }};">
+                        color:{{ $kegiatan->jenis_kegiatan==='pelatihan'?'#FFC81A':'#A78BFA' }};">
                         {{ ucfirst($kegiatan->jenis_kegiatan) }}
                     </span>
                     
@@ -84,7 +84,7 @@
                 </div>
 
                 <!-- Event Title -->
-                <h1 style="font-size:clamp(22px,3.5vw,30px); font-weight:900; color:#131218; margin:0 0 20px; line-height:1.25;">
+                <h1 style="font-size:clamp(22px,3.5vw,30px); font-weight:900; color:#FFF; margin:0 0 20px; line-height:1.25;">
                     {{ $kegiatan->judul }}
                 </h1>
 
@@ -95,27 +95,27 @@
                         ['users', 'Kuota', $kegiatan->terisi . ' / ' . $kegiatan->kuota . ' Peserta'],
                         ['credit-card', 'Status Biaya', $kegiatan->biaya->isNotEmpty() ? 'Berbayar' : 'Gratis']
                     ] as [$ic, $l, $v])
-                    <div style="background:#F9FAFB; border:1.5px solid #F0F1F5; border-radius:12px; padding:14px 16px;">
-                        <p style="color:#A0A3AD; font-size:10.5px; font-weight:700; margin:0 0 6px; text-transform:uppercase; letter-spacing:0.8px; display:flex; align-items:center; gap:6px;">
+                    <div style="background:rgba(255,255,255,.03); border:1.5px solid rgba(255,255,255,.08); border-radius:12px; padding:14px 16px;">
+                        <p style="color:rgba(255,255,255,.5); font-size:10.5px; font-weight:700; margin:0 0 6px; text-transform:uppercase; letter-spacing:0.8px; display:flex; align-items:center; gap:6px;">
                             @include('components.icon',['name'=>$ic,'size'=>12,'style'=>'color:#FFC81A']) {{ $l }}
                         </p>
-                        <p style="color:#131218; font-size:14.5px; font-weight:800; margin:0;">{{ $v }}</p>
+                        <p style="color:#FFF; font-size:14.5px; font-weight:800; margin:0;">{{ $v }}</p>
                     </div>
                     @endforeach
                 </div>
 
                 <!-- All Prices Breakdown (Harganya ditampilkan semua) -->
-                <div style="background:#F9FAFB; border:1px solid #E5E7EB; border-radius:14px; padding:20px; margin-bottom:28px;">
-                    <h3 style="font-size:12px; font-weight:800; color:#131218; margin:0 0 16px; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:6px;">
+                <div style="background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:20px; margin-bottom:28px;">
+                    <h3 style="font-size:12px; font-weight:800; color:#FFF; margin:0 0 16px; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:6px;">
                         @include('components.icon',['name'=>'credit-card','size'=>14,'style'=>'color:#FFC81A']) Rincian Biaya Kegiatan
                     </h3>
                     
                     <div style="display:flex; flex-direction:column; gap:12px;">
                         @if($kegiatan->biaya->isNotEmpty())
                             @foreach($kegiatan->biaya as $b)
-                            <div style="display:flex; align-items:center; justify-content:space-between; padding-bottom:10px; border-bottom:1px dashed #E5E7EB; font-size:13.5px;">
-                                <span style="color:#5A6275; font-weight:600; max-width:70%;">{{ $b->nama_jenis }}</span>
-                                <span style="color:#131218; font-weight:900; font-size:15px; color:#D97706;">{{ $b->nominal_format }}</span>
+                            <div style="display:flex; align-items:center; justify-content:space-between; padding-bottom:10px; border-bottom:1px dashed rgba(255,255,255,.1); font-size:13.5px;">
+                                <span style="color:rgba(255,255,255,.6); font-weight:600; max-width:70%;">{{ $b->nama_jenis }}</span>
+                                <span style="color:#FFC81A; font-weight:900; font-size:15px;">{{ $b->nominal_format }}</span>
                             </div>
                             @endforeach
                         @else
@@ -129,24 +129,24 @@
 
                 <!-- Short Description / Content -->
                 <div style="margin-bottom:32px;">
-                    <h3 style="font-size:12px; font-weight:800; color:#131218; margin:0 0 12px; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:6px;">
+                    <h3 style="font-size:12px; font-weight:800; color:#FFF; margin:0 0 12px; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:6px;">
                         @include('components.icon',['name'=>'info','size'=>13,'style'=>'color:#FFC81A']) Deskripsi Kegiatan
                     </h3>
-                    <div style="color:#5A6275; font-size:14.5px; line-height:1.75; font-weight:500;">
+                    <div style="color:rgba(255,255,255,.6); font-size:14.5px; line-height:1.75; font-weight:500;">
                         {!! nl2br(e($kegiatan->detail?->isi ?? 'Informasi lengkap mengenai program ini akan segera dirilis.')) !!}
                     </div>
                 </div>
 
                 <!-- Registration Actions / Form -->
-                <div style="border-top:1.5px solid #F0F1F5; padding-top:24px;">
+                <div style="border-top:1.5px solid rgba(255,255,255,.08); padding-top:24px;">
                     @if(!$kegiatan->isFull())
                         @auth('peserta')
                             <form action="{{ route('peserta.kegiatan.daftar', $kegiatan) }}" method="POST" style="margin:0;">
                                 @csrf
                                 @if($kegiatan->biaya->isNotEmpty())
                                     <div style="margin-bottom:16px;">
-                                        <label style="font-size:11px; font-weight:800; color:#131218; text-transform:uppercase; letter-spacing:0.8px; display:block; margin-bottom:8px;">Pilih Opsi Biaya Anda:</label>
-                                        <select name="biaya_kegiatan_id" class="fcc-input" style="width:100%; border-radius:12px; border:1.5px solid #E2E4EB; padding:10px 14px; outline:none;" required>
+                                        <label style="font-size:11px; font-weight:800; color:#FFF; text-transform:uppercase; letter-spacing:0.8px; display:block; margin-bottom:8px;">Pilih Opsi Biaya Anda:</label>
+                                        <select name="biaya_kegiatan_id" class="fcc-input-dark" style="width:100%; border-radius:12px; border:1.5px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); color:#FFF; padding:10px 14px; outline:none;" required>
                                             <option value="">-- Pilih jenis biaya --</option>
                                             @foreach($kegiatan->biaya as $b)
                                             <option value="{{ $b->id }}">{{ $b->nama_jenis }} — {{ $b->nominal_format }}</option>
@@ -156,16 +156,16 @@
                                 @else
                                     <input type="hidden" name="biaya_kegiatan_id" value="">
                                 @endif
-                                <button type="submit" class="fcc-btn-gold" style="padding:14px 28px; font-size:15px; width:100%; justify-content:center; border-radius:12px;">Daftar Sekarang</button>
+                                <button type="submit" class="fcc-btn-gold btn-shine" style="padding:14px 28px; font-size:15px; width:100%; justify-content:center; border-radius:12px;">Daftar Sekarang</button>
                             </form>
                         @else
                             <div style="text-align:center;">
-                                <p style="color:#6B7280; font-size:13px; margin:0 0 12px; font-weight:500;">Masuk ke akun peserta Anda untuk melakukan pendaftaran.</p>
-                                <a href="{{ route('auth.login') }}" class="fcc-btn-gold" style="padding:14px 28px; font-size:15px; text-decoration:none; display:inline-flex; width:100%; justify-content:center; border-radius:12px;">Masuk untuk Daftar</a>
+                                <p style="color:rgba(255,255,255,.6); font-size:13px; margin:0 0 12px; font-weight:500;">Masuk ke akun peserta Anda untuk melakukan pendaftaran.</p>
+                                <a href="{{ route('auth.login') }}" class="fcc-btn-gold btn-shine" style="padding:14px 28px; font-size:15px; text-decoration:none; display:inline-flex; width:100%; justify-content:center; border-radius:12px;">Masuk untuk Daftar</a>
                             </div>
                         @endauth
                     @else
-                        <button class="fcc-btn-gold" style="padding:14px 28px; font-size:15px; width:100%; justify-content:center; border-radius:12px; background:#F3F4F6; border:1px solid #E5E7EB; color:#9CA3AF; cursor:not-allowed; box-shadow:none;" disabled>Pendaftaran Ditutup (Kuota Penuh)</button>
+                        <button class="fcc-btn-gold" style="padding:14px 28px; font-size:15px; width:100%; justify-content:center; border-radius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:rgba(255,255,255,.4); cursor:not-allowed; box-shadow:none;" disabled>Pendaftaran Ditutup (Kuota Penuh)</button>
                     @endif
                 </div>
 
@@ -174,4 +174,11 @@
         </div>
     </div>
 </div>
+<style>
+/* Style for dark mode select options */
+select.fcc-input-dark option {
+    background: #131218;
+    color: #FFF;
+}
+</style>
 @endsection
