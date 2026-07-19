@@ -80,6 +80,7 @@
               'items' => [
                   ['route'=>'admin.informasi.index',     'icon'=>'info',             'label'=>'Informasi & FAQ'],
                   ['route'=>'admin.mitra.index',         'icon'=>'users',            'label'=>'Mitra / Partner'],
+                  ['route'=>'admin.testimoni.index',     'icon'=>'message-square',   'label'=>'Kata Mereka'],
                   ['route'=>'admin.rekening.index',      'icon'=>'wallet',           'label'=>'No. Rekening'],
                   ['route'=>'admin.kontak.edit',         'icon'=>'map-pin',          'label'=>'Kontak & Alamat'],
               ],

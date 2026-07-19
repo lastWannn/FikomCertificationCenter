@@ -33,9 +33,10 @@ class LandingController extends Controller
         $konten    = KontenHalaman::all()->keyBy('jenis');
         $faqs      = Informasi::faq()->latest()->get();
         $infos     = Informasi::info()->aktif()->latest()->limit(3)->get();
+        $testimonis = \App\Models\Testimoni::latest()->get();
 
         return view('landing.index', compact(
-            'kegiatanTerbaru', 'stats', 'mitras', 'arsips', 'konten', 'faqs', 'infos'
+            'kegiatanTerbaru', 'stats', 'mitras', 'arsips', 'konten', 'faqs', 'infos', 'testimonis'
         ));
     }
 

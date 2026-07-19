@@ -514,6 +514,137 @@
 
 
 {{-- ══════════════════════════════════════════════════════════════
+     KATA MEREKA (TESTIMONI) — Dark aesthetic dengan aksen emas
+ ══════════════════════════════════════════════════════════════════ --}}
+@if($testimonis->isNotEmpty())
+<section style="padding:88px 0;background:linear-gradient(180deg, #0e0d14 0%, #131218 120px, #131218 100%); position:relative; overflow:hidden;">
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,rgba(255,200,26,.03),transparent 70%);pointer-events:none;"></div>
+    
+    <div style="max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1;">
+        <div class="reveal" style="text-align:center;margin-bottom:48px;">
+            <span class="section-label-yellow-inv">Testimoni</span>
+            <div style="width:48px;height:3px;background:linear-gradient(90deg,#FFC81A,#FFD84D);border-radius:2px;margin:10px auto 16px;"></div>
+            <h2 style="color:#FFF;font-size:clamp(24px,4vw,38px);font-weight:900;margin:0 0 12px;">
+                Kata <span class="fcc-gold-text">Mereka</span>
+            </h2>
+            <p style="color:rgba(255,255,255,.5);font-size:15px;margin:0;max-width:480px;margin:0 auto;">
+                Pengalaman nyata dari peserta dan mitra yang telah bergabung bersama FCC.
+            </p>
+        </div>
+    </div>
+
+    {{-- Carousel Testimoni --}}
+    <div class="reveal testimoni-wrapper" style="max-width:1100px;margin:0 auto;padding:20px 24px 60px;position:relative;z-index:1;display:flex;overflow:hidden;gap:24px;">
+        @php
+            // We need enough items to fill the screen for a seamless loop.
+            // If the user only has 1 or 2 items, we multiply it so it doesn't break the layout.
+            $multiplier = max(1, ceil(6 / max(1, $testimonis->count())));
+            $trackItems = collect();
+            for($i=0; $i<$multiplier; $i++) { $trackItems = $trackItems->concat($testimonis); }
+        @endphp
+        
+        {{-- Track 1 --}}
+        <div class="testimoni-track" style="display:flex;gap:24px;flex-shrink:0;">
+            @foreach($trackItems as $t)
+            <div class="testimoni-card" style="width:360px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:32px 28px;position:relative;display:flex;flex-direction:column;transition:all .3s ease;white-space:normal;" 
+                 onmouseover="this.style.borderColor='rgba(255,200,26,.3)';this.style.boxShadow='0 12px 40px rgba(255,200,26,.08)';this.style.transform='translateY(-4px)'"
+                 onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+                
+                {{-- Quote Icon --}}
+                <div style="position:absolute;top:28px;right:28px;opacity:0.15;">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="#FFC81A"><path d="M11.3 6.2H5.8c-1.4 0-2.5 1.1-2.5 2.5V14c0 1.4 1.1 2.5 2.5 2.5h2.9l-2.6 3.1h3.7l2.8-3.3V6.2zm10.1 0h-5.5c-1.4 0-2.5 1.1-2.5 2.5V14c0 1.4 1.1 2.5 2.5 2.5h2.9l-2.6 3.1h3.7l2.8-3.3V6.2z"/></svg>
+                </div>
+                
+                {{-- Rating Stars --}}
+                <div style="display:flex;gap:4px;margin-bottom:18px;">
+                    @for($i=0;$i<5;$i++)
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="{{ $i < $t->rating ? '#FFC81A' : 'rgba(255,255,255,.1)' }}" stroke="{{ $i < $t->rating ? '#FFC81A' : 'rgba(255,255,255,.1)' }}" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    @endfor
+                </div>
+
+                {{-- Quote Text --}}
+                <p style="color:rgba(255,255,255,.85);font-size:15px;line-height:1.7;margin:0 0 32px;flex-grow:1;font-style:italic;">
+                    "{!! nl2br(e($t->kata)) !!}"
+                </p>
+
+                {{-- Profile --}}
+                <div style="display:flex;align-items:center;gap:14px;margin-top:auto;">
+                    <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,200,26,.3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+                        @if($t->foto)
+                        <img src="{{ asset('storage/'.$t->foto) }}" alt="{{ $t->nama }}" style="width:100%;height:100%;object-fit:cover;">
+                        @else
+                        <span style="color:#FFF;font-size:18px;font-weight:900;line-height:1;margin-top:2px;">{{ Str::upper(Str::substr($t->nama,0,1)) }}</span>
+                        @endif
+                    </div>
+                    <div>
+                        <h4 style="color:#FFF;font-size:15px;font-weight:800;margin:0 0 3px;">{{ $t->nama }}</h4>
+                        <p style="color:rgba(255,255,255,.5);font-size:11.5px;margin:0;font-weight:600;letter-spacing:.3px;line-height:1.4;">{{ $t->keterangan }}</p>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        {{-- Track 2 (Duplicate for seamless loop) --}}
+        <div class="testimoni-track" style="display:flex;gap:24px;flex-shrink:0;">
+            @foreach($trackItems as $t)
+            <div class="testimoni-card" style="width:360px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:32px 28px;position:relative;display:flex;flex-direction:column;transition:all .3s ease;white-space:normal;" 
+                 onmouseover="this.style.borderColor='rgba(255,200,26,.3)';this.style.boxShadow='0 12px 40px rgba(255,200,26,.08)';this.style.transform='translateY(-4px)'"
+                 onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+                
+                {{-- Quote Icon --}}
+                <div style="position:absolute;top:28px;right:28px;opacity:0.15;">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="#FFC81A"><path d="M11.3 6.2H5.8c-1.4 0-2.5 1.1-2.5 2.5V14c0 1.4 1.1 2.5 2.5 2.5h2.9l-2.6 3.1h3.7l2.8-3.3V6.2zm10.1 0h-5.5c-1.4 0-2.5 1.1-2.5 2.5V14c0 1.4 1.1 2.5 2.5 2.5h2.9l-2.6 3.1h3.7l2.8-3.3V6.2z"/></svg>
+                </div>
+                
+                {{-- Rating Stars --}}
+                <div style="display:flex;gap:4px;margin-bottom:18px;">
+                    @for($i=0;$i<5;$i++)
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="{{ $i < $t->rating ? '#FFC81A' : 'rgba(255,255,255,.1)' }}" stroke="{{ $i < $t->rating ? '#FFC81A' : 'rgba(255,255,255,.1)' }}" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    @endfor
+                </div>
+
+                {{-- Quote Text --}}
+                <p style="color:rgba(255,255,255,.85);font-size:15px;line-height:1.7;margin:0 0 32px;flex-grow:1;font-style:italic;">
+                    "{!! nl2br(e($t->kata)) !!}"
+                </p>
+
+                {{-- Profile --}}
+                <div style="display:flex;align-items:center;gap:14px;margin-top:auto;">
+                    <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,200,26,.3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+                        @if($t->foto)
+                        <img src="{{ asset('storage/'.$t->foto) }}" alt="{{ $t->nama }}" style="width:100%;height:100%;object-fit:cover;">
+                        @else
+                        <span style="color:#FFF;font-size:18px;font-weight:900;line-height:1;margin-top:2px;">{{ Str::upper(Str::substr($t->nama,0,1)) }}</span>
+                        @endif
+                    </div>
+                    <div>
+                        <h4 style="color:#FFF;font-size:15px;font-weight:800;margin:0 0 3px;">{{ $t->nama }}</h4>
+                        <p style="color:rgba(255,255,255,.5);font-size:11.5px;margin:0;font-weight:600;letter-spacing:.3px;line-height:1.4;">{{ $t->keterangan }}</p>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        
+        <style>
+        .testimoni-track {
+            animation: scroll-testimoni {{ max(15, $trackItems->count() * 5) }}s linear infinite;
+        }
+        .testimoni-wrapper:hover .testimoni-track {
+            animation-play-state: paused;
+        }
+        @keyframes scroll-testimoni {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-100% - 24px)); }
+        }
+        </style>
+    </div>
+</section>
+@endif
+
+
+{{-- ══════════════════════════════════════════════════════════════
      BERITA & KEGIATAN TERBARU — Carousel horizontal
      Data dari arsip_kegiatan; hover: pause + preview konten
  ══════════════════════════════════════════════════════════════════ --}}
