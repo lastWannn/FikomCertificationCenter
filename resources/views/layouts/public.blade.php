@@ -162,6 +162,213 @@
         </div>
     </div>
 </footer>
+{{-- ═══ MODAL LOGIN & REGISTER ════════════════════════════════════ --}}
+<div id="fcc-auth-modal" style="position:fixed;inset:0;background:rgba(14,13,20,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);">
+    <div id="fcc-auth-dialog" style="width:100%;max-width:440px;background:#131218;border:1.5px solid rgba(255,200,26,.15);border-radius:20px;padding:36px;box-sizing:border-box;position:relative;transform:scale(0.92);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 24px 64px rgba(0,0,0,.6), 0 0 40px rgba(255,200,26,.03);">
+        {{-- Close Button --}}
+        <button id="fcc-auth-close" onclick="closeAuthModal()" style="position:absolute;top:20px;right:20px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;padding:6px;transition:color .2s;border-radius:50%;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.color='#FFF';this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.color='rgba(255,255,255,.4)';this.style.background='none'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        {{-- Brand --}}
+        <div style="text-align:center;margin-bottom:28px;">
+            <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#FFC81A,#FFD84D);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 0 16px rgba(255,200,26,.35);">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3 style="color:#FFF;font-size:15px;font-weight:900;margin:0;letter-spacing:0.5px;">FIKOM Certification Center</h3>
+            <p style="color:#FFC81A;font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;margin:3px 0 0;">Universitas Muslim Indonesia</p>
+        </div>
+
+        {{-- Alert Container --}}
+        <div id="fcc-auth-alert" style="display:none;padding:12px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;color:#EF4444;font-size:13px;font-weight:600;margin-bottom:20px;line-height:1.45;"></div>
+
+        {{-- FORM LOGIN --}}
+        <div id="fcc-login-container">
+            <h2 style="color:#FFF;font-size:22px;font-weight:900;margin:0 0 6px;">Masuk</h2>
+            <p style="color:rgba(255,255,255,.5);font-size:13.5px;margin:0 0 24px;">Belum punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color:#FFC81A;font-weight:700;text-decoration:none;">Daftar gratis</a></p>
+
+            <form id="fcc-login-form" onsubmit="submitAuthForm(event, '/masuk')">
+                @csrf
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Email *</label>
+                    <div style="position:relative;">
+                        @include('components.icon',['name'=>'mail','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                        <input type="email" name="email" required placeholder="email@example.com" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <div style="display:flex;justify-content:between;align-items:center;margin-bottom:6px;">
+                        <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.7px;">Password *</label>
+                    </div>
+                    <div style="position:relative;">
+                        @include('components.icon',['name'=>'lock','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                        <input type="password" name="password" required placeholder="••••••••" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:between;margin-bottom:22px;gap:8px;">
+                    <label style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.6);font-size:13px;cursor:pointer;user-select:none;">
+                        <input type="checkbox" name="remember" style="accent-color:#FFC81A;width:15px;height:15px;cursor:pointer;">
+                        Ingat Saya
+                    </label>
+                </div>
+                <button type="submit" class="fcc-btn-gold btn-shine" style="width:100%;justify-content:center;padding:12px;font-size:14.5px;border-radius:12px;font-weight:800;">
+                    Masuk
+                </button>
+            </form>
+        </div>
+
+        {{-- FORM REGISTER --}}
+        <div id="fcc-register-container" style="display:none;">
+            <h2 style="color:#FFF;font-size:22px;font-weight:900;margin:0 0 6px;">Daftar Akun</h2>
+            <p style="color:rgba(255,255,255,.5);font-size:13.5px;margin:0 0 24px;">Sudah punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:#FFC81A;font-weight:700;text-decoration:none;">Masuk</a></p>
+
+            <form id="fcc-register-form" onsubmit="submitAuthForm(event, '/daftar')">
+                @csrf
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Nama Lengkap *</label>
+                    <div style="position:relative;">
+                        @include('components.icon',['name'=>'user','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                        <input type="text" name="nama" required placeholder="Nama lengkap Anda" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Email *</label>
+                    <div style="position:relative;">
+                        @include('components.icon',['name'=>'mail','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                        <input type="email" name="email" required placeholder="email@example.com" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Password *</label>
+                    <div style="position:relative;">
+                        @include('components.icon',['name'=>'lock','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                        <input type="password" name="password" required placeholder="Min. 8 karakter" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="margin-bottom:22px;">
+                    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Konfirmasi Password *</label>
+                    <div style="position:relative;">
+                        @include('components.icon',['name'=>'lock','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                        <input type="password" name="password_confirmation" required placeholder="Ulangi password" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                    </div>
+                </div>
+                <button type="submit" class="fcc-btn-gold btn-shine" style="width:100%;justify-content:center;padding:12px;font-size:14.5px;border-radius:12px;font-weight:800;">
+                    Daftar Sekarang
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('fcc-auth-modal');
+    const dialog = document.getElementById('fcc-auth-dialog');
+    const alertBox = document.getElementById('fcc-auth-alert');
+
+    function openAuthModal(tab = 'login') {
+        switchAuthTab(tab);
+        alertBox.style.display = 'none';
+        modal.style.opacity = '1';
+        modal.style.pointerEvents = 'auto';
+        dialog.style.transform = 'scale(1)';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAuthModal() {
+        modal.style.opacity = '0';
+        modal.style.pointerEvents = 'none';
+        dialog.style.transform = 'scale(0.92)';
+        document.body.style.overflow = '';
+    }
+
+    function switchAuthTab(tab) {
+        alertBox.style.display = 'none';
+        if (tab === 'login') {
+            document.getElementById('fcc-login-container').style.display = 'block';
+            document.getElementById('fcc-register-container').style.display = 'none';
+        } else {
+            document.getElementById('fcc-login-container').style.display = 'none';
+            document.getElementById('fcc-register-container').style.display = 'block';
+        }
+    }
+
+    // Intercept clicks on links that match /masuk or /daftar
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a');
+        if (link && link.href) {
+            try {
+                const url = new URL(link.href);
+                if (url.origin === window.location.origin) {
+                    if (url.pathname === '/masuk') {
+                        e.preventDefault();
+                        openAuthModal('login');
+                    } else if (url.pathname === '/daftar') {
+                        e.preventDefault();
+                        openAuthModal('register');
+                    }
+                }
+            } catch (err) {}
+        }
+    });
+
+    // Close modal on clicking backdrop
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeAuthModal();
+        }
+    });
+
+    // Submit Auth Form via AJAX
+    function submitAuthForm(e, url) {
+        e.preventDefault();
+        alertBox.style.display = 'none';
+        
+        const form = e.target;
+        const formData = new FormData(form);
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerText;
+        
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Memproses...';
+
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            return response.json().then(data => {
+                if (!response.ok) {
+                    throw { status: response.status, data: data };
+                }
+                return data;
+            });
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect || '/';
+            }
+        })
+        .catch(err => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalText;
+            
+            let errMsg = 'Terjadi kesalahan sistem. Silakan coba lagi.';
+            if (err.data && err.data.errors) {
+                errMsg = Object.values(err.data.errors).flat().join('<br>');
+            } else if (err.data && err.data.message) {
+                errMsg = err.data.message;
+            }
+            
+            alertBox.innerHTML = errMsg;
+            alertBox.style.display = 'block';
+        });
+    }
+</script>
+
 @endsection
 
 {{-- JS Navbar dimuat via resources/js/components/navbar.js (diimport app.js) --}}

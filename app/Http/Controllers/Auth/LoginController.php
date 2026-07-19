@@ -25,9 +25,24 @@ class LoginController extends Controller
                 'instruktur' => route_exists('instruktur.dashboard') ? 'instruktur.dashboard' : 'landing.index',
                 default      => 'peserta.dashboard',
             };
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'redirect' => route($redirect),
+                    'message' => 'Selamat datang, '.$result['user']->nama.'!'
+                ]);
+            }
+            
             return redirect()->route($redirect)
                 ->with('success', 'Selamat datang, '.$result['user']->nama.'!');
         } catch (ValidationException $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors()
+                ], 422);
+            }
             return back()->withErrors($e->errors())->withInput($request->only('email'));
         }
     }

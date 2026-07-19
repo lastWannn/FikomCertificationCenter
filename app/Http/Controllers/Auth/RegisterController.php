@@ -14,6 +14,13 @@ class RegisterController extends Controller
     public function register(RegisterRequest $request)
     {
         $peserta = $this->service->register($request->validated());
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'redirect' => route('peserta.dashboard'),
+                'message' => 'Akun berhasil dibuat! Selamat datang, '.$peserta->nama.'.'
+            ]);
+        }
         return redirect()->route('peserta.dashboard')
             ->with('success', 'Akun berhasil dibuat! Selamat datang, '.$peserta->nama.'.');
     }
