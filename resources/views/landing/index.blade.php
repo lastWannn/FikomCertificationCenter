@@ -86,24 +86,34 @@
 </section>
 
 {{-- ══════════════════════════════════════════════════════════════
-     STATS — PUTIH — angka besar #131218, ikon kuning
+     STATS — gradient cards berwarna + animasi counter
  ══════════════════════════════════════════════════════════════════ --}}
-<section style="background:#FFFFFF;padding:64px 24px;border-bottom:1px solid #E2E4EB;">
+<section style="background:linear-gradient(180deg, #131218 0%, #F9FAFB 100%); padding:80px 24px 64px; border-bottom:1px solid #E2E4EB;">
     <div style="max-width:1100px;margin:0 auto;
-        display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
-        @foreach([
-            [$stats['pelatihan'],'+','Program Pelatihan','book-open'],
-            [$stats['sertifikasi'],'+','Jenis Sertifikasi','award'],
-            [$stats['peserta'],'+','Peserta Terdaftar','users'],
-            [$stats['mitra'],'','Mitra Institusi','building'],
-        ] as $i=>[$val,$suf,$lbl,$ic])
-        <div class="reveal stat-card-light" style="transition-delay:{{ $i*100 }}ms;">
-            <div class="icon-box-dark" style="width:48px;height:48px;border-radius:14px;margin:0 auto 16px;">
-                @include('components.icon',['name'=>$ic,'size'=>22,'style'=>'color:#FFC81A'])
+        display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+        @php
+            $statItems = [
+                [$stats['pelatihan'],'+','Program Pelatihan','book-open','#FFC81A','#FFF3CC','linear-gradient(135deg,#FFC81A,#FFD84D)'],
+                [$stats['sertifikasi'],'+','Jenis Sertifikasi','award','#8B5CF6','#EDE9FE','linear-gradient(135deg,#8B5CF6,#A78BFA)'],
+                [$stats['peserta'],'+','Peserta Terdaftar','users','#10B981','#D1FAE5','linear-gradient(135deg,#10B981,#34D399)'],
+                [$stats['mitra'],'','Mitra Institusi','building','#3B82F6','#DBEAFE','linear-gradient(135deg,#3B82F6,#60A5FA)'],
+            ];
+        @endphp
+        @foreach($statItems as $i=>[$val,$suf,$lbl,$ic,$color,$bgLight,$grad])
+        <div class="reveal" style="transition-delay:{{ $i*100 }}ms;">
+            <div style="background:#FFF; border-radius:20px; padding:28px 22px; border:1.5px solid #E2E4EB;
+                        text-align:center; transition:all .3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.04);"
+                 onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 16px 36px rgba(0,0,0,0.08)';this.style.borderColor='{{ $color }}44'"
+                 onmouseout="this.style.transform='';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.borderColor='#E2E4EB'">
+                <div style="width:52px;height:52px;border-radius:15px;margin:0 auto 18px;background:{{ $bgLight }};
+                            display:flex;align-items:center;justify-content:center;">
+                    @include('components.icon',['name'=>$ic,'size'=>24,'style'=>"color:{$color}"])
+                </div>
+                <p style="margin:0 0 6px;color:#131218;font-size:clamp(28px,3.5vw,42px);
+                    font-weight:900;letter-spacing:-1.5px;line-height:1;
+                    background:{{ $grad }};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ $val }}{{ $suf }}</p>
+                <p style="margin:0;color:#6B7280;font-size:13px;font-weight:700;">{{ $lbl }}</p>
             </div>
-            <p style="margin:0 0 4px;color:#131218;font-size:clamp(30px,4vw,46px);
-                font-weight:900;letter-spacing:-1px;line-height:1;">{{ $val }}{{ $suf }}</p>
-            <p style="margin:0;color:#9CA3B0;font-size:13px;">{{ $lbl }}</p>
         </div>
         @endforeach
     </div>
@@ -112,22 +122,26 @@
 {{-- ══════════════════════════════════════════════════════════════
      KEGIATAN — Surface #F7F8FA (abu sangat terang)
  ══════════════════════════════════════════════════════════════════ --}}
-<section style="padding:88px 24px;background:#F7F8FA;">
-    <div style="max-width:1100px;margin:0 auto;">
-        <div class="reveal" style="text-align:center;margin-bottom:44px;">
+<section style="padding:88px 24px;background:#F9FAFB; position:relative; overflow:hidden;">
+    <!-- Decorative background accent -->
+    <div style="position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,26,0.05),transparent 70%);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:-80px;left:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.04),transparent 70%);pointer-events:none;"></div>
+    <div style="max-width:1100px;margin:0 auto;position:relative;z-index:1;">
+        <div class="reveal" style="text-align:center;margin-bottom:48px;">
             <span class="section-label-yellow">Jadwal Terbaru</span>
+            <div style="width:48px;height:3px;background:linear-gradient(90deg,#FFC81A,#FFD84D);border-radius:2px;margin:10px auto 18px;"></div>
             <h2 style="color:#131218;font-size:clamp(24px,4vw,40px);font-weight:900;
-                margin:0 0 12px;line-height:1.15;">Kegiatan yang Akan Datang</h2>
-            <p style="color:#5A6275;font-size:15px;max-width:460px;margin:0 auto 24px;">
+                margin:0 0 12px;line-height:1.15;">Kegiatan yang Akan <span style="background:linear-gradient(135deg,#FFC81A,#FFD84D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Datang</span></h2>
+            <p style="color:#5A6275;font-size:15px;max-width:460px;margin:0 auto 28px;">
                 Temukan pelatihan dan sertifikasi yang sesuai kebutuhanmu
             </p>
             {{-- Filter tabs --}}
             <div style="display:inline-flex;gap:4px;background:#FFF;padding:4px;
-                border-radius:12px;border:1px solid #E2E4EB;box-shadow:0 1px 3px rgba(0,0,0,.04);">
+                border-radius:12px;border:1px solid #E2E4EB;box-shadow:0 2px 8px rgba(0,0,0,.06);">
                 @foreach([['all','Semua'],['pelatihan','Pelatihan'],['sertifikasi','Sertifikasi']] as [$v,$l])
                 <button onclick="filterKegiatan('{{ $v }}')" data-filter="{{ $v }}"
-                    style="padding:7px 18px;border-radius:9px;border:none;font-size:13px;
-                           font-weight:700;cursor:pointer;transition:all .2s;
+                    style="padding:8px 20px;border-radius:9px;border:none;font-size:13px;
+                           font-weight:800;cursor:pointer;transition:all .2s;
                            background:{{ $v==='all'?'#131218':'transparent' }};
                            color:{{ $v==='all'?'#FFC81A':'#9CA3B0' }};">
                     {{ $l }}
@@ -135,84 +149,89 @@
                 @endforeach
             </div>
         </div>
-        <div id="kegiatan-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+        <div id="kegiatan-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
             @forelse($kegiatanTerbaru as $k)
-            @php $isPel = $k->jenis_kegiatan==='pelatihan'; @endphp
-            <div class="reveal ch fcc-card kegiatan-card" data-jenis="{{ $k->jenis_kegiatan }}"
-                 style="overflow:hidden;transitiondelay:{{ $loop->index*80 }}ms;">
-                {{-- Poster placeholder: #131218 bg + kuning icon --}}
-                <div style="height:148px;position:relative;overflow:hidden;background:#131218;">
-                    {{-- Pattern overlay --}}
-                    <div style="position:absolute;inset:0;opacity:.08;
-                        background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),
-                                         linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);
-                        background-size:24px 24px;"></div>
-                    {{-- Dekor lingkaran --}}
-                    <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;
-                        border-radius:50%;background:rgba(255,200,26,.06);border:1px solid rgba(255,200,26,.12);"></div>
-                    {{-- Icon center --}}
-                    <div style="position:absolute;inset:0;display:flex;flex-direction:column;
-                        align-items:center;justify-content:center;gap:6px;">
-                        <div style="width:50px;height:50px;border-radius:14px;
-                            background:rgba(255,200,26,.15);border:1.5px solid rgba(255,200,26,.3);
-                            display:flex;align-items:center;justify-content:center;">
-                            @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>24,'style'=>'color:#FFC81A'])
+            @php
+                $isPel = $k->jenis_kegiatan === 'pelatihan';
+                $accentColor = $isPel ? '#FFC81A' : '#8B5CF6';
+                $accentBg    = $isPel ? 'rgba(255,200,26,0.12)' : 'rgba(139,92,246,0.1)';
+            @endphp
+            <div class="reveal ch kegiatan-card" data-jenis="{{ $k->jenis_kegiatan }}"
+                 style="background:#FFF; border-radius:20px; border:1.5px solid #E2E4EB;
+                        overflow:hidden; transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);
+                        display:flex; flex-direction:column; transition-delay:{{ $loop->index*80 }}ms;"
+                 onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 16px 36px rgba(0,0,0,0.06)';this.style.borderColor='{{ $accentColor }}44'"
+                 onmouseout="this.style.transform='';this.style.boxShadow='';this.style.borderColor='#E2E4EB'">
+                {{-- Card Banner --}}
+                <div style="height:148px;position:relative;overflow:hidden;background:linear-gradient(135deg,#131218,#1e1b29);">
+                    @if($k->detail?->gambar)
+                        <img src="{{ asset('storage/' . $k->detail->gambar) }}" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;" alt="Poster" />
+                    @else
+                        <div style="position:absolute;inset:0;opacity:.04;background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);background-size:20px 20px;"></div>
+                        <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:{{ $accentBg }};opacity:0.5;"></div>
+                        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                            <div style="width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;">
+                                @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>28,'style'=>"color:{$accentColor}"])
+                            </div>
                         </div>
-                        <span style="color:rgba(255,200,26,.5);font-size:9px;letter-spacing:2px;
-                            text-transform:uppercase;font-weight:700;">Poster Kegiatan</span>
-                    </div>
-                    {{-- Badges --}}
-                    <div style="position:absolute;top:10px;left:10px;">
-                        <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;
-                            background:{{ $isPel?'#FFC81A':'#FFF' }};
-                            color:{{ $isPel?'#131218':'#131218' }};">
-                            {{ ucfirst($k->jenis_kegiatan) }}
+                    @endif
+                    <div style="position:absolute;top:12px;left:12px;">
+                        <span style="font-size:10.5px;font-weight:800;padding:4px 10px;border-radius:8px;
+                            background:{{ $accentBg }};color:{{ $accentColor }};border:1px solid {{ $accentColor }}30;text-transform:uppercase;letter-spacing:.5px;">
+                            {{ $k->jenis_kegiatan }}
                         </span>
                     </div>
                     @if($k->isFull())
-                    <div style="position:absolute;top:10px;right:10px;">
-                        <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;
-                            background:#EF4444;color:#FFF;">Penuh</span>
+                    <div style="position:absolute;top:12px;right:12px;">
+                        <span style="font-size:10.5px;font-weight:800;padding:4px 10px;border-radius:8px;background:rgba(239,68,68,0.15);color:#EF4444;border:1px solid rgba(239,68,68,0.25);">Penuh</span>
                     </div>
                     @elseif($k->kuota>0 && ($k->kuota-$k->terisi)<=3 && $k->terisi>0)
-                    <div style="position:absolute;top:10px;right:10px;">
-                        <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;
-                            background:rgba(245,158,11,.9);color:#FFF;">Sisa {{ $k->kuota-$k->terisi }}</span>
+                    <div style="position:absolute;top:12px;right:12px;">
+                        <span style="font-size:10.5px;font-weight:800;padding:4px 10px;border-radius:8px;background:rgba(245,158,11,.15);color:#F59E0B;border:1px solid rgba(245,158,11,.3);">Sisa {{ $k->kuota-$k->terisi }}</span>
                     </div>
                     @endif
                 </div>
                 {{-- Content --}}
-                <div style="padding:18px 20px;">
-                    <p style="color:#131218;font-size:14px;font-weight:800;margin:0 0 4px;line-height:1.35;">
-                        {{ Str::limit($k->judul,42) }}
-                    </p>
-                    <p style="color:#9CA3B0;font-size:12px;margin:0 0 12px;">
-                        {{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}
-                    </p>
-                    {{-- Biaya --}}
-                    <div style="background:#F7F8FA;border-radius:8px;padding:9px 12px;
-                        display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-                        <span style="color:#9CA3B0;font-size:11px;">Mulai dari</span>
-                        <span style="color:#131218;font-weight:900;font-size:14px;">
-                            {{ $k->biaya->isNotEmpty() ? 'Rp '.number_format($k->biaya->min('nominal'),0,',','.') : 'Gratis' }}
-                        </span>
+                <div style="padding:20px 20px;display:flex;flex-direction:column;flex-grow:1;justify-content:space-between;">
+                    <div>
+                        <h4 style="color:#131218;font-size:15px;font-weight:900;margin:0 0 10px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:44px;">
+                            {{ $k->judul }}
+                        </h4>
+                        <div style="display:flex;gap:12px;margin-bottom:14px;">
+                            <span style="color:#6B7280;font-size:12px;display:flex;align-items:center;gap:5px;">
+                                @include('components.icon',['name'=>'calendar','size'=>11,'style'=>"color:{$accentColor}"])
+                                {{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}
+                            </span>
+                            <span style="color:#6B7280;font-size:12px;display:flex;align-items:center;gap:5px;">
+                                @include('components.icon',['name'=>'users','size'=>11,'style'=>"color:{$accentColor}"])
+                                {{ $k->terisi }}/{{ $k->kuota }}
+                            </span>
+                        </div>
                     </div>
-                    <a href="{{ route('landing.show', $k) }}"
-                       class="{{ $k->isFull() ? '' : 'fcc-btn-gold' }}"
-                       style="display:block;text-align:center;text-decoration:none;padding:9px;border-radius:9px;font-size:14px;font-weight:700;
-                              {{ $k->isFull() ? 'background:#F0F1F5;color:#C0C4CF;border:1px solid #E2E4EB;cursor:not-allowed;' : '' }}">
-                        {{ $k->isFull() ? 'Kuota Penuh' : 'Lihat &amp; Daftar' }}
-                    </a>
+                    <div>
+                        <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:10px;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                            <span style="color:#9CA3AF;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Biaya</span>
+                            <span style="color:{{ $isPel?'#D97706':'#7C3AED' }};font-weight:900;font-size:14px;">
+                                {{ $k->biaya->isNotEmpty() ? 'Rp '.number_format($k->biaya->min('nominal'),0,',','.') : 'Gratis' }}
+                            </span>
+                        </div>
+                        <a href="{{ route('landing.show', $k) }}"
+                           class="{{ $k->isFull() ? '' : 'fcc-btn-gold' }}"
+                           style="display:block;text-align:center;text-decoration:none;padding:10px;border-radius:12px;font-size:13.5px;font-weight:800;
+                                  {{ $k->isFull() ? 'background:#F3F4F6;border:1px solid #E5E7EB;color:#9CA3AF;cursor:not-allowed;' : 'box-shadow:0 4px 12px rgba(255,200,26,0.15);' }}">
+                            {{ $k->isFull() ? 'Kuota Penuh' : 'Detail & Daftar' }}
+                        </a>
+                    </div>
                 </div>
             </div>
             @empty
-            <div style="grid-column:span 3;text-align:center;padding:48px;color:#9CA3B0;font-size:15px;">
-                Belum ada kegiatan yang dipublikasikan.
+            <div style="grid-column:span 3;text-align:center;padding:60px;background:#FFF;border-radius:20px;border:1.5px solid #E2E4EB;">
+                <p style="color:#9CA3B0;font-size:15px;margin:0;">Belum ada kegiatan yang dipublikasikan.</p>
             </div>
             @endforelse
         </div>
-        <div class="reveal" style="text-align:center;margin-top:28px;">
-            <a href="{{ route('landing.kegiatan') }}" class="fcc-btn-outline-dark" style="padding:10px 24px;font-size:14px;">
+        <div class="reveal" style="text-align:center;margin-top:36px;">
+            <a href="{{ route('landing.kegiatan') }}" class="fcc-btn-outline-dark" style="padding:12px 28px;font-size:14px;font-weight:800;">
                 Lihat Semua Kegiatan
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -225,9 +244,12 @@
 {{-- ══════════════════════════════════════════════════════════════
      TENTANG — PUTIH — #131218 icon bg, kuning highlight
  ══════════════════════════════════════════════════════════════════ --}}
-<section style="padding:88px 24px;background:#FFFFFF;">
+<section style="padding:88px 24px;background:#FFFFFF;position:relative;overflow:hidden;">
+    <!-- Subtle geometric decoration -->
+    <div style="position:absolute;top:40px;right:0;width:200px;height:400px;background:linear-gradient(180deg,rgba(255,200,26,0.03),transparent);border-left:1px solid rgba(255,200,26,0.06);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:40px;left:0;width:200px;height:300px;background:linear-gradient(180deg,transparent,rgba(139,92,246,0.02));border-right:1px solid rgba(139,92,246,0.05);pointer-events:none;"></div>
     <div style="max-width:1100px;margin:0 auto;
-        display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;">
+        display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative;z-index:1;">
         {{-- Teks kiri --}}
         <div class="rl">
             <span class="section-label-yellow">Tentang Kami</span>
@@ -285,8 +307,8 @@
             {{-- Visi Misi mini --}}
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:2px;">
                 @foreach([
-                    ['star','Visi','#FFC81A','Pusat sertifikasi TI terkemuka di Indonesia Timur, menghasilkan SDM digital berdaya saing global.'],
-                    ['zap', 'Misi','#10B981','Pelatihan berkualitas, sertifikasi terstandar, kemitraan industri, dan kontribusi SDM nasional.'],
+                    ['star','Visi','#FFC81A','Menjadi unit pelatihan dan sertifikasi profesional pencetak tenaga kerja berkualitas, terampil, dan mandiri berstandar nasional dan internasional.'],
+                    ['zap', 'Misi','#10B981','Memberikan pelatihan & sertifikasi IT, membentuk SDM profesional, serta berkontribusi dalam peningkatan keterampilan anak bangsa.'],
                 ] as [$ic,$t,$c,$txt])
                 <div class="fcc-card" style="padding:16px 14px;">
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
@@ -330,8 +352,8 @@
         </div>
         {{-- Steps --}}
         <div style="position:relative;margin-bottom:40px;">
-            <div class="step-line-base" style="background:rgba(255,255,255,.08);"></div>
-            <div class="step-line-fill" id="step-fill" style="width:0%;"></div>
+            <div class="step-line-base" style="position:absolute; top:35px; left:calc(12.5% + 35px); right:calc(12.5% + 35px); height:2px; background:rgba(255,255,255,.08);"></div>
+            <div class="step-line-fill" id="step-fill" style="position:absolute; top:35px; left:calc(12.5% + 35px); height:2px; background:linear-gradient(90deg,#FFC81A,#FFD84D); border-radius:2px; transition:width .5s ease; width:0%;"></div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;z-index:1;">
                 @foreach([
                     ['search',      'Pilih Kegiatan',   'Jelajahi pelatihan atau sertifikasi, cek jadwal, harga, dan kuota yang tersedia.'],
@@ -340,8 +362,7 @@
                     ['check',       'Ikuti Kegiatan',    'Setelah Admin memverifikasi, kamu resmi terdaftar dan siap mengikuti kegiatan.'],
                 ] as $si=>[$ic,$t,$d])
                 <div id="step-{{ $si }}" class="reveal" style="text-align:center;transition-delay:{{ $si*100 }}ms;cursor:pointer;"
-                     onclick="setStep({{ $si }})"
-                     onmouseenter="hovStep({{ $si }})" onmouseleave="unhovStep({{ $si }})">
+                     onclick="setStep({{ $si }})">
                     <div id="step-box-{{ $si }}"
                          style="width:70px;height:70px;border-radius:20px;margin:0 auto 16px;position:relative;
                                 transition:all .3s ease;display:flex;align-items:center;justify-content:center;
@@ -388,51 +409,50 @@
 </section>
 
 {{-- ══════════════════════════════════════════════════════════════
-     MITRA — PUTIH — logo #131218 bg + kuning teks inisial
+     MITRA — background gelap dengan logo yang tampil menonjol
  ══════════════════════════════════════════════════════════════════ --}}
-<section style="padding:76px 0;background:#FFFFFF;border-top:1px solid #E2E4EB;">
-    <div style="max-width:1100px;margin:0 auto;padding:0 24px 0;">
-        <div class="reveal" style="text-align:center;margin-bottom:36px;">
+<section style="padding:80px 0;background:linear-gradient(180deg,#F9FAFB,#FFFFFF);border-top:1px solid #E2E4EB;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;opacity:.02;background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);background-size:40px 40px;"></div>
+    <div style="max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1;">
+        <div class="reveal" style="text-align:center;margin-bottom:44px;">
             <span class="section-label-yellow">Dipercaya Bersama</span>
-            <h2 style="color:#131218;font-size:clamp(22px,3.5vw,34px);font-weight:900;margin:0;">
-                Mitra <span class="fcc-gold-text">Kami</span>
+            <div style="width:48px;height:3px;background:linear-gradient(90deg,#FFC81A,#FFD84D);border-radius:2px;margin:10px auto 16px;"></div>
+            <h2 style="color:#131218;font-size:clamp(22px,3.5vw,34px);font-weight:900;margin:0 0 10px;">
+                Mitra <span class="fcc-gold-text">Strategis</span> Kami
             </h2>
+            <p style="color:#6B7280;font-size:14px;margin:0;">Kolaborasi kami dengan penyedia sertifikasi global terkemuka</p>
         </div>
     </div>
-    <div class="marquee-wrap" style="padding:6px 0;">
-        <div class="marquee-track">
-            @php $allMitras = $mitras->merge($mitras->all()); @endphp
-            @foreach($allMitras as $m)
-            {{-- Mitra card: logo di atas (gambar/inisial), nama di bawah --}}
-            <div style="display:inline-flex;flex-direction:column;align-items:center;gap:10px;
-                margin:0 8px;padding:20px 18px 16px;background:#FFF;border:1.5px solid #E2E4EB;
-                border-radius:16px;flex-shrink:0;min-width:120px;max-width:140px;
-                text-align:center;cursor:default;vertical-align:top;
-                transition:all .25s;box-shadow:0 1px 3px rgba(0,0,0,.04);"
-                 onmouseover="this.style.borderColor='#FFC81A';this.style.boxShadow='0 4px 20px rgba(255,200,26,.18)';this.style.transform='translateY(-3px)'"
-                 onmouseout="this.style.borderColor='#E2E4EB';this.style.boxShadow='0 1px 3px rgba(0,0,0,.04)';this.style.transform=''">
-                {{-- Logo gambar / fallback inisial --}}
-                <div style="width:64px;height:64px;border-radius:16px;background:#131218;
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:24px;padding:12px 24px;max-width:1000px;margin:0 auto;">
+        @foreach($mitras as $index => $m)
+        <div class="reveal" style="transition-delay:{{ $index * 100 }}ms;">
+            <div style="display:inline-flex;flex-direction:column;align-items:center;gap:14px;
+                padding:28px 24px 22px;background:#FFF;border:1.5px solid #E2E4EB;
+                border-radius:20px;flex-shrink:0;min-width:160px;max-width:180px;
+                text-align:center;cursor:default;
+                transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);box-shadow:0 2px 8px rgba(0,0,0,.04);"
+                 onmouseover="this.style.borderColor='#FFC81A';this.style.boxShadow='0 12px 32px rgba(255,200,26,.15)';this.style.transform='translateY(-8px)'"
+                 onmouseout="this.style.borderColor='#E2E4EB';this.style.boxShadow='0 2px 8px rgba(0,0,0,.04)';this.style.transform=''">
+                <div style="width:80px;height:80px;border-radius:16px;background:#F8F9FB;
                     display:flex;align-items:center;justify-content:center;
-                    border:2px solid rgba(255,200,26,.2);overflow:hidden;flex-shrink:0;">
+                    border:1px solid #EAECEF;overflow:hidden;flex-shrink:0;">
                     @if($m->logo)
                     <img src="{{ asset('storage/'.$m->logo) }}" alt="{{ $m->nama_mitra }}"
-                         style="width:56px;height:56px;object-fit:contain;border-radius:10px;">
+                         style="width:62px;height:62px;object-fit:contain;mix-blend-mode:multiply;">
                     @else
-                    <span style="color:#FFC81A;font-size:16px;font-weight:900;letter-spacing:.5px;
+                    <span style="color:#131218;font-size:18px;font-weight:900;letter-spacing:.5px;
                         font-family:monospace;">{{ Str::upper(Str::substr($m->inisial ?? $m->nama_mitra,0,3)) }}</span>
                     @endif
                 </div>
-                {{-- Nama di bawah logo --}}
                 <div>
-                    <p style="margin:0;color:#131218;font-size:12px;font-weight:800;line-height:1.35;
+                    <p style="margin:0;color:#131218;font-size:13.5px;font-weight:900;line-height:1.35;
                         word-break:break-word;">{{ $m->nama_mitra }}</p>
-                    <p style="margin:4px 0 0;color:#9CA3B0;font-size:9px;font-weight:700;
+                    <p style="margin:6px 0 0;color:#9CA3B0;font-size:10px;font-weight:700;
                         text-transform:uppercase;letter-spacing:.5px;">Mitra Resmi FCC</p>
                 </div>
             </div>
-            @endforeach
         </div>
+        @endforeach
     </div>
 </section>
 
@@ -505,10 +525,11 @@
 @endif
 
 {{-- ══════════════════════════════════════════════════════════════
-     ARSIP — Surface #F7F8FA
+     ARSIP — Surface dengan accent visual yang kaya
  ══════════════════════════════════════════════════════════════════ --}}
 @if($arsips->isNotEmpty())
-<section style="padding:88px 24px;background:#F7F8FA;border-top:1px solid #E2E4EB;">
+<section style="padding:88px 24px;background:#F9FAFB;border-top:1px solid #E2E4EB;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-50px;right:-50px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,26,0.06),transparent 70%);pointer-events:none;"></div>
     <div style="max-width:1100px;margin:0 auto;">
         <div class="reveal" style="display:flex;justify-content:space-between;align-items:flex-end;
             margin-bottom:32px;flex-wrap:wrap;gap:14px;">
@@ -552,9 +573,10 @@
 @endif
 
 {{-- ══════════════════════════════════════════════════════════════
-     KONTAK — PUTIH — ikon di #131218 bg
+     KONTAK — Premium dark accent
  ══════════════════════════════════════════════════════════════════ --}}
-<section style="padding:88px 24px;background:#FFFFFF;border-top:1px solid #E2E4EB;">
+<section style="padding:88px 24px;background:linear-gradient(180deg,#FFFFFF,#F9FAFB);border-top:1px solid #E2E4EB;position:relative;overflow:hidden;">
+    <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#FFC81A,#8B5CF6,#3B82F6,transparent);"></div>
     <div style="max-width:1000px;margin:0 auto;">
         <div class="reveal" style="text-align:center;margin-bottom:52px;">
             <span class="section-label-yellow">Hubungi Kami</span>

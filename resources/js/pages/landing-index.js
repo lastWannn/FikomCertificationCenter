@@ -30,11 +30,7 @@
         const STEP_COUNT = 4;
         let curStep = 0, stepTimer;
 
-        // Width garis progres berdasarkan step aktif
-        // Garis dimulai dari center step-0 ke center step-3
-        // 4 kolom equal: center masing-masing di 12.5%, 37.5%, 62.5%, 87.5%
-        // Fill dimulai dari 0% (di step-0) → per step +33.3% dari lebar garis
-        const FILL_WIDTHS = ['0%', '33.3%', '66.6%', '100%'];
+        const FILL_WIDTHS = ['0%', 'calc(25% - 35px)', 'calc(50% - 35px)', 'calc(75% - 35px)'];
 
         function setStep(s) {
             curStep = s;
@@ -96,15 +92,15 @@
         }
 
         window.setStep   = setStep;
-        window.hovStep   = (i) => { clearInterval(stepTimer); setStep(i); };
-        window.unhovStep = () => startTimer();
 
         for (let i = 0; i < STEP_COUNT; i++) {
             const el = document.getElementById(`step-${i}`);
             if (el) {
-                el.addEventListener('click',      () => window.setStep(i));
-                el.addEventListener('mouseenter', () => window.hovStep(i));
-                el.addEventListener('mouseleave', () => window.unhovStep());
+                el.addEventListener('click', () => {
+                    clearInterval(stepTimer);
+                    window.setStep(i);
+                    startTimer(); // Restart timer from clicked step
+                });
             }
         }
 
