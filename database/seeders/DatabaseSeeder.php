@@ -23,6 +23,102 @@ class DatabaseSeeder extends Seeder {
         foreach ($mitras as $m) {
             Mitra::updateOrCreate(['nama_mitra' => $m['nama_mitra']], $m);
         }
+        // Tambahan data dummy untuk Pelatihan dan Sertifikasi
+        $kategori = \App\Models\Kategori::first();
+
+        // 1. Instruktur
+        $instruktur = \App\Models\Instruktur::firstOrCreate(
+            ['email' => 'instruktur@fcc.ac.id'],
+            [
+                'no_identitas' => '1234567890',
+                'nama' => 'Budi Santoso, M.Kom',
+                'alamat' => 'Jl. Pendidikan No. 1',
+                'kelamin' => 'L',
+                'no_hp' => '081234567890',
+                'keahlian' => 'Web Development',
+                'password' => Hash::make('password')
+            ]
+        );
+
+        // 2. Pelatihan
+        $pelatihan = \App\Models\Pelatihan::firstOrCreate(
+            ['kode' => 'PL-001'],
+            [
+                'judul' => 'Pelatihan Web Development Dasar',
+                'isi' => 'Pelatihan intensif untuk belajar pengembangan web dari nol menggunakan HTML, CSS, dan PHP.',
+                'kategori_id' => $kategori->id,
+                'instruktur_id' => $instruktur->id,
+                'gambar' => null,
+            ]
+        );
+
+        // 3. Jadwal Pelatihan
+        $jadwalPelatihan = \App\Models\JadwalPelatihan::firstOrCreate(
+            ['nama_kegiatan' => 'Batch 1 - Web Dev Dasar'],
+            [
+                'pelatihan_id' => $pelatihan->id,
+                'kuota_peserta' => 30,
+                'untuk_peserta' => 'mahasiswa,umum',
+                'tgl_batas_daftar' => now()->addDays(7)->format('Y-m-d'),
+                'tgl_pelaksanaan' => now()->addDays(14)->format('Y-m-d'),
+                'jam_mulai' => '09:00:00',
+                'jam_selesai' => '15:00:00',
+            ]
+        );
+
+        // 4. Kegiatan (Pelatihan)
+        $kegiatanPelatihan = \App\Models\Kegiatan::firstOrCreate(
+            ['jenis_kegiatan' => 'pelatihan', 'nama_latar' => 'Batch 1 - Web Dev Dasar']
+        );
+        \App\Models\KegiatanPelatihan::firstOrCreate([
+            'kegiatan_id' => $kegiatanPelatihan->id,
+            'jadwal_pelatihan_id' => $jadwalPelatihan->id
+        ]);
+        \App\Models\BiayaKegiatan::firstOrCreate([
+            'kegiatan_id' => $kegiatanPelatihan->id,
+            'nama_jenis' => 'Mahasiswa UMI',
+            'nominal' => 150000
+        ]);
+
+        // 5. Sertifikasi
+        $sertifikasi = \App\Models\Sertifikasi::firstOrCreate(
+            ['kode' => 'SR-001'],
+            [
+                'judul' => 'Sertifikasi Jaringan Dasar (MTCNA)',
+                'isi' => 'Sertifikasi resmi Mikrotik untuk kompetensi jaringan dasar.',
+                'kategori_id' => $kategori->id,
+                'gambar' => null,
+            ]
+        );
+
+        // 6. Jadwal Sertifikasi
+        $jadwalSertifikasi = \App\Models\JadwalSertifikasi::firstOrCreate(
+            ['nama_kegiatan' => 'Sertifikasi MTCNA 2026'],
+            [
+                'sertifikasi_id' => $sertifikasi->id,
+                'kuota_peserta' => 20,
+                'untuk_peserta' => 'mahasiswa,umum',
+                'tgl_batas_daftar' => now()->addDays(10)->format('Y-m-d'),
+                'tgl_pelaksanaan' => now()->addDays(20)->format('Y-m-d'),
+                'jam_mulai' => '08:00:00',
+                'jam_selesai' => '17:00:00',
+            ]
+        );
+
+        // 7. Kegiatan (Sertifikasi)
+        $kegiatanSertifikasi = \App\Models\Kegiatan::firstOrCreate(
+            ['jenis_kegiatan' => 'sertifikasi', 'nama_latar' => 'Sertifikasi MTCNA 2024']
+        );
+        \App\Models\KegiatanSertifikasi::firstOrCreate([
+            'kegiatan_id' => $kegiatanSertifikasi->id,
+            'jadwal_sertifikasi_id' => $jadwalSertifikasi->id
+        ]);
+        \App\Models\BiayaKegiatan::firstOrCreate([
+            'kegiatan_id' => $kegiatanSertifikasi->id,
+            'nama_jenis' => 'Umum',
+            'nominal' => 500000
+        ]);
+
         $this->command->info('Seeder OK! Admin: admin@fcc.ac.id / password');
     }
 }
