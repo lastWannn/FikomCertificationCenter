@@ -43,6 +43,64 @@
         @endforeach
       </div>
 
+      {{-- Materi / Modul (Read Only) --}}
+      @php
+        $materiList = collect();
+        $masterUrl = '#';
+        $masterName = '';
+        if ($isPel) {
+            $pelatihan = $kegiatan->kegiatanPelatihan?->jadwalPelatihan?->pelatihan;
+            if ($pelatihan) {
+                $materiList = $pelatihan->materi;
+                $masterUrl = route('admin.pelatihan.show', $pelatihan->id);
+                $masterName = 'Pelatihan';
+            }
+        } else {
+            $sertifikasi = $kegiatan->kegiatanSertifikasi?->jadwalSertifikasi?->sertifikasi;
+            if ($sertifikasi) {
+                $materiList = $sertifikasi->materi;
+                $masterUrl = route('admin.sertifikasi.show', $sertifikasi->id);
+                $masterName = 'Sertifikasi';
+            }
+        }
+      @endphp
+      
+      <div class="fcc-card" style="padding:0;overflow:hidden;margin-bottom:14px;">
+        <div style="padding:14px 18px;border-bottom:1px solid #E2E4EB;display:flex;justify-content:space-between;align-items:center;">
+          <p style="margin:0;font-size:14px;font-weight:800;color:#131218;">
+            Materi / Modul ({{ $materiList->count() }})
+          </p>
+          @if($masterUrl !== '#')
+          <a href="{{ $masterUrl }}" style="font-size:11px;color:#3B82F6;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px;" title="Kelola materi ini di data master">
+            @include('components.icon',['name'=>'external-link','size'=>12]) Kelola di {{ $masterName }}
+          </a>
+          @endif
+        </div>
+        
+        @forelse($materiList as $m)
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-top:1px solid #F0F1F5;">
+          <div style="width:24px;height:24px;border-radius:6px;background:#131218;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#FFC81A;flex-shrink:0;">{{ $m->urutan }}</div>
+          <div style="flex:1;min-width:0;">
+            <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">{{ $m->judul_materi }}</p>
+            <p style="margin:0;font-size:11px;color:#9CA3B0;">
+              @if(isset($m->jam_pelajaran)) {{ $m->jam_pelajaran }} JP @endif
+              @if(isset($m->jam_pelajaran) && $m->file_materi) &bull; @endif
+              @if($m->file_materi)
+                <a href="{{ \Illuminate\Support\Str::startsWith($m->file_materi, ['http://', 'https://']) ? $m->file_materi : asset('storage/'.$m->file_materi) }}" target="_blank" style="color:#FFC81A;font-weight:600;text-decoration:none;">Lihat File</a>
+              @endif
+            </p>
+          </div>
+        </div>
+        @empty
+        <div style="padding:22px 18px;text-align:center;color:#9CA3B0;font-size:13px;">
+          Belum ada materi untuk kegiatan ini. 
+          @if($masterUrl !== '#')
+          <a href="{{ $masterUrl }}" style="color:#FFC81A;font-weight:700;text-decoration:none;">Kelola di Master Data &rarr;</a>
+          @endif
+        </div>
+        @endforelse
+      </div>
+
       {{-- Biaya --}}
       <div class="fcc-card" style="padding:22px;margin-bottom:14px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">

@@ -9,18 +9,35 @@ class JadwalPelatihanService
 {
     public function store(int $pelatihanId, array $data): JadwalPelatihan
     {
+        $biayaSetup = $this->prepareBiayaSetup($data);
         return JadwalPelatihan::create(array_merge(
-            collect($data)->only(['nama_kegiatan','nama_jenis_biaya','nominal_biaya','kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'])->toArray(),
-            ['pelatihan_id' => $pelatihanId]
+            collect($data)->only(['nama_kegiatan','kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'])->toArray(),
+            ['pelatihan_id' => $pelatihanId, 'biaya_setup' => $biayaSetup]
         ));
     }
 
     public function update(JadwalPelatihan $jadwal, array $data): JadwalPelatihan
     {
-        $jadwal->update(
-            collect($data)->only(['nama_kegiatan','nama_jenis_biaya','nominal_biaya','kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'])->toArray()
-        );
+        $biayaSetup = $this->prepareBiayaSetup($data);
+        $jadwal->update(array_merge(
+            collect($data)->only(['nama_kegiatan','kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'])->toArray(),
+            ['biaya_setup' => $biayaSetup]
+        ));
         return $jadwal->fresh();
+    }
+
+    private function prepareBiayaSetup(array $data): ?array
+    {
+        $biayaSetup = [];
+        if (!empty($data['nama_jenis_biaya']) && is_array($data['nama_jenis_biaya'])) {
+            foreach ($data['nama_jenis_biaya'] as $index => $nama) {
+                $nominal = $data['nominal_biaya'][$index] ?? 0;
+                if (!empty($nama) && $nominal !== null && $nominal !== '') {
+                    $biayaSetup[] = ['nama' => $nama, 'nominal' => (float) $nominal];
+                }
+            }
+        }
+        return empty($biayaSetup) ? null : $biayaSetup;
     }
 
     public function delete(JadwalPelatihan $jadwal): void
@@ -65,12 +82,14 @@ class JadwalPelatihanService
                 'jadwal_pelatihan_id'  => $jadwal->id,
             ]);
 
-            if ($jadwal->nominal_biaya !== null) {
-                \App\Models\BiayaKegiatan::create([
-                    'kegiatan_id' => $kegiatan->id,
-                    'nama_jenis'  => $jadwal->nama_jenis_biaya ?? 'Umum',
-                    'nominal'     => $jadwal->nominal_biaya,
-                ]);
+            if (!empty($jadwal->biaya_setup) && is_array($jadwal->biaya_setup)) {
+                foreach ($jadwal->biaya_setup as $biaya) {
+                    \App\Models\BiayaKegiatan::create([
+                        'kegiatan_id' => $kegiatan->id,
+                        'nama_jenis'  => $biaya['nama'],
+                        'nominal'     => $biaya['nominal'],
+                    ]);
+                }
             }
 
             return $kegiatan;

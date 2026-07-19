@@ -116,21 +116,122 @@
                 @error('isi')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-                <div>
-                    <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Link Materi (Google Drive, YouTube, dst)</label>
-                    <input type="url" name="link_materi" value="{{ old('link_materi') }}" placeholder="https://" class="fcc-input">
-                    @error('link_materi')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+            <div style="margin-bottom:16px;">
+                <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Gambar / Poster</label>
+                <label style="display:flex;align-items:center;gap:8px;border:1.5px dashed #E2E4EB;border-radius:10px;padding:8px 12px;cursor:pointer;transition:border-color .2s;background:#F8F9FB;"
+                       onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E2E4EB'">
+                    @include('components.icon',['name'=>'image','size'=>16,'style'=>'color:#A0A3AD'])
+                    <span style="font-size:12px;color:#6B7280;">Pilih File Gambar</span>
+                    <input type="file" name="gambar" accept="image/*" style="display:none;" onchange="previewGambar(this, 'gambar-preview')">
+                </label>
+                @error('gambar')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+            </div>
+
+            {{-- Materi Awal (Opsional) --}}
+            <div style="margin-top:20px;border-top:1px solid #E2E4EB;padding-top:16px;">
+                <h3 style="font-size:12px;font-weight:900;color:#131218;margin:0 0 12px;text-transform:uppercase;letter-spacing:.5px;">Materi Awal (Opsional)</h3>
+                
+                <div style="margin-bottom:14px;">
+                    <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Judul Materi</label>
+                    <input type="text" name="judul_materi" value="{{ old('judul_materi') }}" placeholder="Judul materi pelatihan..." class="fcc-input">
+                    @error('judul_materi')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
                 </div>
-                <div>
-                    <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Gambar / Poster</label>
-                    <label style="display:flex;align-items:center;gap:8px;border:1.5px dashed #E2E4EB;border-radius:10px;padding:8px 12px;cursor:pointer;transition:border-color .2s;background:#F8F9FB;"
-                           onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E2E4EB'">
-                        @include('components.icon',['name'=>'image','size'=>16,'style'=>'color:#A0A3AD'])
-                        <span style="font-size:12px;color:#6B7280;">Pilih File Gambar</span>
-                        <input type="file" name="gambar" accept="image/*" style="display:none;" onchange="previewGambar(this, 'gambar-preview')">
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
+                    <div>
+                        <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">File Materi</label>
+                        <label style="display:flex;align-items:center;gap:8px;border:1.5px dashed #E2E4EB;border-radius:10px;padding:8px 12px;cursor:pointer;transition:border-color .2s;background:#F8F9FB;"
+                               onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E2E4EB'">
+                            @include('components.icon',['name'=>'upload','size'=>16,'style'=>'color:#A0A3AD'])
+                            <span style="font-size:12px;color:#6B7280;">Pilih File</span>
+                            <input type="file" name="file_materi" style="display:none;">
+                        </label>
+                        @error('file_materi')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">ATAU Link Tautan Materi</label>
+                        <input type="text" name="link_materi" value="{{ old('link_materi') }}" placeholder="https://drive.google.com/..." class="fcc-input">
+                        @error('link_materi')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+            </div>
+
+            {{-- Jadwal Awal (Opsional) --}}
+            <div style="margin-top:20px;border-top:1px solid #E2E4EB;padding-top:16px;margin-bottom:14px;">
+                <h3 style="font-size:12px;font-weight:900;color:#131218;margin:0 0 12px;text-transform:uppercase;letter-spacing:.5px;">Jadwal Awal (Opsional)</h3>
+                
+                <div style="margin-bottom:14px;">
+                    <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Nama Kegiatan / Batch</label>
+                    <input type="text" name="jadwal_nama_kegiatan" value="{{ old('jadwal_nama_kegiatan') }}" placeholder="contoh: Pelatihan Javascript Batch 1 (kosongkan jika default)" class="fcc-input">
+                    @error('jadwal_nama_kegiatan')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
+                    <div>
+                        <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Kuota Peserta</label>
+                        <input type="number" name="kuota_peserta" value="{{ old('kuota_peserta', 20) }}" min="1" max="500" class="fcc-input">
+                        @error('kuota_peserta')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Untuk Peserta</label>
+                        <select name="untuk_peserta" class="fcc-input">
+                            <option value="LP" {{ old('untuk_peserta')==='LP'?'selected':'' }}>Laki-laki & Perempuan</option>
+                            <option value="L" {{ old('untuk_peserta')==='L'?'selected':'' }}>Laki-laki Saja</option>
+                            <option value="P" {{ old('untuk_peserta')==='P'?'selected':'' }}>Perempuan Saja</option>
+                        </select>
+                        @error('untuk_peserta')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+
+                {{-- Multi-Biaya Setup --}}
+                <div style="margin-bottom:14px;background:#F8F9FB;border:1px solid #E2E4EB;border-radius:10px;padding:12px 14px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <label style="font-size:10px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.7px;margin:0;">Jenis Biaya Pendaftaran (Opsional)</label>
+                        <button type="button" onclick="addBiayaRow('biaya-container')" style="font-size:11px;color:#3B82F6;background:none;border:none;font-weight:700;cursor:pointer;">+ Tambah Biaya</button>
+                    </div>
+                    <div id="biaya-container">
+                        <div class="biaya-row" style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;">
+                            <input type="text" name="nama_jenis_biaya[]" value="{{ old('nama_jenis_biaya.0') }}" placeholder="contoh: Umum" class="fcc-input" style="background:#FFF;">
+                            <input type="number" name="nominal_biaya[]" value="{{ old('nominal_biaya.0') }}" placeholder="Nominal (Rp)" class="fcc-input" style="background:#FFF;">
+                            <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:6px;">@include('components.icon',['name'=>'trash','size'=>14])</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
+                    <div>
+                        <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Batas Pendaftaran</label>
+                        <input type="date" name="tgl_batas_daftar" value="{{ old('tgl_batas_daftar') }}" class="fcc-input">
+                        @error('tgl_batas_daftar')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Tanggal Pelaksanaan</label>
+                        <input type="date" name="tgl_pelaksanaan" value="{{ old('tgl_pelaksanaan') }}" class="fcc-input">
+                        @error('tgl_pelaksanaan')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
+                    <div>
+                        <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Jam Mulai</label>
+                        <input type="time" name="jam_mulai" value="{{ old('jam_mulai', '08:00') }}" class="fcc-input">
+                        @error('jam_mulai')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Jam Selesai</label>
+                        <input type="time" name="jam_selesai" value="{{ old('jam_selesai', '12:00') }}" class="fcc-input">
+                        @error('jam_selesai')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+
+                <div style="margin-top:14px;background:#F8F9FB;border:1px solid #E2E4EB;border-radius:10px;padding:12px 14px;">
+                    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+                        <input type="checkbox" name="langsung_aktifkan" value="1" checked style="accent-color:#131218;width:16px;height:16px;">
+                        <div>
+                            <p style="margin:0;font-size:12px;font-weight:700;color:#131218;">Langsung aktifkan sebagai Kegiatan Publik</p>
+                            <p style="margin:0;font-size:10px;color:#9CA3B0;">Jika dicentang, jadwal ini akan langsung aktif dan muncul di halaman biaya & pendaftaran.</p>
+                        </div>
                     </label>
-                    @error('gambar')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
                 </div>
             </div>
 
@@ -155,6 +256,19 @@
 
 @push('scripts')
 <script>
+function addBiayaRow(containerId) {
+    const container = document.getElementById(containerId);
+    const div = document.createElement('div');
+    div.className = 'biaya-row';
+    div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;';
+    div.innerHTML = `
+        <input type="text" name="nama_jenis_biaya[]" placeholder="contoh: Umum" class="fcc-input" style="background:#FFF;">
+        <input type="number" name="nominal_biaya[]" placeholder="Nominal (Rp)" class="fcc-input" style="background:#FFF;">
+        <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:6px;">@include('components.icon',['name'=>'trash','size'=>14])</button>
+    `;
+    container.appendChild(div);
+}
+
 function previewGambar(input, previewId) {
     const file = input.files[0];
     if (!file) return;

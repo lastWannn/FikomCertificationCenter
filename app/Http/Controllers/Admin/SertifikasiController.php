@@ -36,7 +36,7 @@ class SertifikasiController extends Controller
 
         if ($kegiatan && $request->boolean('langsung_aktifkan')) {
             $initialJadwal = $sertifikasi->jadwal()->latest()->first();
-            if ($initialJadwal && $initialJadwal->nominal_biaya !== null) {
+            if ($initialJadwal && !empty($initialJadwal->biaya_setup)) {
                 return redirect()->route('admin.kegiatan.show', $kegiatan->hashid)
                     ->with('success', 'Sertifikasi berhasil ditambahkan, langsung aktif, dan biaya diatur.');
             }

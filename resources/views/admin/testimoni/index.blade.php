@@ -61,7 +61,24 @@
                 </div>
                 <div>
                     <label style="display:block;font-size:11px;font-weight:800;color:rgba(255,255,255,.5);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;">Upload Foto Profil</label>
-                    <input type="file" name="foto" id="f-foto" accept="image/*" style="width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 14px;color:rgba(255,255,255,.6);font-size:13px;outline:none;box-sizing:border-box;cursor:pointer;">
+                    <input type="file" name="foto" id="f-foto" accept="image/jpeg,image/png,image/jpg" style="width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 14px;color:rgba(255,255,255,.6);font-size:13px;outline:none;box-sizing:border-box;cursor:pointer;" onchange="
+                        if(this.files[0]){
+                            const file = this.files[0];
+                            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                            if(!allowedTypes.includes(file.type)){
+                                if(typeof fccShowFileAlert === 'function') fccShowFileAlert('Hanya file JPG dan PNG yang diperbolehkan!');
+                                else alert('Hanya file JPG dan PNG yang diperbolehkan!');
+                                this.value='';
+                                return;
+                            }
+                            if(file.size > 2 * 1024 * 1024){
+                                if(typeof fccShowFileAlert === 'function') fccShowFileAlert('Ukuran foto maksimal 2MB!');
+                                else alert('Ukuran foto maksimal 2MB!');
+                                this.value='';
+                                return;
+                            }
+                        }
+                    ">
                     <p id="f-foto-hint" style="font-size:11px;color:rgba(255,255,255,.3);margin:5px 0 0;">Format: JPG/PNG, maks 2MB.</p>
                     <div id="f-foto-preview" style="margin-top:10px;display:none;">
                         <img id="f-foto-img" src="" alt="Foto Saat Ini" style="width:48px;height:48px;object-fit:cover;border-radius:50%;border:2px solid rgba(255,200,26,.3);">

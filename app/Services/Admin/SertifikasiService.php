@@ -33,11 +33,20 @@ class SertifikasiService
         
         // Handle initial schedule if present
         if (!empty($data['tgl_pelaksanaan'])) {
+            $biayaSetup = [];
+            if (!empty($data['nama_jenis_biaya']) && is_array($data['nama_jenis_biaya'])) {
+                foreach ($data['nama_jenis_biaya'] as $index => $nama) {
+                    $nominal = $data['nominal_biaya'][$index] ?? 0;
+                    if (!empty($nama) && $nominal !== null && $nominal !== '') {
+                        $biayaSetup[] = ['nama' => $nama, 'nominal' => (float) $nominal];
+                    }
+                }
+            }
+
             $jadwalData = [
                 'sertifikasi_id' => $sertifikasi->id,
                 'nama_kegiatan' => $data['jadwal_nama_kegiatan'] ?? null,
-                'nama_jenis_biaya' => $data['nama_jenis_biaya'] ?? null,
-                'nominal_biaya' => $data['nominal_biaya'] ?? null,
+                'biaya_setup' => empty($biayaSetup) ? null : $biayaSetup,
                 'kuota_peserta' => $data['kuota_peserta'] ?? 20,
                 'untuk_peserta' => $data['untuk_peserta'] ?? 'LP',
                 'tgl_batas_daftar' => $data['tgl_batas_daftar'] ?? $data['tgl_pelaksanaan'],

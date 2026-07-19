@@ -167,16 +167,18 @@
                     </div>
                 </div>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
-                    <div>
-                        <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Jenis Biaya (opsional)</label>
-                        <input type="text" name="nama_jenis_biaya" value="{{ old('nama_jenis_biaya') }}" placeholder="contoh: Umum, Mahasiswa, dll." class="fcc-input">
-                        @error('nama_jenis_biaya')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                {{-- Multi-Biaya Setup --}}
+                <div style="margin-bottom:14px;background:#F8F9FB;border:1px solid #E2E4EB;border-radius:10px;padding:12px 14px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <label style="font-size:10px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.7px;margin:0;">Jenis Biaya Pendaftaran (Opsional)</label>
+                        <button type="button" onclick="addBiayaRow('biaya-container-sert')" style="font-size:11px;color:#3B82F6;background:none;border:none;font-weight:700;cursor:pointer;">+ Tambah Biaya</button>
                     </div>
-                    <div>
-                        <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Nominal Biaya (Rp, opsional)</label>
-                        <input type="number" name="nominal_biaya" value="{{ old('nominal_biaya') }}" placeholder="contoh: 150000" class="fcc-input">
-                        @error('nominal_biaya')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                    <div id="biaya-container-sert">
+                        <div class="biaya-row" style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;">
+                            <input type="text" name="nama_jenis_biaya[]" value="{{ old('nama_jenis_biaya.0') }}" placeholder="contoh: Umum" class="fcc-input" style="background:#FFF;">
+                            <input type="number" name="nominal_biaya[]" value="{{ old('nominal_biaya.0') }}" placeholder="Nominal (Rp)" class="fcc-input" style="background:#FFF;">
+                            <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:6px;">@include('components.icon',['name'=>'trash','size'=>14])</button>
+                        </div>
                     </div>
                 </div>
 
@@ -238,6 +240,19 @@
 
 @push('scripts')
 <script>
+function addBiayaRow(containerId) {
+    const container = document.getElementById(containerId);
+    const div = document.createElement('div');
+    div.className = 'biaya-row';
+    div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;';
+    div.innerHTML = `
+        <input type="text" name="nama_jenis_biaya[]" placeholder="contoh: Umum" class="fcc-input" style="background:#FFF;">
+        <input type="number" name="nominal_biaya[]" placeholder="Nominal (Rp)" class="fcc-input" style="background:#FFF;">
+        <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:6px;">@include('components.icon',['name'=>'trash','size'=>14])</button>
+    `;
+    container.appendChild(div);
+}
+
 function previewGambar(input, previewId) {
     const file = input.files[0];
     if (!file) return;

@@ -25,7 +25,7 @@ class JadwalPelatihanController extends Controller
         $jadwal = $this->service->store($pelatihan->id, $request->validated());
         if ($request->boolean('langsung_aktifkan')) {
             $kegiatan = $this->service->aktifkan($jadwal);
-            if ($jadwal->nominal_biaya !== null) {
+            if (!empty($jadwal->biaya_setup)) {
                 return redirect()->route('admin.kegiatan.show', $kegiatan->hashid)->with('success', 'Jadwal ditambahkan, langsung aktif, dan biaya diatur.');
             }
             return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
@@ -52,7 +52,7 @@ class JadwalPelatihanController extends Controller
     public function aktifkan(JadwalPelatihan $jadwal) {
         try {
             $kegiatan = $this->service->aktifkan($jadwal);
-            if ($jadwal->nominal_biaya !== null) {
+            if (!empty($jadwal->biaya_setup)) {
                 return redirect()->route('admin.kegiatan.show', $kegiatan->hashid)->with('success', 'Kegiatan berhasil diaktifkan.');
             }
             return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
