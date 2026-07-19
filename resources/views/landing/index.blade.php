@@ -623,90 +623,105 @@
 @endif
 
 {{-- ══════════════════════════════════════════════════════════════
-     KONTAK — Premium dark accent
+     FAQ — 1 kolom, gradasi soft, desain premium
  ══════════════════════════════════════════════════════════════════ --}}
-<section style="padding:88px 24px;background:linear-gradient(180deg, #0e0d14 0%, #131218 120px, #131218 100%); border-top:none; position:relative; overflow:hidden;">
-    <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#FFC81A,#8B5CF6,#3B82F6,transparent);"></div>
-    <div style="max-width:1000px;margin:0 auto;">
+@if($faqs->isNotEmpty())
+{{-- Gradasi soft penghubung dari section sebelumnya --}}
+<div style="height:80px;background:linear-gradient(180deg,#131218,#0c0b12);pointer-events:none;"></div>
+
+<section style="padding:0 24px 100px;background:linear-gradient(180deg,#0c0b12 0%,#0f0e18 40%,#0c0b12 100%);position:relative;overflow:hidden;">
+    {{-- Ornamen latar --}}
+    <div style="position:absolute;inset:0;opacity:.025;background-image:linear-gradient(rgba(139,92,246,1) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,1) 1px,transparent 1px);background-size:72px 72px;"></div>
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:200px;background:radial-gradient(ellipse,rgba(139,92,246,.06),transparent 70%);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:0;right:0;width:400px;height:300px;background:radial-gradient(ellipse at bottom right,rgba(255,200,26,.03),transparent 70%);pointer-events:none;"></div>
+
+    <div style="max-width:760px;margin:0 auto;position:relative;z-index:1;">
+        {{-- Header --}}
         <div class="reveal" style="text-align:center;margin-bottom:52px;">
-            <span class="section-label-yellow-inv">Hubungi Kami</span>
+            <span class="section-label-yellow-inv">Pusat Informasi</span>
+            <div style="width:48px;height:3px;background:linear-gradient(90deg,#8B5CF6,#FFC81A);border-radius:2px;margin:10px auto 16px;"></div>
             <h2 style="color:#FFF;font-size:clamp(24px,4vw,40px);font-weight:900;margin:0 0 12px;line-height:1.2;">
-                Ada Pertanyaan? <span class="fcc-gold-text">Kami Siap</span> Membantu
+                Pertanyaan yang Sering <span class="fcc-gold-text">Ditanyakan</span>
             </h2>
-            <p style="color:rgba(255,255,255,.6);font-size:15px;margin:0;max-width:420px;margin:0 auto;">
-                Tim FCC siap menjawab seputar pendaftaran dan program kami
+            <p style="color:rgba(255,255,255,.55);font-size:15px;margin:0 auto;max-width:500px;line-height:1.7;">
+                Temukan jawaban atas pertanyaan umum seputar program sertifikasi dan pelatihan FCC
             </p>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;">
-            {{-- Form --}}
-            <div class="rl">
-                @if(session('success'))
-                <div style="padding:14px 18px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);
-                    border-radius:10px;color:#10B981;font-size:14px;font-weight:600;margin-bottom:20px;">
-                    &#10003; {{ session('success') }}
-                </div>
-                @endif
-                <form action="{{ route('landing.kontak.post') }}" method="POST">
-                    @csrf
-                    @foreach([['nama','Nama Lengkap','text','Nama kamu','user'],['email','Email','email','email@example.com','mail']] as [$n,$l,$t,$p,$ic])
-                    <div style="margin-bottom:14px;">
-                        <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">{{ $l }} *</label>
-                        <div style="position:relative;">
-                            @include('components.icon',['name'=>$ic,'size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.3);pointer-events:none;'])
-                            <input type="{{ $t }}" name="{{ $n }}" value="{{ old($n) }}" placeholder="{{ $p }}" required
-                                   class="fcc-input-dark" style="padding-left:38px;"
-                                   onkeydown="if(event.key==='Enter')event.preventDefault();">
+
+        {{-- FAQ Accordion — 1 kolom penuh --}}
+        <div class="reveal" style="display:flex;flex-direction:column;gap:12px;" id="faq-list">
+            @foreach($faqs as $i => $faq)
+            <div class="faq-item" style="background:rgba(255,255,255,.025);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;transition:all .3s ease;">
+                <button onclick="toggleFaq(this)"
+                    style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;background:none;border:none;cursor:pointer;text-align:left;">
+                    <div style="display:flex;align-items:flex-start;gap:14px;flex:1;">
+                        <div style="width:30px;height:30px;border-radius:9px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+                            <span style="color:#8B5CF6;font-size:11px;font-weight:900;">{{ str_pad($i+1,'2','0',STR_PAD_LEFT) }}</span>
                         </div>
+                        <span style="color:#FFF;font-size:14.5px;font-weight:700;line-height:1.5;">{{ $faq->judul }}</span>
                     </div>
-                    @endforeach
-                    <div style="margin-bottom:20px;">
-                        <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Pesan *</label>
-                        <textarea name="pesan" rows="5" required placeholder="Tuliskan pertanyaan atau pesanmu…"
-                                  class="fcc-input-dark" style="resize:vertical;">{{ old('pesan') }}</textarea>
+                    <div class="faq-chevron" style="flex-shrink:0;width:32px;height:32px;border-radius:10px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.18);display:flex;align-items:center;justify-content:center;transition:all .35s cubic-bezier(0.34,1.56,0.64,1);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
-                    <button type="submit" class="fcc-btn-gold btn-shine" style="width:100%;justify-content:center;padding:12px;font-size:15px;">
-                        Kirim Pesan
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                        </svg>
-                    </button>
-                </form>
-            </div>
-            {{-- Info kontak --}}
-            <div class="rr" style="display:flex;flex-direction:column;gap:20px;">
-                @foreach([
-                    ['map-pin','Alamat',   $konten['tentang_kami']?->alamat??'Jl. Urip Sumoharjo No.225, Makassar 90232'],
-                    ['phone',  'Telepon',  '(0411) 455 855'],
-                    ['mail',   'Email',    'fcc@fikom.umi.ac.id'],
-                    ['globe',  'Website',  'www.fcc.fikom.umi.ac.id'],
-                ] as [$ic,$lbl,$val])
-                <div style="display:flex;gap:14px;align-items:flex-start;">
-                    <div class="icon-box-inv" style="width:44px;height:44px;border-radius:13px;">
-                        @include('components.icon',['name'=>$ic,'size'=>18,'style'=>'color:#FFC81A'])
-                    </div>
-                    <div>
-                        <p style="margin:0 0 2px;color:rgba(255,255,255,.5);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;">{{ $lbl }}</p>
-                        <p style="margin:0;color:#FFF;font-size:14px;font-weight:500;">{{ $val }}</p>
+                </button>
+                <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(0.16,1,0.3,1);">
+                    <div style="padding:0 24px 22px 68px;border-top:1px solid rgba(139,92,246,.08);">
+                        <p style="color:rgba(255,255,255,.62);font-size:14px;line-height:1.8;margin:16px 0 0;">{!! nl2br(e($faq->isi)) !!}</p>
                     </div>
                 </div>
-                @endforeach
-                {{-- CTA Langsung --}}
-                <div style="background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.08);border-radius:14px;padding:22px;margin-top:4px;">
-                    <p style="color:#FFF;font-size:14px;font-weight:800;margin:0 0 6px;">Jam Operasional</p>
-                    <p style="color:rgba(255,255,255,.6);font-size:13px;margin:0 0 14px;line-height:1.7;">
-                        Senin – Jumat: 08.00 – 16.00 WITA<br/>
-                        Sabtu: 09.00 – 13.00 WITA
-                    </p>
-                    <a href="{{ route('auth.register') }}" class="fcc-btn-gold btn-shine" style="width:100%;justify-content:center;padding:10px;font-size:14px;">
-                        Daftar Sekarang — Gratis
-                    </a>
-                </div>
             </div>
+            @endforeach
+        </div>
+
+        {{-- CTA bawah --}}
+        <div class="reveal" style="text-align:center;margin-top:44px;">
+            <p style="color:rgba(255,255,255,.4);font-size:14px;margin:0 0 16px;">Masih ada pertanyaan lain?</p>
+            <a href="{{ route('landing.kontak') }}" class="fcc-btn-gold btn-shine" style="padding:12px 28px;font-size:14px;display:inline-flex;align-items:center;gap:8px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Hubungi Tim Kami
+            </a>
         </div>
     </div>
 </section>
 
+{{-- Gradasi soft ke bawah / footer --}}
+<div style="height:60px;background:linear-gradient(180deg,#0c0b12,#0e0d14);pointer-events:none;"></div>
+
+<style>
+    .faq-item.faq-open {
+        border-color: rgba(139,92,246,.35) !important;
+        background: rgba(139,92,246,.04) !important;
+        box-shadow: 0 0 30px rgba(139,92,246,.06);
+    }
+    .faq-item.faq-open .faq-chevron {
+        background: rgba(139,92,246,.2) !important;
+        border-color: rgba(139,92,246,.4) !important;
+        transform: rotate(180deg);
+    }
+</style>
+<script>
+    function toggleFaq(btn) {
+        const item  = btn.closest('.faq-item');
+        const body  = item.querySelector('.faq-body');
+        const inner = body.querySelector('div');
+        const isOpen = item.classList.contains('faq-open');
+
+        document.querySelectorAll('.faq-item.faq-open').forEach(el => {
+            el.classList.remove('faq-open');
+            el.querySelector('.faq-body').style.maxHeight = '0';
+        });
+
+        if (!isOpen) {
+            item.classList.add('faq-open');
+            body.style.maxHeight = inner.scrollHeight + 32 + 'px';
+        }
+    }
+</script>
+@endif
+
+
 @endsection
+
 
 {{-- ── DATA DARI PHP: dilewatkan ke JS via window.PAGE_DATA ──────── --}}
 @push('page-data')

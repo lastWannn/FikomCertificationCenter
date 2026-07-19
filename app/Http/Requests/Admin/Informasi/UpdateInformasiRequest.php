@@ -14,9 +14,11 @@ class UpdateInformasiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'judul' => 'required|string|max:255',
-            'isi'   => 'required|string',
-            'jenis' => 'required|in:info,faq',
+            'judul'          => 'required|string|max:255',
+            'isi'            => 'required_if:jenis,faq|nullable|string',
+            'jenis'          => 'required|in:info,faq',
+            'tayang_mulai'   => 'nullable|date',
+            'tayang_selesai' => 'nullable|date|after_or_equal:tayang_mulai',
         ];
     }
 }

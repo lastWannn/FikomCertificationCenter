@@ -31,9 +31,11 @@ class LandingController extends Controller
         $mitras    = Mitra::all();
         $arsips    = ArsipKegiatan::with('kegiatan')->orderBy('created_at','desc')->limit(5)->get();
         $konten    = KontenHalaman::all()->keyBy('jenis');
+        $faqs      = Informasi::faq()->latest()->get();
+        $infos     = Informasi::info()->aktif()->latest()->limit(3)->get();
 
         return view('landing.index', compact(
-            'kegiatanTerbaru', 'stats', 'mitras', 'arsips', 'konten'
+            'kegiatanTerbaru', 'stats', 'mitras', 'arsips', 'konten', 'faqs', 'infos'
         ));
     }
 
