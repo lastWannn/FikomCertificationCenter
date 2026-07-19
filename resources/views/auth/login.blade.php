@@ -71,14 +71,13 @@
         </div>
     </div>
 
-    {{-- KANAN: PUTIH — form bersih --}}
-    <div style="width:460px;min-width:460px;background:#FFFFFF;display:flex;flex-direction:column;
-        justify-content:center;padding:60px 48px;position:relative;">
+    <div style="width:460px;min-width:460px;background:#0e0d14;display:flex;flex-direction:column;
+        justify-content:center;padding:60px 48px;position:relative;border-left:1px solid rgba(255,255,255,.05);">
         {{-- Back link --}}
         <a href="{{ route('landing.index') }}"
            style="position:absolute;top:24px;left:24px;display:flex;align-items:center;gap:6px;
-                  color:#9CA3B0;font-size:13px;text-decoration:none;font-weight:500;transition:color .18s;"
-           onmouseover="this.style.color='#131218'" onmouseout="this.style.color='#9CA3B0'">
+                  color:rgba(255,255,255,.5);font-size:13px;text-decoration:none;font-weight:500;transition:color .18s;"
+           onmouseover="this.style.color='#FFF'" onmouseout="this.style.color='rgba(255,255,255,.5)'">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
             Beranda
         </a>
@@ -86,8 +85,8 @@
         <div style="max-width:340px;margin:0 auto;width:100%;">
             {{-- Heading --}}
             <div style="margin-bottom:30px;">
-                <h1 style="color:#131218;font-size:28px;font-weight:900;margin:0 0 8px;">Masuk</h1>
-                <p style="color:#9CA3B0;font-size:14px;margin:0;">
+                <h1 style="color:#FFF;font-size:28px;font-weight:900;margin:0 0 8px;">Masuk</h1>
+                <p style="color:rgba(255,255,255,.5);font-size:14px;margin:0;">
                     Belum punya akun?
                     <a href="{{ route('auth.register') }}" style="color:#FFC81A;font-weight:700;text-decoration:none;">Daftar gratis</a>
                 </p>
@@ -95,7 +94,7 @@
 
             {{-- Error --}}
             @if($errors->any())
-            <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);
+            <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);
                 border-radius:10px;padding:12px 14px;margin-bottom:20px;color:#EF4444;font-size:13px;font-weight:600;">
                 {{ $errors->first() }}
             </div>
@@ -105,37 +104,37 @@
                 @csrf
                 {{-- Email --}}
                 <div style="margin-bottom:14px;">
-                    <label style="display:block;font-size:11px;font-weight:700;color:#9CA3B0;margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">
+                    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">
                         Email <span style="color:#FFC81A;">*</span>
                     </label>
                     <div style="position:relative;">
-                        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#C0C4CF;pointer-events:none;"
+                        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;"
                              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                             <polyline points="22,6 12,13 2,6"/>
                         </svg>
                         <input type="email" name="email" value="{{ old('email') }}" required
-                               placeholder="email@example.com" class="fcc-input" style="padding-left:42px;"
+                               placeholder="email@example.com" class="fcc-input-dark" style="padding-left:42px;width:100%;box-sizing:border-box;"
                                onkeydown="if(event.key==='Enter')event.preventDefault();">
                     </div>
                 </div>
 
                 {{-- Password --}}
                 <div style="margin-bottom:8px;">
-                    <label style="display:block;font-size:11px;font-weight:700;color:#9CA3B0;margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">
+                    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">
                         Password <span style="color:#FFC81A;">*</span>
                     </label>
                     <div style="position:relative;">
-                        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#C0C4CF;pointer-events:none;"
+                        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;"
                              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                         </svg>
                         <input type="password" name="password" id="pw-inp" required
-                               placeholder="Password" class="fcc-input" style="padding-left:42px;padding-right:42px;"
+                               placeholder="Password" class="fcc-input-dark" style="padding-left:42px;padding-right:42px;width:100%;box-sizing:border-box;"
                                onkeydown="if(event.key==='Enter')event.preventDefault();">
                         <button type="button" onclick="togglePw()"
                                 style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
-                                       background:none;border:none;color:#C0C4CF;cursor:pointer;display:flex;padding:0;">
+                                       background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;display:flex;padding:0;">
                             <svg id="eye-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                             </svg>
@@ -145,7 +144,7 @@
 
                 {{-- Remember + Forgot --}}
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:#5A6275;">
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.6);">
                         <input type="checkbox" name="remember" style="accent-color:#FFC81A;width:14px;height:14px;">
                         Ingat saya
                     </label>
@@ -155,8 +154,8 @@
                 </div>
 
                 {{-- Submit --}}
-                <button type="submit" class="fcc-btn-dark" style="width:100%;justify-content:center;padding:13px;font-size:15px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5">
+                <button type="submit" class="fcc-btn-gold btn-shine" style="width:100%;justify-content:center;padding:13px;font-size:15px;border-radius:12px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                         <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
                     </svg>
@@ -165,8 +164,8 @@
             </form>
 
             {{-- Info --}}
-            <div style="margin-top:22px;padding:14px 16px;background:#F7F8FA;border-radius:10px;border:1px solid #E2E4EB;">
-                <p style="margin:0;font-size:12px;color:#9CA3B0;text-align:center;line-height:1.7;">
+            <div style="margin-top:22px;padding:14px 16px;background:rgba(255,255,255,.04);border-radius:10px;border:1px solid rgba(255,255,255,.08);">
+                <p style="margin:0;font-size:12px;color:rgba(255,255,255,.5);text-align:center;line-height:1.7;">
                     Akses role (Admin/Peserta) ditentukan otomatis oleh sistem berdasarkan akun yang terdaftar.
                 </p>
             </div>
