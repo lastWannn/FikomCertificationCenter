@@ -75,12 +75,16 @@
                 
                 {{-- Card Banner --}}
                 <div style="height:148px; position:relative; overflow:hidden; background:linear-gradient(135deg, #131218 0%, #1e1b29 100%);">
-                    <div style="position:absolute; inset:0; opacity:.04; background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px); background-size:20px 20px;"></div>
-                    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
-                        <div style="width:64px; height:64px; border-radius:18px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center;">
-                            @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>30,'style'=>'color:'.$accentColor])
+                    @if($k->detail?->gambar)
+                        <img src="{{ asset('storage/' . $k->detail->gambar) }}" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;" alt="Poster" />
+                    @else
+                        <div style="position:absolute; inset:0; opacity:.04; background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px); background-size:20px 20px;"></div>
+                        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+                            <div style="width:64px; height:64px; border-radius:18px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center;">
+                                @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>30,'style'=>'color:'.$accentColor])
+                            </div>
                         </div>
-                    </div>
+                    @endif
                     
                     {{-- Badges --}}
                     <div style="position:absolute; top:12px; left:12px;">
@@ -122,7 +126,7 @@
                     
                     <div>
                         <div style="background:#F9FAFB; border-radius:12px; border:1px solid #E5E7EB; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
-                            <span style="color:#6B7280; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Investasi</span>
+                            <span style="color:#6B7280; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Biaya</span>
                             <span style="color:{{ $isPel ? '#D97706' : '#7C3AED' }}; font-weight:900; font-size:14.5px;">
                                 {{ $k->biaya->isNotEmpty() ? 'Rp '.number_format($k->biaya->min('nominal'),0,',','.') : 'Gratis' }}
                             </span>

@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder {
             ]
         );
 
-        // 2. Pelatihan
+        // 2. Pelatihan Berbayar
         $pelatihan = \App\Models\Pelatihan::firstOrCreate(
             ['kode' => 'PL-001'],
             [
@@ -52,13 +52,13 @@ class DatabaseSeeder extends Seeder {
             ]
         );
 
-        // 3. Jadwal Pelatihan
+        // 3. Jadwal Pelatihan Berbayar
         $jadwalPelatihan = \App\Models\JadwalPelatihan::firstOrCreate(
             ['nama_kegiatan' => 'Batch 1 - Web Dev Dasar'],
             [
                 'pelatihan_id' => $pelatihan->id,
                 'kuota_peserta' => 30,
-                'untuk_peserta' => 'mahasiswa,umum',
+                'untuk_peserta' => 'LP',
                 'tgl_batas_daftar' => now()->addDays(7)->format('Y-m-d'),
                 'tgl_pelaksanaan' => now()->addDays(14)->format('Y-m-d'),
                 'jam_mulai' => '09:00:00',
@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder {
             ]
         );
 
-        // 4. Kegiatan (Pelatihan)
+        // 4. Kegiatan (Pelatihan Berbayar)
         $kegiatanPelatihan = \App\Models\Kegiatan::firstOrCreate(
             ['jenis_kegiatan' => 'pelatihan', 'nama_latar' => 'Batch 1 - Web Dev Dasar']
         );
@@ -74,13 +74,25 @@ class DatabaseSeeder extends Seeder {
             'kegiatan_id' => $kegiatanPelatihan->id,
             'jadwal_pelatihan_id' => $jadwalPelatihan->id
         ]);
+        
+        // 3 Jenis Biaya Pelatihan Berbayar
         \App\Models\BiayaKegiatan::firstOrCreate([
             'kegiatan_id' => $kegiatanPelatihan->id,
-            'nama_jenis' => 'Mahasiswa UMI',
+            'nama_jenis' => 'Mahasiswa Fikom UMI',
             'nominal' => 150000
         ]);
+        \App\Models\BiayaKegiatan::firstOrCreate([
+            'kegiatan_id' => $kegiatanPelatihan->id,
+            'nama_jenis' => 'Dosen/Pegawai UMI, Alumni UMI, Mahasiswa Umum',
+            'nominal' => 250000
+        ]);
+        \App\Models\BiayaKegiatan::firstOrCreate([
+            'kegiatan_id' => $kegiatanPelatihan->id,
+            'nama_jenis' => 'Umum',
+            'nominal' => 350000
+        ]);
 
-        // 5. Sertifikasi
+        // 5. Sertifikasi Berbayar
         $sertifikasi = \App\Models\Sertifikasi::firstOrCreate(
             ['kode' => 'SR-001'],
             [
@@ -91,13 +103,13 @@ class DatabaseSeeder extends Seeder {
             ]
         );
 
-        // 6. Jadwal Sertifikasi
+        // 6. Jadwal Sertifikasi Berbayar
         $jadwalSertifikasi = \App\Models\JadwalSertifikasi::firstOrCreate(
             ['nama_kegiatan' => 'Sertifikasi MTCNA 2026'],
             [
                 'sertifikasi_id' => $sertifikasi->id,
                 'kuota_peserta' => 20,
-                'untuk_peserta' => 'mahasiswa,umum',
+                'untuk_peserta' => 'LP',
                 'tgl_batas_daftar' => now()->addDays(10)->format('Y-m-d'),
                 'tgl_pelaksanaan' => now()->addDays(20)->format('Y-m-d'),
                 'jam_mulai' => '08:00:00',
@@ -105,19 +117,67 @@ class DatabaseSeeder extends Seeder {
             ]
         );
 
-        // 7. Kegiatan (Sertifikasi)
+        // 7. Kegiatan (Sertifikasi Berbayar)
         $kegiatanSertifikasi = \App\Models\Kegiatan::firstOrCreate(
-            ['jenis_kegiatan' => 'sertifikasi', 'nama_latar' => 'Sertifikasi MTCNA 2024']
+            ['jenis_kegiatan' => 'sertifikasi', 'nama_latar' => 'Sertifikasi MTCNA 2026']
         );
         \App\Models\KegiatanSertifikasi::firstOrCreate([
             'kegiatan_id' => $kegiatanSertifikasi->id,
             'jadwal_sertifikasi_id' => $jadwalSertifikasi->id
         ]);
+        
+        // 3 Jenis Biaya Sertifikasi Berbayar
+        \App\Models\BiayaKegiatan::firstOrCreate([
+            'kegiatan_id' => $kegiatanSertifikasi->id,
+            'nama_jenis' => 'Mahasiswa Fikom UMI',
+            'nominal' => 400000
+        ]);
+        \App\Models\BiayaKegiatan::firstOrCreate([
+            'kegiatan_id' => $kegiatanSertifikasi->id,
+            'nama_jenis' => 'Dosen/Pegawai UMI, Alumni UMI, Mahasiswa Umum',
+            'nominal' => 600000
+        ]);
         \App\Models\BiayaKegiatan::firstOrCreate([
             'kegiatan_id' => $kegiatanSertifikasi->id,
             'nama_jenis' => 'Umum',
-            'nominal' => 500000
+            'nominal' => 800000
         ]);
+
+        // 8. Pelatihan Gratis
+        $pelatihanGratis = \App\Models\Pelatihan::firstOrCreate(
+            ['kode' => 'PL-002'],
+            [
+                'judul' => 'Workshop Git & GitHub untuk Pemula',
+                'isi' => 'Workshop praktis untuk memahami penggunaan Git & GitHub dalam tim developer.',
+                'kategori_id' => $kategori->id,
+                'instruktur_id' => $instruktur->id,
+                'gambar' => null,
+            ]
+        );
+
+        // 9. Jadwal Pelatihan Gratis
+        $jadwalGratis = \App\Models\JadwalPelatihan::firstOrCreate(
+            ['nama_kegiatan' => 'Workshop Git & GitHub 2026'],
+            [
+                'pelatihan_id' => $pelatihanGratis->id,
+                'kuota_peserta' => 50,
+                'untuk_peserta' => 'LP',
+                'tgl_batas_daftar' => now()->addDays(5)->format('Y-m-d'),
+                'tgl_pelaksanaan' => now()->addDays(10)->format('Y-m-d'),
+                'jam_mulai' => '13:00:00',
+                'jam_selesai' => '16:00:00',
+            ]
+        );
+
+        // 10. Kegiatan (Pelatihan Gratis)
+        $kegiatanGratis = \App\Models\Kegiatan::firstOrCreate(
+            ['jenis_kegiatan' => 'pelatihan', 'nama_latar' => 'Workshop Git & GitHub 2026']
+        );
+        \App\Models\KegiatanPelatihan::firstOrCreate([
+            'kegiatan_id' => $kegiatanGratis->id,
+            'jadwal_pelatihan_id' => $jadwalGratis->id
+        ]);
+        // Tanpa BiayaKegiatan -> Otomatis dianggap Gratis oleh sistem.
 
         $this->command->info('Seeder OK! Admin: admin@fcc.ac.id / password');
     }

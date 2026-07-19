@@ -164,13 +164,17 @@
                  onmouseout="this.style.transform='';this.style.boxShadow='';this.style.borderColor='#E2E4EB'">
                 {{-- Card Banner --}}
                 <div style="height:148px;position:relative;overflow:hidden;background:linear-gradient(135deg,#131218,#1e1b29);">
-                    <div style="position:absolute;inset:0;opacity:.04;background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);background-size:20px 20px;"></div>
-                    <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:{{ $accentBg }};opacity:0.5;"></div>
-                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-                        <div style="width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;">
-                            @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>28,'style'=>"color:{$accentColor}"])
+                    @if($k->detail?->gambar)
+                        <img src="{{ asset('storage/' . $k->detail->gambar) }}" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;" alt="Poster" />
+                    @else
+                        <div style="position:absolute;inset:0;opacity:.04;background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);background-size:20px 20px;"></div>
+                        <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:{{ $accentBg }};opacity:0.5;"></div>
+                        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                            <div style="width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;">
+                                @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>28,'style'=>"color:{$accentColor}"])
+                            </div>
                         </div>
-                    </div>
+                    @endif
                     <div style="position:absolute;top:12px;left:12px;">
                         <span style="font-size:10.5px;font-weight:800;padding:4px 10px;border-radius:8px;
                             background:{{ $accentBg }};color:{{ $accentColor }};border:1px solid {{ $accentColor }}30;text-transform:uppercase;letter-spacing:.5px;">
@@ -206,7 +210,7 @@
                     </div>
                     <div>
                         <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:10px;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                            <span style="color:#9CA3AF;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Investasi</span>
+                            <span style="color:#9CA3AF;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Biaya</span>
                             <span style="color:{{ $isPel?'#D97706':'#7C3AED' }};font-weight:900;font-size:14px;">
                                 {{ $k->biaya->isNotEmpty() ? 'Rp '.number_format($k->biaya->min('nominal'),0,',','.') : 'Gratis' }}
                             </span>
