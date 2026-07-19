@@ -24,7 +24,7 @@ class InformasiController extends Controller
 
     public function create()
     {
-        return view('admin.lainnya.informasi-form');
+        return redirect()->route('admin.informasi.index');
     }
 
     public function store(StoreInformasiRequest $request)
@@ -41,7 +41,7 @@ class InformasiController extends Controller
 
     public function edit(Informasi $informasi)
     {
-        return view('admin.lainnya.informasi-form', compact('informasi'));
+        return redirect()->route('admin.informasi.index');
     }
 
     public function update(UpdateInformasiRequest $request, Informasi $informasi)

@@ -480,7 +480,10 @@
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:24px;padding:12px 24px;max-width:1000px;margin:0 auto;">
         @foreach($mitras as $index => $m)
         <div class="spring-up stagger-{{ ($index % 4) + 1 }}">
-            <div class="fcc-mitra-card tilt-card" style="padding:16px;background:rgba(255,255,255,.04);border-radius:18px;display:flex;align-items:center;gap:14px;border:1px solid rgba(255,255,255,.08);transition:all .2s;cursor:default;"
+            @if($m->link_website)
+            <a href="{{ $m->link_website }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+            @endif
+            <div class="fcc-mitra-card tilt-card" style="padding:16px;background:rgba(255,255,255,.04);border-radius:18px;display:flex;align-items:center;gap:14px;border:1px solid rgba(255,255,255,.08);transition:all .2s;cursor:{{ $m->link_website ? 'pointer' : 'default' }};"
                  onmouseover="this.style.borderColor='rgba(255,200,26,.3)';this.style.background='rgba(255,255,255,.06)'"
                  onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='rgba(255,255,255,.04)'">
                 <div style="width:70px;height:70px;border-radius:14px;background:rgba(255,255,255,.05);
@@ -498,9 +501,12 @@
                     <p style="margin:0;color:#FFF;font-size:13px;font-weight:900;line-height:1.35;
                         word-break:break-word;">{{ $m->nama_mitra }}</p>
                     <p style="margin:4px 0 0;color:rgba(255,255,255,.5);font-size:10px;font-weight:700;
-                        text-transform:uppercase;letter-spacing:.5px;">Mitra Resmi</p>
+                        text-transform:uppercase;letter-spacing:.5px;">{{ $m->link_website ? 'Kunjungi Website ↗' : 'Mitra Resmi' }}</p>
                 </div>
             </div>
+            @if($m->link_website)
+            </a>
+            @endif
         </div>
         @endforeach
     </div>

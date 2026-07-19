@@ -57,6 +57,32 @@
                     @endif
                 </div>
             </form>
+
+            <!-- Category Sub-Filters -->
+            <div style="width:100%; border-top:1px solid rgba(255,255,255,.05); margin-top:16px; padding-top:16px; display:flex; gap:10px; overflow-x:auto; padding-bottom:4px;">
+                <style>
+                    .cat-pill {
+                        padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700; white-space:nowrap; text-decoration:none; transition:all 0.2s;
+                    }
+                    .cat-pill.active {
+                        background: rgba(255,200,26,.15); color: #FFC81A; border: 1px solid rgba(255,200,26,.3);
+                    }
+                    .cat-pill.inactive {
+                        background: rgba(255,255,255,.03); color: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.08);
+                    }
+                    .cat-pill.inactive:hover {
+                        background: rgba(255,255,255,.08); color: #FFF; border-color: rgba(255,255,255,.15);
+                    }
+                </style>
+                <a href="{{ request()->fullUrlWithQuery(['kategori' => null]) }}" class="cat-pill {{ !request('kategori') ? 'active' : 'inactive' }}">
+                    Semua Kategori
+                </a>
+                @foreach($kategoris ?? [] as $kat)
+                <a href="{{ request()->fullUrlWithQuery(['kategori' => $kat->id]) }}" class="cat-pill {{ request('kategori') == $kat->id ? 'active' : 'inactive' }}">
+                    {{ $kat->nama_kategori }}
+                </a>
+                @endforeach
+            </div>
         </div>
     </div>
 

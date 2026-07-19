@@ -194,7 +194,10 @@
             </div>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
                 @foreach($mitras as $m)
-                <div class="fcc-card-dark" style="padding:28px 20px;text-align:center;transition:all .22s ease;" 
+                @if($m->link_website)
+                <a href="{{ $m->link_website }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                @endif
+                <div class="fcc-card-dark" style="padding:28px 20px;text-align:center;transition:all .22s ease;cursor:{{ $m->link_website ? 'pointer' : 'default' }};" 
                      onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 30px rgba(0,0,0,0.3)';" 
                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                     <div style="width:72px;height:72px;border-radius:16px;margin:0 auto 16px;background:{{ $m->warna ? $m->warna.'18' : '#FFC81A18' }};border:1.5px solid {{ $m->warna ? $m->warna.'40' : '#FFC81A40' }};display:flex;align-items:center;justify-content:center;overflow:hidden;">
@@ -205,8 +208,11 @@
                         @endif
                     </div>
                     <p style="color:#FFF;font-size:14px;font-weight:800;margin:0;line-height:1.4;">{{ $m->nama_mitra }}</p>
-                    <p style="color:rgba(255,255,255,.5);font-size:11px;margin:6px 0 0;text-transform:uppercase;font-weight:700;letter-spacing:0.5px;">Mitra Resmi FCC</p>
+                    <p style="color:rgba(255,255,255,.5);font-size:11px;margin:6px 0 0;text-transform:uppercase;font-weight:700;letter-spacing:0.5px;">{{ $m->link_website ? 'Kunjungi Website ↗' : 'Mitra Resmi FCC' }}</p>
                 </div>
+                @if($m->link_website)
+                </a>
+                @endif
                 @endforeach
             </div>
         </div>
