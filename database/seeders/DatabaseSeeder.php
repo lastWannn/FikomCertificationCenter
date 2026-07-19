@@ -14,10 +14,15 @@ class DatabaseSeeder extends Seeder {
                   ['visi_misi_tujuan','Visi Misi & Tujuan','Visi: Menjadi pusat sertifikasi TI terkemuka di Indonesia Timur.'],
                   ['tata_cara_pendaftaran','Tata Cara Pendaftaran','Ikuti 4 langkah mudah untuk mendaftarkan diri ke kegiatan FCC.']] as [$j,$t,$i])
             KontenHalaman::firstOrCreate(['jenis'=>$j],['judul'=>$t,'isi'=>$i]);
-        foreach ([['Universitas Muslim Indonesia','UMI','#1E40AF',1],['PT. Telkom Indonesia','TLK','#DC2626',2],
-                  ['BNSP Indonesia','BNSP','#7C3AED',3],['Microsoft Indonesia','MS','#059669',4],
-                  ['Cisco Systems','CSC','#0284C7',5],['Dinas Kominfo Makassar','KOM','#065F46',6]] as [$n,$i,$c,$u])
-            Mitra::firstOrCreate(['nama_mitra'=>$n],['inisial'=>$i,'warna'=>$c,'urutan'=>$u]);
+        $mitras = [
+            ['nama_mitra'=>'Microsoft Indonesia','inisial'=>'MS','warna'=>'#059669','urutan'=>2,'logo'=>'mitra/microsoft.png'],
+            ['nama_mitra'=>'Cisco Systems','inisial'=>'CSC','warna'=>'#0284C7','urutan'=>1,'logo'=>'mitra/cisco.png'],
+            ['nama_mitra'=>'MikroTik','inisial'=>'MIK','warna'=>'#4B5563','urutan'=>3,'logo'=>'mitra/mikrotik.png'],
+        ];
+
+        foreach ($mitras as $m) {
+            Mitra::updateOrCreate(['nama_mitra' => $m['nama_mitra']], $m);
+        }
         $this->command->info('Seeder OK! Admin: admin@fcc.ac.id / password');
     }
 }

@@ -285,8 +285,8 @@
             {{-- Visi Misi mini --}}
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:2px;">
                 @foreach([
-                    ['star','Visi','#FFC81A','Pusat sertifikasi TI terkemuka di Indonesia Timur, menghasilkan SDM digital berdaya saing global.'],
-                    ['zap', 'Misi','#10B981','Pelatihan berkualitas, sertifikasi terstandar, kemitraan industri, dan kontribusi SDM nasional.'],
+                    ['star','Visi','#FFC81A','Menjadi unit pelatihan dan sertifikasi profesional pencetak tenaga kerja berkualitas, terampil, dan mandiri berstandar nasional dan internasional.'],
+                    ['zap', 'Misi','#10B981','Memberikan pelatihan & sertifikasi IT, membentuk SDM profesional, serta berkontribusi dalam peningkatan keterampilan anak bangsa.'],
                 ] as [$ic,$t,$c,$txt])
                 <div class="fcc-card" style="padding:16px 14px;">
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
@@ -399,40 +399,39 @@
             </h2>
         </div>
     </div>
-    <div class="marquee-wrap" style="padding:6px 0;">
-        <div class="marquee-track">
-            @php $allMitras = $mitras->merge($mitras->all()); @endphp
-            @foreach($allMitras as $m)
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:12px 0;max-width:1000px;margin:0 auto;">
+        @foreach($mitras as $index => $m)
+        <div class="reveal" style="transition-delay:{{ $index * 100 }}ms;">
             {{-- Mitra card: logo di atas (gambar/inisial), nama di bawah --}}
-            <div style="display:inline-flex;flex-direction:column;align-items:center;gap:10px;
-                margin:0 8px;padding:20px 18px 16px;background:#FFF;border:1.5px solid #E2E4EB;
-                border-radius:16px;flex-shrink:0;min-width:120px;max-width:140px;
-                text-align:center;cursor:default;vertical-align:top;
-                transition:all .25s;box-shadow:0 1px 3px rgba(0,0,0,.04);"
-                 onmouseover="this.style.borderColor='#FFC81A';this.style.boxShadow='0 4px 20px rgba(255,200,26,.18)';this.style.transform='translateY(-3px)'"
+            <div style="display:inline-flex;flex-direction:column;align-items:center;gap:12px;
+                padding:24px 20px 20px;background:#FFF;border:1.5px solid #E2E4EB;
+                border-radius:16px;flex-shrink:0;min-width:150px;max-width:170px;
+                text-align:center;cursor:default;
+                transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);box-shadow:0 1px 3px rgba(0,0,0,.04);"
+                 onmouseover="this.style.borderColor='#FFC81A';this.style.boxShadow='0 8px 24px rgba(255,200,26,.18)';this.style.transform='translateY(-6px) scale(1.03)'"
                  onmouseout="this.style.borderColor='#E2E4EB';this.style.boxShadow='0 1px 3px rgba(0,0,0,.04)';this.style.transform=''">
                 {{-- Logo gambar / fallback inisial --}}
-                <div style="width:64px;height:64px;border-radius:16px;background:#131218;
+                <div style="width:76px;height:76px;border-radius:14px;background:#F8F9FB;
                     display:flex;align-items:center;justify-content:center;
-                    border:2px solid rgba(255,200,26,.2);overflow:hidden;flex-shrink:0;">
+                    border:1px solid #EAECEF;overflow:hidden;flex-shrink:0;transition:all .3s ease;">
                     @if($m->logo)
                     <img src="{{ asset('storage/'.$m->logo) }}" alt="{{ $m->nama_mitra }}"
-                         style="width:56px;height:56px;object-fit:contain;border-radius:10px;">
+                         style="width:58px;height:58px;object-fit:contain;mix-blend-mode:multiply;">
                     @else
-                    <span style="color:#FFC81A;font-size:16px;font-weight:900;letter-spacing:.5px;
+                    <span style="color:#131218;font-size:18px;font-weight:900;letter-spacing:.5px;
                         font-family:monospace;">{{ Str::upper(Str::substr($m->inisial ?? $m->nama_mitra,0,3)) }}</span>
                     @endif
                 </div>
                 {{-- Nama di bawah logo --}}
                 <div>
-                    <p style="margin:0;color:#131218;font-size:12px;font-weight:800;line-height:1.35;
+                    <p style="margin:0;color:#131218;font-size:13px;font-weight:800;line-height:1.35;
                         word-break:break-word;">{{ $m->nama_mitra }}</p>
-                    <p style="margin:4px 0 0;color:#9CA3B0;font-size:9px;font-weight:700;
+                    <p style="margin:5px 0 0;color:#9CA3B0;font-size:10px;font-weight:700;
                         text-transform:uppercase;letter-spacing:.5px;">Mitra Resmi FCC</p>
                 </div>
             </div>
-            @endforeach
         </div>
+        @endforeach
     </div>
 </section>
 
