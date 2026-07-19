@@ -96,15 +96,15 @@
         }
 
         window.setStep   = setStep;
-        window.hovStep   = (i) => { clearInterval(stepTimer); setStep(i); };
-        window.unhovStep = () => startTimer();
 
         for (let i = 0; i < STEP_COUNT; i++) {
             const el = document.getElementById(`step-${i}`);
             if (el) {
-                el.addEventListener('click',      () => window.setStep(i));
-                el.addEventListener('mouseenter', () => window.hovStep(i));
-                el.addEventListener('mouseleave', () => window.unhovStep());
+                el.addEventListener('click', () => {
+                    clearInterval(stepTimer);
+                    window.setStep(i);
+                    startTimer(); // Restart timer from clicked step
+                });
             }
         }
 

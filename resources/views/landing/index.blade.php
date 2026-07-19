@@ -340,8 +340,7 @@
                     ['check',       'Ikuti Kegiatan',    'Setelah Admin memverifikasi, kamu resmi terdaftar dan siap mengikuti kegiatan.'],
                 ] as $si=>[$ic,$t,$d])
                 <div id="step-{{ $si }}" class="reveal" style="text-align:center;transition-delay:{{ $si*100 }}ms;cursor:pointer;"
-                     onclick="setStep({{ $si }})"
-                     onmouseenter="hovStep({{ $si }})" onmouseleave="unhovStep({{ $si }})">
+                     onclick="setStep({{ $si }})">
                     <div id="step-box-{{ $si }}"
                          style="width:70px;height:70px;border-radius:20px;margin:0 auto 16px;position:relative;
                                 transition:all .3s ease;display:flex;align-items:center;justify-content:center;
