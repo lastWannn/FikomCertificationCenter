@@ -26,7 +26,23 @@ class PelatihanController extends Controller
     public function store(StorePelatihanRequest $request) {
         $data = $request->validated();
         if ($request->hasFile('gambar')) $data['gambar'] = $request->file('gambar');
-        $this->service->create($data);
+        $pelatihan = $this->service->create($data);
+        
+        // Find if there is an active kegiatan associated with this pelatihan's schedules
+        $kegiatan = \App\Models\Kegiatan::whereHas('kegiatanPelatihan.jadwalPelatihan', function($q) use ($pelatihan) {
+            $q->where('pelatihan_id', $pelatihan->id);
+        })->latest()->first();
+
+        if ($kegiatan && $request->boolean('langsung_aktifkan')) {
+            $initialJadwal = $pelatihan->jadwal()->latest()->first();
+            if ($initialJadwal && !empty($initialJadwal->biaya_setup)) {
+                return redirect()->route('admin.kegiatan.show', $kegiatan->hashid)
+                    ->with('success', 'Pelatihan berhasil ditambahkan, langsung aktif, dan biaya diatur.');
+            }
+            return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
+                ->with('success', 'Pelatihan berhasil ditambahkan dan langsung aktif. Silakan tentukan biaya pendaftarannya agar tidak terpublikasi sebagai kegiatan gratis.');
+        }
+
         return redirect()->route('admin.pelatihan.index')
             ->with('success', 'Pelatihan berhasil ditambahkan.');
     }

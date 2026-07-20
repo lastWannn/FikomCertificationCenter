@@ -137,6 +137,37 @@
                     </div>
                 </div>
 
+                <!-- Kurikulum / Materi -->
+                @php
+                    $materiList = collect();
+                    if ($kegiatan->jenis_kegiatan === 'pelatihan') {
+                        $materiList = $kegiatan->kegiatanPelatihan?->jadwalPelatihan?->pelatihan?->materi ?? collect();
+                    } else {
+                        $materiList = $kegiatan->kegiatanSertifikasi?->jadwalSertifikasi?->sertifikasi?->materi ?? collect();
+                    }
+                @endphp
+
+                @if($materiList->isNotEmpty())
+                <div style="margin-bottom:32px;">
+                    <h3 style="font-size:12px; font-weight:800; color:#FFF; margin:0 0 16px; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:6px;">
+                        @include('components.icon',['name'=>'book-open','size'=>13,'style'=>'color:#FFC81A']) Kurikulum & Materi
+                    </h3>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        @foreach($materiList as $idx => $mt)
+                        <div style="background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:14px 16px; display:flex; gap:16px; align-items:flex-start; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,.04)'" onmouseout="this.style.background='rgba(255,255,255,.02)'">
+                            <div style="width:28px; height:28px; border-radius:8px; background:rgba(255,200,26,.1); color:#FFC81A; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; flex-shrink:0;">
+                                {{ $idx + 1 }}
+                            </div>
+                            <div>
+                                <h4 style="margin:0 0 6px; color:#FFF; font-size:14px; font-weight:700;">{{ $mt->judul_materi }}</h4>
+                                <p style="margin:0; color:rgba(255,255,255,.5); font-size:13px; line-height:1.5;">{{ $mt->deskripsi ?? 'Tidak ada deskripsi spesifik untuk materi ini.' }}</p>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 <!-- Registration Actions / Form -->
                 <div style="border-top:1.5px solid rgba(255,255,255,.08); padding-top:24px;">
                     @if(!$kegiatan->isFull())

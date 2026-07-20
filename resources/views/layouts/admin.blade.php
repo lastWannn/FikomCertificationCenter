@@ -79,7 +79,10 @@
               'label' => 'KONTEN',
               'items' => [
                   ['route'=>'admin.informasi.index',     'icon'=>'info',             'label'=>'Informasi & FAQ'],
+                  ['route'=>'admin.mitra.index',         'icon'=>'users',            'label'=>'Mitra / Partner'],
+                  ['route'=>'admin.testimoni.index',     'icon'=>'message-square',   'label'=>'Kata Mereka'],
                   ['route'=>'admin.rekening.index',      'icon'=>'wallet',           'label'=>'No. Rekening'],
+                  ['route'=>'admin.kontak.edit',         'icon'=>'map-pin',          'label'=>'Kontak & Alamat'],
               ],
           ],
       ];
@@ -250,6 +253,102 @@ document.addEventListener('click', function(e) {
     const drop = document.getElementById('notif-drop');
     if (drop && !drop.contains(e.target)) {
         drop.classList.add('hidden');
+    }
+});
+
+// Dynamic Premium File Alert Modal
+window.fccShowFileAlert = function(title, message) {
+    let alertModal = document.getElementById('fcc-global-file-alert');
+    if (!alertModal) {
+        alertModal = document.createElement('div');
+        alertModal.id = 'fcc-global-file-alert';
+        alertModal.style = 'display:none;position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);align-items:center;justify-content:center;font-family:sans-serif;';
+        alertModal.innerHTML = `
+            <div style="background:#1C1B22;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px;max-width:400px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,0.5);text-align:center;animation:fccModalIn .25s ease;">
+                <div style="width:56px;height:56px;border-radius:16px;background:rgba(239,68,68,.15);border:1.5px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <h3 id="fcc-file-alert-title" style="color:#FFF;font-size:18px;font-weight:900;margin:0 0 8px;font-family:inherit;">Format Tidak Sesuai</h3>
+                <p id="fcc-file-alert-msg" style="color:rgba(255,255,255,.55);font-size:14px;margin:0 0 24px;line-height:1.6;font-family:inherit;"></p>
+                <button onclick="document.getElementById('fcc-global-file-alert').style.display='none'" style="padding:11px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#FFC81A,#FFD84D);color:#111;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(255,200,26,.3);transition:all .2s;font-family:inherit;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">Mengerti</button>
+            </div>
+            <style>
+                @keyframes fccModalIn { from { opacity:0; transform:scale(.95) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+            </style>
+        `;
+        document.body.appendChild(alertModal);
+        
+        alertModal.addEventListener('click', function(evt) {
+            if (evt.target === this) this.style.display = 'none';
+        });
+    }
+    document.getElementById('fcc-file-alert-title').innerText = title;
+    document.getElementById('fcc-file-alert-msg').innerText = message;
+    alertModal.style.display = 'flex';
+};
+
+// Global File Input Change Listener
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.type === 'file') {
+        const input = e.target;
+        if (!input.files || input.files.length === 0) return;
+        const file = input.files[0];
+        
+        // 1. Extension Validation
+        const accept = input.getAttribute('accept');
+        if (accept) {
+            const fileName = file.name.toLowerCase();
+            const fileExt = '.' + fileName.split('.').pop();
+            let allowed = false;
+            const acceptTypes = accept.split(',').map(t => t.trim());
+            
+            for (let type of acceptTypes) {
+                if (type === 'image/*') {
+                    if (['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'].includes(fileExt)) {
+                        allowed = true;
+                        break;
+                    }
+                } else if (type.startsWith('.')) {
+                    if (type === fileExt) {
+                        allowed = true;
+                        break;
+                    }
+                } else if (type === 'application/pdf') {
+                    if (fileExt === '.pdf') {
+                        allowed = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (!allowed) {
+                window.fccShowFileAlert('Ekstensi File Salah', `Format file "${file.name}" tidak didukung. Tipe file yang diperbolehkan: ${accept}`);
+                input.value = '';
+                return;
+            }
+        }
+        
+        // 2. Size Validation
+        let maxBytes = 2 * 1024 * 1024; // Default 2MB
+        let sizeText = '2 MB';
+        
+        // Adjust max size based on input properties or names
+        if (input.name === 'file_materi') {
+            maxBytes = 20 * 1024 * 1024; // 20MB
+            sizeText = '20 MB';
+        } else if (input.name === 'bukti_bayar') {
+            maxBytes = 5 * 1024 * 1024; // 5MB
+            sizeText = '5 MB';
+        } else if (input.name === 'berita_acara') {
+            maxBytes = 10 * 1024 * 1024; // 10MB
+            sizeText = '10 MB';
+        }
+        
+        if (file.size > maxBytes) {
+            window.fccShowFileAlert('Ukuran File Terlalu Besar', `Ukuran file "${file.name}" melebihi batas maksimal yang diperbolehkan (${sizeText}).`);
+            input.value = '';
+            return;
+        }
     }
 });
 </script>

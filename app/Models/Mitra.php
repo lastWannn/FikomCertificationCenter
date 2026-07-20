@@ -3,5 +3,5 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 class Mitra extends Model {
     protected $table='mitra';
-    protected $fillable=['nama_mitra','logo','inisial','warna','deskripsi','link_website'];
+    protected $fillable=['nama_mitra','logo','inisial','warna','deskripsi','link_website','urutan'];
 }

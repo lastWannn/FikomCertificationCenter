@@ -28,21 +28,22 @@ class LandingController extends Controller
             'mitra'       => Mitra::count(),
         ];
 
-        $mitras    = Mitra::all();
+        $mitras    = Mitra::orderBy('urutan', 'asc')->get();
         $arsips    = ArsipKegiatan::with('kegiatan')->orderBy('created_at','desc')->limit(5)->get();
         $konten    = KontenHalaman::all()->keyBy('jenis');
         $faqs      = Informasi::faq()->latest()->get();
         $infos     = Informasi::info()->aktif()->latest()->limit(3)->get();
+        $testimonis = \App\Models\Testimoni::latest()->get();
 
         return view('landing.index', compact(
-            'kegiatanTerbaru', 'stats', 'mitras', 'arsips', 'konten', 'faqs', 'infos'
+            'kegiatanTerbaru', 'stats', 'mitras', 'arsips', 'konten', 'faqs', 'infos', 'testimonis'
         ));
     }
 
     public function profil()
     {
         $konten = KontenHalaman::all()->keyBy('jenis');
-        $mitras = Mitra::all();
+        $mitras = Mitra::orderBy('urutan', 'asc')->get();
         return view('landing.profil', compact('konten','mitras'));
     }
 
@@ -54,8 +55,20 @@ class LandingController extends Controller
         if ($request->jenis && in_array($request->jenis, ['pelatihan','sertifikasi'])) {
             $query->where('jenis_kegiatan', $request->jenis);
         }
+        if ($request->kategori) {
+            $query->where(function($q) use ($request) {
+                $q->whereHas('kegiatanPelatihan.jadwalPelatihan.pelatihan', function($q) use ($request) {
+                    $q->where('kategori_id', $request->kategori);
+                })->orWhereHas('kegiatanSertifikasi.jadwalSertifikasi.sertifikasi', function($q) use ($request) {
+                    $q->where('kategori_id', $request->kategori);
+                });
+            });
+        }
+        
         $kegiatan = $query->paginate(9);
-        return view('landing.kegiatan', compact('kegiatan'));
+        $kategoris = \App\Models\Kategori::all();
+        
+        return view('landing.kegiatan', compact('kegiatan', 'kategoris'));
     }
 
     public function show(Kegiatan $kegiatan)

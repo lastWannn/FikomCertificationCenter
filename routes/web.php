@@ -36,6 +36,9 @@ use App\Http\Controllers\Admin\{
     ExportController,
     ChartController,
     QrController              as AdminQr,
+    MitraController,
+    KontakController,
+    TestimoniController,
 };
 
 // Peserta
@@ -216,6 +219,10 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
 
     /* KONTEN */
     Route::resource('informasi', InformasiController::class);
+    Route::resource('mitra', MitraController::class);
+    Route::resource('testimoni', TestimoniController::class)->except(['create', 'show', 'edit']);
+    Route::get('kontak', [KontakController::class, 'edit'])->name('kontak.edit');
+    Route::put('kontak', [KontakController::class, 'update'])->name('kontak.update');
     Route::resource('rekening',  RekeningController::class);
     Route::post('rekening/{rekening}/aktifkan', [RekeningController::class,'aktifkan'])->name('rekening.aktifkan');
 
