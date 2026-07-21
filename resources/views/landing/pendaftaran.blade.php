@@ -27,7 +27,7 @@
                 ] as $i=>[$ic,$t,$d])
                 <div id="step-wrapper-{{ $i }}" style="text-align:center;cursor:pointer;padding:4px;" onclick="setStepInline({{ $i }})" onmouseenter="clearInterval(stepTimer); setStepInline({{ $i }})" onmouseleave="startTimer()">
                     <div id="step-box-{{ $i }}" style="width:70px;height:70px;border-radius:20px;margin:0 auto 16px;position:relative;transition:all .3s ease;
-                        background:{{ $i===0 ? 'linear-gradient(135deg,#FFC81A,#FFD84D)' : 'rgba(255,255,255,.03)' }};
+                        background:{{ $i===0 ? 'linear-gradient(135deg,#FFC81A,#FFD84D)' : '#16151c' }};
                         border:{{ $i===0 ? '2px solid transparent' : '2px solid rgba(255,255,255,.08)' }};
                         box-shadow:{{ $i===0 ? '0 8px 28px rgba(255,200,26,.45)' : '0 2px 8px rgba(0,0,0,.2)' }};
                         display:flex;align-items:center;justify-content:center;">
@@ -88,7 +88,7 @@
             if (box) {
                 box.style.background = isActive
                     ? 'linear-gradient(135deg,#FFC81A,#FFD84D)'
-                    : isPast ? 'rgba(255,255,255,.05)' : 'rgba(255,255,255,.03)';
+                    : isPast ? '#1a1921' : '#16151c';
                 box.style.border = isActive ? '2px solid transparent'
                     : isPast ? '2px solid rgba(255,200,26,.3)' : '2px solid rgba(255,255,255,.08)';
                 box.style.boxShadow = isActive ? '0 8px 28px rgba(255,200,26,.45)' : '0 2px 8px rgba(0,0,0,.2)';
