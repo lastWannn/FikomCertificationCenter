@@ -222,21 +222,35 @@
     @if(session('success') || session('error'))
     <div style="padding:12px 20px 0;">
       @if(session('success'))
-      <div style="padding:11px 16px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);
+      <div class="fcc-alert" style="padding:11px 16px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);
           border-radius:10px;color:#10B981;font-size:13px;font-weight:600;
-          display:flex;align-items:center;gap:8px;">
+          display:flex;align-items:center;gap:8px;transition:all 0.5s ease;opacity:1;transform:translateY(0);">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
         {{ session('success') }}
       </div>
       @endif
       @if(session('error'))
-      <div style="padding:11px 16px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);
+      <div class="fcc-alert" style="padding:11px 16px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);
           border-radius:10px;color:#EF4444;font-size:13px;font-weight:600;
-          display:flex;align-items:center;gap:8px;">
+          display:flex;align-items:center;gap:8px;transition:all 0.5s ease;opacity:1;transform:translateY(0);">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         {{ session('error') }}
       </div>
       @endif
+    </div>
+    @endif
+    @if($errors->any())
+    <div style="padding:12px 20px 0;">
+      <div class="fcc-alert" style="padding:11px 16px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);
+          border-radius:10px;color:#EF4444;font-size:13px;font-weight:600;
+          display:flex;align-items:flex-start;gap:8px;transition:all 0.5s ease;opacity:1;transform:translateY(0);">
+        <svg style="margin-top:2px;flex-shrink:0;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <ul style="margin:0;padding-left:16px;">
+          @foreach($errors->all() as $err)
+            <li>{{ $err }}</li>
+          @endforeach
+        </ul>
+      </div>
     </div>
     @endif
 
@@ -351,6 +365,20 @@ document.addEventListener('change', function(e) {
         }
     }
 });
+
+// Auto-hide alerts after 3.5 seconds
+setTimeout(() => {
+    document.querySelectorAll('.fcc-alert').forEach(alert => {
+        alert.style.opacity = '0';
+        alert.style.transform = 'translateY(-10px)';
+        alert.style.marginBottom = '-' + alert.offsetHeight + 'px';
+        setTimeout(() => {
+            const wrapper = alert.parentElement;
+            alert.remove();
+            if(wrapper && wrapper.children.length === 0) wrapper.remove();
+        }, 500);
+    });
+}, 3500);
 </script>
 @endpush
 @endsection

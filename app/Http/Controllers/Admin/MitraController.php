@@ -26,10 +26,12 @@ class MitraController extends Controller
             'nama_mitra' => 'required|string|max:255',
             'inisial' => 'required|string|max:10',
             'warna' => 'nullable|string|max:20',
-            'urutan' => 'nullable|integer',
+            'urutan' => 'nullable|integer|unique:mitra,urutan',
             'deskripsi' => 'nullable|string',
             'link_website' => 'nullable|url',
             'logo' => 'nullable|image|max:2048'
+        ], [
+            'urutan.unique' => 'Nomor urutan ini sudah dipakai oleh mitra lain. Silakan pilih urutan lain.'
         ]);
 
         $data = $request->except('logo');
@@ -54,10 +56,12 @@ class MitraController extends Controller
             'nama_mitra' => 'required|string|max:255',
             'inisial' => 'required|string|max:10',
             'warna' => 'nullable|string|max:20',
-            'urutan' => 'nullable|integer',
+            'urutan' => 'nullable|integer|unique:mitra,urutan,' . $mitra->id,
             'deskripsi' => 'nullable|string',
             'link_website' => 'nullable|url',
             'logo' => 'nullable|image|max:2048'
+        ], [
+            'urutan.unique' => 'Nomor urutan ini sudah dipakai oleh mitra lain. Silakan pilih urutan lain.'
         ]);
 
         $data = $request->except('logo');

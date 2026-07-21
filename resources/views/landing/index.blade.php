@@ -493,7 +493,7 @@
                     <img src="{{ asset('storage/'.$m->logo) }}" alt="{{ $m->nama_mitra }}"
                          style="width:52px;height:52px;object-fit:contain;filter:brightness(0) invert(1);opacity:.85;">
                     @else
-                    <span style="color:#FFF;font-size:16px;font-weight:900;letter-spacing:.5px;
+                    <span style="color:{{ $m->warna ?? '#FFC81A' }};font-size:16px;font-weight:900;letter-spacing:.5px;
                         font-family:monospace;">{{ Str::upper(Str::substr($m->inisial ?? $m->nama_mitra,0,3)) }}</span>
                     @endif
                 </div>
