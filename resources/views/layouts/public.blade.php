@@ -393,7 +393,7 @@
                     <input type="checkbox" name="agree" required style="width:16px;height:16px;accent-color:#FFC81A;cursor:pointer;flex-shrink:0;margin-top:2px;">
                     <label style="font-size:12px;color:rgba(255,255,255,.6);cursor:pointer;line-height:1.5;">
                         Saya menyetujui
-                        <a href="{{ route('landing.profil') }}" target="_blank" style="color:#FFC81A;font-weight:700;text-decoration:none;">syarat & ketentuan</a>
+                        <a href="javascript:void(0)" onclick="openTnCModal()" style="color:#FFC81A;font-weight:700;text-decoration:none;">syarat & ketentuan</a>
                         serta kebijakan privasi FCC UMI.
                     </label>
                 </div>
@@ -508,7 +508,45 @@
     </div>
 </div>
 
+{{-- MODAL SYARAT & KETENTUAN --}}
+<div id="tncModal" style="display:none;position:fixed;inset:0;background:rgba(14,13,20,.8);backdrop-filter:blur(5px);z-index:99999;align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+    <div style="background:#131218;width:100%;max-width:550px;border-radius:24px;padding:36px;box-shadow:0 24px 64px rgba(0,0,0,.4);border:1px solid rgba(255,200,26,.2);position:relative;margin:auto;">
+        <button onclick="closeTnCModal()" style="position:absolute;top:20px;right:20px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;padding:6px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
+            <div style="width:48px;height:48px;border-radius:14px;background:rgba(255,200,26,.1);display:flex;align-items:center;justify-content:center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <div>
+                <h3 style="color:#FFF;font-size:20px;font-weight:900;margin:0 0 4px;">Syarat & Ketentuan</h3>
+                <p style="color:rgba(255,255,255,.5);font-size:13px;margin:0;">Fikom Certification Center UMI</p>
+            </div>
+        </div>
+        
+        <div style="color:rgba(255,255,255,.75);font-size:13.5px;line-height:1.7;max-height:400px;overflow-y:auto;padding-right:10px;margin-bottom:24px;" class="fcc-custom-scroll">
+            <ol style="padding-left:16px;margin:0;display:flex;flex-direction:column;gap:12px;">
+                <li><strong style="color:#FFF;">Kebenaran Data:</strong> Peserta wajib mengisi seluruh data diri pendaftaran (Nama, NIM, Email, dll) dengan benar, akurat, dan dapat dipertanggungjawabkan.</li>
+                <li><strong style="color:#FFF;">Kerahasiaan Akun:</strong> Akun yang telah didaftarkan bersifat pribadi. Peserta dilarang keras memindahtangankan akun, memberikan password, atau menyuruh orang lain mengikuti ujian atas namanya.</li>
+                <li><strong style="color:#FFF;">Pelaksanaan Ujian:</strong> Peserta wajib mengikuti seluruh tahapan sertifikasi sesuai dengan jadwal yang telah ditentukan oleh Fikom Certification Center UMI.</li>
+                <li><strong style="color:#FFF;">Larangan Kecurangan:</strong> Segala bentuk kecurangan, perjokian, pencurian soal, maupun pelanggaran etika akademik selama ujian berlangsung akan mengakibatkan sanksi <strong>Diskualifikasi</strong> secara sepihak tanpa pengembalian biaya.</li>
+                <li><strong style="color:#FFF;">Keputusan Mutlak:</strong> Keputusan kelulusan dari tim penguji atau instruktur sertifikasi bersifat mutlak dan tidak dapat diganggu gugat.</li>
+                <li><strong style="color:#FFF;">Kebijakan Privasi:</strong> Data yang dimasukkan akan digunakan semata-mata untuk keperluan sertifikasi dan laporan akademik di lingkungan FIKOM UMI. Sistem ini tidak akan menyebarluaskan data Anda kepada pihak ketiga di luar kepentingan kampus.</li>
+            </ol>
+        </div>
+        
+        <button onclick="closeTnCModal()" class="fcc-btn-gold" style="width:100%;justify-content:center;padding:14px;font-size:14.5px;border-radius:12px;font-weight:800;">
+            Saya Mengerti
+        </button>
+    </div>
+</div>
+
 <style>
+.fcc-custom-scroll::-webkit-scrollbar { width:6px; }
+.fcc-custom-scroll::-webkit-scrollbar-track { background:rgba(255,255,255,.02); border-radius:10px; }
+.fcc-custom-scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1); border-radius:10px; }
+.fcc-custom-scroll::-webkit-scrollbar-thumb:hover { background:rgba(255,200,26,.3); }
+
 .otp-box-pub, .otp-box-reset {
     width:50px;height:56px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);
     border-radius:12px;text-align:center;font-size:24px;font-weight:900;color:#FFF;
@@ -544,6 +582,13 @@
         modal.style.pointerEvents = 'none';
         dialog.style.transform = 'scale(0.92)';
         document.body.style.overflow = '';
+    }
+
+    function openTnCModal() {
+        document.getElementById('tncModal').style.display = 'flex';
+    }
+    function closeTnCModal() {
+        document.getElementById('tncModal').style.display = 'none';
     }
 
     function switchAuthTab(tab) {

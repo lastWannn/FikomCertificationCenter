@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
         Peserta::firstOrCreate(
             ['email' => 'mahasiswa@umi.ac.id'],
             [
-                'nama' => 'Andi Setiawan',
+                'nama' => 'mahasiswa',
                 'alamat' => 'Perintis Kemerdekaan, Makassar',
                 'kelamin' => 'L',
                 'instansi' => 'Fakultas Ilmu Komputer UMI',
@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
         Peserta::firstOrCreate(
             ['email' => 'umum@example.com'],
             [
-                'nama' => 'Siti Aminah',
+                'nama' => 'umum',
                 'alamat' => 'Jl. AP Pettarani, Makassar',
                 'kelamin' => 'P',
                 'instansi' => 'Freelance',
