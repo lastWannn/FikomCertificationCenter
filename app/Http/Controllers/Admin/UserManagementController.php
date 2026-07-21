@@ -26,8 +26,11 @@ class UserManagementController extends Controller
             ],
         ]);
     }
-    public function detailPeserta(Peserta $peserta) {
+    public function detailPeserta(\Illuminate\Http\Request $request, Peserta $peserta) {
         $peserta->load(['pendaftaran.kegiatan','pendaftaran.pembayaran','pendaftaran.sertifikat']);
+        if ($request->ajax()) {
+            return view('admin.pengguna._detail-modal', compact('peserta'));
+        }
         return view('admin.pengguna.detail-peserta', compact('peserta'));
     }
     public function toggleStatusPeserta(ToggleStatusRequest $request, Peserta $peserta) {

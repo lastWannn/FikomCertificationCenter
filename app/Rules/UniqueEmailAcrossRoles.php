@@ -1,7 +1,7 @@
 <?php
 namespace App\Rules;
 
-use App\Models\{Admin, Peserta, Instruktur};
+use App\Models\{Admin, Peserta};
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -26,7 +26,6 @@ class UniqueEmailAcrossRoles implements ValidationRule
         $checks = [
             'admins'    => fn () => Admin::where('email', $value),
             'peserta'   => fn () => Peserta::where('email', $value),
-            'instruktur'=> fn () => Instruktur::where('email', $value),
         ];
 
         foreach ($checks as $table => $query) {

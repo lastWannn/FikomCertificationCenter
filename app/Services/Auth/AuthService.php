@@ -38,5 +38,4 @@ class AuthService
         Auth::guard('admin')->logout();
         Auth::guard('peserta')->logout();
     }
-    }
 }

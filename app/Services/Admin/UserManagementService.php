@@ -19,7 +19,7 @@ class UserManagementService
     public function hapus(Peserta $peserta): void
     {
         if ($peserta->pendaftaran()->whereIn('status_pendaftaran',['terdaftar'])->count()) {
-            throw new \RuntimeException('Peserta masih memiliki pendaftaran aktif dan tidak bisa dihapus.');
+            throw new \RuntimeException('Peserta masih memiliki pendaftaran aktif. Selesaikan atau batalkan pendaftaran terlebih dahulu sebelum menghapus akun.');
         }
         $peserta->delete();
     }
