@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Pelatihan\{StorePelatihanRequest, UpdatePelatihanRequest};
-use App\Models\{Pelatihan, Kategori, Instruktur};
+use App\Models\{Pelatihan, Kategori};
 use App\Services\Admin\PelatihanService;
 
 class PelatihanController extends Controller
@@ -12,15 +12,13 @@ class PelatihanController extends Controller
 
     public function index() {
         return view('admin.pelatihan.index', [
-            'pelatihan'  => Pelatihan::with(['kategori','instruktur'])->paginate(10),
+            'pelatihan'  => Pelatihan::with(['kategori'])->paginate(10),
             'kategori'   => Kategori::all(),
-            'instruktur' => Instruktur::all(),
         ]);
     }
     public function create() {
         return view('admin.pelatihan.create', [
             'kategori'   => Kategori::all(),
-            'instruktur' => Instruktur::all(),
         ]);
     }
     public function store(StorePelatihanRequest $request) {
@@ -53,7 +51,6 @@ class PelatihanController extends Controller
     public function edit(Pelatihan $pelatihan) {
         return view('admin.pelatihan.edit', array_merge(compact('pelatihan'), [
             'kategori'   => Kategori::all(),
-            'instruktur' => Instruktur::all(),
         ]));
     }
     public function update(UpdatePelatihanRequest $request, Pelatihan $pelatihan) {

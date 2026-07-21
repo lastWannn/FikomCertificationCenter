@@ -22,7 +22,6 @@ class LoginController extends Controller
             $request->session()->regenerate();
             $redirect = match ($result['guard']) {
                 'admin'      => 'admin.dashboard',
-                'instruktur' => route_exists('instruktur.dashboard') ? 'instruktur.dashboard' : 'landing.index',
                 default      => 'peserta.dashboard',
             };
             
@@ -52,8 +51,7 @@ class LoginController extends Controller
     {
         $request->validate(['email' => 'required|email'],['email.required'=>'Email wajib diisi.','email.email'=>'Format email tidak valid.']);
         $exists = \App\Models\Peserta::where('email',$request->email)->exists()
-               || \App\Models\Admin::where('email',$request->email)->exists()
-               || \App\Models\Instruktur::where('email',$request->email)->exists();
+               || \App\Models\Admin::where('email',$request->email)->exists();
         if (!$exists) {
             return back()->withErrors(['email' => 'Email tidak ditemukan dalam sistem kami.'])->withInput();
         }

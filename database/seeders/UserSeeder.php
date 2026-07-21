@@ -24,32 +24,7 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // 2. Instruktur
-        Instruktur::firstOrCreate(
-            ['email' => 'instruktur@fcc.com'],
-            [
-                'no_identitas' => '1234567890',
-                'nama' => 'Budi Santoso, M.Kom',
-                'alamat' => 'Jl. Pendidikan No. 1, Makassar',
-                'kelamin' => 'L',
-                'no_hp' => '081234567890',
-                'keahlian' => 'Web Development',
-                'password' => Hash::make('password')
-            ]
-        );
 
-        Instruktur::firstOrCreate(
-            ['email' => 'ams@fcc.com'],
-            [
-                'no_identitas' => '0987654321',
-                'nama' => 'Prof. Dr. Aan Maulana Sampe, S.Kom., M.Eng., Ph.D.',
-                'alamat' => 'Jl. Kemerdekaan No. 45, Makassar',
-                'kelamin' => 'P',
-                'no_hp' => '081987654321',
-                'keahlian' => 'Networking',
-                'password' => Hash::make('password')
-            ]
-        );
 
         // 3. Peserta Dummy (Mahasiswa UMI)
         Peserta::firstOrCreate(

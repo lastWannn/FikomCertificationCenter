@@ -18,7 +18,7 @@
                     <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.7px;">Kode</th>
                     <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;">Judul</th>
                     <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;">Kategori</th>
-                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;">Instruktur</th>
+
                     <th style="padding:12px 20px;text-align:center;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;">Aksi</th>
                 </tr>
             </thead>
@@ -31,7 +31,7 @@
                         <p style="font-size:11px;color:#A0A3AD;margin:2px 0 0;">{{ $p->jadwal()->count() }} jadwal &bull; {{ $p->materi()->count() }} materi</p>
                     </td>
                     <td style="padding:12px 12px;font-size:13px;color:#6B7280;">{{ $p->kategori->nama_kategori ?? '-' }}</td>
-                    <td style="padding:12px 12px;font-size:13px;color:#6B7280;">{{ $p->instruktur->nama ?? '-' }}</td>
+
                     <td style="padding:12px 20px;text-align:center;">
                         <div style="display:inline-flex;gap:8px;">
                             <a href="{{ route('admin.pelatihan.show', $p) }}" title="Detail" style="color:#3B82F6;display:flex;">@include('components.icon',['name'=>'eye','size'=>16])</a>
@@ -92,22 +92,10 @@
                 </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
-                <div>
-                    <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Judul Pelatihan *</label>
-                    <input type="text" name="judul" value="{{ old('judul') }}" placeholder="Judul program" required class="fcc-input">
-                    @error('judul')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-                </div>
-                <div>
-                    <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Instruktur *</label>
-                    <select name="instruktur_id" required class="fcc-input">
-                        <option value="">-- Pilih Instruktur --</option>
-                        @foreach($instruktur as $i)
-                        <option value="{{ $i->id }}" {{ old('instruktur_id')==$i->id?'selected':'' }}>{{ $i->nama }}</option>
-                        @endforeach
-                    </select>
-                    @error('instruktur_id')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-                </div>
+            <div style="margin-bottom:14px;">
+                <label style="font-size:10px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Judul Pelatihan *</label>
+                <input type="text" name="judul" value="{{ old('judul') }}" placeholder="Judul program" required class="fcc-input">
+                @error('judul')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
             </div>
 
             <div style="margin-bottom:14px;">
