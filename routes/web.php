@@ -67,10 +67,12 @@ Route::get('/api/search',    [LandingController::class,'search'])->name('landing
 Route::middleware('guest.fcc')->group(function () {
     Route::get('/masuk',          LivewireLogin::class)->name('auth.login');     // Livewire
     Route::post('/masuk',         [LoginController::class,'login'])->name('auth.login.post');
-    Route::get('/daftar',         LivewireRegister::class)->name('auth.register'); // Livewire
+    Route::get('/daftar',         [RegisterController::class,'showRegister'])->name('auth.register');
     Route::post('/daftar',        [RegisterController::class,'register'])->name('auth.register.post');
+    Route::post('/daftar/verify', [RegisterController::class,'verifyOtp'])->name('auth.register.verify');
     Route::get('/lupa-password',  [LoginController::class,'showForgot'])->name('auth.forgot');
     Route::post('/lupa-password', [LoginController::class,'sendReset'])->name('auth.forgot.post');
+    Route::post('/lupa-password/verify', [LoginController::class,'verifyResetOtp'])->name('auth.forgot.verify');
 });
 Route::post('/keluar', [LoginController::class,'logout'])->name('auth.logout');
 

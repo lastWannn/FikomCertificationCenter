@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
-    public function __construct(private AuthService $service) {}
+    public function __construct(private AuthService $service, private \App\Services\Auth\OtpService $otpService) {}
 
     public function showLogin()  { return view('auth.login'); }
     public function showForgot() { return view('auth.forgot'); }
@@ -46,16 +46,57 @@ class LoginController extends Controller
         }
     }
 
-    /** FIX: Method ini sebelumnya tidak ada → MethodNotFoundError */
     public function sendReset(Request $request)
     {
         $request->validate(['email' => 'required|email'],['email.required'=>'Email wajib diisi.','email.email'=>'Format email tidak valid.']);
         $exists = \App\Models\Peserta::where('email',$request->email)->exists()
                || \App\Models\Admin::where('email',$request->email)->exists();
         if (!$exists) {
+            if ($request->ajax()) {
+                return response()->json(['errors' => ['email' => ['Email tidak terdaftar.']]], 422);
+            }
             return back()->withErrors(['email' => 'Email tidak ditemukan dalam sistem kami.'])->withInput();
         }
-        return back()->with('success','Jika email terdaftar, instruksi reset password telah dikirim. Periksa inbox Anda.');
+        
+        $this->otpService->generateAndSend($request->email, 'reset_password');
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'require_otp' => true,
+                'email' => $request->email,
+                'message' => 'Kode OTP 4 digit telah dikirim ke email Anda.'
+            ]);
+        }
+        return back()->with('success','Kode OTP telah dikirim. Periksa inbox Anda.');
+    }
+
+    public function verifyResetOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required|digits:4',
+            'password' => 'required|min:8|confirmed'
+        ]);
+
+        $this->otpService->verify($request->email, $request->otp, 'reset_password');
+
+        $peserta = \App\Models\Peserta::where('email', $request->email)->first();
+        if ($peserta) {
+            $peserta->update(['password' => \Illuminate\Support\Facades\Hash::make($request->password)]);
+        } else {
+            $admin = \App\Models\Admin::where('email', $request->email)->first();
+            if ($admin) $admin->update(['password' => \Illuminate\Support\Facades\Hash::make($request->password)]);
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'redirect' => route('auth.login'),
+                'message' => 'Password berhasil diubah. Silakan masuk menggunakan password baru.'
+            ]);
+        }
+        return redirect()->route('auth.login')->with('success', 'Password berhasil diubah.');
     }
 
     public function logout(Request $request)

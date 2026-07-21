@@ -312,8 +312,9 @@
                     </div>
                 </div>
                 <div style="margin-bottom:18px;">
-                    <div style="display:flex;justify-content:between;align-items:center;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                         <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.7px;">Password *</label>
+                        <a href="javascript:void(0)" onclick="switchAuthTab('forgot')" style="font-size:12px;color:#FFC81A;font-weight:600;text-decoration:none;">Lupa Password?</a>
                     </div>
                     <div style="position:relative;">
                         @include('components.icon',['name'=>'lock','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
@@ -353,27 +354,176 @@
                         <input type="email" name="email" required placeholder="email@example.com" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
                     </div>
                 </div>
-                <div style="margin-bottom:14px;">
-                    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Password *</label>
-                    <div style="position:relative;">
-                        @include('components.icon',['name'=>'lock','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
-                        <input type="password" name="password" required placeholder="Min. 8 karakter" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+                    <div>
+                        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">No. HP *</label>
+                        <input type="text" name="no_hp" required placeholder="08xxxxxxxxxx" class="fcc-input-dark" style="width:100%;box-sizing:border-box;padding-left:14px;">
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Jenis Kelamin *</label>
+                        <div style="display:flex;gap:8px;">
+                            <label style="flex:1;cursor:pointer;position:relative;">
+                                <input type="radio" name="kelamin" value="L" required style="position:absolute;opacity:0;" class="fcc-radio-pill">
+                                <div class="radio-pill-bg" style="padding:10px;text-align:center;border-radius:10px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-size:12.5px;font-weight:600;transition:all .2s;box-sizing:border-box;">Laki-laki</div>
+                            </label>
+                            <label style="flex:1;cursor:pointer;position:relative;">
+                                <input type="radio" name="kelamin" value="P" required style="position:absolute;opacity:0;" class="fcc-radio-pill">
+                                <div class="radio-pill-bg" style="padding:10px;text-align:center;border-radius:10px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-size:12.5px;font-weight:600;transition:all .2s;box-sizing:border-box;">Perempuan</div>
+                            </label>
+                        </div>
                     </div>
                 </div>
-                <div style="margin-bottom:22px;">
-                    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Konfirmasi Password *</label>
-                    <div style="position:relative;">
-                        @include('components.icon',['name'=>'lock','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
-                        <input type="password" name="password_confirmation" required placeholder="Ulangi password" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;">
+                    <div>
+                        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Password *</label>
+                        <div style="position:relative;">
+                            @include('components.icon',['name'=>'lock','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                            <input type="password" name="password" required placeholder="Min. 8 karakter" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                        </div>
                     </div>
+                    <div>
+                        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Ulangi Password *</label>
+                        <div style="position:relative;">
+                            @include('components.icon',['name'=>'lock','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                            <input type="password" name="password_confirmation" required placeholder="Ulangi password" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:22px;background:rgba(255,255,255,.05);border-radius:10px;padding:12px 14px;">
+                    <input type="checkbox" name="agree" required style="width:16px;height:16px;accent-color:#FFC81A;cursor:pointer;flex-shrink:0;margin-top:2px;">
+                    <label style="font-size:12px;color:rgba(255,255,255,.6);cursor:pointer;line-height:1.5;">
+                        Saya menyetujui
+                        <a href="{{ route('landing.profil') }}" target="_blank" style="color:#FFC81A;font-weight:700;text-decoration:none;">syarat & ketentuan</a>
+                        serta kebijakan privasi FCC UMI.
+                    </label>
                 </div>
                 <button type="submit" class="fcc-btn-gold btn-shine" style="width:100%;justify-content:center;padding:12px;font-size:14.5px;border-radius:12px;font-weight:800;">
                     Daftar Sekarang
                 </button>
             </form>
         </div>
+
+        {{-- FORM FORGOT PASSWORD --}}
+        <div id="fcc-forgot-container" style="display:none;">
+            <h2 style="color:#FFF;font-size:22px;font-weight:900;margin:0 0 6px;">Lupa Password</h2>
+            <p style="color:rgba(255,255,255,.5);font-size:13.5px;margin:0 0 24px;">Kembali ke <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:#FFC81A;font-weight:700;text-decoration:none;">Masuk</a></p>
+
+            <form id="fcc-forgot-form" onsubmit="submitAuthForm(event, '/lupa-password')">
+                @csrf
+                <div style="margin-bottom:22px;">
+                    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Email Akun Anda *</label>
+                    <div style="position:relative;">
+                        @include('components.icon',['name'=>'mail','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                        <input type="email" name="email" required placeholder="email@example.com" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                    </div>
+                </div>
+                <button type="submit" class="fcc-btn-gold btn-shine" style="width:100%;justify-content:center;padding:12px;font-size:14.5px;border-radius:12px;font-weight:800;">
+                    Kirim Kode OTP
+                </button>
+            </form>
+        </div>
     </div>
 </div>
+
+{{-- MODAL OTP --}}
+<div id="otpModal" style="display:none;position:fixed;inset:0;background:rgba(14,13,20,.8);backdrop-filter:blur(5px);z-index:99999;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#131218;width:100%;max-width:400px;border-radius:24px;padding:40px;box-shadow:0 24px 64px rgba(0,0,0,.4);border:1px solid rgba(255,200,26,.2);text-align:center;position:relative;">
+        <div style="width:64px;height:64px;border-radius:18px;background:rgba(255,200,26,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <h3 style="color:#FFF;font-size:20px;font-weight:900;margin:0 0 8px;">Verifikasi Email</h3>
+        <p style="color:rgba(255,255,255,.5);font-size:13px;line-height:1.6;margin:0 0 24px;">
+            Kami telah mengirimkan 4 digit kode OTP ke <br>
+            <strong id="otpEmailDisplay" style="color:#FFC81A;"></strong>
+        </p>
+        
+        <form id="otpForm" action="/daftar/verify" method="POST">
+            @csrf
+            <input type="hidden" name="email" id="otpEmailInput">
+            <div style="display:flex;gap:12px;justify-content:center;margin-bottom:24px;" id="otpInputs">
+                <input type="text" maxlength="1" class="otp-box-pub" required autofocus>
+                <input type="text" maxlength="1" class="otp-box-pub" required>
+                <input type="text" maxlength="1" class="otp-box-pub" required>
+                <input type="text" maxlength="1" class="otp-box-pub" required>
+            </div>
+            <input type="hidden" name="otp" id="finalOtp">
+            <div id="otpError" style="color:#EF4444;font-size:12px;margin-bottom:16px;display:none;font-weight:600;"></div>
+            
+            <button id="btnVerify" type="submit" class="fcc-btn-gold" style="width:100%;justify-content:center;padding:12px;font-size:14px;border-radius:10px;">
+                Verifikasi & Masuk
+            </button>
+        </form>
+    </div>
+</div>
+
+{{-- MODAL RESET PASSWORD OTP --}}
+<div id="otpResetModal" style="display:none;position:fixed;inset:0;background:rgba(14,13,20,.8);backdrop-filter:blur(5px);z-index:99999;align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+    <div style="background:#131218;width:100%;max-width:440px;border-radius:24px;padding:36px;box-shadow:0 24px 64px rgba(0,0,0,.4);border:1px solid rgba(255,200,26,.2);position:relative;margin:auto;">
+        <button onclick="document.getElementById('otpResetModal').style.display='none'" style="position:absolute;top:20px;right:20px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;padding:6px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div style="text-align:center;">
+            <div style="width:56px;height:56px;border-radius:16px;background:rgba(255,200,26,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h3 style="color:#FFF;font-size:20px;font-weight:900;margin:0 0 8px;">Reset Password</h3>
+            <p style="color:rgba(255,255,255,.5);font-size:13px;line-height:1.6;margin:0 0 24px;">
+                Masukkan 4 digit kode OTP dari email <br>
+                <strong id="otpResetEmailDisplay" style="color:#FFC81A;"></strong>
+            </p>
+        </div>
+        
+        <form id="otpResetForm" action="/lupa-password/verify" method="POST">
+            @csrf
+            <input type="hidden" name="email" id="otpResetEmailInput">
+            <div style="display:flex;gap:12px;justify-content:center;margin-bottom:20px;" id="otpResetInputs">
+                <input type="text" maxlength="1" class="otp-box-reset" required autofocus>
+                <input type="text" maxlength="1" class="otp-box-reset" required>
+                <input type="text" maxlength="1" class="otp-box-reset" required>
+                <input type="text" maxlength="1" class="otp-box-reset" required>
+            </div>
+            <input type="hidden" name="otp" id="finalResetOtp">
+            
+            <div style="margin-bottom:14px;">
+                <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Password Baru *</label>
+                <div style="position:relative;">
+                    @include('components.icon',['name'=>'lock','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                    <input type="password" name="password" required placeholder="Min. 8 karakter" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                </div>
+            </div>
+            <div style="margin-bottom:24px;">
+                <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Konfirmasi Password Baru *</label>
+                <div style="position:relative;">
+                    @include('components.icon',['name'=>'lock','size'=>14,'style'=>'position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);pointer-events:none;'])
+                    <input type="password" name="password_confirmation" required placeholder="Ulangi password baru" class="fcc-input-dark" style="padding-left:38px;width:100%;box-sizing:border-box;">
+                </div>
+            </div>
+
+            <div id="otpResetError" style="color:#EF4444;font-size:12px;margin-bottom:16px;display:none;font-weight:600;text-align:center;"></div>
+            
+            <button id="btnResetVerify" type="submit" class="fcc-btn-gold" style="width:100%;justify-content:center;padding:12px;font-size:14px;border-radius:10px;">
+                Simpan Password Baru
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+.otp-box-pub, .otp-box-reset {
+    width:50px;height:56px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);
+    border-radius:12px;text-align:center;font-size:24px;font-weight:900;color:#FFF;
+    transition:all .2s;outline:none;
+}
+.otp-box-pub:focus, .otp-box-reset:focus { border-color:#FFC81A;background:rgba(255,200,26,.05);box-shadow:0 0 0 4px rgba(255,200,26,.1); }
+.fcc-radio-pill:checked + .radio-pill-bg {
+    background: rgba(255,200,26,.1) !important;
+    border-color: #FFC81A !important;
+    color: #FFC81A !important;
+}
+.fcc-radio-pill:focus-visible + .radio-pill-bg {
+    box-shadow: 0 0 0 3px rgba(255,200,26,.2);
+}
+</style>
 
 <script>
     const modal = document.getElementById('fcc-auth-modal');
@@ -398,11 +548,15 @@
 
     function switchAuthTab(tab) {
         alertBox.style.display = 'none';
+        document.getElementById('fcc-login-container').style.display = 'none';
+        document.getElementById('fcc-register-container').style.display = 'none';
+        document.getElementById('fcc-forgot-container').style.display = 'none';
+
         if (tab === 'login') {
             document.getElementById('fcc-login-container').style.display = 'block';
-            document.getElementById('fcc-register-container').style.display = 'none';
+        } else if (tab === 'forgot') {
+            document.getElementById('fcc-forgot-container').style.display = 'block';
         } else {
-            document.getElementById('fcc-login-container').style.display = 'none';
             document.getElementById('fcc-register-container').style.display = 'block';
         }
     }
@@ -463,7 +617,24 @@
             });
         })
         .then(data => {
-            if (data.success) {
+            if (data.require_otp) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalText;
+                closeAuthModal();
+                
+                // Cek apakah ini form lupa password
+                if (url.includes('/lupa-password')) {
+                    document.getElementById('otpResetEmailDisplay').innerText = data.email;
+                    document.getElementById('otpResetEmailInput').value = data.email;
+                    document.getElementById('otpResetModal').style.display = 'flex';
+                    document.querySelector('.otp-box-reset').focus();
+                } else {
+                    document.getElementById('otpEmailDisplay').innerText = data.email;
+                    document.getElementById('otpEmailInput').value = data.email;
+                    document.getElementById('otpModal').style.display = 'flex';
+                    document.querySelector('.otp-box-pub').focus();
+                }
+            } else if (data.success) {
                 window.location.href = data.redirect || '/';
             }
         })
@@ -577,6 +748,122 @@
             }
         }
     });
+    // OTP Input Logic
+    const otpBoxesPub = document.querySelectorAll('.otp-box-pub');
+    otpBoxesPub.forEach((box, i) => {
+        box.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value && i < otpBoxesPub.length - 1) otpBoxesPub[i + 1].focus();
+        });
+        box.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && !this.value && i > 0) {
+                otpBoxesPub[i - 1].focus();
+            }
+        });
+    });
+
+    const otpFormEl = document.getElementById('otpForm');
+    if(otpFormEl) {
+        otpFormEl.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnVerify');
+            const oriText = btn.innerHTML;
+            
+            let otp = '';
+            otpBoxesPub.forEach(b => otp += b.value);
+            document.getElementById('finalOtp').value = otp;
+            
+            if (otp.length < 4) return;
+
+            btn.innerHTML = 'Verifikasi...';
+            btn.disabled = true;
+            document.getElementById('otpError').style.display = 'none';
+
+            try {
+                const formData = new FormData(this);
+                const res = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    window.location.href = data.redirect || '/';
+                } else if (data.errors) {
+                    document.getElementById('otpError').innerText = data.errors.otp ? data.errors.otp[0] : 'Kode tidak valid.';
+                    document.getElementById('otpError').style.display = 'block';
+                    otpBoxesPub.forEach(b => b.value = '');
+                    otpBoxesPub[0].focus();
+                }
+            } catch (err) {
+                document.getElementById('otpError').innerText = 'Terjadi kesalahan jaringan.';
+                document.getElementById('otpError').style.display = 'block';
+            } finally {
+                btn.innerHTML = oriText;
+                btn.disabled = false;
+            }
+        });
+    }
+    // OTP Reset Password Logic
+    const otpBoxesReset = document.querySelectorAll('.otp-box-reset');
+    otpBoxesReset.forEach((box, i) => {
+        box.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value && i < otpBoxesReset.length - 1) otpBoxesReset[i + 1].focus();
+        });
+        box.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && !this.value && i > 0) {
+                otpBoxesReset[i - 1].focus();
+            }
+        });
+    });
+
+    const otpResetFormEl = document.getElementById('otpResetForm');
+    if(otpResetFormEl) {
+        otpResetFormEl.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnResetVerify');
+            const oriText = btn.innerHTML;
+            
+            let otp = '';
+            otpBoxesReset.forEach(b => otp += b.value);
+            document.getElementById('finalResetOtp').value = otp;
+            
+            if (otp.length < 4) return;
+
+            btn.innerHTML = 'Menyimpan...';
+            btn.disabled = true;
+            document.getElementById('otpResetError').style.display = 'none';
+
+            try {
+                const formData = new FormData(this);
+                const res = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    window.location.href = data.redirect || '/';
+                } else if (data.errors) {
+                    document.getElementById('otpResetError').innerText = data.errors.otp ? data.errors.otp[0] : (data.errors.password ? data.errors.password[0] : 'Data tidak valid.');
+                    document.getElementById('otpResetError').style.display = 'block';
+                    if (data.errors.otp) {
+                        otpBoxesReset.forEach(b => b.value = '');
+                        otpBoxesReset[0].focus();
+                    }
+                }
+            } catch (err) {
+                document.getElementById('otpResetError').innerText = 'Terjadi kesalahan jaringan.';
+                document.getElementById('otpResetError').style.display = 'block';
+            } finally {
+                btn.innerHTML = oriText;
+                btn.disabled = false;
+            }
+        });
+    }
 </script>
 
 @endsection

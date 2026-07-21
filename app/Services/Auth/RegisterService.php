@@ -16,7 +16,6 @@ class RegisterService
             'instansi' => $data['instansi'] ?? null,
             'password' => Hash::make($data['password']),
         ]);
-        Auth::guard('peserta')->login($peserta);
         return $peserta;
     }
 }

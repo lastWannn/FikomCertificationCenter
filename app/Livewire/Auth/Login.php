@@ -62,17 +62,6 @@ class Login extends Component
             return;
         }
 
-        // ── Guard 3: Instruktur ─────────────────────────────────
-        if (Auth::guard('instruktur')->attempt($credentials, $this->remember)) {
-            request()->session()->regenerate();
-            // Arahkan ke halaman instruktur jika sudah ada routenya
-            $this->redirect(
-                route_exists('instruktur.dashboard') ? route('instruktur.dashboard') : route('landing.index'),
-                navigate: true
-            );
-            return;
-        }
-
         // Semua guard gagal
         $this->addError('email', 'Email atau password salah. Silakan periksa kembali.');
     }

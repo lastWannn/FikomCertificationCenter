@@ -7,21 +7,50 @@ use App\Services\Auth\RegisterService;
 
 class RegisterController extends Controller
 {
-    public function __construct(private RegisterService $service) {}
+    public function __construct(private RegisterService $service, private \App\Services\Auth\OtpService $otpService) {}
 
     public function showRegister() { return view('auth.register'); }
 
     public function register(RegisterRequest $request)
     {
+        // Pendaftaran: buat akun (unverified) dan kirim OTP
         $peserta = $this->service->register($request->validated());
+        
+        $this->otpService->generateAndSend($peserta->email, 'register');
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'require_otp' => true,
+                'email' => $peserta->email,
+                'message' => 'Kode OTP 4 digit telah dikirim ke email Anda.'
+            ]);
+        }
+        return back()->with('require_otp', true)->with('otp_email', $peserta->email);
+    }
+
+    public function verifyOtp(\Illuminate\Http\Request $request)
+    {
+        $request->validate(['email' => 'required|email', 'otp' => 'required|digits:4']);
+        
+        // Verifikasi OTP
+        $this->otpService->verify($request->email, $request->otp, 'register');
+        
+        // Update user status
+        $peserta = \App\Models\Peserta::where('email', $request->email)->firstOrFail();
+        $peserta->update(['email_verified_at' => now()]);
+        
+        // Auto-login
+        \Illuminate\Support\Facades\Auth::guard('peserta')->login($peserta);
+
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'redirect' => route('peserta.dashboard'),
-                'message' => 'Akun berhasil dibuat! Selamat datang, '.$peserta->nama.'.'
+                'message' => 'Verifikasi berhasil! Selamat datang, '.$peserta->nama.'.'
             ]);
         }
         return redirect()->route('peserta.dashboard')
-            ->with('success', 'Akun berhasil dibuat! Selamat datang, '.$peserta->nama.'.');
+            ->with('success', 'Verifikasi berhasil! Selamat datang, '.$peserta->nama.'.');
     }
 }
