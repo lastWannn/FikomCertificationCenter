@@ -2,13 +2,13 @@
 namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Traits\HasHashid;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Peserta extends Authenticatable
 {
-    use HasHashid;
-    use Notifiable;
+    use HasHashid, SoftDeletes, Notifiable;
 
     protected $table    = 'peserta';
     protected $fillable = [

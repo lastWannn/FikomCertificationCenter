@@ -4,10 +4,8 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Livewire\Auth\Login as LivewireLogin;
 use App\Livewire\Auth\Register as LivewireRegister;
-use App\Livewire\Admin\InstrukturManager as LivewireInstruktur;
 
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Instruktur\DashboardController as InstrukturDashboard;
 
 // Admin
 use App\Http\Controllers\Admin\{
@@ -26,7 +24,6 @@ use App\Http\Controllers\Admin\{
     InformasiController,
     RekeningController,
     SertifikatController      as AdminSertifikat,
-    InstrukturController,
     KategoriController,
     ProfileController         as AdminProfile,
     NilaiController,
@@ -70,10 +67,12 @@ Route::get('/api/search',    [LandingController::class,'search'])->name('landing
 Route::middleware('guest.fcc')->group(function () {
     Route::get('/masuk',          LivewireLogin::class)->name('auth.login');     // Livewire
     Route::post('/masuk',         [LoginController::class,'login'])->name('auth.login.post');
-    Route::get('/daftar',         LivewireRegister::class)->name('auth.register'); // Livewire
+    Route::get('/daftar',         [RegisterController::class,'showRegister'])->name('auth.register');
     Route::post('/daftar',        [RegisterController::class,'register'])->name('auth.register.post');
+    Route::post('/daftar/verify', [RegisterController::class,'verifyOtp'])->name('auth.register.verify');
     Route::get('/lupa-password',  [LoginController::class,'showForgot'])->name('auth.forgot');
     Route::post('/lupa-password', [LoginController::class,'sendReset'])->name('auth.forgot.post');
+    Route::post('/lupa-password/verify', [LoginController::class,'verifyResetOtp'])->name('auth.forgot.verify');
 });
 Route::post('/keluar', [LoginController::class,'logout'])->name('auth.logout');
 
@@ -197,14 +196,6 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     });
 
     /* MASTER DATA */
-    // InstrukturManager via Livewire (inline CRUD, no page reload)
-    // Menggantikan resource instruktur untuk halaman CRUD-nya
-    Route::get('/instruktur',           [InstrukturController::class,'liveIndex'])->name('instruktur.index'); // Livewire via controller
-    Route::get('/instruktur/tambah',    [InstrukturController::class,'create'])->name('instruktur.create');  // fallback
-    Route::post('/instruktur',          [InstrukturController::class,'store'])->name('instruktur.store');    // fallback
-    Route::get('/instruktur/{instruktur}/edit', [InstrukturController::class,'edit'])->name('instruktur.edit');    // fallback
-    Route::put('/instruktur/{instruktur}',      [InstrukturController::class,'update'])->name('instruktur.update'); // fallback
-    Route::delete('/instruktur/{instruktur}',   [InstrukturController::class,'destroy'])->name('instruktur.destroy'); // fallback
     Route::resource('kategori',   KategoriController::class);
 
     /* MANAJEMEN PENGGUNA */
@@ -259,7 +250,4 @@ Route::middleware('auth.peserta')->prefix('peserta')->name('peserta.')->group(fu
     Route::get('/api/chart/aktivitas', [PesertaDashboard::class,'chartAktivitas'])->name('api.chart.aktivitas');
 });
 
-/* ── INSTRUKTUR ──────────────────────────────────────────────── */
-Route::middleware('auth.instruktur')->prefix('instruktur')->name('instruktur.')->group(function () {
-    Route::get('/', [InstrukturDashboard::class,'index'])->name('dashboard');
-});
+

@@ -10,7 +10,6 @@ class StorePelatihanRequest extends FormRequest {
             'judul'=>'required|string|max:255',
             'isi'=>'required|string',
             'kategori_id'=>'required|exists:kategori,id',
-            'instruktur_id'=>'required|exists:instruktur,id',
             'gambar'=>'nullable|image|max:2048',
             
             // Materi Awal (Opsional)

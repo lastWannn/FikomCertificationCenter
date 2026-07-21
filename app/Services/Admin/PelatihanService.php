@@ -8,7 +8,7 @@ class PelatihanService
 {
     public function create(array $data): Pelatihan
     {
-        $pelData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id', 'instruktur_id', 'link_materi'])->toArray();
+        $pelData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id', 'link_materi'])->toArray();
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
             $pelData['gambar'] = $data['gambar']->store('pelatihan', 'public');
         }

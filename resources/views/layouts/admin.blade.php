@@ -59,7 +59,6 @@
           [
               'label' => 'MASTER DATA',
               'items' => [
-                  ['route'=>'admin.instruktur.index',    'icon'=>'users',            'label'=>'Instruktur'],
                   ['route'=>'admin.kategori.index',      'icon'=>'filter',           'label'=>'Kategori'],
               ],
           ],

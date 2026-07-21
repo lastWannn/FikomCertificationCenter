@@ -196,6 +196,14 @@
     box-shadow: 0 0 0 3px rgba(255,200,26,.12);
     background: #FFFFFF;
 }
+.fcc-input:-webkit-autofill,
+.fcc-input:-webkit-autofill:hover, 
+.fcc-input:-webkit-autofill:focus, 
+.fcc-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #F7F8FA inset !important;
+    -webkit-text-fill-color: #131218 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
 .fcc-input-dark {
     width: 100%;
     background: rgba(255,255,255,.07);
@@ -213,7 +221,14 @@
     box-shadow: 0 0 0 3px rgba(255,200,26,.12);
 }
 .fcc-input-dark::placeholder { color: rgba(255,255,255,.35); }
-
+.fcc-input-dark:-webkit-autofill,
+.fcc-input-dark:-webkit-autofill:hover, 
+.fcc-input-dark:-webkit-autofill:focus, 
+.fcc-input-dark:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #242328 inset !important;
+    -webkit-text-fill-color: #FFF !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
 /* ─── BADGE ──────────────────────────────────────────────────────
    · badge-yellow = di bg terang
    · badge-dark   = di bg terang (aksen hitam-kuning)

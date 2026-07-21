@@ -132,7 +132,6 @@
         <div style="display:flex;flex-direction:column;gap:12px;">
           @foreach([
             ['Kategori',  $pelatihan->kategori->nama_kategori??'—'],
-            ['Instruktur',$pelatihan->instruktur->nama??'—'],
             ['Total JP',  $pelatihan->materi->sum('jam_pelajaran').' JP'],
             ['Dibuat',    $pelatihan->created_at->format('d M Y')],
           ] as [$l,$v])

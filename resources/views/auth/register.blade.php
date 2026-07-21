@@ -67,7 +67,7 @@
             </div>
             @endif
 
-            <form action="{{ route('auth.register.post') }}" method="POST">
+            <form id="registerForm" action="{{ route('auth.register.post') }}" method="POST">
                 @csrf
                 {{-- Nama --}}
                 <div style="margin-bottom:13px;">
@@ -139,7 +139,7 @@
                         FCC
                     </label>
                 </div>
-                <button type="submit" class="fcc-btn-gold btn-shine" style="width:100%;justify-content:center;padding:13px;font-size:15px;border-radius:12px;">
+                <button id="btnSubmit" type="submit" class="fcc-btn-gold btn-shine" style="width:100%;justify-content:center;padding:13px;font-size:15px;border-radius:12px;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/>
                         <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
@@ -150,4 +150,133 @@
         </div>
     </div>
 </div>
+
+{{-- MODAL OTP --}}
+<div id="otpModal" style="display:none;position:fixed;inset:0;background:rgba(14,13,20,.8);backdrop-filter:blur(5px);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#131218;width:100%;max-width:400px;border-radius:24px;padding:40px;box-shadow:0 24px 64px rgba(0,0,0,.4);border:1px solid rgba(255,200,26,.2);text-align:center;position:relative;">
+        <div style="width:64px;height:64px;border-radius:18px;background:rgba(255,200,26,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <h3 style="color:#FFF;font-size:20px;font-weight:900;margin:0 0 8px;">Verifikasi Email</h3>
+        <p style="color:rgba(255,255,255,.5);font-size:13px;line-height:1.6;margin:0 0 24px;">
+            Kami telah mengirimkan 4 digit kode OTP ke <br>
+            <strong id="otpEmailDisplay" style="color:#FFC81A;"></strong>
+        </p>
+        
+        <form id="otpForm" action="{{ route('auth.register.verify') }}" method="POST">
+            @csrf
+            <input type="hidden" name="email" id="otpEmailInput">
+            <div style="display:flex;gap:12px;justify-content:center;margin-bottom:24px;" id="otpInputs">
+                <input type="text" maxlength="1" class="otp-box" required autofocus>
+                <input type="text" maxlength="1" class="otp-box" required>
+                <input type="text" maxlength="1" class="otp-box" required>
+                <input type="text" maxlength="1" class="otp-box" required>
+            </div>
+            <input type="hidden" name="otp" id="finalOtp">
+            <div id="otpError" style="color:#EF4444;font-size:12px;margin-bottom:16px;display:none;font-weight:600;"></div>
+            
+            <button id="btnVerify" type="submit" class="fcc-btn-gold" style="width:100%;justify-content:center;padding:12px;font-size:14px;border-radius:10px;">
+                Verifikasi & Masuk
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+.otp-box {
+    width:50px;height:56px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);
+    border-radius:12px;text-align:center;font-size:24px;font-weight:900;color:#FFF;
+    transition:all .2s;outline:none;
+}
+.otp-box:focus { border-color:#FFC81A;background:rgba(255,200,26,.05);box-shadow:0 0 0 4px rgba(255,200,26,.1); }
+</style>
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnSubmit');
+    const oriText = btn.innerHTML;
+    btn.innerHTML = '<span style="display:flex;align-items:center;gap:8px;">Memproses <div style="width:14px;height:14px;border:2px solid #131218;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;"></div></span>';
+    btn.disabled = true;
+
+    try {
+        const formData = new FormData(this);
+        const res = await fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const data = await res.json();
+        
+        if (data.require_otp) {
+            document.getElementById('otpEmailDisplay').innerText = data.email;
+            document.getElementById('otpEmailInput').value = data.email;
+            document.getElementById('otpModal').style.display = 'flex';
+            document.querySelector('.otp-box').focus();
+        } else if (data.errors) {
+            alert(Object.values(data.errors).flat().join('\n'));
+        }
+    } catch (err) {
+        alert('Terjadi kesalahan.');
+    } finally {
+        btn.innerHTML = oriText;
+        btn.disabled = false;
+    }
+});
+
+// OTP Input Logic
+const otpBoxes = document.querySelectorAll('.otp-box');
+otpBoxes.forEach((box, i) => {
+    box.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value && i < otpBoxes.length - 1) otpBoxes[i + 1].focus();
+    });
+    box.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && i > 0) {
+            otpBoxes[i - 1].focus();
+        }
+    });
+});
+
+document.getElementById('otpForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnVerify');
+    const oriText = btn.innerHTML;
+    
+    let otp = '';
+    otpBoxes.forEach(b => otp += b.value);
+    document.getElementById('finalOtp').value = otp;
+    
+    if (otp.length < 4) return;
+
+    btn.innerHTML = 'Verifikasi...';
+    btn.disabled = true;
+    document.getElementById('otpError').style.display = 'none';
+
+    try {
+        const formData = new FormData(this);
+        const res = await fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+            window.location.href = data.redirect;
+        } else if (data.errors) {
+            document.getElementById('otpError').innerText = data.errors.otp ? data.errors.otp[0] : 'Kode tidak valid.';
+            document.getElementById('otpError').style.display = 'block';
+            otpBoxes.forEach(b => b.value = '');
+            otpBoxes[0].focus();
+        }
+    } catch (err) {
+        document.getElementById('otpError').innerText = 'Terjadi kesalahan jaringan.';
+        document.getElementById('otpError').style.display = 'block';
+    } finally {
+        btn.innerHTML = oriText;
+        btn.disabled = false;
+    }
+});
+</script>
 @endsection

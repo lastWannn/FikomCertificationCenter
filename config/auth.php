@@ -15,10 +15,6 @@ return [
             'driver'   => 'session',
             'provider' => 'admins',
         ],
-        'instruktur' => [
-            'driver'   => 'session',
-            'provider' => 'instruktur',
-        ],
     ],
 
     'providers' => [
@@ -29,10 +25,6 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model'  => App\Models\Admin::class,
-        ],
-        'instruktur' => [
-            'driver' => 'eloquent',
-            'model'  => App\Models\Instruktur::class,
         ],
     ],
 

@@ -53,13 +53,6 @@ class AppServiceProvider extends ServiceProvider
                 return route('peserta.dashboard');
             }
 
-            // Cek guard instruktur (jika ada dashboardnya)
-            if (auth('instruktur')->check()) {
-                return route_exists('instruktur.dashboard')
-                    ? route('instruktur.dashboard')
-                    : route('landing.index');
-            }
-
             return route('landing.index');
         });
     }

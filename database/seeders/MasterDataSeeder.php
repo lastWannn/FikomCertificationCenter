@@ -19,18 +19,14 @@ class MasterDataSeeder extends Seeder
     public function run(): void
     {
         $kategori = Kategori::first();
-        $instrukturWeb = Instruktur::where('keahlian', 'Web Development')->first();
-        $instrukturNet = Instruktur::where('keahlian', 'Networking')->first();
-
         // 1. Pelatihan Web Dev (Berbayar)
-        if ($instrukturWeb && $kategori) {
+        if ($kategori) {
             $pelatihan1 = Pelatihan::firstOrCreate(
                 ['kode' => 'PL-001'],
                 [
                     'judul' => 'Pelatihan Web Development Dasar',
                     'isi' => 'Pelatihan intensif untuk belajar pengembangan web dari nol menggunakan HTML, CSS, dan PHP.',
                     'kategori_id' => $kategori->id,
-                    'instruktur_id' => $instrukturWeb->id,
                     'gambar' => null,
                 ]
             );
@@ -46,14 +42,13 @@ class MasterDataSeeder extends Seeder
         }
 
         // 2. Pelatihan Git (Gratis)
-        if ($instrukturWeb && $kategori) {
+        if ($kategori) {
             $pelatihan2 = Pelatihan::firstOrCreate(
                 ['kode' => 'PL-002'],
                 [
                     'judul' => 'Workshop Git & GitHub untuk Pemula',
                     'isi' => 'Workshop praktis untuk memahami penggunaan Git & GitHub dalam tim developer.',
                     'kategori_id' => $kategori->id,
-                    'instruktur_id' => $instrukturWeb->id,
                     'gambar' => null,
                 ]
             );

@@ -1,96 +1,153 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FIKOM Certification Center (FCC) UMI
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![FCC Cover](public/storage/mitra/default-cover.png) *(Ilustrasi)*
 
-## About Laravel
+Aplikasi portal sertifikasi resmi untuk Fakultas Ilmu Komputer (FIKOM) Universitas Muslim Indonesia (UMI). Aplikasi ini dibangun untuk memfasilitasi mahasiswa dan masyarakat umum dalam mengikuti berbagai pelatihan dan sertifikasi kompetensi IT secara profesional.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Autentikasi Modern:** Login, pendaftaran, dan lupa password menggunakan verifikasi OTP via Email (tanpa perpindahan halaman/menggunakan modal popup yang *seamless*).
+- **Manajemen Pelatihan:** Sistem pengelolaan jadwal pelatihan, materi, dan persyaratan sertifikasi.
+- **Integrasi Pembayaran:** Terintegrasi dengan **Midtrans** (Simulator/Production) untuk pembayaran biaya sertifikasi yang otomatis terverifikasi.
+- **Sistem Kehadiran:** Absensi instan menggunakan teknologi pemindaian QR Code (Scanner terintegrasi).
+- **Sertifikat Digital:** Cetak sertifikat otomatis kelulusan peserta.
+- **Dashboard Admin:** Statistik komprehensif, manajemen mitra, pengguna, instruktur, laporan, dan pengaturan website.
+- **Desain UI/UX Premium:** Menggunakan tema gelap (*dark theme*) dengan aksen emas yang elegan, responsif, dan kaya akan animasi mikro (dibangun dengan Tailwind CSS murni).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠️ Persyaratan Sistem (Requirements)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Sebelum menjalankan aplikasi ini, pastikan sistem Anda memiliki:
+- **PHP** >= 8.2
+- **Composer** (untuk dependensi PHP)
+- **Node.js & npm** (untuk kompilasi aset Frontend Vite)
+- **MySQL / MariaDB** (sebagai database)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 🚀 Panduan Instalasi (Installation Guide)
 
-## Agentic Development
+Ikuti langkah-langkah berikut untuk menjalankan proyek ini di komputer lokal Anda:
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/lastWannn/FikomCertificationCenter.git
+   cd FikomCertificationCenter
+   ```
 
+2. **Install Dependensi PHP & Node.js**
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Konfigurasi Environment**
+   Salin file konfigurasi *environment* dan sesuaikan dengan pengaturan *database* Anda.
+   ```bash
+   cp .env.example .env
+   ```
+   Buka file `.env` menggunakan *text editor* dan atur konfigurasi database:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=nama_database_anda
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+4. **Generate Application Key**
+   ```bash
+   php artisan key:generate
+   ```
+
+5. **Migrasi Database & Seeding (Data Dummy)**
+   Jalankan migrasi untuk membuat struktur tabel dan mengisi data awal (Admin, Pelatihan, Mitra, dll).
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+6. **Tautkan Folder Storage**
+   Agar gambar (foto profil, logo mitra) dapat diakses publik, buat *symlink* ke folder storage:
+   ```bash
+   php artisan storage:link
+   ```
+
+7. **Build Aset Frontend (Vite)**
+   Aplikasi ini menggunakan Vite. Wajib melakukan *build* atau jalankan *dev server*.
+   ```bash
+   # Untuk produksi/hasil akhir
+   npm run build
+   
+   # ATAU untuk development (hot-reload)
+   npm run dev
+   ```
+
+8. **Jalankan Aplikasi**
+   ```bash
+   php artisan serve
+   ```
+   Buka browser dan akses: `http://localhost:8000`
+
+---
+
+## 🔐 Akun Default (Testing)
+
+Setelah Anda menjalankan `php artisan migrate:fresh --seed`, Anda dapat masuk menggunakan akun berikut:
+
+**Administrator:**
+- Email: `admin@fcc.umi.ac.id`
+- Password: `password`
+
+**Peserta (Mahasiswa UMI):**
+- Email: `mahasiswa@umi.ac.id`
+- Password: `password`
+
+**Peserta (Umum):**
+- Email: `umum@example.com`
+- Password: `password`
+
+---
+
+## 📧 Konfigurasi Email (OTP)
+
+Secara bawaan (*default*), pengiriman email diatur menggunakan mode `log` untuk mempermudah tahap pengembangan. Jika Anda menggunakan `MAIL_MAILER=log`, kode OTP tidak dikirim ke internet, melainkan **dicetak di dalam file `storage/logs/laravel.log`**.
+
+Jika Anda ingin mencoba pengiriman email secara nyata menggunakan **Gmail SMTP**, ubah file `.env` Anda menjadi:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=email_anda@gmail.com
+MAIL_PASSWORD=app_password_anda_16_karakter
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=email_anda@gmail.com
+MAIL_FROM_NAME="FIKOM Certification Center"
+```
+Setelah mengubah `.env`, pastikan membersihkan cache konfigurasi:
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+php artisan config:clear
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-## Cara Menambah Mitra & Logo
+## 💡 Tambahan: Cara Menambah Mitra & Logo
 
 ### Tambah Mitra via Admin Panel
 Akses: `/admin/informasi` → Kelola Mitra
 
-### Upload Logo Mitra
+### Upload Logo Mitra (Manual)
 **Direktori logo:** `storage/app/public/mitra/`
 **URL publik:** `public/storage/mitra/`
 
 **Format yang disarankan:**
-- Format: PNG atau SVG (transparan lebih bagus)
+- Format: PNG atau SVG (transparan)
 - Ukuran: 200×200 px atau 300×300 px
 - Latar: transparan atau putih
 - Maksimal: 500 KB
 
-**Cara upload via shell:**
-```bash
-# Copy logo ke direktori storage
-cp logo_telkom.png storage/app/public/mitra/
+---
 
-# Update field 'logo' di tabel mitra
-php artisan tinker
->>> App\Models\Mitra::where('nama_mitra','PT. Telkom Indonesia')->update(['logo'=>'mitra/logo_telkom.png'])
-```
-
-**Cara upload via Seeder (untuk development):**
-```php
-// database/seeders/DatabaseSeeder.php
-Mitra::create([
-    'nama_mitra' => 'PT. Telkom Indonesia',
-    'inisial'    => 'TLK',
-    'logo'       => 'mitra/telkom.png',  // letakkan file di storage/app/public/mitra/
-]);
-```
-
-**Tampilan:**
-- **Ada logo:** Gambar logo muncul dalam kotak 64×64 px (hitam)
-- **Tanpa logo:** Inisial kuning tampil sebagai fallback otomatis
+*Dikembangkan untuk Fakultas Ilmu Komputer - Universitas Muslim Indonesia.*
