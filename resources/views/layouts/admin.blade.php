@@ -126,7 +126,7 @@
                   <svg class="sb-chevron" style="transition:transform .25s;flex-shrink:0;opacity:.6;transform:{{ $isGroupActive ? 'rotate(90deg)' : 'rotate(0deg)' }}" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                 </button>
               </a>
-              <div id="{{ $groupId }}" class="sb-children" style="display:{{ $isGroupActive ? 'block' : 'none' }};padding:2px 0 4px 8px;border-left:1px solid rgba(255,200,26,.3);margin:2px 0 2px 33.5px;">
+              <div id="{{ $groupId }}" class="sb-children" style="display:{{ $isGroupActive ? 'block' : 'none' }};padding:0;border-left:1px solid rgba(255,255,255,.15);margin:2px 0 2px 33.5px;">
                 @foreach($item['children'] as $child)
                   @php 
                     $childActive = isset($child['route']) ? sbActive(explode('.index',$child['route'])[0]) : request()->fullUrl() == url($child['url']); 
@@ -142,9 +142,9 @@
                   @endphp
                   <a href="{{ $childHref }}"
                      class="sidebar-link {{ $childActive ? 'active' : '' }}"
-                     style="padding:7px 10px;margin-bottom:2px;min-height:36px;font-weight:{{ $childActive ? '700' : '400' }};">
-                    <span style="width:5px;height:5px;border-radius:50%;background:{{ $childActive ? '#FFC81A' : 'rgba(255,255,255,.3)' }};display:inline-block;flex-shrink:0;"></span>
-                    <span class="sb-lbl" style="font-size:13px;color:{{ $childActive ? '#FFF' : 'rgba(255,255,255,.5)' }};">{{ $child['label'] }}</span>
+                     style="padding:6px 12px 6px 0;margin:2px 0;min-height:30px;font-weight:{{ $childActive ? '600' : '400' }};display:flex;align-items:center;gap:10px;border-radius:0 6px 6px 0;">
+                    <span style="width:16px;height:1px;background:{{ $childActive ? '#FFC81A' : 'rgba(255,255,255,.15)' }};display:inline-block;flex-shrink:0;"></span>
+                    <span class="sb-lbl" style="font-size:12px;color:{{ $childActive ? '#FFF' : 'rgba(255,255,255,.5)' }};">{{ $child['label'] }}</span>
                   </a>
                 @endforeach
               </div>
