@@ -37,7 +37,17 @@
               'label' => 'PROGRAM',
               'items' => [
                   ['route'=>'admin.dashboard',           'icon'=>'layout-dashboard', 'label'=>'Dashboard'],
-                  ['route'=>'admin.pelatihan.index',     'icon'=>'book-open',        'label'=>'Pelatihan'],
+                  [
+                      'route'    => 'admin.pelatihan.index',
+                      'icon'     => 'book-open',
+                      'label'    => 'Pelatihan',
+                      'children' => [
+                          ['route'=>'admin.pelatihan.index',             'label'=>'Tambah Pelatihan'],
+                          ['route'=>'admin.materi.index',                'label'=>'Materi Pelatihan'],
+                          ['url'  =>'#pemateri',                         'label'=>'Pemateri Pelatihan'],
+                          ['url'  =>'#point',                            'label'=>'Point Peserta Pelatihan'],
+                      ]
+                  ],
                   ['route'=>'admin.sertifikasi.index',   'icon'=>'award',            'label'=>'Sertifikasi'],
               ],
           ],
@@ -90,13 +100,63 @@
       @foreach($menuGroups as $group)
         <div class="sb-section-label">{{ $group['label'] }}</div>
         @foreach($group['items'] as $item)
-          @php $isActive = sbActive(explode('.index',$item['route'])[0]); @endphp
-          <a href="{{ route($item['route']) }}"
-             class="sidebar-link {{ $isActive ? 'active' : '' }}"
-             style="text-decoration:none;">
-            @include('components.icon',['name'=>$item['icon'],'size'=>17,'class'=>'sb-icon'])
-            <span class="sb-lbl" style="font-size:13.5px;white-space:nowrap;">{{ $item['label'] }}</span>
-          </a>
+          @php
+            $isActive = sbActive(explode('.index',$item['route'])[0]);
+          @endphp
+
+          @if(!empty($item['children']))
+            @php
+              $groupId = 'sb-group-'.\Illuminate\Support\Str::slug($item['label']);
+              $isGroupActive = $isActive || collect($item['children'])->contains(function($c) {
+                  if (isset($c['route'])) return sbActive(explode('.index', $c['route'])[0]);
+                  if (isset($c['url'])) return request()->fullUrl() == url($c['url']);
+                  return false;
+              });
+            @endphp
+            <div class="sb-dropdown">
+              <a href="{{ isset($item['route']) ? route($item['route']) : 'javascript:void(0)' }}" 
+                 class="sidebar-link {{ $isGroupActive ? 'active' : '' }}"
+                 style="text-decoration:none;display:flex;justify-content:space-between;align-items:center;">
+                <div style="display:flex;align-items:center;gap:.75rem;">
+                  @include('components.icon',['name'=>$item['icon'],'size'=>17,'class'=>'sb-icon'])
+                  <span class="sb-lbl" style="font-size:13.5px;white-space:nowrap;">{{ $item['label'] }}</span>
+                </div>
+                <button type="button" onclick="event.preventDefault(); const c=document.getElementById('{{ $groupId }}'); c.style.display=c.style.display==='none'?'block':'none'; this.querySelector('.sb-chevron').style.transform=c.style.display==='none'?'rotate(0deg)':'rotate(90deg)';"
+                        style="background:none;border:none;padding:4px;cursor:pointer;color:inherit;display:flex;align-items:center;justify-content:center;">
+                  <svg class="sb-chevron" style="transition:transform .25s;flex-shrink:0;opacity:.6;transform:{{ $isGroupActive ? 'rotate(90deg)' : 'rotate(0deg)' }}" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+              </a>
+              <div id="{{ $groupId }}" class="sb-children" style="display:{{ $isGroupActive ? 'block' : 'none' }};padding:2px 0 4px 8px;border-left:1px solid rgba(255,200,26,.3);margin:2px 0 2px 33.5px;">
+                @foreach($item['children'] as $child)
+                  @php 
+                    $childActive = isset($child['route']) ? sbActive(explode('.index',$child['route'])[0]) : request()->fullUrl() == url($child['url']); 
+                    // Special logic: if route is index, but we are on create, index should not be active!
+                    if (isset($child['route']) && $child['route'] == 'admin.pelatihan.index' && Route::currentRouteName() != 'admin.pelatihan.index') {
+                        $childActive = false;
+                    }
+                    if (isset($child['route']) && $child['route'] == 'admin.pelatihan.create' && Route::currentRouteName() == 'admin.pelatihan.create') {
+                        $childActive = true;
+                    }
+                    
+                    $childHref = isset($child['route']) ? route($child['route']) : $child['url'];
+                  @endphp
+                  <a href="{{ $childHref }}"
+                     class="sidebar-link {{ $childActive ? 'active' : '' }}"
+                     style="padding:7px 10px;margin-bottom:2px;min-height:36px;font-weight:{{ $childActive ? '700' : '400' }};">
+                    <span style="width:5px;height:5px;border-radius:50%;background:{{ $childActive ? '#FFC81A' : 'rgba(255,255,255,.3)' }};display:inline-block;flex-shrink:0;"></span>
+                    <span class="sb-lbl" style="font-size:13px;color:{{ $childActive ? '#FFF' : 'rgba(255,255,255,.5)' }};">{{ $child['label'] }}</span>
+                  </a>
+                @endforeach
+              </div>
+            </div>
+          @else
+            <a href="{{ route($item['route']) }}"
+               class="sidebar-link {{ $isActive ? 'active' : '' }}"
+               style="text-decoration:none;">
+              @include('components.icon',['name'=>$item['icon'],'size'=>17,'class'=>'sb-icon'])
+              <span class="sb-lbl" style="font-size:13.5px;white-space:nowrap;">{{ $item['label'] }}</span>
+            </a>
+          @endif
         @endforeach
       @endforeach
     </nav>

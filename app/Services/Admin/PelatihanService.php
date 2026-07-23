@@ -8,7 +8,7 @@ class PelatihanService
 {
     public function create(array $data): Pelatihan
     {
-        $pelData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id', 'link_materi'])->toArray();
+        $pelData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id', 'prasyarat_id', 'link_materi'])->toArray();
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
             $pelData['gambar'] = $data['gambar']->store('pelatihan', 'public');
         }
@@ -75,11 +75,27 @@ class PelatihanService
 
     public function update(Pelatihan $pelatihan, array $data): Pelatihan
     {
+        $pelData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id', 'prasyarat_id', 'link_materi'])->toArray();
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
-            $data['gambar'] = $data['gambar']->store('pelatihan', 'public');
+            $pelData['gambar'] = $data['gambar']->store('pelatihan', 'public');
         }
-        unset($data['_token'], $data['_method']);
-        $pelatihan->update($data);
+        $pelatihan->update($pelData);
+
+        // Update the latest jadwal if schedule data is provided
+        if (isset($data['tgl_pelaksanaan']) || isset($data['tgl_batas_daftar']) || isset($data['jam_mulai']) || isset($data['jam_selesai']) || isset($data['kuota_peserta'])) {
+            $latestJadwal = $pelatihan->jadwal()->latest()->first();
+            if ($latestJadwal) {
+                $jadwalData = [];
+                if (isset($data['tgl_pelaksanaan'])) $jadwalData['tgl_pelaksanaan'] = $data['tgl_pelaksanaan'];
+                if (isset($data['tgl_batas_daftar'])) $jadwalData['tgl_batas_daftar'] = $data['tgl_batas_daftar'];
+                if (isset($data['jam_mulai'])) $jadwalData['jam_mulai'] = $data['jam_mulai'];
+                if (isset($data['jam_selesai'])) $jadwalData['jam_selesai'] = $data['jam_selesai'];
+                if (isset($data['kuota_peserta'])) $jadwalData['kuota_peserta'] = $data['kuota_peserta'];
+                
+                $latestJadwal->update($jadwalData);
+            }
+        }
+
         return $pelatihan->fresh();
     }
 

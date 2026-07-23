@@ -14,6 +14,7 @@ class PelatihanController extends Controller
         return view('admin.pelatihan.index', [
             'pelatihan'  => Pelatihan::with(['kategori'])->paginate(10),
             'kategori'   => Kategori::all(),
+            'pelatihanList' => Pelatihan::all(),
         ]);
     }
     public function create() {
@@ -51,6 +52,7 @@ class PelatihanController extends Controller
     public function edit(Pelatihan $pelatihan) {
         return view('admin.pelatihan.edit', array_merge(compact('pelatihan'), [
             'kategori'   => Kategori::all(),
+            'pelatihanList' => Pelatihan::where('id', '!=', $pelatihan->id)->get(),
         ]));
     }
     public function update(UpdatePelatihanRequest $request, Pelatihan $pelatihan) {

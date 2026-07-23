@@ -56,15 +56,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div>
-                        <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Instruktur *</label>
-                        <select name="instruktur_id" required class="fcc-input">
-                            <option value="">-- Pilih Instruktur --</option>
-                            @foreach($instruktur as $i)
-                            <option value="{{ $i->id }}" {{ old('instruktur_id',$pelatihan->instruktur_id??'')==$i->id?'selected':'' }}>{{ $i->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+
                 </div>
                 <div class="fcc-card" style="padding:24px;">
                     <h3 style="font-size:15px;font-weight:800;color:#0F0F14;margin:0 0 14px;">Gambar / Poster</h3>

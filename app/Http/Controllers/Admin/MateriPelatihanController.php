@@ -11,6 +11,18 @@ class MateriPelatihanController extends Controller
 {
     public function __construct(private MateriPelatihanService $service) {}
 
+    public function index(Request $request)
+    {
+        $pelatihans = Pelatihan::orderBy('judul')->get();
+        $selectedPelatihan = null;
+        
+        if ($request->has('pelatihan_id') && $request->pelatihan_id) {
+            $selectedPelatihan = Pelatihan::with('materi')->find($request->pelatihan_id);
+        }
+
+        return view('admin.materi.index', compact('pelatihans', 'selectedPelatihan'));
+    }
+
     public function create(Pelatihan $pelatihan)
     {
         return view('admin.materi.pelatihan-form', compact('pelatihan'));
@@ -19,8 +31,7 @@ class MateriPelatihanController extends Controller
     public function store(StoreMateriPelatihanRequest $request, Pelatihan $pelatihan)
     {
         $this->service->create($pelatihan, $request->validated());
-        return redirect()->route('admin.pelatihan.show', $pelatihan->id)
-            ->with('success', 'Materi berhasil ditambahkan.');
+        return back()->with('success', 'Materi berhasil ditambahkan.');
     }
 
     public function edit(Pelatihan $pelatihan, MateriPelatihan $materi)
@@ -31,8 +42,7 @@ class MateriPelatihanController extends Controller
     public function update(UpdateMateriPelatihanRequest $request, Pelatihan $pelatihan, MateriPelatihan $materi)
     {
         $this->service->update($materi, $request->validated());
-        return redirect()->route('admin.pelatihan.show', $pelatihan->id)
-            ->with('success', 'Materi berhasil diperbarui.');
+        return back()->with('success', 'Materi berhasil diperbarui.');
     }
 
     public function destroy(Pelatihan $pelatihan, MateriPelatihan $materi)

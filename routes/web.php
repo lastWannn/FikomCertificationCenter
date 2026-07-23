@@ -117,6 +117,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::post('/{jadwal}/aktifkan',    [JadwalSertifikasiController::class,'aktifkan'])->name('aktifkan');
         Route::post('/{jadwal}/nonaktifkan', [JadwalSertifikasiController::class,'nonaktifkan'])->name('nonaktifkan');
     });
+    Route::get('materi', [MateriPelatihanController::class, 'index'])->name('materi.index');
 
     Route::prefix('pelatihan/{pelatihan}/materi')->name('materi-pelatihan.')->group(function () {
         Route::get('/tambah',       [MateriPelatihanController::class,'create'])->name('create');
