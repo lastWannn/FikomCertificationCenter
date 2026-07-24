@@ -4,13 +4,34 @@
     <meta charset="UTF-8">
     <title>Lembar Penilaian - {{ $pendaftaran->peserta->nama ?? '-' }}</title>
     <style>
+        @page { size: A4; margin: 20mm; }
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             color: #131218;
             margin: 0;
-            padding: 30px;
+            padding: 0;
+            background: #F3F4F6;
             font-size: 14px;
             line-height: 1.5;
+        }
+        .document-container {
+            background: #fff;
+            max-width: 210mm;
+            min-height: 297mm;
+            margin: 40px auto;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        @media print {
+            body { background: #fff; }
+            .document-container {
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                max-width: 100%;
+                min-height: auto;
+            }
         }
         .logo-header {
             display: flex;
@@ -69,7 +90,7 @@
     </style>
 </head>
 <body>
-
+<div class="document-container">
     <div class="logo-header">
         <!-- Logo Image Placeholder -->
         <div style="width:180px;height:60px;background:url('{{ asset('images/logo.png') }}') no-repeat center left;background-size:contain;">
@@ -132,7 +153,7 @@
             <div class="name">[Nama Instruktur]</div>
         </div>
     </div>
-
+</div>
     <script>
         window.onload = function() {
             window.print();
