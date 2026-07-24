@@ -44,8 +44,7 @@
                       'children' => [
                           ['route'=>'admin.pelatihan.index',             'label'=>'Tambah Pelatihan'],
                           ['route'=>'admin.materi.index',                'label'=>'Materi Pelatihan'],
-                          ['url'  =>'#pemateri',                         'label'=>'Pemateri Pelatihan'],
-                          ['url'  =>'#point',                            'label'=>'Point Peserta Pelatihan'],
+                          ['route'=>'admin.pelatihan.point.index',       'label'=>'Point Peserta Pelatihan'],
                       ]
                   ],
                   ['route'=>'admin.sertifikasi.index',   'icon'=>'award',            'label'=>'Sertifikasi'],

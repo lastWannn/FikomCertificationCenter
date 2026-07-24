@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\PointPesertaController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Livewire\Auth\Login as LivewireLogin;
@@ -93,6 +94,12 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     });
 
     /* PROGRAM */
+    Route::prefix('pelatihan/point')->name('pelatihan.point.')->group(function () {
+        Route::get('/',                                  [PointPesertaController::class, 'index'])->name('index');
+        Route::get('/{jadwal}',                          [PointPesertaController::class, 'show'])->name('show');
+        Route::post('/{jadwal}/pendaftaran/{pendaftaran}', [PointPesertaController::class, 'update'])->name('update');
+    });
+
     Route::resource('pelatihan',   PelatihanController::class);
     Route::resource('sertifikasi', SertifikasiController::class);
 
@@ -185,6 +192,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/invoice/{pembayaran}',     [CetakController::class,'invoice'])->name('invoice');
         Route::get('/bukti/{pembayaran}',       [CetakController::class,'buktiPembayaran'])->name('bukti');
         Route::get('/presensi/{kegiatan}',      [CetakController::class,'presensi'])->name('presensi');
+        Route::get('/penilaian/{pendaftaran}',  [CetakController::class,'lembarPenilaian'])->name('penilaian');
     });
 
     /* EXPORT EXCEL */
