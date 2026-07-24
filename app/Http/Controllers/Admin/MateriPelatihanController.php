@@ -20,7 +20,7 @@ class MateriPelatihanController extends Controller
             $selectedPelatihan = Pelatihan::with('materi')->find($request->pelatihan_id);
         }
 
-        return view('admin.materi.index', compact('pelatihans', 'selectedPelatihan'));
+        return view('admin.pelatihan.materi.index', compact('pelatihans', 'selectedPelatihan'));
     }
 
     public function create(Pelatihan $pelatihan)

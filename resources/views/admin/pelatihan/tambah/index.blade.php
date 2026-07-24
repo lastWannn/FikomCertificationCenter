@@ -55,7 +55,7 @@
 </div>
 
 {{-- ── TAMBAH PELATIHAN MODAL ────────────────────────────────────── --}}
-@include('admin.pelatihan.partials.create-modal')
+@include('admin.pelatihan.tambah.create-modal')
 @endsection
 
 @push('scripts')
@@ -97,4 +97,4 @@ document.addEventListener('DOMContentLoaded', function() {
 @endpush
 
 {{-- ── EDIT PELATIHAN MODALS ────────────────────────────────────── --}}
-@include('admin.pelatihan.partials.edit-modal')
+@include('admin.pelatihan.tambah.edit-modal')

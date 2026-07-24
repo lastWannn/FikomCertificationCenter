@@ -11,7 +11,7 @@ class PelatihanController extends Controller
     public function __construct(private PelatihanService $service) {}
 
     public function index() {
-        return view('admin.pelatihan.index', [
+        return view('admin.pelatihan.tambah.index', [
             'pelatihan'  => Pelatihan::with(['kategori'])->paginate(10),
             'kategori'   => Kategori::all(),
             'pelatihanList' => Pelatihan::all(),
