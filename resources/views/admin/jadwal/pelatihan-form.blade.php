@@ -4,9 +4,20 @@
 @section('page-content')
 @php $jenis='pelatihan'; $program=$pelatihan; @endphp
 <div style="padding:20px 24px;max-width:760px;">
-  <a href="{{ route('admin.pelatihan.show', $program->id) }}" style="display:inline-flex;align-items:center;gap:6px;color:#9CA3B0;font-size:13px;text-decoration:none;margin-bottom:16px;">
+  <a href="{{ route('admin.pelatihan.show', $program) }}" style="display:inline-flex;align-items:center;gap:6px;color:#9CA3B0;font-size:13px;text-decoration:none;margin-bottom:16px;">
     @include('components.icon',['name'=>'chevron-left','size'=>14]) Kembali
   </a>
+
+  @if($errors->any())
+  <div style="background:#FEF2F2;border:1px solid #FCA5A5;padding:14px 18px;border-radius:12px;margin-bottom:16px;">
+      <p style="color:#EF4444;font-size:13px;font-weight:800;margin:0 0 6px;">Gagal menyimpan jadwal:</p>
+      <ul style="margin:0;padding-left:20px;color:#B91C1C;font-size:12.5px;">
+          @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+          @endforeach
+      </ul>
+  </div>
+  @endif
   
 @php $jadwal = $jadwal ?? null; $edit = isset($jadwal); @endphp
 <form action="{{ $edit
@@ -127,7 +138,7 @@
       @include('components.icon',['name'=>'check','size'=>15,'style'=>'color:#FFC81A'])
       {{ $edit ? 'Perbarui Jadwal' : 'Simpan Jadwal' }}
     </button>
-    <a href="{{ route('admin.pelatihan.show', $program->id) }}"
+    <a href="{{ route('admin.pelatihan.show', $program) }}"
        style="padding:11px 20px;font-size:14px;font-weight:700;color:#6B7280;text-decoration:none;background:#F7F8FA;border:1.5px solid #E2E4EB;border-radius:10px;">
       Batal
     </a>

@@ -26,9 +26,9 @@
             
             <!-- Left Side: Poster -->
             <div class="fcc-card-dark" style="overflow:hidden; border-radius:18px; border:1.5px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-                @if($kegiatan->detail?->gambar)
+                @if($kegiatan->detail?->gambar_url)
                     <div style="position:relative; width:100%; aspect-ratio:3/4; overflow:hidden;">
-                        <img src="{{ asset('storage/' . $kegiatan->detail->gambar) }}" alt="{{ $kegiatan->judul }}" style="width:100%; height:100%; object-fit:cover; display:block;" />
+                        <img src="{{ $kegiatan->detail->gambar_url }}" alt="{{ $kegiatan->judul }}" style="width:100%; height:100%; object-fit:cover; display:block;" />
                     </div>
                 @else
                     <!-- Generated Premium Poster Placeholder -->

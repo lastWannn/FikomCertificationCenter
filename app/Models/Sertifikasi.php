@@ -9,4 +9,14 @@ class Sertifikasi extends Model {
     public function kategori()  { return $this->belongsTo(Kategori::class,'kategori_id'); }
     public function materi()    { return $this->hasMany(MateriSertifikasi::class)->orderBy('urutan'); }
     public function jadwal()    { return $this->hasMany(JadwalSertifikasi::class); }
+
+    public function getGambarUrlAttribute(): ?string
+    {
+        if (!$this->gambar) return null;
+        if (str_starts_with($this->gambar, 'http://') || str_starts_with($this->gambar, 'https://')) {
+            return $this->gambar;
+        }
+        $path = preg_replace('/^storage\//', '', $this->gambar);
+        return asset('storage/' . $path);
+    }
 }

@@ -47,7 +47,16 @@
                           ['route'=>'admin.pelatihan.point.index',       'label'=>'Point Peserta Pelatihan'],
                       ]
                   ],
-                  ['route'=>'admin.sertifikasi.index',   'icon'=>'award',            'label'=>'Sertifikasi'],
+                  [
+                      'route'    => 'admin.sertifikasi.index',
+                      'icon'     => 'award',
+                      'label'    => 'Sertifikasi',
+                      'children' => [
+                          ['route'=>'admin.sertifikasi.index',           'label'=>'Tambah Sertifikasi'],
+                          ['route'=>'admin.sertifikasi.materi.index',    'label'=>'Materi Sertifikasi'],
+                          ['route'=>'admin.sertifikasi.point.index',     'label'=>'Point Peserta Sertifikasi'],
+                      ]
+                  ],
               ],
           ],
           [
@@ -131,6 +140,9 @@
                     $childActive = isset($child['route']) ? sbActive(explode('.index',$child['route'])[0]) : request()->fullUrl() == url($child['url']); 
                     // Special logic: if route is index, but we are on create, index should not be active!
                     if (isset($child['route']) && $child['route'] == 'admin.pelatihan.index' && Route::currentRouteName() != 'admin.pelatihan.index') {
+                        $childActive = false;
+                    }
+                    if (isset($child['route']) && $child['route'] == 'admin.sertifikasi.index' && Route::currentRouteName() != 'admin.sertifikasi.index') {
                         $childActive = false;
                     }
                     if (isset($child['route']) && $child['route'] == 'admin.pelatihan.create' && Route::currentRouteName() == 'admin.pelatihan.create') {

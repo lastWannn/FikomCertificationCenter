@@ -23,7 +23,7 @@
     <table style="width:100%;border-collapse:collapse;">
       <thead>
         <tr style="background:#F7F8FA;border-bottom:1.5px solid #E2E4EB;">
-          @foreach(['Program','Instruktur','Tanggal Pelaksanaan','Kuota','Batas Daftar','Status','Aksi'] as $h)
+          @foreach(['Program','Tanggal Pelaksanaan','Kuota','Batas Daftar','Status','Aksi'] as $h)
           <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.7px;">{{ $h }}</th>
           @endforeach
         </tr>
@@ -44,7 +44,6 @@
             </p>
             <p style="margin:2px 0 0;font-size:10px;color:#9CA3B0;font-family:monospace;">{{ $j->pelatihan->kode }}</p>
           </td>
-          <td style="padding:12px 14px;font-size:12px;color:#6B7280;">{{ $j->pelatihan->instruktur->nama ?? '—' }}</td>
           <td style="padding:12px 14px;">
             <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">{{ $j->tgl_pelaksanaan->format('d M Y') }}</p>
             <p style="margin:2px 0 0;font-size:11px;color:#9CA3B0;">{{ $j->jam_mulai }} – {{ $j->jam_selesai }}</p>

@@ -101,8 +101,8 @@
                 
                 {{-- Card Banner --}}
                 <div style="height:148px; position:relative; overflow:hidden; background:linear-gradient(135deg, #131218 0%, #1e1b29 100%);">
-                    @if($k->detail?->gambar)
-                        <img src="{{ asset('storage/' . $k->detail->gambar) }}" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;" alt="Poster" />
+                    @if($k->detail?->gambar_url)
+                        <img src="{{ $k->detail->gambar_url }}" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;" alt="Poster" />
                     @else
                         <div style="position:absolute; inset:0; opacity:.04; background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px); background-size:20px 20px;"></div>
                         <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">

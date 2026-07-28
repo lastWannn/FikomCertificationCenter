@@ -14,10 +14,6 @@ return new class extends Migration {
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });
-        DB::statement("ALTER TABLE nilai ADD CONSTRAINT chk_nilai_satu_materi CHECK (
-            (materi_pelatihan_id IS NOT NULL AND materi_sertifikasi_id IS NULL)
-            OR (materi_pelatihan_id IS NULL AND materi_sertifikasi_id IS NOT NULL)
-        )");
 
         Schema::create('sertifikat', function (Blueprint $table) {
             $table->id();

@@ -34,7 +34,7 @@
           ['Tanggal',$kegiatan->jadwal?->tgl_pelaksanaan?->format('d F Y')??'—'],
           ['Waktu',($kegiatan->jadwal?->jam_mulai??'—').' – '.($kegiatan->jadwal?->jam_selesai??'—')],
           ['Batas Daftar',$kegiatan->jadwal?->tgl_batas_daftar?->format('d M Y')??'—'],
-          $isPel ? ['Instruktur',$kegiatan->kegiatanPelatihan?->jadwalPelatihan?->pelatihan?->instruktur?->nama??'—'] : ['Kategori',$kegiatan->kegiatanSertifikasi?->jadwalSertifikasi?->sertifikasi?->kategori?->nama_kategori??'—'],
+          ['Kategori', $isPel ? ($kegiatan->kegiatanPelatihan?->jadwalPelatihan?->pelatihan?->kategori?->nama_kategori ?? '—') : ($kegiatan->kegiatanSertifikasi?->jadwalSertifikasi?->sertifikasi?->kategori?->nama_kategori ?? '—')],
         ] as [$l,$v])
         <div style="display:flex;padding:9px 0;border-top:1px solid #F0F1F5;">
           <span style="min-width:140px;font-size:12px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.5px;">{{ $l }}</span>

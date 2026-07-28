@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PointPesertaController;
+use App\Http\Controllers\Admin\PointPesertaSertifikasiController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Livewire\Auth\Login as LivewireLogin;
@@ -100,6 +101,12 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::post('/{jadwal}/pendaftaran/{pendaftaran}', [PointPesertaController::class, 'update'])->name('update');
     });
 
+    Route::prefix('sertifikasi/point')->name('sertifikasi.point.')->group(function () {
+        Route::get('/',                                  [PointPesertaSertifikasiController::class, 'index'])->name('index');
+        Route::get('/{jadwal}',                          [PointPesertaSertifikasiController::class, 'show'])->name('show');
+        Route::post('/{jadwal}/pendaftaran/{pendaftaran}', [PointPesertaSertifikasiController::class, 'update'])->name('update');
+    });
+
     Route::resource('pelatihan',   PelatihanController::class);
     Route::resource('sertifikasi', SertifikasiController::class);
 
@@ -125,6 +132,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::post('/{jadwal}/nonaktifkan', [JadwalSertifikasiController::class,'nonaktifkan'])->name('nonaktifkan');
     });
     Route::get('materi', [MateriPelatihanController::class, 'index'])->name('materi.index');
+    Route::get('sertifikasi-materi', [MateriSertifikasiController::class, 'index'])->name('sertifikasi.materi.index');
 
     Route::prefix('pelatihan/{pelatihan}/materi')->name('materi-pelatihan.')->group(function () {
         Route::get('/tambah',       [MateriPelatihanController::class,'create'])->name('create');

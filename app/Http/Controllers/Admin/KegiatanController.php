@@ -14,7 +14,7 @@ class KegiatanController extends Controller
     public function index(Request $r)
     {
         $query = Kegiatan::with([
-            'kegiatanPelatihan.jadwalPelatihan.pelatihan.instruktur',
+            'kegiatanPelatihan.jadwalPelatihan.pelatihan',
             'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
             'biaya',
             'pendaftaran',
@@ -31,7 +31,7 @@ class KegiatanController extends Controller
     public function show(Kegiatan $kegiatan)
     {
         $kegiatan->load([
-            'kegiatanPelatihan.jadwalPelatihan.pelatihan.instruktur',
+            'kegiatanPelatihan.jadwalPelatihan.pelatihan',
             'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
             'biaya',
             'pendaftaran.peserta',

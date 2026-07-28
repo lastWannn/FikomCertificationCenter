@@ -31,14 +31,14 @@ class JadwalSertifikasiController extends Controller
             return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
                 ->with('success', 'Jadwal ditambahkan dan langsung aktif. Silakan tentukan biaya pendaftarannya agar tidak terpublikasi sebagai kegiatan gratis.');
         }
-        return redirect()->route('admin.sertifikasi.show', $sertifikasi->id)->with('success','Jadwal berhasil ditambahkan.');
+        return redirect()->route('admin.sertifikasi.show', $sertifikasi)->with('success','Jadwal berhasil ditambahkan.');
     }
     public function edit(JadwalSertifikasi $jadwal) {
         return view('admin.jadwal.sertifikasi-form', ['jadwal'=>$jadwal,'sertifikasi'=>$jadwal->sertifikasi]);
     }
     public function update(UpdateJadwalRequest $request, JadwalSertifikasi $jadwal) {
         $this->service->update($jadwal, $request->validated());
-        return redirect()->route('admin.sertifikasi.show', $jadwal->sertifikasi_id)->with('success','Jadwal berhasil diperbarui.');
+        return redirect()->route('admin.sertifikasi.show', $jadwal->sertifikasi)->with('success','Jadwal berhasil diperbarui.');
     }
     public function destroy(JadwalSertifikasi $jadwal) {
         try { $this->service->delete($jadwal); }

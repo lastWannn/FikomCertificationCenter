@@ -195,8 +195,8 @@
                  onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,.1)';this.style.borderColor='rgba(255,255,255,.08)'">
                 {{-- Card Banner (tinggi lebih, lebih dramatis) --}}
                 <div style="height:168px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0e0d14,#1e1b29);">
-                    @if($k->detail?->gambar)
-                        <img src="{{ asset('storage/' . $k->detail->gambar) }}" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;" alt="Poster" />
+                    @if($k->detail?->gambar_url)
+                        <img src="{{ $k->detail->gambar_url }}" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;" alt="Poster" />
                         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(14,13,20,.5),transparent);"></div>
                     @else
                         {{-- Animated grid bg --}}

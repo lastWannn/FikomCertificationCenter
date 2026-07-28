@@ -59,7 +59,7 @@
                 @if($kp)
                 <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:rgba(16,185,129,.12);color:#10B981;">&#10003; Aktif</span>
                 <br>
-                <a href="{{ route('admin.kegiatan.show',$kp->kegiatan_id) }}" style="font-size:11px;color:#3B82F6;text-decoration:none;">Lihat Kegiatan</a>
+                <a href="{{ route('admin.kegiatan.show', $kp->kegiatan) }}" style="font-size:11px;color:#3B82F6;text-decoration:none;">Lihat Kegiatan</a>
                 @else
                 <form action="{{ route('admin.jadwal-pelatihan.aktifkan', $j) }}" method="POST" style="display:inline;">
                   @csrf

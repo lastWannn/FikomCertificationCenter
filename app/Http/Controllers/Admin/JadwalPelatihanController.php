@@ -12,8 +12,8 @@ class JadwalPelatihanController extends Controller
 
     public function index(\Illuminate\Http\Request $r) {
         return view('admin.jadwal.pelatihan', [
-            'pelatihan' => Pelatihan::with(['instruktur','kategori'])->get(),
-            'jadwal'    => JadwalPelatihan::with(['pelatihan.instruktur','kegiatanPelatihan.kegiatan'])
+            'pelatihan' => Pelatihan::with(['kategori'])->get(),
+            'jadwal'    => JadwalPelatihan::with(['pelatihan','kegiatanPelatihan.kegiatan'])
                 ->when($r->pelatihan_id, fn($q) => $q->where('pelatihan_id',$r->pelatihan_id))
                 ->orderBy('tgl_pelaksanaan','desc')->paginate(15),
         ]);
@@ -31,7 +31,7 @@ class JadwalPelatihanController extends Controller
             return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
                 ->with('success', 'Jadwal ditambahkan dan langsung aktif. Silakan tentukan biaya pendaftarannya agar tidak terpublikasi sebagai kegiatan gratis.');
         }
-        return redirect()->route('admin.pelatihan.show', $pelatihan->id)
+        return redirect()->route('admin.pelatihan.show', $pelatihan)
             ->with('success','Jadwal pelatihan berhasil ditambahkan.');
     }
     public function edit(JadwalPelatihan $jadwal) {
@@ -39,7 +39,7 @@ class JadwalPelatihanController extends Controller
     }
     public function update(UpdateJadwalRequest $request, JadwalPelatihan $jadwal) {
         $this->service->update($jadwal, $request->validated());
-        return redirect()->route('admin.pelatihan.show', $jadwal->pelatihan_id)->with('success','Jadwal berhasil diperbarui.');
+        return redirect()->route('admin.pelatihan.show', $jadwal->pelatihan)->with('success','Jadwal berhasil diperbarui.');
     }
     public function destroy(JadwalPelatihan $jadwal) {
         try {

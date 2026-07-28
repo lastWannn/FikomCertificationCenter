@@ -139,8 +139,7 @@ class LandingController extends Controller
             $query->whereHas('kegiatanPelatihan.jadwalPelatihan.pelatihan', function($qp) use ($q) {
                 $qp->where('judul','LIKE',"%{$q}%")
                    ->orWhere('isi','LIKE',"%{$q}%")
-                   ->orWhereHas('kategori', fn($k) => $k->where('nama_kategori','LIKE',"%{$q}%"))
-                   ->orWhereHas('instruktur', fn($i) => $i->where('nama','LIKE',"%{$q}%"));
+                   ->orWhereHas('kategori', fn($k) => $k->where('nama_kategori','LIKE',"%{$q}%"));
             })
             // Cari di relasi sertifikasi
             ->orWhereHas('kegiatanSertifikasi.jadwalSertifikasi.sertifikasi', function($qs) use ($q) {
