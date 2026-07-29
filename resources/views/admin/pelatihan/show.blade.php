@@ -68,11 +68,11 @@
                 @endif
               </div>
               <div style="display:flex;gap:6px;">
-                <a href="{{ route('admin.jadwal-pelatihan.edit',$j->id) }}" title="Edit" style="color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
+                <a href="{{ route('admin.jadwal-pelatihan.edit', $j) }}" title="Edit" style="color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
                    onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#9CA3B0'">
                   @include('components.icon',['name'=>'edit','size'=>14])
                 </a>
-                <form action="{{ route('admin.jadwal-pelatihan.destroy',$j->id) }}" method="POST" onsubmit="return confirm('Hapus jadwal ini?')">
+                <form action="{{ route('admin.jadwal-pelatihan.destroy', $j) }}" method="POST" onsubmit="return confirm('Hapus jadwal ini?')">
                   @csrf @method('DELETE')
                   <button type="submit" style="background:none;border:none;cursor:pointer;color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
                           onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='#9CA3B0'">

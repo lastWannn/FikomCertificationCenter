@@ -58,8 +58,13 @@
               <div style="text-align:right;">
                 @if($ks)
                 <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:rgba(16,185,129,.12);color:#10B981;">&#10003; Aktif</span>
-                <br>
-                <a href="{{ route('admin.kegiatan.show', $ks->kegiatan) }}" style="font-size:11px;color:#3B82F6;text-decoration:none;">Lihat Kegiatan</a>
+                <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+                  <form action="{{ route('admin.jadwal-sertifikasi.nonaktifkan', $j) }}" method="POST" style="display:inline;">
+                    @csrf
+                    <button type="submit" style="background:rgba(239,68,68,.1);border:none;color:#EF4444;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;cursor:pointer;" onclick="return confirm('Nonaktifkan kegiatan ini?')">Nonaktifkan</button>
+                  </form>
+                  <a href="{{ route('admin.kegiatan.show', $ks->kegiatan) }}" style="font-size:11px;color:#3B82F6;text-decoration:none;">Lihat Kegiatan</a>
+                </div>
                 @else
                 <form action="{{ route('admin.jadwal-sertifikasi.aktifkan', $j) }}" method="POST" style="display:inline;">
                   @csrf
@@ -68,11 +73,11 @@
                 @endif
               </div>
               <div style="display:flex;gap:6px;">
-                <a href="{{ route('admin.jadwal-sertifikasi.edit',$j->id) }}" title="Edit" style="color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
+                <a href="{{ route('admin.jadwal-sertifikasi.edit', $j) }}" title="Edit" style="color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
                    onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#9CA3B0'">
                   @include('components.icon',['name'=>'edit','size'=>14])
                 </a>
-                <form action="{{ route('admin.jadwal-sertifikasi.destroy',$j->id) }}" method="POST" onsubmit="return confirm('Hapus jadwal ini?')">
+                <form action="{{ route('admin.jadwal-sertifikasi.destroy', $j) }}" method="POST" onsubmit="return confirm('Hapus jadwal ini?')">
                   @csrf @method('DELETE')
                   <button type="submit" style="background:none;border:none;cursor:pointer;color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
                           onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='#9CA3B0'">

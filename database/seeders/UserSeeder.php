@@ -36,7 +36,8 @@ class UserSeeder extends Seeder
                 'instansi' => 'Fakultas Ilmu Komputer UMI',
                 'no_hp' => '085244556677',
                 'password' => Hash::make('password'),
-                'status_akun' => 'aktif'
+                'status_akun' => 'aktif',
+                'email_verified_at' => now(),
             ]
         );
 
@@ -50,7 +51,23 @@ class UserSeeder extends Seeder
                 'instansi' => 'Freelance',
                 'no_hp' => '082155667788',
                 'password' => Hash::make('password'),
-                'status_akun' => 'aktif'
+                'status_akun' => 'aktif',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // 5. Peserta Dummy (Peserta FCC)
+        Peserta::firstOrCreate(
+            ['email' => 'peserta@fcc.com'],
+            [
+                'nama' => 'Peserta FCC',
+                'alamat' => 'Jl. UMI Makassar',
+                'kelamin' => 'L',
+                'instansi' => 'Universitas Muslim Indonesia',
+                'no_hp' => '081234567890',
+                'password' => Hash::make('password'),
+                'status_akun' => 'aktif',
+                'email_verified_at' => now(),
             ]
         );
     }

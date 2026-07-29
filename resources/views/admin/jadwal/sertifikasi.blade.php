@@ -66,6 +66,15 @@
                 <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">@include('components.icon',['name'=>'trash','size'=>15])</button>
               </form>
               @else
+              <form action="{{ route('admin.jadwal-sertifikasi.nonaktifkan', $j) }}" method="POST">
+                @csrf
+                <button type="submit" title="Nonaktifkan Kegiatan"
+                    style="background:rgba(239,68,68,.1);border:none;color:#EF4444;font-size:11px;font-weight:700;
+                           padding:5px 10px;border-radius:7px;cursor:pointer;white-space:nowrap;"
+                    onclick="return confirm('Nonaktifkan kegiatan ini?')">
+                  Nonaktifkan
+                </button>
+              </form>
               <a href="{{ route('admin.kegiatan.show', $k) }}" style="font-size:11px;color:#3B82F6;font-weight:700;text-decoration:none;">Lihat Kegiatan</a>
               @endif
             </div>
