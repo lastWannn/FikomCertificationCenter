@@ -11,7 +11,7 @@ class SertifikasiService
     {
         $sertData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id'])->toArray();
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
-            $sertData['gambar'] = $data['gambar']->store('sertifikasi', 'public');
+            $sertData['gambar'] = \App\Helpers\ImageHelper::compressToWebp($data['gambar'], 'sertifikasi');
         }
         
         $sertifikasi = Sertifikasi::create($sertData);
@@ -74,7 +74,7 @@ class SertifikasiService
     public function update(Sertifikasi $sertifikasi, array $data): Sertifikasi
     {
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
-            $data['gambar'] = $data['gambar']->store('sertifikasi', 'public');
+            $data['gambar'] = \App\Helpers\ImageHelper::compressToWebp($data['gambar'], 'sertifikasi');
         }
         unset($data['_token'], $data['_method']);
         $sertifikasi->update($data);

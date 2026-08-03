@@ -48,7 +48,12 @@ class PendaftaranService
         }
 
         $pendaftaran->load(['peserta', 'kegiatan', 'biaya', 'pembayaran']);
-        $this->kirimEmailKonfirmasi($pendaftaran);
+
+        // Kirim email konfirmasi & invoice PDF secara background setelah response terkirim ke user (instant loading)
+        dispatch(function () use ($pendaftaran) {
+            $this->kirimEmailKonfirmasi($pendaftaran);
+        })->afterResponse();
+
         return $pendaftaran;
     }
 
@@ -62,32 +67,50 @@ class PendaftaranService
             return null;
         }
 
-        // 1. Cek apakah Mahasiswa UMI (email berakhiran @umi.ac.id atau instansi mengandung UMI)
+        // 1. Cek apakah Mahasiswa / Civitas UMI (email umi.ac.id, instansi UMI, atau memiliki NIM)
         $isUmi = false;
         if ($peserta) {
-            $email = strtolower($peserta->email ?? '');
+            $email    = strtolower($peserta->email ?? '');
             $instansi = strtolower($peserta->instansi ?? '');
-            if (str_ends_with($email, '@umi.ac.id') || str_contains($instansi, 'umi') || str_contains($instansi, 'muslim indonesia')) {
+            $nim      = trim($peserta->nim ?? '');
+
+            if (
+                str_contains($email, 'umi.ac.id') ||
+                str_contains($instansi, 'umi') ||
+                str_contains($instansi, 'muslim indonesia') ||
+                !empty($nim)
+            ) {
                 $isUmi = true;
             }
         }
 
         if ($isUmi) {
-            // Cari opsi biaya Mahasiswa UMI / Internal
-            $biayaUmi = $daftarBiaya->first(function ($b) {
+            // Cari opsi biaya Mahasiswa UMI / FIKOM UMI terlebih dahulu (diurutkan dari nominal terkecil)
+            $biayaMahasiswaUmi = $daftarBiaya->filter(function ($b) {
                 $nama = strtolower($b->nama_jenis ?? '');
-                return str_contains($nama, 'mahasiswa') || str_contains($nama, 'umi') || str_contains($nama, 'internal');
-            });
+                return str_contains($nama, 'mahasiswa') && (str_contains($nama, 'umi') || str_contains($nama, 'fikom') || str_contains($nama, 'internal'));
+            })->sortBy('nominal')->first();
+
+            if ($biayaMahasiswaUmi) {
+                return $biayaMahasiswaUmi->id;
+            }
+
+            // Opsi biaya UMI / Internal lainnya (termurah)
+            $biayaUmi = $daftarBiaya->filter(function ($b) {
+                $nama = strtolower($b->nama_jenis ?? '');
+                return str_contains($nama, 'umi') || str_contains($nama, 'internal');
+            })->sortBy('nominal')->first();
+
             if ($biayaUmi) {
                 return $biayaUmi->id;
             }
         }
 
-        // 2. Jika bukan UMI atau opsi UMI tidak ada, cari opsi biaya Umum / Eksternal
-        $biayaUmum = $daftarBiaya->first(function ($b) {
+        // 2. Jika bukan UMI, cari opsi biaya Umum / Eksternal
+        $biayaUmum = $daftarBiaya->filter(function ($b) {
             $nama = strtolower($b->nama_jenis ?? '');
             return str_contains($nama, 'umum') || str_contains($nama, 'eksternal') || str_contains($nama, 'reguler');
-        });
+        })->first();
 
         if ($biayaUmum) {
             return $biayaUmum->id;

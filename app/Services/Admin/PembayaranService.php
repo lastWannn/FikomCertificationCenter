@@ -11,23 +11,27 @@ class PembayaranService
     public function verifikasi(Pembayaran $pembayaran, ?string $noKwitansi = null): void
     {
         $pembayaran->verifikasi($noKwitansi);
-        try {
-            Mail::to($pembayaran->pendaftaran->peserta->email)
-                ->send(new PembayaranDikonfirmasi($pembayaran));
-        } catch (\Exception $e) {
-            Log::warning('Email verifikasi gagal: ' . $e->getMessage());
-        }
+        dispatch(function () use ($pembayaran) {
+            try {
+                Mail::to($pembayaran->pendaftaran->peserta->email)
+                    ->send(new PembayaranDikonfirmasi($pembayaran));
+            } catch (\Exception $e) {
+                Log::warning('Email verifikasi gagal: ' . $e->getMessage());
+            }
+        })->afterResponse();
     }
 
     public function tolak(Pembayaran $pembayaran, ?string $alasan = null): void
     {
         $pembayaran->tolak();
-        try {
-            Mail::to($pembayaran->pendaftaran->peserta->email)
-                ->send(new PembayaranDitolak($pembayaran, $alasan));
-        } catch (\Exception $e) {
-            Log::warning('Email tolak gagal: ' . $e->getMessage());
-        }
+        dispatch(function () use ($pembayaran, $alasan) {
+            try {
+                Mail::to($pembayaran->pendaftaran->peserta->email)
+                    ->send(new PembayaranDitolak($pembayaran, $alasan));
+            } catch (\Exception $e) {
+                Log::warning('Email tolak gagal: ' . $e->getMessage());
+            }
+        })->afterResponse();
     }
 
     public function perpanjang(Pembayaran $pembayaran): void

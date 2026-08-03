@@ -37,7 +37,7 @@ class MitraController extends Controller
         $data = $request->except('logo');
 
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('mitra', 'public');
+            $data['logo'] = \App\Helpers\ImageHelper::compressToWebp($request->file('logo'), 'mitra');
         }
 
         Mitra::create($data);
@@ -70,7 +70,7 @@ class MitraController extends Controller
             if ($mitra->logo) {
                 Storage::disk('public')->delete($mitra->logo);
             }
-            $data['logo'] = $request->file('logo')->store('mitra', 'public');
+            $data['logo'] = \App\Helpers\ImageHelper::compressToWebp($request->file('logo'), 'mitra');
         }
 
         $mitra->update($data);

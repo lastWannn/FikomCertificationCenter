@@ -34,7 +34,7 @@ class PembayaranService
             throw new \RuntimeException('Upload tidak bisa dilakukan. Pastikan waktu pembayaran masih aktif dan tidak sedang menunggu persetujuan perpanjangan.');
         }
 
-        $path = $file->store('bukti-bayar', 'public');
+        $path = \App\Helpers\ImageHelper::compressToWebp($file, 'bukti-bayar');
 
         $pembayaran->update([
             'metode_pembayaran' => $data['metode_pembayaran'],

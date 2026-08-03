@@ -87,95 +87,80 @@
     </div>
 
     {{-- Grid Content --}}
+    {{-- Table Content --}}
     <div style="padding:48px 24px; max-width:1100px; margin:0 auto;">
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:28px;">
-            @forelse($kegiatan as $k)
-            @php 
-                $isPel = $k->jenis_kegiatan === 'pelatihan'; 
-                $accentColor = $isPel ? '#FFC81A' : '#8B5CF6';
-                $accentBg = $isPel ? 'rgba(255,200,26,0.12)' : 'rgba(139,92,246,0.1)';
-            @endphp
-            <div class="fcc-card-dark" style="overflow:hidden; border-radius:20px; border:1.5px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:flex; flex-direction:column;"
-                 onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 36px rgba(0,0,0,0.3)'; this.style.borderColor='{{ $accentColor }}44';"
-                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='rgba(255,255,255,.08)';">
-                
-                {{-- Card Banner --}}
-                <div style="height:148px; position:relative; overflow:hidden; background:linear-gradient(135deg, #131218 0%, #1e1b29 100%);">
-                    @if($k->detail?->gambar_url)
-                        <img src="{{ $k->detail->gambar_url }}" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;" alt="Poster" />
-                    @else
-                        <div style="position:absolute; inset:0; opacity:.04; background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px); background-size:20px 20px;"></div>
-                        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
-                            <div style="width:64px; height:64px; border-radius:18px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center;">
-                                @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>30,'style'=>'color:'.$accentColor])
-                            </div>
-                        </div>
-                    @endif
-                    
-                    {{-- Badges --}}
-                    <div style="position:absolute; top:12px; left:12px;">
-                        <span style="font-size:10.5px; font-weight:800; padding:4px 10px; border-radius:8px; background:{{ $accentBg }}; color:{{ $accentColor }}; border:1px solid {{ $accentColor }}30; text-transform:uppercase; letter-spacing:0.5px;">
-                            {{ $k->jenis_kegiatan }}
-                        </span>
-                    </div>
-                    @if($k->isFull())
-                    <div style="position:absolute; top:12px; right:12px;">
-                        <span style="font-size:10.5px; font-weight:800; padding:4px 10px; border-radius:8px; background:rgba(239,68,68,0.15); color:#EF4444; border:1px solid rgba(239,68,68,0.25); text-transform:uppercase;">
-                            Penuh
-                        </span>
-                    </div>
-                    @endif
-                </div>
-                
-                {{-- Card Body --}}
-                <div style="padding:22px 20px; display:flex; flex-direction:column; flex-grow:1; justify-content:space-between;">
-                    <div>
-                        <h4 style="color:#FFF; font-size:16px; font-weight:900; margin:0 0 12px; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; height:46px;">
-                            {{ $k->judul }}
-                        </h4>
-                        
-                        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;">
-                            <div style="display:flex; align-items:center; gap:8px; color:rgba(255,255,255,.6); font-size:13px; font-weight:500;">
-                                <div style="width:22px; height:22px; border-radius:6px; background:rgba(255,255,255,.06); display:flex; align-items:center; justify-content:center;">
-                                    @include('components.icon',['name'=>'calendar','size'=>12,'style'=>'color:rgba(255,255,255,.5)'])
+        <div class="fcc-card-dark" style="overflow:hidden; border-radius:20px; border:1.5px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <div style="overflow-x:auto;">
+                <table style="width:100%; border-collapse:collapse; text-align:left; color:#FFF;">
+                    <thead>
+                        <tr style="background:rgba(255,255,255,.04); border-bottom:1.5px solid rgba(255,255,255,.08);">
+                            <th style="padding:16px 24px; font-size:11px; font-weight:800; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:1px;">Program / Kegiatan</th>
+                            <th style="padding:16px 16px; font-size:11px; font-weight:800; color:rgba(255,255,255,.5); text-transform:uppercase; text-align:center;">Jenis</th>
+                            <th style="padding:16px 16px; font-size:11px; font-weight:800; color:rgba(255,255,255,.5); text-transform:uppercase;">Jadwal Pelaksanaan</th>
+                            <th style="padding:16px 16px; font-size:11px; font-weight:800; color:rgba(255,255,255,.5); text-transform:uppercase; text-align:center;">Kuota</th>
+                            <th style="padding:16px 24px; font-size:11px; font-weight:800; color:rgba(255,255,255,.5); text-transform:uppercase; text-align:center; width:160px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($kegiatan as $k)
+                        @php 
+                            $isPel = $k->jenis_kegiatan === 'pelatihan'; 
+                            $accentColor = $isPel ? '#FFC81A' : '#A78BFA';
+                            $accentBg = $isPel ? 'rgba(255,200,26,0.15)' : 'rgba(139,92,246,0.12)';
+                        @endphp
+                        <tr style="border-top:1px solid rgba(255,255,255,.06); transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,.02)'" onmouseout="this.style.background='transparent'">
+                            <td style="padding:18px 24px;">
+                                <div style="display:flex; align-items:center; gap:16px;">
+                                    <div style="width:46px; height:46px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                        @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>22,'style'=>'color:'.$accentColor])
+                                    </div>
+                                    <div>
+                                        <h4 style="margin:0 0 4px; color:#FFF; font-size:15px; font-weight:800; line-height:1.35;">
+                                            <a href="{{ route('landing.show', $k) }}" style="color:#FFF; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#FFF'">
+                                                {{ $k->judul }}
+                                            </a>
+                                        </h4>
+                                        <span style="font-size:12px; color:rgba(255,255,255,.45); font-weight:500;">
+                                            Biaya: <strong style="color:{{ $accentColor }}">{{ $k->biaya->isNotEmpty() ? 'Berbayar' : 'Gratis' }}</strong>
+                                        </span>
+                                    </div>
                                 </div>
-                                <span>{{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Jadwal Menyusul (TBA)' }}</span>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:8px; color:rgba(255,255,255,.6); font-size:13px; font-weight:500;">
-                                <div style="width:22px; height:22px; border-radius:6px; background:rgba(255,255,255,.06); display:flex; align-items:center; justify-content:center;">
-                                    @include('components.icon',['name'=>'users','size'=>12,'style'=>'color:rgba(255,255,255,.5)'])
+                            </td>
+                            <td style="padding:18px 16px; text-align:center; vertical-align:middle;">
+                                <span style="font-size:10.5px; font-weight:800; padding:4px 12px; border-radius:8px; background:{{ $accentBg }}; color:{{ $accentColor }}; border:1px solid {{ $accentColor }}30; text-transform:uppercase; letter-spacing:0.5px;">
+                                    {{ $k->jenis_kegiatan }}
+                                </span>
+                            </td>
+                            <td style="padding:18px 16px; vertical-align:middle; font-size:13.5px; color:rgba(255,255,255,.7); font-weight:600;">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    @include('components.icon',['name'=>'calendar','size'=>14,'style'=>'color:rgba(255,255,255,.4)'])
+                                    <span>{{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Jadwal Menyusul' }}</span>
                                 </div>
-                                <span>Terisi <strong style="color:#FFF">{{ $k->terisi }}</strong> dari <strong style="color:#FFF">{{ $k->kuota }}</strong> peserta</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <div style="background:rgba(255,255,255,.03); border-radius:12px; border:1px solid rgba(255,255,255,.08); padding:10px 14px; display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
-                            <span style="color:rgba(255,255,255,.5); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Biaya</span>
-                            <span style="color:{{ $isPel ? '#FFC81A' : '#A78BFA' }}; font-weight:900; font-size:14.5px;">
-                                {{ $k->biaya->isNotEmpty() ? 'Rp '.number_format($k->biaya->min('nominal'),0,',','.') : 'Gratis' }}
-                            </span>
-                        </div>
-                        
-                        <a href="{{ route('landing.show', $k) }}"
-                           class="{{ $k->isFull() ? '' : 'fcc-btn-gold btn-shine' }}"
-                           style="display:block; text-align:center; text-decoration:none; padding:11px; border-radius:12px; font-size:13.5px; font-weight:800; transition:all 0.2s ease;
-                                  {{ $k->isFull() ? 'background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:rgba(255,255,255,.4); cursor:not-allowed;' : 'box-shadow: 0 4px 12px rgba(255, 200, 26, 0.15);' }}">
-                            {{ $k->isFull() ? 'Kuota Penuh' : 'Detail Program' }}
-                        </a>
-                    </div>
-                </div>
+                            </td>
+                            <td style="padding:18px 16px; text-align:center; vertical-align:middle;">
+                                <span style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); padding:5px 12px; border-radius:8px; font-size:12.5px; font-weight:700; color:#FFF;">
+                                    {{ $k->terisi }} / {{ $k->kuota }}
+                                </span>
+                            </td>
+                            <td style="padding:18px 24px; text-align:center; vertical-align:middle;">
+                                <a href="{{ route('landing.show', $k) }}"
+                                   class="{{ $k->isFull() ? '' : 'fcc-btn-gold btn-shine' }}"
+                                   style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none; padding:9px 16px; border-radius:10px; font-size:13px; font-weight:800; transition:all 0.2s ease; width:100%;
+                                          {{ $k->isFull() ? 'background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:rgba(255,255,255,.4); cursor:not-allowed;' : '' }}">
+                                    {{ $k->isFull() ? 'Kuota Penuh' : 'Detail Program' }}
+                                </a>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" style="padding:60px 24px; text-align:center; color:rgba(255,255,255,.4); font-size:14.5px;">
+                                Belum ada program pelatihan atau sertifikasi yang sesuai dengan kriteria pencarian Anda.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-            @empty
-            <div style="grid-column:span 3; padding:80px 48px; text-align:center; background:rgba(255,255,255,.03); border-radius:20px; border:1.5px solid rgba(255,255,255,.08);">
-                <div style="width:54px; height:54px; border-radius:50%; background:rgba(239,68,68,.1); color:#EF4444; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                </div>
-                <h4 style="margin:0 0 8px; color:#FFF; font-size:16px; font-weight:900;">Kegiatan Tidak Ditemukan</h4>
-                <p style="margin:0; color:rgba(255,255,255,.5); font-size:14px;">Belum ada program pelatihan atau sertifikasi yang sesuai dengan kriteria pencarian Anda.</p>
-            </div>
-            @endforelse
         </div>
         @if($kegiatan->hasPages())
         <div style="margin-top:40px; display:flex; justify-content:center;" class="fcc-pagination-dark">

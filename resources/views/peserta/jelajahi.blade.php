@@ -21,37 +21,71 @@
             @endforeach
         </div>
     </form>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
-        @forelse($kegiatan as $k)
-        @php $sudah=in_array($k->id,$sudahDaftar); $isPel=$k->jenis_kegiatan==='pelatihan'; @endphp
-        <div class="fcc-card" style="overflow:hidden;transition:transform .22s,box-shadow .22s;"
-             onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 30px rgba(0,0,0,.1)'"
-             onmouseout="this.style.transform='translateY(0)';this.style.boxShadow=''">
-            <div style="height:130px;position:relative;background:linear-gradient(135deg,#131218,#1A1920);">
-                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-                    @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>36,'style'=>'color:rgba(255,200,26,.35)'])
-                </div>
-                <div style="position:absolute;top:8px;left:8px;"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:{{ $isPel?'rgba(255,200,26,.85)':'rgba(20,20,20,.85)' }};color:{{ $isPel?'#111':'#FFF' }};">{{ ucfirst($k->jenis_kegiatan) }}</span></div>
-                @if($sudah)<div style="position:absolute;top:8px;right:8px;"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:rgba(16,185,129,.85);color:#FFF;">&#10003; Terdaftar</span></div>@endif
-                @if($k->isFull()&&!$sudah)<div style="position:absolute;top:8px;right:8px;"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:rgba(239,68,68,.85);color:#FFF;">Penuh</span></div>@endif
-            </div>
-            <div style="padding:14px 16px;">
-                <p style="font-size:14px;font-weight:800;color:#0F0F14;margin:0 0 4px;line-height:1.35;">{{ Str::limit($k->judul,38) }}</p>
-                <p style="font-size:11px;color:#A0A3AD;margin:0 0 8px;">{{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }} &bull; {{ $k->terisi }}/{{ $k->kuota }}</p>
-                <p style="font-size:13px;color:#FFC81A;font-weight:800;margin:0 0 12px;">{{ $k->biaya->isNotEmpty() ? 'Rp '.number_format($k->biaya->min('nominal'),0,',','.') : 'Gratis' }}</p>
-                @if($sudah)
-                <a href="{{ route('peserta.pendaftaran') }}" style="display:block;text-align:center;padding:8px;border-radius:9px;border:1.5px solid #10B981;color:#10B981;font-size:13px;font-weight:700;text-decoration:none;">&#10003; Sudah Terdaftar</a>
-                @elseif($k->isFull())
-                <button disabled style="width:100%;padding:8px;border-radius:9px;border:1px solid #E2E4EB;background:rgba(100,100,100,.08);color:#A0A3AD;font-size:13px;font-weight:700;cursor:not-allowed;">Kuota Penuh</button>
-                @else
-                <button onclick="showDaftarModal('{{ $k->hashid }}', '{{ addslashes($k->judul) }}', {{ $k->biaya->toJson() }})"
-                    class="fcc-btn-gold" style="width:100%;justify-content:center;padding:8px;font-size:13px;">Daftar</button>
-                @endif
-            </div>
+    {{-- Desktop Table View & Mobile Cards --}}
+    <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:14px;">
+        <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;text-align:left;">
+                <thead>
+                    <tr style="background:#F8F9FB;border-bottom:2px solid #E2E4EB;">
+                        <th style="padding:14px 20px;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;letter-spacing:.7px;">Kegiatan</th>
+                        <th style="padding:14px 14px;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;text-align:center;">Jenis</th>
+                        <th style="padding:14px 14px;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;">Jadwal Pelaksanaan</th>
+                        <th style="padding:14px 14px;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;text-align:center;">Kuota</th>
+                        <th style="padding:14px 20px;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;text-align:center;width:170px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($kegiatan as $k)
+                    @php $sudah=in_array($k->id,$sudahDaftar); $isPel=$k->jenis_kegiatan==='pelatihan'; @endphp
+                    <tr style="border-top:1px solid #F0F1F3;transition:background .2s;" onmouseover="this.style.background='#FAFBFD'" onmouseout="this.style.background='transparent'">
+                        <td style="padding:16px 20px;">
+                            <div style="display:flex;align-items:center;gap:14px;">
+                                <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#131218,#1A1920);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>20,'style'=>'color:#FFC81A'])
+                                </div>
+                                <div>
+                                    <p style="font-size:14px;font-weight:800;color:#0F0F14;margin:0 0 2px;line-height:1.35;">{{ $k->judul }}</p>
+                                    <p style="font-size:11.5px;color:#9CA3B0;margin:0;">
+                                        Status Biaya: <span style="color:#10B981;font-weight:700;">{{ $k->biaya->isNotEmpty() ? 'Berbayar' : 'Gratis' }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding:16px 14px;text-align:center;vertical-align:middle;">
+                            <span style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px;background:{{ $isPel?'rgba(255,200,26,.15)':'rgba(139,92,246,.12)' }};color:{{ $isPel?'#B38F00':'#7C3AED' }};text-transform:uppercase;">
+                                {{ ucfirst($k->jenis_kegiatan) }}
+                            </span>
+                        </td>
+                        <td style="padding:16px 14px;vertical-align:middle;font-size:13px;color:#4B5563;font-weight:600;">
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                @include('components.icon',['name'=>'calendar','size'=>14,'style'=>'color:#9CA3B0'])
+                                {{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Jadwal Menyusul' }}
+                            </div>
+                        </td>
+                        <td style="padding:16px 14px;text-align:center;vertical-align:middle;font-size:13px;color:#374151;font-weight:700;">
+                            <span style="background:#F3F4F6;padding:4px 10px;border-radius:8px;font-size:12px;">
+                                {{ $k->terisi }} / {{ $k->kuota }}
+                            </span>
+                        </td>
+                        <td style="padding:16px 20px;text-align:center;vertical-align:middle;">
+                            @if($sudah)
+                            <a href="{{ route('peserta.pendaftaran') }}" style="display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:9px;border:1.5px solid #10B981;color:#10B981;font-size:12.5px;font-weight:700;text-decoration:none;">&#10003; Terdaftar</a>
+                            @elseif($k->isFull())
+                            <button disabled style="width:100%;padding:8px 14px;border-radius:9px;border:1px solid #E2E4EB;background:rgba(100,100,100,.08);color:#A0A3AD;font-size:12.5px;font-weight:700;cursor:not-allowed;">Kuota Penuh</button>
+                            @else
+                            <button onclick="showDaftarModal('{{ $k->hashid }}', '{{ addslashes($k->judul) }}', {{ $k->biaya->toJson() }})"
+                                class="fcc-btn-gold" style="width:100%;justify-content:center;padding:8px 14px;font-size:12.5px;">Daftar</button>
+                            @endif
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" style="padding:48px;text-align:center;color:#A0A3AD;font-size:14px;">Tidak ada kegiatan ditemukan.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-        @empty
-        <div style="grid-column:span 3;text-align:center;padding:48px;color:#A0A3AD;font-size:15px;">Tidak ada kegiatan ditemukan.</div>
-        @endforelse
     </div>
     @if($kegiatan->hasPages())
     <div style="margin-top:24px;">{{ $kegiatan->withQueryString()->links() }}</div>

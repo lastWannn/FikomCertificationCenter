@@ -28,7 +28,7 @@ class TestimoniController extends Controller
         $data = $request->except('foto');
 
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('testimoni', 'public');
+            $data['foto'] = \App\Helpers\ImageHelper::compressToWebp($request->file('foto'), 'testimoni');
         }
 
         Testimoni::create($data);
@@ -52,7 +52,7 @@ class TestimoniController extends Controller
             if ($testimoni->foto) {
                 Storage::disk('public')->delete($testimoni->foto);
             }
-            $data['foto'] = $request->file('foto')->store('testimoni', 'public');
+            $data['foto'] = \App\Helpers\ImageHelper::compressToWebp($request->file('foto'), 'testimoni');
         }
 
         $testimoni->update($data);

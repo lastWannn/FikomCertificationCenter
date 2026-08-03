@@ -8,15 +8,7 @@
 
         {{-- Logo --}}
         <a href="{{ route('landing.index') }}" id="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
-            <div style="width:36px;height:36px;border-radius:10px;
-                background:linear-gradient(135deg,#FFC81A,#FFD84D);
-                display:flex;align-items:center;justify-content:center;
-                box-shadow:0 0 12px rgba(255,200,26,.3);">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                     stroke="#131218" stroke-width="2.5" stroke-linecap="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-            </div>
+            <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="height:36px;width:auto;object-fit:contain;flex-shrink:0;">
             <div>
                 <p id="nav-brand" style="margin:0;font-weight:900;font-size:12.5px;color:#FFF;transition:color .3s;">FIKOM Certification</p>
                 <p style="margin:0;color:#FFC81A;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;">Center · UMI</p>
@@ -190,9 +182,7 @@
             {{-- Brand Column --}}
             <div>
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-                    <div style="width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#FFC81A,#FFD84D);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(255,200,26,.25);flex-shrink:0;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    </div>
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="height:42px;width:auto;object-fit:contain;flex-shrink:0;">
                     <div>
                         <p style="margin:0;color:#FFF;font-weight:900;font-size:13.5px;letter-spacing:-.2px;">FIKOM Certification Center</p>
                         <p style="margin:2px 0 0;color:#FFC81A;font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;opacity:.8;">Universitas Muslim Indonesia</p>

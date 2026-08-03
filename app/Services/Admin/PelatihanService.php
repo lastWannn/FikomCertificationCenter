@@ -10,7 +10,7 @@ class PelatihanService
     {
         $pelData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id', 'prasyarat_id', 'link_materi'])->toArray();
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
-            $pelData['gambar'] = $data['gambar']->store('pelatihan', 'public');
+            $pelData['gambar'] = \App\Helpers\ImageHelper::compressToWebp($data['gambar'], 'pelatihan');
         }
         
         $pelatihan = Pelatihan::create($pelData);
@@ -77,7 +77,7 @@ class PelatihanService
     {
         $pelData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id', 'prasyarat_id', 'link_materi'])->toArray();
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
-            $pelData['gambar'] = $data['gambar']->store('pelatihan', 'public');
+            $pelData['gambar'] = \App\Helpers\ImageHelper::compressToWebp($data['gambar'], 'pelatihan');
         }
         $pelatihan->update($pelData);
 

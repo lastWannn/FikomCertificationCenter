@@ -3,82 +3,276 @@
 <head>
 <meta charset="UTF-8"/>
 <style>
-  @page{ margin:10mm; size:A5; }
-  *{ box-sizing:border-box; margin:0; padding:0; }
-  body{ font-family:'DejaVu Sans',Arial,sans-serif; font-size:9pt; color:#131218; }
-  .header{ background:#131218; color:#fff; padding:6mm 7mm; margin-bottom:5mm; border-radius:2mm; display:flex; justify-content:space-between; align-items:center; }
-  .logo-title{ font-size:12pt; font-weight:700; }
-  .logo-sub{ color:#FFC81A; font-size:7pt; letter-spacing:1.5pt; text-transform:uppercase; }
-  .invoice-no{ text-align:right; }
-  .inv-label{ color:rgba(255,255,255,.5); font-size:7pt; text-transform:uppercase; letter-spacing:1pt; }
-  .inv-val{ color:#FFC81A; font-size:11pt; font-weight:900; font-family:monospace; }
-  .section-title{ font-size:8pt; font-weight:700; color:#9CA3B0; text-transform:uppercase; letter-spacing:1pt; margin:4mm 0 2mm; }
-  .info-box{ background:#F7F8FA; border:1px solid #E2E4EB; border-radius:1.5mm; padding:3mm 4mm; margin-bottom:3mm; }
-  .info-row{ display:flex; justify-content:space-between; padding:1.5mm 0; border-bottom:1px solid #E2E4EB; }
-  .info-row:last-child{ border-bottom:none; }
-  .lbl{ color:#9CA3B0; font-size:8pt; }
-  .val{ font-weight:700; font-size:8.5pt; }
-  .rekening-box{ background:#131218; color:#fff; border-radius:2mm; padding:4mm 5mm; margin:3mm 0; }
-  .rek-label{ color:rgba(255,255,255,.5); font-size:7pt; text-transform:uppercase; letter-spacing:1pt; margin-bottom:1mm; }
-  .rek-no{ color:#FFC81A; font-size:14pt; font-weight:900; font-family:monospace; letter-spacing:2pt; }
-  .rek-bank{ color:#FFF; font-size:9pt; font-weight:700; }
-  .total-box{ background:#FFC81A; border-radius:2mm; padding:4mm 5mm; display:flex; justify-content:space-between; align-items:center; margin:3mm 0; }
-  .total-label{ font-weight:700; font-size:9pt; color:#131218; }
-  .total-val{ font-size:14pt; font-weight:900; color:#131218; }
-  .footer{ margin-top:5mm; text-align:center; color:#9CA3B0; font-size:7pt; border-top:1px solid #E2E4EB; padding-top:3mm; }
-  .warning{ background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); border-radius:1.5mm; padding:2.5mm 3.5mm; color:#B45309; font-size:7.5pt; margin-top:3mm; }
+  @page {
+    margin: 8mm;
+    size: A5 portrait;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 8.5pt;
+    color: #1F2937;
+    background: #FFFFFF;
+    line-height: 1.4;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .header-table {
+    background: #131218;
+    color: #FFFFFF;
+    border-radius: 4px;
+    margin-bottom: 4mm;
+  }
+  .header-table td {
+    padding: 5mm 6mm;
+    vertical-align: middle;
+  }
+  .brand-title {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #FFFFFF;
+    letter-spacing: 0.5px;
+  }
+  .brand-sub {
+    font-size: 7.5pt;
+    color: #FFC81A;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 1mm;
+  }
+  .inv-title {
+    font-size: 7pt;
+    color: #9CA3B0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: right;
+  }
+  .inv-code {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #FFC81A;
+    font-family: 'Courier', monospace;
+    text-align: right;
+    margin-top: 1mm;
+  }
+
+  .section-heading {
+    font-size: 7.5pt;
+    font-weight: bold;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 3mm;
+    margin-bottom: 1.5mm;
+  }
+
+  .data-table {
+    border: 1px solid #E5E7EB;
+    border-radius: 4px;
+    margin-bottom: 3mm;
+  }
+  .data-table td {
+    padding: 2.5mm 4mm;
+    border-bottom: 1px solid #F3F4F6;
+    font-size: 8pt;
+  }
+  .data-table tr:last-child td {
+    border-bottom: none;
+  }
+  .label-col {
+    color: #6B7280;
+    width: 35%;
+  }
+  .value-col {
+    color: #111827;
+    font-weight: bold;
+    text-align: right;
+  }
+
+  .total-table {
+    background: #FFC81A;
+    border-radius: 4px;
+    margin: 3mm 0;
+  }
+  .total-table td {
+    padding: 4mm 5mm;
+    vertical-align: middle;
+  }
+  .total-lbl {
+    font-size: 8.5pt;
+    font-weight: bold;
+    color: #131218;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .total-val {
+    font-size: 13pt;
+    font-weight: bold;
+    color: #131218;
+    text-align: right;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .bank-table {
+    background: #131218;
+    color: #FFFFFF;
+    border-radius: 4px;
+    margin-bottom: 3mm;
+  }
+  .bank-table td {
+    padding: 4mm 5mm;
+  }
+  .bank-lbl {
+    font-size: 7pt;
+    color: #9CA3B0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1mm;
+  }
+  .bank-no {
+    font-size: 13pt;
+    font-weight: bold;
+    color: #FFC81A;
+    font-family: 'Courier', monospace;
+    letter-spacing: 1.5px;
+  }
+  .bank-name {
+    font-size: 8pt;
+    color: #E5E7EB;
+    margin-top: 1mm;
+  }
+
+  .alert-box {
+    background: #FFFBEB;
+    border: 1px solid #FCD34D;
+    border-radius: 4px;
+    padding: 2.5mm 3.5mm;
+    color: #92400E;
+    font-size: 7pt;
+    margin-top: 2.5mm;
+  }
+
+  .footer {
+    margin-top: 4mm;
+    border-top: 1px solid #E5E7EB;
+    padding-top: 2mm;
+    text-align: center;
+    color: #9CA3B0;
+    font-size: 6.5pt;
+  }
 </style>
 </head>
 <body>
-<div class="header">
-  <div>
-    <div class="logo-title">FCC — Invoice</div>
-    <div class="logo-sub">Universitas Muslim Indonesia</div>
-  </div>
-  <div class="invoice-no">
-    <div class="inv-label">Kode Pembayaran</div>
-    <div class="inv-val">{{ $pembayaran->kode_pembayaran }}</div>
-  </div>
-</div>
 
-<div class="section-title">Informasi Peserta</div>
-<div class="info-box">
-  <div class="info-row"><span class="lbl">Nama</span><span class="val">{{ $pembayaran->pendaftaran->peserta->nama }}</span></div>
-  <div class="info-row"><span class="lbl">Email</span><span class="val">{{ $pembayaran->pendaftaran->peserta->email }}</span></div>
-  <div class="info-row"><span class="lbl">No. HP</span><span class="val">{{ $pembayaran->pendaftaran->peserta->no_hp }}</span></div>
-</div>
+<!-- Header -->
+<table class="header-table">
+  <tr>
+    <td>
+      <table style="width: auto; border: none;">
+        <tr>
+          <td style="padding: 0; border: none; vertical-align: middle;">
+            <img src="{{ public_path('images/logo.png') }}" style="height: 32px; width: auto; margin-right: 10px; vertical-align: middle;">
+          </td>
+          <td style="padding: 0; border: none; vertical-align: middle;">
+            <div class="brand-title">FIKOM CERTIFICATION CENTER</div>
+            <div class="brand-sub">Universitas Muslim Indonesia</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td style="text-align: right;">
+      <div class="inv-title">Kode Pembayaran</div>
+      <div class="inv-code">{{ $pembayaran->kode_pembayaran }}</div>
+    </td>
+  </tr>
+</table>
 
-<div class="section-title">Detail Kegiatan</div>
-<div class="info-box">
-  <div class="info-row"><span class="lbl">Kegiatan</span><span class="val">{{ Str::limit($pembayaran->pendaftaran->kegiatan->judul,40) }}</span></div>
-  <div class="info-row"><span class="lbl">Tanggal</span><span class="val">{{ $pembayaran->pendaftaran->kegiatan->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}</span></div>
-  <div class="info-row"><span class="lbl">Jenis Biaya</span><span class="val">{{ $pembayaran->pendaftaran->biaya?->nama_jenis ?? 'Gratis' }}</span></div>
+<!-- Informasi Peserta -->
+<div class="section-heading">Informasi Peserta</div>
+<table class="data-table">
+  <tr>
+    <td class="label-col">Nama Peserta</td>
+    <td class="value-col">{{ $pembayaran->pendaftaran->peserta->nama }}</td>
+  </tr>
+  <tr>
+    <td class="label-col">Email</td>
+    <td class="value-col">{{ $pembayaran->pendaftaran->peserta->email }}</td>
+  </tr>
+  <tr>
+    <td class="label-col">No. Telepon / HP</td>
+    <td class="value-col">{{ $pembayaran->pendaftaran->peserta->no_hp }}</td>
+  </tr>
+</table>
+
+<!-- Detail Pendaftaran -->
+<div class="section-heading">Detail Pendaftaran & Tagihan</div>
+<table class="data-table">
+  <tr>
+    <td class="label-col">Kegiatan</td>
+    <td class="value-col">{{ Str::limit($pembayaran->pendaftaran->kegiatan->judul, 40) }}</td>
+  </tr>
+  <tr>
+    <td class="label-col">Tanggal Pelaksanaan</td>
+    <td class="value-col">{{ $pembayaran->pendaftaran->kegiatan->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}</td>
+  </tr>
+  <tr>
+    <td class="label-col">Kategori Biaya</td>
+    <td class="value-col">{{ $pembayaran->pendaftaran->biaya?->nama_jenis ?? 'Gratis' }}</td>
+  </tr>
   @if($pembayaran->kode_unik)
-  <div class="info-row"><span class="lbl">Kode Unik</span><span class="val">{{ $pembayaran->kode_unik }}</span></div>
+  <tr>
+    <td class="label-col">Kode Unik Transfer</td>
+    <td class="value-col" style="color: #D97706;">{{ $pembayaran->kode_unik }}</td>
+  </tr>
   @endif
-  <div class="info-row"><span class="lbl">Tgl Invoice</span><span class="val">{{ $pembayaran->created_at->format('d M Y H:i') }}</span></div>
-  <div class="info-row"><span class="lbl">Batas Bayar</span><span class="val" style="color:#EF4444;">{{ $pembayaran->tgl_kadaluarsa?->format('d M Y H:i') ?? '-' }}</span></div>
-</div>
+  <tr>
+    <td class="label-col">Tanggal Invoice</td>
+    <td class="value-col">{{ $pembayaran->created_at->format('d M Y H:i') }} WITA</td>
+  </tr>
+  <tr>
+    <td class="label-col">Batas Pembayaran</td>
+    <td class="value-col" style="color: #DC2626;">{{ $pembayaran->tgl_kadaluarsa?->format('d M Y H:i') ?? '-' }} WITA</td>
+  </tr>
+</table>
 
-<div class="total-box">
-  <span class="total-label">Total Harus Ditransfer</span>
-  <span class="total-val">{{ $pembayaran->nominal_transfer_format }}</span>
-</div>
+<!-- Total Box -->
+<table class="total-table">
+  <tr>
+    <td class="total-lbl">Total Tagihan Transfer</td>
+    <td class="total-val">{{ $pembayaran->nominal_transfer_format }}</td>
+  </tr>
+</table>
 
+<!-- Rekening Bank -->
 @if($rekening)
-<div class="section-title">Transfer ke Rekening</div>
-<div class="rekening-box">
-  <div class="rek-label">No. Rekening</div>
-  <div class="rek-no">{{ $rekening->no_rekening }}</div>
-  <div class="rek-bank">{{ $rekening->bank }} &mdash; a.n. {{ $rekening->nama_pemilik }}</div>
-</div>
+<div class="section-heading">Tujuan Transfer Bank</div>
+<table class="bank-table">
+  <tr>
+    <td>
+      <div class="bank-lbl">Nomor Rekening Tujuan</div>
+      <div class="bank-no">{{ $rekening->no_rekening }}</div>
+      <div class="bank-name">{{ $rekening->bank }} &mdash; a.n. {{ $rekening->nama_pemilik }}</div>
+    </td>
+  </tr>
+</table>
 @endif
 
-<div class="warning">⚠ Kode pembayaran harus aktif sebelum transfer. Simpan invoice ini sebagai bukti tagihan.</div>
-
-<div class="footer">
-  <p>FIKOM Certification Center &mdash; Universitas Muslim Indonesia Makassar</p>
-  <p>Dicetak: {{ now()->format('d M Y H:i') }} WITA</p>
+<!-- Warning -->
+<div class="alert-box">
+  <strong>Catatan Penting:</strong> Harap lakukan transfer sesuai nominal persis di atas (termasuk kode unik jika ada) sebelum batas waktu kadaluarsa. Simpan invoice ini sebagai bukti pendaftaran resmi Anda.
 </div>
+
+<!-- Footer -->
+<div class="footer">
+  FIKOM Certification Center &bull; Fakultas Ilmu Komputer Universitas Muslim Indonesia Makassar<br/>
+  Dokumen Invoice Otomatis &bull; Dicetak: {{ now()->format('d M Y H:i') }} WITA
+</div>
+
 </body>
 </html>

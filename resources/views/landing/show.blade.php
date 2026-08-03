@@ -170,25 +170,22 @@
 
                 <!-- Registration Actions / Form -->
                 <div style="border-top:1.5px solid rgba(255,255,255,.08); padding-top:24px;">
-                    @if(!$kegiatan->isFull())
+                    @php 
+                        $sudahDaftar = auth('peserta')->check() && auth('peserta')->user()->pendaftaran()->where('kegiatan_id', $kegiatan->id)->exists(); 
+                    @endphp
+
+                    @if($sudahDaftar)
+                        <a href="{{ route('peserta.pendaftaran') }}" style="display:flex; text-align:center; padding:14px 28px; border-radius:12px; font-size:15px; font-weight:800; justify-content:center; text-decoration:none; color:#10B981; border:1.5px solid #10B981; background:rgba(16,185,129,0.08);">
+                            ✓ Sudah Terdaftar (Lihat Pendaftaran Saya)
+                        </a>
+                    @elseif(!$kegiatan->isFull())
                         @auth('peserta')
-                            <form action="{{ route('peserta.kegiatan.daftar', $kegiatan) }}" method="POST" style="margin:0;">
-                                @csrf
-                                @if($kegiatan->biaya->isNotEmpty())
-                                    <div style="margin-bottom:16px;">
-                                        <label style="font-size:11px; font-weight:800; color:#FFF; text-transform:uppercase; letter-spacing:0.8px; display:block; margin-bottom:8px;">Pilih Opsi Biaya Anda:</label>
-                                        <select name="biaya_kegiatan_id" class="fcc-input-dark" style="width:100%; border-radius:12px; border:1.5px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); color:#FFF; padding:10px 14px; outline:none;" required>
-                                            <option value="">-- Pilih jenis biaya --</option>
-                                            @foreach($kegiatan->biaya as $b)
-                                            <option value="{{ $b->id }}">{{ $b->nama_jenis }} — {{ $b->nominal_format }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                @else
-                                    <input type="hidden" name="biaya_kegiatan_id" value="">
-                                @endif
-                                <button type="submit" class="fcc-btn-gold btn-shine" style="padding:14px 28px; font-size:15px; width:100%; justify-content:center; border-radius:12px;">Daftar Sekarang</button>
-                            </form>
+                            <button type="button" 
+                                onclick="showDaftarModal('{{ $kegiatan->hashid }}', '{{ addslashes($kegiatan->judul) }}', {{ $kegiatan->biaya->toJson() }})" 
+                                class="fcc-btn-gold btn-shine" 
+                                style="padding:14px 28px; font-size:15px; width:100%; justify-content:center; border-radius:12px;">
+                                Daftar Sekarang
+                            </button>
                         @else
                             <div style="text-align:center;">
                                 <p style="color:rgba(255,255,255,.6); font-size:13px; margin:0 0 12px; font-weight:500;">Masuk ke akun peserta Anda untuk melakukan pendaftaran.</p>
@@ -205,11 +202,30 @@
         </div>
     </div>
 </div>
-<style>
-/* Style for dark mode select options */
-select.fcc-input-dark option {
-    background: #131218;
-    color: #FFF;
-}
-</style>
+
+{{-- Modal Konfirmasi Daftar --}}
+<div id="daftar-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;">
+    <div style="background:#FFF;border-radius:18px;max-width:440px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.3);">
+        <div style="background:linear-gradient(135deg,#131218,#1A1920);padding:22px 24px;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <p style="margin:0;color:#FFF;font-weight:800;font-size:16px;">Konfirmasi Pendaftaran</p>
+                <p style="margin:4px 0 0;color:rgba(255,255,255,.5);font-size:12px;" id="modal-judul"></p>
+            </div>
+            <button onclick="closeDaftarModal()" style="background:rgba(255,255,255,.1);border:none;border-radius:8px;color:rgba(255,255,255,.7);padding:6px 8px;cursor:pointer;display:flex;">
+                @include('components.icon',['name'=>'x','size'=>16])
+            </button>
+        </div>
+        <form id="daftar-form" method="POST" style="padding:22px 24px;">
+            @csrf
+            <div id="biaya-section"></div>
+            <button type="submit" class="fcc-btn-gold" style="width:100%;justify-content:center;padding:12px;font-size:15px;">
+                @include('components.icon',['name'=>'check','size'=>16]) Konfirmasi Pendaftaran
+            </button>
+        </form>
+    </div>
+</div>
+
+@push('scripts')
+@vite('resources/js/pages/landing-jelajahi.js')
+@endpush
 @endsection

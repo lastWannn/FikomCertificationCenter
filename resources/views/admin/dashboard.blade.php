@@ -12,16 +12,18 @@
       ['Peserta',     $stats['peserta'],     '',  'users',       '#10B981', route('admin.pengguna.peserta')],
       ['Pendapatan',  'Rp '.number_format($stats['pendapatan'],0,',','.'), '', 'credit-card', '#9333EA', route('admin.laporan.index')],
     ] as [$lbl,$val,$suf,$ic,$c,$link])
-    <a href="{{ $link }}" style="text-decoration:none;" class="ch">
-      <div class="fcc-card" style="padding:18px 20px;border-left:4px solid {{ $c }};">
-        <div style="display:flex;justify-content:space-between;margin-bottom:14px;">
-          <p style="color:#9CA3B0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin:0;">{{ $lbl }}</p>
-          <div style="width:36px;height:36px;border-radius:10px;background:{{ $c }}15;display:flex;align-items:center;justify-content:center;">
-            @include('components.icon',['name'=>$ic,'size'=>17,'style'=>"color:{$c}"])
+    <a href="{{ $link }}" style="text-decoration:none;display:flex;flex-direction:column;" class="ch">
+      <div class="fcc-card" style="padding:18px 20px;border-left:4px solid {{ $c }};height:100%;display:flex;flex-direction:column;justify-content:space-between;min-height:128px;box-sizing:border-box;">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <p style="color:#9CA3B0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin:0;">{{ $lbl }}</p>
+            <div style="width:36px;height:36px;border-radius:10px;background:{{ $c }}15;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              @include('components.icon',['name'=>$ic,'size'=>17,'style'=>"color:{$c}"])
+            </div>
           </div>
+          <p style="margin:0;color:#131218;font-size:26px;font-weight:900;letter-spacing:-.5px;">{{ $val }}{{ $suf }}</p>
         </div>
-        <p style="margin:0;color:#131218;font-size:28px;font-weight:900;letter-spacing:-.5px;">{{ $val }}{{ $suf }}</p>
-        <p id="stat-delta-{{ $loop->index }}" style="margin:4px 0 0;font-size:11px;color:#9CA3B0;"></p>
+        <p id="stat-delta-{{ $loop->index }}" style="margin:6px 0 0;font-size:11px;color:#9CA3B0;min-height:16px;line-height:16px;"></p>
       </div>
     </a>
     @endforeach

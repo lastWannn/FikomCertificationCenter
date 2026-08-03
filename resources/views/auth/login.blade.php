@@ -36,15 +36,7 @@
         <div style="position:relative;z-index:2;text-align:center;max-width:360px;width:100%;">
             {{-- Logo --}}
             <a href="{{ route('landing.index') }}" style="display:inline-flex;align-items:center;gap:12px;margin-bottom:42px;text-decoration:none;">
-                <div style="width:50px;height:50px;border-radius:14px;
-                    background:linear-gradient(135deg,#FFC81A,#FFD84D);
-                    display:flex;align-items:center;justify-content:center;
-                    box-shadow:0 0 24px rgba(255,200,26,.35);">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
-                         stroke="#131218" stroke-width="2.5" stroke-linecap="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    </svg>
-                </div>
+                <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="height:48px;width:auto;object-fit:contain;flex-shrink:0;">
                 <div style="text-align:left;">
                     <p style="margin:0;color:#FFF;font-weight:900;font-size:18px;">FIKOM Certification</p>
                     <p style="margin:0;color:#FFC81A;font-size:9px;letter-spacing:3px;text-transform:uppercase;">Center &middot; UMI</p>

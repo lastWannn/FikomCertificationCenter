@@ -8,7 +8,7 @@ class SertifikatService
 {
     public function uploadLatar(int $kegiatanId, UploadedFile $file): string
     {
-        $path = $file->store('latar-sertifikat', 'public');
+        $path = \App\Helpers\ImageHelper::compressToWebp($file, 'latar-sertifikat');
         Kegiatan::findOrFail($kegiatanId)->update(['nama_latar' => $path]);
         return $path;
     }

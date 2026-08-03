@@ -12,7 +12,7 @@ class ProfileService
         $payload = collect($data)->only(['nama','email','no_hp','alamat','instansi'])->toArray();
 
         if (isset($data['foto']) && $data['foto'] instanceof UploadedFile) {
-            $payload['foto'] = $data['foto']->store('foto-peserta', 'public');
+            $payload['foto'] = \App\Helpers\ImageHelper::compressToWebp($data['foto'], 'foto-peserta');
         }
         if (!empty($data['password'])) {
             $payload['password'] = Hash::make($data['password']);

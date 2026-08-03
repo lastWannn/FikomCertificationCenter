@@ -10,12 +10,7 @@
         {{-- Logo --}}
         <div style="padding:20px 18px;border-bottom:1px solid rgba(255,200,26,.14);
             display:flex;align-items:center;gap:12px;flex-shrink:0;">
-            <div style="width:38px;height:38px;border-radius:11px;flex-shrink:0;
-                background:linear-gradient(135deg,#FFC81A,#FFD84D);
-                display:flex;align-items:center;justify-content:center;
-                box-shadow:0 0 16px rgba(255,200,26,.25);">
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
+            <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="height:38px;width:auto;object-fit:contain;flex-shrink:0;">
             <div id="sb-title">
                 <p style="margin:0;color:#FFF;font-weight:900;font-size:13px;">Portal Peserta</p>
                 <p style="margin:0;color:#FFC81A;font-size:9px;letter-spacing:2px;text-transform:uppercase;">Certification Center</p>

@@ -176,107 +176,85 @@
                 @endforeach
             </div>
         </div>
-        <div id="kegiatan-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px;">
+        <div id="kegiatan-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:24px;">
             @forelse($kegiatanTerbaru as $k)
             @php
                 $isPel       = $k->jenis_kegiatan === 'pelatihan';
                 $accentColor = $isPel ? '#FFC81A' : '#8B5CF6';
-                $accentGlow  = $isPel ? 'rgba(255,200,26,.2)' : 'rgba(139,92,246,.2)';
-                $accentBg    = $isPel ? 'rgba(255,200,26,0.10)' : 'rgba(139,92,246,0.08)';
+                $accentBg    = $isPel ? 'rgba(255,200,26,0.15)' : 'rgba(139,92,246,0.15)';
+                $posterUrl   = $k->detail?->gambar_url;
             @endphp
-            <div class="reveal kegiatan-card tilt-card"
-                 data-jenis="{{ $k->jenis_kegiatan }}"
-                 style="background:rgba(255,255,255,.03);border-radius:24px;border:1.5px solid rgba(255,255,255,.08);
-                        overflow:hidden;display:flex;flex-direction:column;
-                        transition:all .35s cubic-bezier(.4,0,.2,1);
-                        box-shadow:0 2px 12px rgba(0,0,0,.1);
-                        transition-delay:{{ $loop->index*90 }}ms;"
-                 onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 20px 48px {{ $accentGlow }}, 0 0 0 1px {{ $accentColor }}30';this.style.borderColor='{{ $accentColor }}44'"
-                 onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,.1)';this.style.borderColor='rgba(255,255,255,.08)'">
-                {{-- Card Banner (tinggi lebih, lebih dramatis) --}}
-                <div style="height:168px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0e0d14,#1e1b29);">
-                    @if($k->detail?->gambar_url)
-                        <img src="{{ $k->detail->gambar_url }}" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;" alt="Poster" />
-                        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(14,13,20,.5),transparent);"></div>
-                    @else
-                        {{-- Animated grid bg --}}
-                        <div style="position:absolute;inset:0;opacity:.05;background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);background-size:24px 24px;"></div>
-                        {{-- Glow blob --}}
-                        <div style="position:absolute;top:-20px;right:-20px;width:160px;height:160px;border-radius:50%;background:{{ $accentBg }};filter:blur(30px);"></div>
-                        <div style="position:absolute;bottom:-30px;left:-20px;width:120px;height:120px;border-radius:50%;background:{{ $accentBg }};filter:blur(20px);opacity:.5;"></div>
-                        {{-- Icon center --}}
-                        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-                            <div style="width:68px;height:68px;border-radius:22px;
-                                background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-                                display:flex;align-items:center;justify-content:center;
-                                box-shadow:0 0 30px {{ $accentGlow }};">
-                                @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>30,'style'=>"color:{$accentColor}"])
+            <div class="kegiatan-card fcc-card-dark" data-jenis="{{ $k->jenis_kegiatan }}"
+                 style="border-radius:18px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.28s cubic-bezier(0.4, 0, 0.2, 1); box-shadow:0 8px 24px rgba(0,0,0,0.2);"
+                 onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='rgba(255,200,26,0.35)'; this.style.boxShadow='0 16px 36px rgba(0,0,0,0.45)';"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)';">
+
+                <div>
+                    {{-- Poster Container --}}
+                    <div style="position:relative; width:100%; height:240px; overflow:hidden; background:#1A1921;">
+                        @if($posterUrl)
+                        <img src="{{ $posterUrl }}" alt="{{ $k->judul }}" style="width:100%; height:100%; object-fit:cover; object-position:center top; display:block; transition:transform 0.4s ease;"
+                             onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        @else
+                        {{-- Fallback poster when image is not uploaded --}}
+                        <div style="width:100%; height:100%; background:linear-gradient(135deg, {{ $isPel?'rgba(255,200,26,0.15)':'rgba(139,92,246,0.15)' }} 0%, rgba(19,18,24,0.95) 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+                            @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>40,'style'=>'color:'.$accentColor])
+                            <span style="font-size:11px; font-weight:800; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:1.5px;">{{ ucfirst($k->jenis_kegiatan) }}</span>
+                        </div>
+                        @endif
+                    </div>
+
+                    {{-- Card Body --}}
+                    <div style="padding:20px;">
+                        {{-- Tag Row (Jenis & Biaya / Status) --}}
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;">
+                            <span style="font-size:10.5px; font-weight:800; padding:4px 10px; border-radius:6px; background:{{ $accentBg }}; color:{{ $accentColor }}; border:1px solid {{ $accentColor }}35; text-transform:uppercase; letter-spacing:0.5px;">
+                                {{ ucfirst($k->jenis_kegiatan) }}
+                            </span>
+                            <span style="font-size:11px; font-weight:700; color:{{ $k->isFull() ? '#EF4444' : ($k->biaya->isNotEmpty() ? '#FFC81A' : '#10B981') }}; background:rgba(255,255,255,0.04); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+                                {{ $k->isFull() ? 'Kuota Penuh' : ($k->biaya->isNotEmpty() ? 'Berbayar' : 'Gratis') }}
+                            </span>
+                        </div>
+
+                        <h4 style="margin:0 0 10px; color:#FFF; font-size:16px; font-weight:800; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:44px;">
+                            <a href="{{ route('landing.show', $k) }}" style="color:#FFF; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#FFF'">
+                                {{ $k->judul }}
+                            </a>
+                        </h4>
+
+                        <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(255,255,255,0.65); font-weight:600; margin-bottom:14px;">
+                            @include('components.icon',['name'=>'calendar','size'=>15,'style'=>'color:rgba(255,255,255,0.4)'])
+                            <span>{{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Jadwal Menyusul' }}</span>
+                        </div>
+
+                        {{-- Kuota Progress Bar --}}
+                        <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:10px 12px; border:1px solid rgba(255,255,255,0.06); margin-bottom:16px;">
+                            <div style="display:flex; justify-content:space-between; font-size:11.5px; color:rgba(255,255,255,0.6); margin-bottom:6px; font-weight:700;">
+                                <span>Peserta Terdaftar</span>
+                                <span style="color:#FFF;">{{ $k->terisi }} / {{ $k->kuota }}</span>
+                            </div>
+                            <div style="height:5px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+                                <div style="height:5px; border-radius:3px; transition:width 0.3s;
+                                            background:{{ $k->isFull() ? '#EF4444' : ($k->terisi/$k->kuota>0.8 ? '#F59E0B' : '#FFC81A') }};
+                                            width:{{ $k->kuota>0 ? min(100, round($k->terisi/$k->kuota*100)) : 0 }}%;"></div>
                             </div>
                         </div>
-                    @endif
-                    {{-- Type badge --}}
-                    <div style="position:absolute;top:14px;left:14px;">
-                        <span style="font-size:10px;font-weight:900;padding:4px 12px;border-radius:100px;
-                            background:{{ $accentBg }};color:{{ $accentColor }};
-                            border:1px solid {{ $accentColor }}35;text-transform:uppercase;letter-spacing:1px;
-                            backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
-                            {{ $k->jenis_kegiatan }}
-                        </span>
                     </div>
-                    {{-- Status badge --}}
-                    @if($k->isFull())
-                    <div style="position:absolute;top:14px;right:14px;">
-                        <span style="font-size:10px;font-weight:900;padding:4px 12px;border-radius:100px;background:rgba(239,68,68,0.15);color:#EF4444;border:1px solid rgba(239,68,68,0.3);backdrop-filter:blur(8px);">Penuh</span>
-                    </div>
-                    @elseif($k->kuota>0 && ($k->kuota-$k->terisi)<=5 && $k->terisi>0)
-                    <div style="position:absolute;top:14px;right:14px;">
-                        <span style="font-size:10px;font-weight:900;padding:4px 12px;border-radius:100px;background:rgba(245,158,11,.15);color:#F59E0B;border:1px solid rgba(245,158,11,.3);backdrop-filter:blur(8px);">Sisa {{ $k->kuota-$k->terisi }}</span>
-                    </div>
-                    @endif
                 </div>
-                {{-- Content --}}
-                <div style="padding:22px 22px;display:flex;flex-direction:column;flex-grow:1;justify-content:space-between;">
-                    <div>
-                        <h4 style="color:#FFF;font-size:15.5px;font-weight:900;margin:0 0 12px;line-height:1.4;
-                            display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:44px;">
-                            {{ $k->judul }}
-                        </h4>
-                        <div style="display:flex;gap:14px;margin-bottom:16px;">
-                            <span style="color:rgba(255,255,255,.6);font-size:12px;display:flex;align-items:center;gap:5px;font-weight:600;">
-                                @include('components.icon',['name'=>'calendar','size'=>12,'style'=>"color:{$accentColor}"])
-                                {{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}
-                            </span>
-                            <span style="color:rgba(255,255,255,.6);font-size:12px;display:flex;align-items:center;gap:5px;font-weight:600;">
-                                @include('components.icon',['name'=>'users','size'=>12,'style'=>"color:{$accentColor}"])
-                                {{ $k->terisi }}/{{ $k->kuota }} peserta
-                            </span>
-                        </div>
-                    </div>
-                    <div>
-                        {{-- Price row --}}
-                        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px 16px;
-                            display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-                            <span style="color:rgba(255,255,255,.5);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;">Biaya</span>
-                            <span style="color:{{ $isPel?'#FFC81A':'#A78BFA' }};font-weight:900;font-size:15px;">
-                                {{ $k->biaya->isNotEmpty() ? 'Rp '.number_format($k->biaya->min('nominal'),0,',','.') : 'Gratis' }}
-                            </span>
-                        </div>
-                        {{-- CTA button --}}
-                        <a href="{{ route('landing.show', $k) }}"
-                           class="{{ $k->isFull() ? '' : 'fcc-btn-gold btn-shine' }}"
-                           style="display:block;text-align:center;text-decoration:none;padding:11px;border-radius:14px;font-size:13.5px;font-weight:800;
-                                  {{ $k->isFull() ? 'background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);color:rgba(255,255,255,.4);cursor:not-allowed;' : 'box-shadow:0 6px 20px rgba(255,200,26,.25);' }}">
-                            {{ $k->isFull() ? 'Kuota Penuh' : 'Detail & Daftar →' }}
-                        </a>
-                    </div>
+
+                {{-- Action Button --}}
+                <div style="padding:0 20px 20px;">
+                    <a href="{{ route('landing.show', $k) }}"
+                       class="{{ $k->isFull() ? '' : 'fcc-btn-gold btn-shine' }}"
+                       style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none; padding:11px; border-radius:10px; font-size:13.5px; font-weight:800; transition:all 0.2s ease; width:100%; box-sizing:border-box;
+                              {{ $k->isFull() ? 'background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:rgba(255,255,255,.4); cursor:not-allowed;' : '' }}">
+                        {{ $k->isFull() ? 'Kuota Penuh' : 'Detail & Daftar →' }}
+                    </a>
                 </div>
             </div>
             @empty
-            <div style="grid-column:span 3;text-align:center;padding:80px 40px;background:rgba(255,255,255,.03);border-radius:24px;border:1.5px dashed rgba(255,255,255,.1);">
-                <div style="width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
-                    @include('components.icon',['name'=>'calendar','size'=>28,'style'=>'color:rgba(255,255,255,.4)'])
-                </div>
-                <p style="color:rgba(255,255,255,.5);font-size:15px;margin:0;font-weight:600;">Belum ada kegiatan yang dipublikasikan.</p>
+            <div style="grid-column:1 / -1; padding:60px 24px; text-align:center; color:rgba(255,255,255,.4); font-size:14.5px;" class="fcc-card-dark">
+                Belum ada kegiatan yang dipublikasikan.
             </div>
             @endforelse
         </div>
