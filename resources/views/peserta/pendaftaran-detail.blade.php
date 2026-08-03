@@ -30,9 +30,12 @@
             <p style="color:{{ $sc[0] }};font-size:15px;font-weight:800;margin:0;">{{ $sc[1] }}</p>
         </div>
         @if($pendaftaran->pembayaran)
-        <div style="margin-top:14px;">
-            <a href="{{ route('peserta.pembayaran.show',$pendaftaran->pembayaran->id) }}" class="fcc-btn-gold" style="display:block;text-align:center;text-decoration:none;padding:11px;justify-content:center;font-size:14px;">
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px;">
+            <a href="{{ route('peserta.pembayaran.show',$pendaftaran->pembayaran->id) }}" class="fcc-btn-gold" style="display:flex;text-align:center;text-decoration:none;padding:11px;justify-content:center;font-size:14px;align-items:center;gap:6px;">
                 @include('components.icon',['name'=>'credit-card','size'=>15]) Lihat Pembayaran
+            </a>
+            <a href="{{ route('peserta.pembayaran.invoice',$pendaftaran->pembayaran->id) }}" target="_blank" class="fcc-btn-outline-dark" style="display:flex;text-align:center;text-decoration:none;padding:10px;justify-content:center;font-size:13px;align-items:center;gap:6px;">
+                @include('components.icon',['name'=>'download','size'=>14]) Unduh Invoice (PDF)
             </a>
         </div>
         @endif

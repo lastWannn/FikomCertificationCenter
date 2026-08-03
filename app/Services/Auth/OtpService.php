@@ -3,8 +3,7 @@
 namespace App\Services\Auth;
 
 use App\Models\OtpCode;
-use App\Mail\OtpMail;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendOtpEmailJob;
 use Illuminate\Validation\ValidationException;
 
 class OtpService
@@ -24,7 +23,11 @@ class OtpService
             'expires_at' => now()->addMinutes(10),
         ]);
 
-        Mail::to($email)->send(new OtpMail($otp, $type));
+        // Log OTP untuk kemudahan pengujian lokal
+        \Illuminate\Support\Facades\Log::info("Kode OTP untuk [{$email}] : {$otp}");
+
+        // Dispatch ke queue — diproses oleh worker terpisah, TIDAK memblokir response HTTP
+        SendOtpEmailJob::dispatch($email, $otp, $type);
     }
 
     public function verify(string $email, string $otp, string $type = 'register'): bool
@@ -47,3 +50,4 @@ class OtpService
         return true;
     }
 }
+

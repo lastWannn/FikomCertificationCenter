@@ -10,8 +10,8 @@
         <div style="position:relative;z-index:1;">
             <p style="color:rgba(255,255,255,.55);font-size:13px;margin:0 0 6px;">Selamat datang kembali,</p>
             <h1 style="color:#FFF;font-size:22px;font-weight:900;margin:0 0 14px;">{{ $peserta->nama }} &#128075;</h1>
-            <a href="{{ route('peserta.jelajahi') }}" class="fcc-btn-gold" style="padding:9px 20px;font-size:13px;text-decoration:none;">
-                @include('components.icon',['name'=>'search','size'=>14']) Jelajahi Kegiatan
+            <a href="{{ route('peserta.jelajahi') }}" class="fcc-btn-gold" style="padding:9px 20px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Jelajahi Kegiatan
             </a>
         </div>
     </div>

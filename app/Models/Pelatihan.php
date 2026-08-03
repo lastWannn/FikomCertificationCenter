@@ -10,6 +10,7 @@ class Pelatihan extends Model {
     public function materi()       { return $this->hasMany(MateriPelatihan::class)->orderBy('urutan'); }
     public function persyaratan()  { return $this->hasMany(PersyaratanPelatihan::class)->orderBy('urutan'); }
     public function prasyarat()    { return $this->belongsTo(Pelatihan::class, 'prasyarat_id'); }
+    public function jadwal()       { return $this->hasMany(JadwalPelatihan::class, 'pelatihan_id'); }
 
     public function getGambarUrlAttribute(): ?string
     {

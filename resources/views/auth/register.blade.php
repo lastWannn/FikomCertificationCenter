@@ -204,10 +204,19 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         const res = await fetch(this.action, {
             method: 'POST',
             body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            headers: { 
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
         });
-        const data = await res.json();
-        
+
+        let data = {};
+        try {
+            data = await res.json();
+        } catch(jsonErr) {
+            console.error('Non-JSON response:', jsonErr);
+        }
+
         if (data.require_otp) {
             document.getElementById('otpEmailDisplay').innerText = data.email;
             document.getElementById('otpEmailInput').value = data.email;
@@ -215,9 +224,14 @@ document.getElementById('registerForm').addEventListener('submit', async functio
             document.querySelector('.otp-box').focus();
         } else if (data.errors) {
             alert(Object.values(data.errors).flat().join('\n'));
+        } else if (data.message) {
+            alert(data.message);
+        } else {
+            alert('Gagal memproses pendaftaran. Silakan periksa kembali data Anda.');
         }
     } catch (err) {
-        alert('Terjadi kesalahan.');
+        console.error('Fetch error:', err);
+        alert('Terjadi kesalahan koneksi/sistem: ' + (err.message || err));
     } finally {
         btn.innerHTML = oriText;
         btn.disabled = false;

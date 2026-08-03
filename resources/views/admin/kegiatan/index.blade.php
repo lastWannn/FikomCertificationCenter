@@ -37,7 +37,7 @@
         <p style="margin:0 0 6px;font-size:14px;font-weight:800;color:#131218;line-height:1.3;">{{ Str::limit($k->judul,42) }}</p>
         <p style="margin:0 0 12px;font-size:12px;color:#9CA3B0;">
           {{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}
-          &bull; {{ $k->jadwal?->jam_mulai }} &ndash; {{ $k->jadwal?->jam_selesai }}
+          &bull; {{ $k->jadwal?->jam_mulai ? substr($k->jadwal->jam_mulai, 0, 5) : '' }} &ndash; {{ $k->jadwal?->jam_selesai ? substr($k->jadwal->jam_selesai, 0, 5) : '' }}
         </p>
 
         {{-- Kuota progress --}}

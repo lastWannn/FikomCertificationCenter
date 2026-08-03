@@ -105,8 +105,12 @@ trait HasHashid
     {
         $id = app(HashidService::class)->decode((string) $value, static::class);
 
+        // Fallback: Jika $value berupa ID numerik asli (bukan hashid), coba cari langsung
+        if ($id === null && is_numeric($value)) {
+            $id = (int) $value;
+        }
+
         if ($id === null) {
-            // Hash tidak valid → 404
             return null;
         }
 
@@ -120,6 +124,10 @@ trait HasHashid
     {
         $childClass = 'App\\Models\\' . ucfirst($childType);
         $id = app(HashidService::class)->decode((string) $value, $childClass);
+
+        if ($id === null && is_numeric($value)) {
+            $id = (int) $value;
+        }
 
         return $id
             ? $this->{$childType}()->where($this->getKeyName(), $id)->first()

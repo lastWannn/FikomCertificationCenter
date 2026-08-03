@@ -78,4 +78,18 @@ class PembayaranController extends Controller
         return redirect()->route('peserta.pembayaran')
             ->with('success', 'Foto bukti transfer terkirim. Menunggu verifikasi Admin.');
     }
+
+    public function invoice(Pembayaran $pembayaran)
+    {
+        $this->authorizeOwnership($pembayaran);
+        $pembayaran->load(['pendaftaran.peserta', 'pendaftaran.kegiatan', 'pendaftaran.biaya']);
+        $rekening = Rekening::aktif();
+
+        if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.invoice-pdf', compact('pembayaran', 'rekening'))
+                ->setPaper('a5');
+            return $pdf->download("invoice-{$pembayaran->kode_pembayaran}.pdf");
+        }
+        return view('admin.cetak.invoice-pdf', compact('pembayaran', 'rekening'));
+    }
 }

@@ -254,6 +254,7 @@ Route::middleware('auth.peserta')->prefix('peserta')->name('peserta.')->group(fu
     Route::get('/pendaftaran/{pendaftaran}', [PendaftaranController::class,'show'])->name('pendaftaran.show');
     Route::get('/pembayaran',            [PesertaBayar::class,'index'])->name('pembayaran');
     Route::get('/pembayaran/{pembayaran}',       [PesertaBayar::class,'show'])->name('pembayaran.show');
+    Route::get('/pembayaran/{pembayaran}/invoice', [PesertaBayar::class,'invoice'])->name('pembayaran.invoice');
     Route::post('/pembayaran/{pembayaran}/aktifkan',   [PesertaBayar::class,'aktifkan'])->name('pembayaran.aktifkan');
     Route::post('/pembayaran/{pembayaran}/konfirmasi', [PesertaBayar::class,'konfirmasi'])->name('pembayaran.konfirmasi');
     Route::post('/pembayaran/{pembayaran}/request-perpanjangan', [PesertaBayar::class,'requestPerpanjangan'])->name('pembayaran.request-perpanjangan');

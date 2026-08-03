@@ -32,7 +32,7 @@
           ['Jenis',ucfirst($kegiatan->jenis_kegiatan)],
           ['Judul',$kegiatan->judul],
           ['Tanggal',$kegiatan->jadwal?->tgl_pelaksanaan?->format('d F Y')??'—'],
-          ['Waktu',($kegiatan->jadwal?->jam_mulai??'—').' – '.($kegiatan->jadwal?->jam_selesai??'—')],
+          ['Waktu',($kegiatan->jadwal?->jam_mulai ? substr($kegiatan->jadwal->jam_mulai, 0, 5) : '—').' – '.($kegiatan->jadwal?->jam_selesai ? substr($kegiatan->jadwal->jam_selesai, 0, 5) : '—')],
           ['Batas Daftar',$kegiatan->jadwal?->tgl_batas_daftar?->format('d M Y')??'—'],
           ['Kategori', $isPel ? ($kegiatan->kegiatanPelatihan?->jadwalPelatihan?->pelatihan?->kategori?->nama_kategori ?? '—') : ($kegiatan->kegiatanSertifikasi?->jadwalSertifikasi?->sertifikasi?->kategori?->nama_kategori ?? '—')],
         ] as [$l,$v])

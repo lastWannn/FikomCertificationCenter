@@ -13,20 +13,26 @@ class RegisterController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        // Pendaftaran: buat akun (unverified) dan kirim OTP
-        $peserta = $this->service->register($request->validated());
-        
-        $this->otpService->generateAndSend($peserta->email, 'register');
+        try {
+            // Pendaftaran: buat akun (unverified) dan kirim OTP
+            $peserta = $this->service->register($request->validated());
+            
+            $this->otpService->generateAndSend($peserta->email, 'register');
 
-        if ($request->ajax()) {
             return response()->json([
-                'success' => true,
+                'success'     => true,
                 'require_otp' => true,
-                'email' => $peserta->email,
-                'message' => 'Kode OTP 4 digit telah dikirim ke email Anda.'
+                'email'       => $peserta->email,
+                'message'     => 'Kode OTP 4 digit telah dikirim ke email Anda.'
             ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Register Exception: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'errors'  => ['system' => ['Gagal pendaftaran: ' . $e->getMessage()]]
+            ], 422);
         }
-        return back()->with('require_otp', true)->with('otp_email', $peserta->email);
     }
 
     public function verifyOtp(\Illuminate\Http\Request $request)

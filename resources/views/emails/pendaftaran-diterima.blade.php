@@ -45,27 +45,43 @@
   <div class="body">
     <p class="greeting">Pendaftaran Berhasil! 🎉</p>
     <p class="text">Halo, <strong>{{ $pendaftaran->peserta->nama }}</strong>!</p>
-    <p class="text">Pendaftaran kamu untuk kegiatan berikut telah diterima. Segera selesaikan pembayaran untuk mengamankan tempat kamu.</p>
+    <p class="text">Pendaftaran kamu untuk kegiatan berikut telah diterima. {{ $pendaftaran->pembayaran ? 'Invoice pembayaran terlampir dalam email ini.' : 'Anda telah terdaftar pada kegiatan gratis ini.' }}</p>
 
-    <div class="success-banner">✓ Pendaftaran Diterima — Selesaikan Pembayaran</div>
+    @if($pendaftaran->pembayaran)
+    <div class="success-banner">✓ Invoice Pendaftaran Terlampir (PDF)</div>
 
     <div class="card">
       <div class="card-row"><span class="lbl">Kegiatan</span><span class="val">{{ $pendaftaran->kegiatan->judul }}</span></div>
       <div class="card-row"><span class="lbl">Jenis</span><span class="val">{{ ucfirst($pendaftaran->kegiatan->jenis_kegiatan) }}</span></div>
-      <div class="card-row"><span class="lbl">Tanggal</span><span class="val">{{ $pendaftaran->kegiatan->jadwal?->tgl_pelaksanaan?->format('d F Y') ?? 'TBA' }}</span></div>
+      <div class="card-row"><span class="lbl">Tanggal Kegiatan</span><span class="val">{{ $pendaftaran->kegiatan->jadwal?->tgl_pelaksanaan?->format('d F Y') ?? 'TBA' }}</span></div>
+      <div class="card-row"><span class="lbl">Kode Pembayaran</span><span class="val highlight">{{ $pendaftaran->pembayaran->kode_pembayaran }}</span></div>
       <div class="card-row"><span class="lbl">Biaya</span><span class="val">{{ $pendaftaran->biaya?->nominal_format ?? 'Gratis' }}</span></div>
-      <div class="card-row"><span class="lbl">Kode Pembayaran</span><span class="val highlight">{{ $pendaftaran->pembayaran?->kode_pembayaran ?? '-' }}</span></div>
-      <div class="card-row"><span class="lbl">Batas Bayar</span><span class="val" style="color:#EF4444;">{{ $pendaftaran->pembayaran?->tgl_kadaluarsa?->format('d M Y H:i') ?? '-' }} WITA</span></div>
+      @if($pendaftaran->pembayaran->kode_unik)
+      <div class="card-row"><span class="lbl">Kode Unik</span><span class="val highlight">{{ $pendaftaran->pembayaran->kode_unik }}</span></div>
+      <div class="card-row"><span class="lbl">Total Transfer</span><span class="val" style="color:#10B981;font-size:16px;font-weight:900;">{{ $pendaftaran->pembayaran->nominal_transfer_format }}</span></div>
+      @endif
+      <div class="card-row"><span class="lbl">Batas Bayar</span><span class="val" style="color:#EF4444;">{{ $pendaftaran->pembayaran->tgl_kadaluarsa?->format('d M Y H:i') ?? '-' }} WITA</span></div>
     </div>
+
+    <p class="text"><strong>Catatan Penting:</strong> Lampiran invoice resmi berupa dokumen PDF telah disertakan pada email ini. Harap transfer tepat nominal <strong>{{ $pendaftaran->pembayaran->nominal_transfer_format }}</strong> untuk mempermudah verifikasi.</p>
 
     <p class="text">Langkah berikutnya:</p>
     <ol style="color:#5A6275;padding-left:20px;margin-bottom:20px;">
-      <li style="margin-bottom:6px">Aktifkan kode pembayaran di portal peserta</li>
-      <li style="margin-bottom:6px">Transfer sesuai nominal ke rekening FCC</li>
-      <li>Upload bukti transfer dan tunggu verifikasi Admin</li>
+      <li style="margin-bottom:6px">Unduh atau buka berkas Invoice PDF terlampir</li>
+      <li style="margin-bottom:6px">Transfer sesuai nominal tepat ke rekening FCC</li>
+      <li style="margin-bottom:6px">Upload foto bukti transfer di portal peserta</li>
     </ol>
 
-    <a href="{{ config('app.url') }}/peserta/pembayaran" class="btn">Bayar Sekarang &rarr;</a>
+    <a href="{{ config('app.url') }}/peserta/pembayaran" class="btn">Lihat Detail & Bayar &rarr;</a>
+    @else
+    <div class="success-banner">✓ Pendaftaran Gratis Berhasil — Langsung Terdaftar</div>
+    <div class="card">
+      <div class="card-row"><span class="lbl">Kegiatan</span><span class="val">{{ $pendaftaran->kegiatan->judul }}</span></div>
+      <div class="card-row"><span class="lbl">Jenis</span><span class="val">{{ ucfirst($pendaftaran->kegiatan->jenis_kegiatan) }}</span></div>
+      <div class="card-row"><span class="lbl">Status</span><span class="val" style="color:#10B981;">Terdaftar</span></div>
+    </div>
+    <a href="{{ config('app.url') }}/peserta/pendaftaran" class="btn">Lihat Pendaftaran Saya &rarr;</a>
+    @endif
   </div>
 
   <div class="footer">

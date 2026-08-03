@@ -13,6 +13,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Pengecualian CSRF untuk rute Autentikasi Publik (mencegah error CSRF mismatch / 419)
+        $middleware->validateCsrfTokens(except: [
+            'daftar',
+            'masuk',
+            'lupa-password',
+            'daftar/*',
+            'lupa-password/*',
+        ]);
+
         // Alias middleware
         $middleware->alias([
             'auth.admin'      => \App\Http\Middleware\AuthAdmin::class,
@@ -22,8 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // JSON untuk API
-        $exceptions->shouldRenderJsonWhen(fn (Request $request) => $request->is('api/*'));
+        // JSON untuk API dan AJAX
+        $exceptions->shouldRenderJsonWhen(fn (Request $request) => $request->expectsJson() || $request->ajax() || $request->wantsJson() || $request->is('api/*'));
 
         // Redirect ke halaman login FCC jika belum auth
         $exceptions->render(function (AuthenticationException $e, Request $request) {

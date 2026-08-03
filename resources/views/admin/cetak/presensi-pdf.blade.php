@@ -50,7 +50,7 @@
   </div>
   <div class="info-item">
     <div class="info-lbl">Waktu</div>
-    <div class="info-val">{{ $kegiatan->jadwal?->jam_mulai ?? '-' }} – {{ $kegiatan->jadwal?->jam_selesai ?? '-' }}</div>
+    <div class="info-val">{{ $kegiatan->jadwal?->jam_mulai ? substr($kegiatan->jadwal->jam_mulai, 0, 5) : '-' }} &ndash; {{ $kegiatan->jadwal?->jam_selesai ? substr($kegiatan->jadwal->jam_selesai, 0, 5) : '-' }}</div>
   </div>
   <div class="info-item">
     <div class="info-lbl">Total Peserta</div>

@@ -18,6 +18,7 @@
 </head>
 <body>
     @yield('content')
+    @stack('page-data')
     @stack('scripts')
 </body>
 </html>

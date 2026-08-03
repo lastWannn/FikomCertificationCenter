@@ -41,6 +41,11 @@
                 ['route'=>'peserta.pembayaran',   'icon'=>'credit-card',      'label'=>'Pembayaran'],
                 ['route'=>'peserta.sertifikat',   'icon'=>'file-text',        'label'=>'Sertifikat Saya'],
             ];
+            $unpaidCount = auth('peserta')->check()
+                ? \App\Models\Pembayaran::whereHas('pendaftaran', function($q) {
+                    $q->where('peserta_id', auth('peserta')->id());
+                })->where('status_pembayaran', 'menunggu_pembayaran')->count()
+                : 0;
             @endphp
             @foreach($pesertaMenu as $item)
             @php $isActive = request()->routeIs($item['route'].'*'); @endphp
@@ -49,8 +54,8 @@
                style="text-decoration:none;">
                 @include('components.icon', ['name'=>$item['icon'], 'size'=>18, 'class'=>'sidebar-icon'])
                 <span id="sb-lbl-{{ $loop->index }}" style="font-size:14px;font-weight:{{ $isActive ? '700' : '500' }};">{{ $item['label'] }}</span>
-                @if($item['route'] === 'peserta.pembayaran')
-                <span id="sb-badge-bayar" style="background:#3B82F6;color:#FFF;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;margin-left:auto;">1</span>
+                @if($item['route'] === 'peserta.pembayaran' && $unpaidCount > 0)
+                <span id="sb-badge-bayar" style="background:#EF4444;color:#FFF;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;margin-left:auto;">{{ $unpaidCount }}</span>
                 @endif
             </a>
             @endforeach

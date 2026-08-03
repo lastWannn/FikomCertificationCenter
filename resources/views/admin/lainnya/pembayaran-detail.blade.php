@@ -179,8 +179,22 @@
     </div>
     @endif
 
+    <style>
+    .admin-detail-pembayaran-grid {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 20px;
+        align-items: start;
+    }
+    @media (max-width: 992px) {
+        .admin-detail-pembayaran-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+
     {{-- ── KONTEN UTAMA ─────────────────────────────────────────── --}}
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;">
+    <div class="admin-detail-pembayaran-grid">
 
         {{-- Kiri: Info peserta + Bukti --}}
         <div>

@@ -59,5 +59,11 @@
         window.addEventListener('beforeunload', () => clearInterval(interval));
     }
 
-    document.addEventListener('DOMContentLoaded', initCountdown);
+    window.initCountdown = initCountdown;
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(initCountdown, 0);
+    } else {
+        document.addEventListener('DOMContentLoaded', initCountdown);
+    }
 })();

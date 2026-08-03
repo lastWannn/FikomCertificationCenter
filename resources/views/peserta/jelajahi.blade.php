@@ -44,7 +44,7 @@
                 @elseif($k->isFull())
                 <button disabled style="width:100%;padding:8px;border-radius:9px;border:1px solid #E2E4EB;background:rgba(100,100,100,.08);color:#A0A3AD;font-size:13px;font-weight:700;cursor:not-allowed;">Kuota Penuh</button>
                 @else
-                <button onclick="showDaftarModal({{ $k->id }}, '{{ addslashes($k->judul) }}', {{ $k->biaya->toJson() }})"
+                <button onclick="showDaftarModal('{{ $k->hashid }}', '{{ addslashes($k->judul) }}', {{ $k->biaya->toJson() }})"
                     class="fcc-btn-gold" style="width:100%;justify-content:center;padding:8px;font-size:13px;">Daftar</button>
                 @endif
             </div>

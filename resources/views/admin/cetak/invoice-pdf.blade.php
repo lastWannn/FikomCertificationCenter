@@ -53,13 +53,16 @@
   <div class="info-row"><span class="lbl">Kegiatan</span><span class="val">{{ Str::limit($pembayaran->pendaftaran->kegiatan->judul,40) }}</span></div>
   <div class="info-row"><span class="lbl">Tanggal</span><span class="val">{{ $pembayaran->pendaftaran->kegiatan->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}</span></div>
   <div class="info-row"><span class="lbl">Jenis Biaya</span><span class="val">{{ $pembayaran->pendaftaran->biaya?->nama_jenis ?? 'Gratis' }}</span></div>
+  @if($pembayaran->kode_unik)
+  <div class="info-row"><span class="lbl">Kode Unik</span><span class="val">{{ $pembayaran->kode_unik }}</span></div>
+  @endif
   <div class="info-row"><span class="lbl">Tgl Invoice</span><span class="val">{{ $pembayaran->created_at->format('d M Y H:i') }}</span></div>
   <div class="info-row"><span class="lbl">Batas Bayar</span><span class="val" style="color:#EF4444;">{{ $pembayaran->tgl_kadaluarsa?->format('d M Y H:i') ?? '-' }}</span></div>
 </div>
 
 <div class="total-box">
-  <span class="total-label">Total Tagihan</span>
-  <span class="total-val">{{ $pembayaran->jumlah_bayar_format }}</span>
+  <span class="total-label">Total Harus Ditransfer</span>
+  <span class="total-val">{{ $pembayaran->nominal_transfer_format }}</span>
 </div>
 
 @if($rekening)

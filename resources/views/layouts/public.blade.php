@@ -635,33 +635,46 @@
     // Submit Auth Form via AJAX
     function submitAuthForm(e, url) {
         e.preventDefault();
+        console.log('[FCC DEBUG] submitAuthForm called, url:', url);
         alertBox.style.display = 'none';
         
         const form = e.target;
         const formData = new FormData(form);
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerText;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || form.querySelector('input[name="_token"]')?.value;
+        
+        console.log('[FCC DEBUG] CSRF token found:', csrfToken ? 'YES' : 'NO');
         
         submitBtn.disabled = true;
         submitBtn.innerText = 'Memproses...';
 
+        console.log('[FCC DEBUG] Starting fetch to:', url);
         fetch(url, {
             method: 'POST',
             body: formData,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken || ''
             }
         })
-        .then(response => {
-            return response.json().then(data => {
-                if (!response.ok) {
-                    throw { status: response.status, data: data };
-                }
-                return data;
-            });
+        .then(async response => {
+            console.log('[FCC DEBUG] Response received! Status:', response.status, 'OK:', response.ok);
+            let data = {};
+            try {
+                data = await response.json();
+                console.log('[FCC DEBUG] JSON parsed:', JSON.stringify(data));
+            } catch(e) {
+                console.error('[FCC DEBUG] JSON parse failed:', e);
+            }
+            if (!response.ok) {
+                throw { status: response.status, data: data };
+            }
+            return data;
         })
         .then(data => {
+            console.log('[FCC DEBUG] Success handler, data:', JSON.stringify(data));
             if (data.require_otp) {
                 submitBtn.disabled = false;
                 submitBtn.innerText = originalText;
@@ -684,14 +697,17 @@
             }
         })
         .catch(err => {
+            console.error('[FCC DEBUG] CATCH error:', err);
             submitBtn.disabled = false;
             submitBtn.innerText = originalText;
             
             let errMsg = 'Terjadi kesalahan sistem. Silakan coba lagi.';
-            if (err.data && err.data.errors) {
+            if (err && err.data && err.data.errors) {
                 errMsg = Object.values(err.data.errors).flat().join('<br>');
-            } else if (err.data && err.data.message) {
+            } else if (err && err.data && err.data.message) {
                 errMsg = err.data.message;
+            } else if (err && err.message) {
+                errMsg = err.message;
             }
             
             alertBox.innerHTML = errMsg;
