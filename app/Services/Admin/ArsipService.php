@@ -30,4 +30,16 @@ class ArsipService
     {
         $arsip->delete();
     }
+
+    public function autoArchiveCompleted(): void
+    {
+        $kegiatans = \App\Models\Kegiatan::passed()->doesntHave('arsip')->get();
+        foreach ($kegiatans as $k) {
+            ArsipKegiatan::create([
+                'kegiatan_id' => $k->id,
+                'judul'       => $k->judul,
+                'ringkasan'   => 'Kegiatan ' . $k->judul . ' telah selesai dilaksanakan.',
+            ]);
+        }
+    }
 }

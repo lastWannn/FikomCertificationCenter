@@ -5,6 +5,7 @@ use App\Models\{Kegiatan,Pendaftaran,Pembayaran,Sertifikat};
 use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller {
     public function index() {
+        Pembayaran::updateExpiredPayments();
         $peserta = Auth::guard('peserta')->user();
         $stats = [
             'terdaftar'  => Pendaftaran::where('peserta_id',$peserta->id)->where('status_pendaftaran','terdaftar')->count(),

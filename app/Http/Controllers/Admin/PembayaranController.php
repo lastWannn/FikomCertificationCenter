@@ -16,20 +16,53 @@ class PembayaranController extends Controller
 
     public function index(Request $r)
     {
-        $q = Pembayaran::with(['pendaftaran.peserta', 'pendaftaran.kegiatan'])
-            ->orderBy('created_at', 'desc');
+        Pembayaran::updateExpiredPayments();
 
-        if ($r->status) $q->where('status_pembayaran', $r->status);
+        $q = Pembayaran::with([
+            'pendaftaran.peserta',
+            'pendaftaran.kegiatan.kegiatanPelatihan.jadwalPelatihan',
+            'pendaftaran.kegiatan.kegiatanSertifikasi.jadwalSertifikasi',
+        ])->orderBy('created_at', 'desc');
 
-        // Filter: tampilkan request perpanjangan pending
+        // Search: Nama, Email, Kode Pembayaran, Kode Unik
+        if ($r->filled('q')) {
+            $keyword = trim($r->q);
+            $q->where(function($query) use ($keyword) {
+                $query->where('kode_pembayaran', 'like', "%{$keyword}%")
+                      ->orWhere('kode_unik', 'like', "%{$keyword}%")
+                      ->orWhereHas('pendaftaran.peserta', function($p) use ($keyword) {
+                          $p->where('nama', 'like', "%{$keyword}%")
+                            ->orWhere('email', 'like', "%{$keyword}%");
+                      });
+            });
+        }
+
+        // Filter: Status Pembayaran
+        if ($r->filled('status')) {
+            if ($r->status === 'req_perpanjangan') {
+                $q->where('status_perpanjangan', 'menunggu');
+            } else {
+                $q->where('status_pembayaran', $r->status);
+            }
+        }
+
+        // Filter: Jenis Kegiatan
+        if ($r->filled('jenis')) {
+            $q->whereHas('pendaftaran.kegiatan', function($k) use ($r) {
+                $k->where('jenis_kegiatan', $r->jenis);
+            });
+        }
+
+        // Filter: Tampilkan request perpanjangan pending
         if ($r->perpanjangan === 'menunggu') {
             $q->where('status_perpanjangan', 'menunggu');
         }
 
-        $pembayaran           = $q->paginate(15);
+        $pembayaran               = $q->paginate(15)->withQueryString();
         $countPerpanjanganPending = Pembayaran::where('status_perpanjangan', 'menunggu')->count();
+        $countMenungguVerifikasi  = Pembayaran::where('status_pembayaran', 'menunggu_verifikasi')->count();
 
-        return view('admin.lainnya.pembayaran', compact('pembayaran', 'countPerpanjanganPending'));
+        return view('admin.lainnya.pembayaran', compact('pembayaran', 'countPerpanjanganPending', 'countMenungguVerifikasi'));
     }
 
     public function show(Pembayaran $pembayaran)

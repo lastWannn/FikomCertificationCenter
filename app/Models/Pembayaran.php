@@ -110,6 +110,28 @@ class Pembayaran extends Model
         }
     }
 
+    /**
+     * Batch update semua transaksi yang telah melewati tgl_kadaluarsa secara realtime.
+     */
+    public static function updateExpiredPayments(): void
+    {
+        $expiredList = self::where('status_pembayaran', 'menunggu_pembayaran')
+            ->whereNotNull('tgl_kadaluarsa')
+            ->where('tgl_kadaluarsa', '<', now())
+            ->where(function($q) {
+                $q->whereNull('status_perpanjangan')
+                  ->orWhere('status_perpanjangan', '!=', 'menunggu');
+            })
+            ->get();
+
+        foreach ($expiredList as $p) {
+            $p->update(['status_pembayaran' => 'kadaluarsa']);
+            if ($p->pendaftaran && $p->pendaftaran->status_pendaftaran !== 'menunggu_pembayaran') {
+                $p->pendaftaran->update(['status_pendaftaran' => 'menunggu_pembayaran']);
+            }
+        }
+    }
+
     /** Admin memperpanjang batas waktu +2 jam */
     public function perpanjang(?int $jamTambah = 2): void
     {

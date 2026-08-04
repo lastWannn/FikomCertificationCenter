@@ -90,91 +90,51 @@
         </form>
     </div>
 
-    {{-- ── PANEL PERPANJANGAN (jika ada request pending) ────────── --}}
+    {{-- ── PANEL PERPANJANGAN (Compact & Modern) ────────── --}}
     @if($pembayaran->status_perpanjangan === 'menunggu')
-    <div style="background:rgba(245,158,11,.06);border:1.5px solid rgba(245,158,11,.25);
-                border-radius:14px;padding:22px;margin-bottom:18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-            <div style="width:38px;height:38px;border-radius:10px;background:rgba(245,158,11,.12);
-                        display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                @include('components.icon',['name'=>'clock','size'=>18,'style'=>'color:#F59E0B'])
+    <div style="background:#FFFDF5;border:1.5px solid #FCD34D;border-radius:16px;padding:18px 20px;margin-bottom:20px;box-shadow:0 4px 16px rgba(245,158,11,.08);">
+        
+        {{-- Header & Reason Row --}}
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed #FCD34D;">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:10px;background:#F59E0B;color:#FFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 8px rgba(245,158,11,.3);">
+                    @include('components.icon',['name'=>'clock','size'=>18,'style'=>'color:#FFF'])
+                </div>
+                <div>
+                    <h4 style="font-size:14.5px;font-weight:900;color:#92400E;margin:0 0 2px;">Permintaan Perpanjangan Waktu Bayar</h4>
+                    <p style="font-size:11.5px;color:#B45309;margin:0;font-weight:600;">Diterima {{ $pembayaran->request_perpanjangan_at?->diffForHumans() }} ({{ $pembayaran->request_perpanjangan_at?->format('d M Y H:i') }})</p>
+                </div>
             </div>
-            <div>
-                <p style="font-size:14px;font-weight:800;color:#B45309;margin:0">
-                    Permintaan Perpanjangan Waktu Bayar
-                </p>
-                <p style="font-size:12px;color:#92400E;margin:0">
-                    Diterima {{ $pembayaran->request_perpanjangan_at?->diffForHumans() }}
-                    ({{ $pembayaran->request_perpanjangan_at?->format('d M Y H:i') }})
-                </p>
+
+            {{-- Alasan Peserta Pill --}}
+            <div style="background:#FFF;border:1px solid #FDE68A;border-radius:10px;padding:6px 12px;max-width:420px;display:flex;align-items:center;gap:8px;">
+                <span style="font-size:10.5px;font-weight:800;color:#D97706;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;">💬 Alasan Peserta:</span>
+                <span style="font-size:12.5px;font-weight:700;color:#131218;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">"{{ $pembayaran->alasan_perpanjangan ?: 'Tidak ada alasan khusus.' }}"</span>
             </div>
         </div>
 
-        @if($pembayaran->alasan_perpanjangan)
-        <div style="background:#FFF;border:1px solid rgba(245,158,11,.2);border-radius:8px;
-                    padding:12px 14px;margin-bottom:16px;">
-            <p style="font-size:11px;font-weight:700;color:#9CA3B0;text-transform:uppercase;
-                       letter-spacing:.7px;margin:0 0 4px">Alasan dari Peserta</p>
-            <p style="font-size:13px;color:#131218;margin:0">{{ $pembayaran->alasan_perpanjangan }}</p>
-        </div>
-        @endif
-
+        {{-- Compact Action Grid --}}
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-            {{-- Approve --}}
-            <div style="background:#FFF;border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:18px;">
-                <p style="font-size:13px;font-weight:800;color:#059669;margin:0 0 12px;">
-                    ✓ Setujui Perpanjangan
-                </p>
-                <form action="{{ route('admin.pembayaran.approve-perpanjangan', $pembayaran) }}" method="POST">
-                    @csrf
-                    <div style="margin-bottom:10px;">
-                        <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px">
-                            Tambah Waktu *
-                        </label>
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <input type="number" name="jam_tambah" value="2" min="1" max="72"
-                                   class="fcc-input" style="width:80px;text-align:center;">
-                            <span style="font-size:13px;color:#6B7280;font-weight:600">jam</span>
-                        </div>
-                    </div>
-                    <div style="margin-bottom:12px;">
-                        <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px">
-                            Catatan (opsional)
-                        </label>
-                        <input type="text" name="catatan" placeholder="Pesan untuk peserta..."
-                               class="fcc-input" style="font-size:13px;">
-                    </div>
-                    <button type="submit"
-                            style="width:100%;padding:9px;border-radius:9px;border:none;
-                                   background:#10B981;color:#FFF;font-size:13px;font-weight:700;cursor:pointer;
-                                   display:flex;align-items:center;justify-content:center;gap:6px;">
-                        @include('components.icon',['name'=>'check','size'=>14]) Setujui
-                    </button>
-                </form>
-            </div>
+            
+            {{-- Setujui Inline Form --}}
+            <form action="{{ route('admin.pembayaran.approve-perpanjangan', $pembayaran) }}" method="POST" style="background:#FFF;border:1px solid #A7F3D0;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;">
+                @csrf
+                <input type="hidden" name="jam_tambah" value="2">
+                <input type="text" name="catatan" placeholder="Catatan untuk peserta (opsional)..." class="fcc-input" style="flex:1;padding:6px 10px;font-size:12px;min-width:0;">
+                <button type="submit" style="background:#10B981;color:#FFF;border:none;padding:7px 16px;font-size:12px;font-weight:800;border-radius:8px;cursor:pointer;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:4px;">
+                    ✓ Setujui (+2 Jam)
+                </button>
+            </form>
 
-            {{-- Tolak Perpanjangan --}}
-            <div style="background:#FFF;border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:18px;">
-                <p style="font-size:13px;font-weight:800;color:#DC2626;margin:0 0 12px;">
-                    ✕ Tolak Perpanjangan
-                </p>
-                <form action="{{ route('admin.pembayaran.tolak-perpanjangan', $pembayaran) }}" method="POST">
-                    @csrf
-                    <div style="margin-bottom:12px;">
-                        <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px">
-                            Alasan Penolakan
-                        </label>
-                        <textarea name="catatan" rows="3" placeholder="Alasan penolakan..."
-                                  class="fcc-input" style="resize:none;font-size:13px;"></textarea>
-                    </div>
-                    <button type="submit"
-                            style="width:100%;padding:9px;border-radius:9px;border:none;
-                                   background:#EF4444;color:#FFF;font-size:13px;font-weight:700;cursor:pointer;
-                                   display:flex;align-items:center;justify-content:center;gap:6px;">
-                        @include('components.icon',['name'=>'x','size'=>14]) Tolak
-                    </button>
-                </form>
-            </div>
+            {{-- Tolak Inline Form --}}
+            <form action="{{ route('admin.pembayaran.tolak-perpanjangan', $pembayaran) }}" method="POST" style="background:#FFF;border:1px solid #FCA5A5;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;">
+                @csrf
+                <input type="text" name="catatan" placeholder="Alasan penolakan..." class="fcc-input" required style="flex:1;padding:6px 10px;font-size:12px;min-width:0;">
+                <button type="submit" style="background:#EF4444;color:#FFF;border:none;padding:7px 16px;font-size:12px;font-weight:800;border-radius:8px;cursor:pointer;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:4px;">
+                    ✕ Tolak
+                </button>
+            </form>
+
         </div>
     </div>
     @endif
@@ -267,20 +227,7 @@
                 </div>
                 @endforeach
 
-                {{-- Keterangan kode unik --}}
-                @if($pembayaran->kode_unik)
-                <div style="background:#F7F8FA;border:1px solid #E2E4EB;border-radius:9px;
-                            padding:10px 12px;margin-top:12px;font-size:11px;color:#6B7280;line-height:1.6">
-                    <strong style="color:#131218">Kode Unik: {{ $pembayaran->kode_unik }}</strong><br>
-                    Digit 1:
-                    @if(str_starts_with($pembayaran->kode_unik,'1'))
-                        <span style="color:#FFC81A;font-weight:700">1 = Pelatihan</span>
-                    @else
-                        <span style="color:#3B82F6;font-weight:700">2 = Sertifikasi</span>
-                    @endif
-                    <br>Digit 2–3: acak ({{ substr($pembayaran->kode_unik,1) }})
-                </div>
-                @endif
+
 
                 {{-- Status badge --}}
                 @php

@@ -79,14 +79,14 @@
                 <button type="submit" title="Aktifkan sebagai Kegiatan"
                     style="background:#131218;border:none;color:#FFC81A;font-size:11px;font-weight:700;
                            padding:5px 10px;border-radius:7px;cursor:pointer;white-space:nowrap;"
-                    onclick="return confirm('Aktifkan jadwal ini sebagai kegiatan publik?')">
+                    onclick="return fccConfirmAction(event, this, 'Aktifkan Jadwal', 'Aktifkan jadwal ini sebagai kegiatan publik?', 'Ya, Aktifkan', false)">
                   + Aktifkan
                 </button>
               </form>
               <a href="{{ route('admin.jadwal-pelatihan.edit', $j) }}" style="color:#FFC81A;">
                 @include('components.icon',['name'=>'edit','size'=>15])
               </a>
-              <form action="{{ route('admin.jadwal-pelatihan.destroy', $j) }}" method="POST" onsubmit="return confirm('Hapus jadwal ini?')">
+              <form action="{{ route('admin.jadwal-pelatihan.destroy', $j) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Jadwal', 'Apakah Anda yakin ingin menghapus jadwal pelatihan ini?')">
                 @csrf @method('DELETE')
                 <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">
                   @include('components.icon',['name'=>'trash','size'=>15])
@@ -97,7 +97,7 @@
               <form action="{{ route('admin.jadwal-pelatihan.nonaktifkan', $j) }}" method="POST">
                 @csrf
                 <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;font-size:11px;font-weight:700;white-space:nowrap;"
-                    onclick="return confirm('Nonaktifkan kegiatan ini?')">Nonaktifkan</button>
+                    onclick="return fccConfirmAction(event, this, 'Nonaktifkan Kegiatan', 'Apakah Anda yakin ingin menonaktifkan kegiatan ini?', 'Ya, Nonaktifkan', true)">Nonaktifkan</button>
               </form>
               @endif
             </div>

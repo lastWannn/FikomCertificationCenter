@@ -3,6 +3,7 @@ namespace App\Services\Admin;
 
 use App\Models\Pelatihan;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 class PelatihanService
 {
@@ -101,6 +102,34 @@ class PelatihanService
 
     public function delete(Pelatihan $pelatihan): void
     {
-        $pelatihan->delete();
+        foreach ($pelatihan->jadwal as $j) {
+            $kp = $j->kegiatanPelatihan;
+            if ($kp && $kp->kegiatan && $kp->kegiatan->pendaftaran()->count() > 0) {
+                throw new \RuntimeException('Pelatihan "' . $pelatihan->judul . '" tidak dapat dihapus karena jadwal ' . ($j->nama_kegiatan ?? $pelatihan->judul) . ' sudah memiliki peserta terdaftar.');
+            }
+        }
+
+        DB::transaction(function () use ($pelatihan) {
+            // Delete associated materi & persyaratan
+            $pelatihan->materi()->delete();
+            $pelatihan->persyaratan()->delete();
+
+            // Delete associated jadwal and non-active kegiatan
+            foreach ($pelatihan->jadwal as $j) {
+                $kp = $j->kegiatanPelatihan;
+                if ($kp) {
+                    $keg = $kp->kegiatan;
+                    if ($keg) {
+                        $keg->biaya()->delete();
+                        $keg->delete();
+                    }
+                    $kp->delete();
+                }
+                $j->delete();
+            }
+
+            // Delete pelatihan
+            $pelatihan->delete();
+        });
     }
 }

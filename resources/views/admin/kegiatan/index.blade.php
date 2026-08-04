@@ -13,9 +13,6 @@
           <option value="sertifikasi" {{ request('jenis')==='sertifikasi'?'selected':'' }}>Sertifikasi</option>
         </select>
       </form>
-      <a href="{{ route('admin.jadwal-pelatihan.index') }}" class="fcc-btn-gold" style="padding:9px 16px;font-size:13px;text-decoration:none;">
-        @include('components.icon',['name'=>'plus','size'=>13]) Jadwal Baru
-      </a>
     </div>
   </div>
 
@@ -34,8 +31,13 @@
         </thead>
         <tbody>
           @forelse($kegiatan as $k)
-          @php $isPel = $k->jenis_kegiatan==='pelatihan'; @endphp
-          <tr style="border-top:1px solid #F0F1F3;transition:background .18s;" onmouseover="this.style.background='#FAFBFD'" onmouseout="this.style.background='transparent'">
+          @php
+            $isPel = $k->jenis_kegiatan === 'pelatihan';
+            $isPassed = $k->isPassed();
+            $detail = $k->detail;
+            $editUrl = $isPel ? ($detail ? route('admin.pelatihan.edit', $detail) : '#') : ($detail ? route('admin.sertifikasi.edit', $detail) : '#');
+          @endphp
+          <tr style="border-top:1px solid #F0F1F3;transition:background .18s; {{ $isPassed ? 'background:#FFFDF5;' : '' }}" onmouseover="this.style.background='#FAFBFD'" onmouseout="this.style.background='{{ $isPassed ? '#FFFDF5' : 'transparent' }}'">
             <td style="padding:16px 20px;">
               <div style="display:flex;align-items:center;gap:12px;">
                 <div style="width:40px;height:40px;border-radius:10px;background:{{ $isPel?'rgba(255,200,26,.14)':'rgba(59,130,246,.12)' }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -43,9 +45,14 @@
                 </div>
                 <div>
                   <p style="margin:0 0 2px;font-size:14px;font-weight:800;color:#131218;line-height:1.3;">{{ $k->judul }}</p>
-                  @if($k->isFull())
-                  <span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(239,68,68,.12);color:#EF4444;">Kuota Penuh</span>
-                  @endif
+                  <div style="display:flex;gap:6px;align-items:center;margin-top:2px;">
+                    @if($isPassed)
+                    <span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:10px;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;">⚠ Lewat Tanggal</span>
+                    @endif
+                    @if($k->isFull())
+                    <span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(239,68,68,.12);color:#EF4444;">Kuota Penuh</span>
+                    @endif
+                  </div>
                 </div>
               </div>
             </td>
@@ -83,17 +90,14 @@
               </span>
             </td>
             <td style="padding:16px 20px;text-align:center;vertical-align:middle;">
-              <div style="display:flex;gap:6px;justify-content:center;">
+              <div style="display:flex;gap:6px;justify-content:center;align-items:center;">
                 <a href="{{ route('admin.kegiatan.show', $k) }}" class="fcc-btn-dark" style="padding:6px 12px;font-size:12px;text-decoration:none;" title="Lihat Detail">
                   @include('components.icon',['name'=>'eye','size'=>13,'style'=>'color:#FFC81A']) Detail
                 </a>
-                <a href="{{ route('admin.pembayaran.index',['kegiatan_id'=>$k->id]) }}"
-                   style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;
-                          border:1.5px solid #E2E4EB;background:#F7F8FA;color:#6B7280;text-decoration:none;transition:all .18s;"
-                   title="Lihat Pembayaran"
-                   onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E2E4EB'">
-                  @include('components.icon',['name'=>'credit-card','size'=>13])
-                </a>
+                <button type="button" onclick="document.getElementById('edit-kegiatan-modal-{{ $k->id }}').style.display='flex'" class="fcc-btn-gold" style="padding:6px 12px;font-size:12px;cursor:pointer;border:none;" title="Edit Kegiatan">
+                  @include('components.icon',['name'=>'edit','size'=>13]) Edit
+                </button>
+                @include('admin.kegiatan.partials.edit-modal', ['kegiatan' => $k])
               </div>
             </td>
           </tr>

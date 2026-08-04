@@ -34,9 +34,11 @@
                         <div style="display:inline-flex;gap:8px;">
                             <a href="{{ route('admin.sertifikasi.show', $s) }}" style="color:#3B82F6;display:flex;">@include('components.icon',['name'=>'eye','size'=>16])</a>
                             <a href="{{ route('admin.sertifikasi.edit', $s) }}" style="color:#FFC81A;display:flex;">@include('components.icon',['name'=>'edit','size'=>16])</a>
-                            <form action="{{ route('admin.sertifikasi.destroy', $s) }}" method="POST" onsubmit="return confirm('Hapus sertifikasi ini?')">
+                            <form action="{{ route('admin.sertifikasi.destroy', $s) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">@include('components.icon',['name'=>'trash','size'=>16])</button>
+                                <button type="button" onclick="fccConfirmDelete(this, 'Hapus Sertifikasi', 'Apakah Anda yakin ingin menghapus sertifikasi ini?')" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">
+                                    @include('components.icon',['name'=>'trash','size'=>16])
+                                </button>
                             </form>
                         </div>
                     </td>

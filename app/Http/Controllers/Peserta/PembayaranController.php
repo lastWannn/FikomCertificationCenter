@@ -28,6 +28,8 @@ class PembayaranController extends Controller
 
     public function index()
     {
+        Pembayaran::updateExpiredPayments();
+
         $pembayaran = Pembayaran::whereHas(
             'pendaftaran',
             fn($q) => $q->where('peserta_id', Auth::guard('peserta')->id())

@@ -28,9 +28,9 @@ class StoreSertifikasiRequest extends FormRequest
             // Jadwal Awal (Opsional)
             'jadwal_nama_kegiatan' => 'nullable|string|max:255',
             'nama_jenis_biaya' => 'nullable|array',
-            'nama_jenis_biaya.*' => 'required_with:nama_jenis_biaya|string|max:100',
+            'nama_jenis_biaya.*' => 'nullable|string|max:100',
             'nominal_biaya' => 'nullable|array',
-            'nominal_biaya.*' => 'required_with:nominal_biaya|numeric|min:0',
+            'nominal_biaya.*' => 'nullable|numeric|min:0',
             'kuota_peserta' => 'nullable|integer|min:1|max:500',
             'untuk_peserta' => 'nullable|in:L,P,LP',
             'tgl_batas_daftar' => 'nullable|date',
@@ -44,11 +44,17 @@ class StoreSertifikasiRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'kode.required' => 'Kode sertifikasi wajib diisi.',
             'kode.unique' => 'Kode sertifikasi sudah digunakan.',
+            'judul.required' => 'Judul sertifikasi wajib diisi.',
+            'isi.required' => 'Deskripsi sertifikasi wajib diisi.',
+            'kategori_id.required' => 'Kategori sertifikasi wajib dipilih.',
             'gambar.image' => 'File harus berupa gambar.',
             'gambar.max' => 'Ukuran gambar maksimal 2MB.',
             'file_materi.max' => 'Ukuran file materi maksimal 10MB.',
             'file_materi.mimes' => 'Format file materi tidak didukung.',
+            'nominal_biaya.*.numeric' => 'Nominal biaya harus berupa angka.',
+            'nominal_biaya.*.min' => 'Nominal biaya tidak boleh minus.',
         ];
     }
 }

@@ -33,6 +33,38 @@ class Kegiatan extends Model {
     public function getKuotaAttribute(): int   { return $this->jadwal?->kuota_peserta ?? 0; }
     public function isBerbayar(): bool         { return $this->biaya()->exists(); }
     public function isFull(): bool             { return $this->kuota > 0 && $this->terisi >= $this->kuota; }
+    public function isPassed(): bool
+    {
+        $jadwal = $this->jadwal;
+        if (!$jadwal || !$jadwal->tgl_pelaksanaan) return false;
+        return $jadwal->tgl_pelaksanaan->lt(now()->startOfDay());
+    }
     public function scopePelatihan($q)         { return $q->where('jenis_kegiatan','pelatihan'); }
     public function scopeSertifikasi($q)       { return $q->where('jenis_kegiatan','sertifikasi'); }
+
+    public function scopeUpcoming($q)
+    {
+        $today = now()->toDateString();
+        return $q->where(function($query) use ($today) {
+            $query->whereHas('kegiatanPelatihan.jadwalPelatihan', function($j) use ($today) {
+                $j->where('tgl_pelaksanaan', '>=', $today)
+                  ->orWhereNull('tgl_pelaksanaan');
+            })->orWhereHas('kegiatanSertifikasi.jadwalSertifikasi', function($j) use ($today) {
+                $j->where('tgl_pelaksanaan', '>=', $today)
+                  ->orWhereNull('tgl_pelaksanaan');
+            });
+        });
+    }
+
+    public function scopePassed($q)
+    {
+        $today = now()->toDateString();
+        return $q->where(function($query) use ($today) {
+            $query->whereHas('kegiatanPelatihan.jadwalPelatihan', function($j) use ($today) {
+                $j->whereNotNull('tgl_pelaksanaan')->where('tgl_pelaksanaan', '<', $today);
+            })->orWhereHas('kegiatanSertifikasi.jadwalSertifikasi', function($j) use ($today) {
+                $j->whereNotNull('tgl_pelaksanaan')->where('tgl_pelaksanaan', '<', $today);
+            });
+        });
+    }
 }
