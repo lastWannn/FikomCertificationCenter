@@ -72,8 +72,13 @@ class SertifikasiController extends Controller
 
     public function destroy(Sertifikasi $sertifikasi)
     {
-        $this->service->delete($sertifikasi);
-        return redirect()->route('admin.sertifikasi.index')
-            ->with('success', 'Sertifikasi dihapus.');
+        try {
+            $this->service->delete($sertifikasi);
+            return redirect()->route('admin.sertifikasi.index')
+                ->with('success', 'Sertifikasi ' . $sertifikasi->judul . ' berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', $e->getMessage());
+        }
     }
 }

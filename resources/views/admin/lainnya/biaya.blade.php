@@ -27,7 +27,7 @@
                     <td style="padding:12px 20px;text-align:center;">
                         <div style="display:inline-flex;gap:8px;">
                             <a href="{{ route('admin.biaya.edit', $b) }}" style="color:#FFC81A;display:flex;">@include('components.icon',['name'=>'edit','size'=>16])</a>
-                            <form action="{{ route('admin.biaya.destroy', $b) }}" method="POST" onsubmit="return confirm('Hapus biaya ini?')">
+                            <form action="{{ route('admin.biaya.destroy', $b) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Biaya', 'Apakah Anda yakin ingin menghapus tarif biaya ini?')">
                                 @csrf @method('DELETE')
                                 <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">@include('components.icon',['name'=>'trash','size'=>16])</button>
                             </form>

@@ -12,15 +12,60 @@
       </a>
       <h1 style="font-size:20px;font-weight:900;color:#131218;margin:0;">{{ $kegiatan->judul }}</h1>
     </div>
-    <div style="display:flex;gap:8px;">
+    @php
+      $detail = $kegiatan->detail;
+      $editUrl = $isPel ? ($detail ? route('admin.pelatihan.edit', $detail) : '#') : ($detail ? route('admin.sertifikasi.edit', $detail) : '#');
+      $isArsiped = $kegiatan->arsip()->exists();
+    @endphp
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
       <a href="{{ route('admin.presensi.show', $kegiatan) }}" class="fcc-btn-gold" style="padding:9px 16px;font-size:13px;text-decoration:none;">
         @include('components.icon',['name'=>'clipboard-list','size'=>14]) Presensi
       </a>
       <a href="{{ route('admin.sertifikat.peserta', $kegiatan) }}" class="fcc-btn-dark" style="padding:9px 16px;font-size:13px;text-decoration:none;">
         @include('components.icon',['name'=>'file-text','size'=>14,'style'=>'color:#FFC81A']) Sertifikat
       </a>
+      <button type="button" onclick="document.getElementById('edit-kegiatan-modal-{{ $kegiatan->id }}').style.display='flex'" class="fcc-btn-gold" style="padding:9px 16px;font-size:13px;border:none;cursor:pointer;">
+        @include('components.icon',['name'=>'edit','size'=>14]) Edit Kegiatan
+      </button>
+      @include('admin.kegiatan.partials.edit-modal', ['kegiatan' => $kegiatan])
+      @if(!$isArsiped)
+      <form action="{{ route('admin.kegiatan.arsipkan', $kegiatan) }}" method="POST" style="display:inline;">
+        @csrf
+        <button type="button" onclick="fccConfirmAction(this, 'Tandai Selesai & Arsipkan', 'Apakah Anda yakin ingin menandai kegiatan ini selesai dan memindahkannya ke Arsip Kegiatan?', 'Ya, Arsipkan', false)" class="fcc-btn-gold" style="padding:9px 16px;font-size:13px;background:#10B981;color:#FFF;border:none;cursor:pointer;">
+          @include('components.icon',['name'=>'archive','size'=>14]) Tandai Selesai / Arsipkan
+        </button>
+      </form>
+      @else
+      <span style="font-size:12px;font-weight:800;padding:8px 14px;border-radius:10px;background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0;display:inline-flex;align-items:center;gap:6px;">
+        ✓ Sudah Diarsipkan
+      </span>
+      @endif
     </div>
   </div>
+
+  @if($kegiatan->isPassed() && !$kegiatan->arsip)
+  <div style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:40px;height:40px;border-radius:12px;background:#F59E0B;display:flex;align-items:center;justify-content:center;color:#FFF;font-size:20px;font-weight:900;flex-shrink:0;">
+        ⚠
+      </div>
+      <div>
+        <h4 style="margin:0;font-weight:800;color:#92400E;font-size:15px;">Kegiatan Ini Telah Melewati Tanggal Pelaksanaan</h4>
+        <p style="margin:2px 0 0;font-size:12.5px;color:#B45309;">
+          Anda dapat menandainya sebagai selesai (Arsipkan).
+        </p>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <form action="{{ route('admin.kegiatan.arsipkan', $kegiatan) }}" method="POST" style="display:inline;">
+        @csrf
+        <button type="button" onclick="fccConfirmAction(this, 'Tandai Selesai & Arsipkan', 'Apakah Anda yakin ingin menandai kegiatan ini selesai dan memindahkannya ke Arsip Kegiatan?', 'Ya, Arsipkan', false)" class="fcc-btn-gold" style="padding:9px 18px;font-size:13px;background:#10B981;color:#FFF;border:none;border-radius:10px;font-weight:800;display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+          @include('components.icon',['name'=>'archive','size'=>14]) Tandai Selesai / Arsipkan
+        </button>
+      </form>
+    </div>
+  </div>
+  @endif
 
   <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
     {{-- Kiri --}}
@@ -112,7 +157,7 @@
           <span style="font-size:13px;color:#131218;font-weight:600;">{{ $b->nama_jenis }}</span>
           <div style="display:flex;align-items:center;gap:10px;">
             <span style="font-size:14px;font-weight:900;color:#131218;">{{ $b->nominal_format }}</span>
-            <form action="{{ route('admin.biaya.destroy', $b) }}" method="POST" onsubmit="return confirm('Hapus biaya ini?')">
+            <form action="{{ route('admin.biaya.destroy', $b) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Biaya', 'Apakah Anda yakin ingin menghapus jenis biaya ini?')">
               @csrf @method('DELETE')
               <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">@include('components.icon',['name'=>'trash','size'=>14])</button>
             </form>
@@ -185,7 +230,7 @@
       <div style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:16px;margin-top:4px;">
         <p style="font-size:13px;font-weight:800;color:#EF4444;margin:0 0 8px;">Danger Zone</p>
         <p style="font-size:12px;color:#6B7280;margin:0 0 12px;line-height:1.6;">Menghapus kegiatan akan menghapus semua data pendaftaran yang terkait.</p>
-        <form action="{{ route('admin.kegiatan.destroy', $kegiatan) }}" method="POST" onsubmit="return confirm('Yakin hapus kegiatan ini? Tindakan ini tidak bisa dibatalkan.')">
+        <form action="{{ route('admin.kegiatan.destroy', $kegiatan) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Kegiatan', 'Apakah Anda yakin ingin menghapus kegiatan ini? Tindakan ini tidak bisa dibatalkan.')">
           @csrf @method('DELETE')
           <button type="submit" style="width:100%;padding:9px;border-radius:9px;border:1.5px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:#EF4444;font-size:13px;font-weight:700;cursor:pointer;">
             Hapus Kegiatan

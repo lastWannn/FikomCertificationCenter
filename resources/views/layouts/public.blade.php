@@ -917,6 +917,7 @@
     }
 </script>
 
+@include('components.fcc-modal')
 @endsection
 
 {{-- JS Navbar dimuat via resources/js/components/navbar.js (diimport app.js) --}}

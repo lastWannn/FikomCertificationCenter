@@ -109,6 +109,7 @@
         </main>
     </div>
 </div>
+@include('components.fcc-modal')
 @endsection
 
 @push('scripts')

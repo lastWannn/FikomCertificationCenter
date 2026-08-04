@@ -155,8 +155,11 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     Route::prefix('kegiatan')->name('kegiatan.')->group(function () {
         Route::get('/',                         [AdminKegiatan::class,'index'])->name('index');
         Route::get('/{kegiatan}',               [AdminKegiatan::class,'show'])->name('show');
+        Route::get('/{kegiatan}/edit',          [AdminKegiatan::class,'edit'])->name('edit');
+        Route::put('/{kegiatan}',               [AdminKegiatan::class,'update'])->name('update');
         Route::delete('/{kegiatan}',            [AdminKegiatan::class,'destroy'])->name('destroy');
         Route::post('/{kegiatan}/toggle-biaya', [AdminKegiatan::class,'toggleBiaya'])->name('toggle-biaya');
+        Route::post('/{kegiatan}/arsipkan',    [AdminKegiatan::class,'arsipkan'])->name('arsipkan');
     });
     Route::resource('biaya', BiayaController::class);
     Route::resource('arsip', AdminArsip::class);

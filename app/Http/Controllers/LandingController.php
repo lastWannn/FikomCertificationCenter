@@ -14,9 +14,13 @@ class LandingController extends Controller
 {
     public function index()
     {
-        $kegiatanTerbaru = Kegiatan::with(['kegiatanPelatihan.jadwalPelatihan.pelatihan',
-                                           'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
-                                           'biaya'])
+        // Auto archive completed activities
+        app(\App\Services\Admin\ArsipService::class)->autoArchiveCompleted();
+
+        $kegiatanTerbaru = Kegiatan::upcoming()
+            ->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan',
+                    'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
+                    'biaya'])
             ->orderBy('created_at', 'desc')
             ->limit(6)
             ->get();
@@ -49,9 +53,12 @@ class LandingController extends Controller
 
     public function kegiatan(Request $request)
     {
-        $query  = Kegiatan::with(['kegiatanPelatihan.jadwalPelatihan.pelatihan',
-                                   'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
-                                   'biaya', 'pendaftaran']);
+        app(\App\Services\Admin\ArsipService::class)->autoArchiveCompleted();
+
+        $query  = Kegiatan::upcoming()
+            ->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan',
+                    'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
+                    'biaya', 'pendaftaran']);
         if ($request->jenis && in_array($request->jenis, ['pelatihan','sertifikasi'])) {
             $query->where('jenis_kegiatan', $request->jenis);
         }

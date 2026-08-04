@@ -63,7 +63,7 @@
                 @else
                 <form action="{{ route('admin.jadwal-pelatihan.aktifkan', $j) }}" method="POST" style="display:inline;">
                   @csrf
-                  <button type="submit" style="background:#131218;border:none;color:#FFC81A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;cursor:pointer;" onclick="return confirm('Aktifkan jadwal ini?')">+ Aktifkan</button>
+                  <button type="submit" style="background:#131218;border:none;color:#FFC81A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;cursor:pointer;" onclick="return fccConfirmAction(event, this, 'Aktifkan Jadwal', 'Aktifkan jadwal ini sebagai kegiatan publik?', 'Ya, Aktifkan', false)">+ Aktifkan</button>
                 </form>
                 @endif
               </div>
@@ -72,7 +72,7 @@
                    onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#9CA3B0'">
                   @include('components.icon',['name'=>'edit','size'=>14])
                 </a>
-                <form action="{{ route('admin.jadwal-pelatihan.destroy', $j) }}" method="POST" onsubmit="return confirm('Hapus jadwal ini?')">
+                <form action="{{ route('admin.jadwal-pelatihan.destroy', $j) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Jadwal', 'Apakah Anda yakin ingin menghapus jadwal pelatihan ini?')">
                   @csrf @method('DELETE')
                   <button type="submit" style="background:none;border:none;cursor:pointer;color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
                           onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='#9CA3B0'">

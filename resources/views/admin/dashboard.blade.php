@@ -41,6 +41,45 @@
   </div>
   @endif
 
+  {{-- Passed / Expired Activities Banner --}}
+  @php
+    $passedKegiatans = \App\Models\Kegiatan::passed()->doesntHave('arsip')->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan', 'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi'])->get();
+  @endphp
+  @if($passedKegiatans->count() > 0)
+  <div style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:12px;padding:16px 20px;margin-bottom:18px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:#F59E0B;display:flex;align-items:center;justify-content:center;color:#FFF;font-weight:900;font-size:18px;flex-shrink:0;">
+          ⚠
+        </div>
+        <div>
+          <h4 style="margin:0;font-weight:800;color:#92400E;font-size:14.5px;">Pemberitahuan: {{ $passedKegiatans->count() }} Kegiatan Telah Melewati Tanggal Pelaksanaan</h4>
+          <p style="margin:2px 0 0;font-size:12px;color:#B45309;">Silakan perpanjang pendaftaran/jadwal kegiatan atau tandai sebagai selesai (Arsipkan).</p>
+        </div>
+      </div>
+      <a href="{{ route('admin.kegiatan.index') }}" class="fcc-btn-gold" style="padding:8px 16px;font-size:12.5px;text-decoration:none;flex-shrink:0;background:#F59E0B;color:#FFF;border:none;border-radius:8px;font-weight:800;">
+        Kelola Kegiatan →
+      </a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+      @foreach($passedKegiatans->take(4) as $pk)
+      @php
+        $detail = $pk->detail;
+        $editUrl = $pk->jenis_kegiatan === 'pelatihan' ? ($detail ? route('admin.pelatihan.edit', $detail) : '#') : ($detail ? route('admin.sertifikasi.edit', $detail) : '#');
+      @endphp
+      <div style="background:#FFF;border:1px solid #FCD34D;border-radius:8px;padding:8px 12px;font-size:12px;display:flex;align-items:center;gap:10px;">
+        <span style="font-weight:800;color:#131218;">{{ $pk->judul }}</span>
+        <span style="color:#D97706;font-size:11px;font-weight:600;">(Lewat {{ $pk->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Tgl' }})</span>
+        <div style="display:flex;gap:6px;">
+          <a href="{{ $editUrl }}" style="color:#2563EB;font-size:11px;font-weight:800;text-decoration:none;background:#EFF6FF;padding:2px 8px;border-radius:5px;border:1px solid #BFDBFE;">Perpanjang</a>
+          <a href="{{ route('admin.arsip.create', ['kegiatan_id' => $pk->id]) }}" style="color:#059669;font-size:11px;font-weight:800;text-decoration:none;background:#ECFDF5;padding:2px 8px;border-radius:5px;border:1px solid #A7F3D0;">Arsipkan</a>
+        </div>
+      </div>
+      @endforeach
+    </div>
+  </div>
+  @endif
+
   {{-- Charts + Pembayaran --}}
   <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:16px;">
     {{-- Chart pendapatan --}}

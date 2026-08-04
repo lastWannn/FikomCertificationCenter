@@ -58,10 +58,10 @@
               @if(!$hasK)
               <form action="{{ route('admin.jadwal-sertifikasi.aktifkan', $j) }}" method="POST">
                 @csrf
-                <button type="submit" style="background:#131218;border:none;color:#FFC81A;font-size:11px;font-weight:700;padding:5px 10px;border-radius:7px;cursor:pointer;" onclick="return confirm('Aktifkan?')">+ Aktifkan</button>
+                <button type="submit" style="background:#131218;border:none;color:#FFC81A;font-size:11px;font-weight:700;padding:5px 10px;border-radius:7px;cursor:pointer;" onclick="return fccConfirmAction(event, this, 'Aktifkan Jadwal', 'Aktifkan jadwal ini sebagai kegiatan publik?', 'Ya, Aktifkan', false)">+ Aktifkan</button>
               </form>
               <a href="{{ route('admin.jadwal-sertifikasi.edit', $j) }}" style="color:#FFC81A;">@include('components.icon',['name'=>'edit','size'=>15])</a>
-              <form action="{{ route('admin.jadwal-sertifikasi.destroy', $j) }}" method="POST" onsubmit="return confirm('Hapus?')">
+              <form action="{{ route('admin.jadwal-sertifikasi.destroy', $j) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Jadwal', 'Apakah Anda yakin ingin menghapus jadwal ini?')">
                 @csrf @method('DELETE')
                 <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">@include('components.icon',['name'=>'trash','size'=>15])</button>
               </form>
@@ -71,7 +71,7 @@
                 <button type="submit" title="Nonaktifkan Kegiatan"
                     style="background:rgba(239,68,68,.1);border:none;color:#EF4444;font-size:11px;font-weight:700;
                            padding:5px 10px;border-radius:7px;cursor:pointer;white-space:nowrap;"
-                    onclick="return confirm('Nonaktifkan kegiatan ini?')">
+                    onclick="return fccConfirmAction(event, this, 'Nonaktifkan Kegiatan', 'Apakah Anda yakin ingin menonaktifkan kegiatan ini?', 'Ya, Nonaktifkan', true)">
                   Nonaktifkan
                 </button>
               </form>

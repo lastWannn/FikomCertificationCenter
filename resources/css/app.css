@@ -630,7 +630,7 @@
    MODAL SYSTEM (sebelumnya inline di fcc-modal.blade.php)
 ═══════════════════════════════════════════════════════════════ */
 #fcc-toast-wrap {
-    position:fixed;top:20px;right:20px;z-index:9999;
+    position:fixed;top:20px;right:20px;z-index:999999 !important;
     display:flex;flex-direction:column;gap:10px;
     pointer-events:none;min-width:300px;max-width:380px;
 }

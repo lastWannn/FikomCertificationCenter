@@ -33,7 +33,7 @@
                 </form>
                 @endif
                 <a href="{{ route('admin.rekening.edit', $r) }}" style="flex:1;display:block;text-align:center;padding:7px;border-radius:8px;border:1px solid #E2E4EB;color:#6B7280;font-size:12px;font-weight:700;text-decoration:none;">Edit</a>
-                <form action="{{ route('admin.rekening.destroy', $r) }}" method="POST" onsubmit="return confirm('Hapus rekening ini?')">
+                <form action="{{ route('admin.rekening.destroy', $r) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Rekening', 'Apakah Anda yakin ingin menghapus rekening ini?')">
                     @csrf @method('DELETE')
                     <button type="submit" style="padding:7px 10px;border-radius:8px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:#EF4444;font-size:12px;cursor:pointer;">
                         @include('components.icon',['name'=>'trash','size'=>13])

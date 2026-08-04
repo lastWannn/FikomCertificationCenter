@@ -12,7 +12,7 @@
       @csrf
       <div style="display:flex;gap:8px;align-items:center;">
         <input type="date" name="tgl_terbit" value="{{ date('Y-m-d') }}" required class="fcc-input" style="width:auto;">
-        <button type="submit" class="fcc-btn-gold" style="padding:9px 18px;font-size:13px;" onclick="return confirm('Terbitkan sertifikat untuk semua peserta yang terdaftar?')">
+        <button type="submit" class="fcc-btn-gold" style="padding:9px 18px;font-size:13px;" onclick="return fccConfirmAction(event, this, 'Terbitkan Sertifikat', 'Apakah Anda yakin ingin menerbitkan sertifikat untuk semua peserta yang terdaftar?', 'Ya, Terbitkan', false)">
           @include('components.icon',['name'=>'award','size'=>14]) Terbitkan Semua
         </button>
       </div>

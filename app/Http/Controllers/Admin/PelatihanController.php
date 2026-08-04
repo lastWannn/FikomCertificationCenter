@@ -63,8 +63,13 @@ class PelatihanController extends Controller
             ->with('success', 'Pelatihan berhasil diperbarui.');
     }
     public function destroy(Pelatihan $pelatihan) {
-        $this->service->delete($pelatihan);
-        return redirect()->route('admin.pelatihan.index')
-            ->with('success', 'Pelatihan berhasil dihapus.');
+        try {
+            $this->service->delete($pelatihan);
+            return redirect()->route('admin.pelatihan.index')
+                ->with('success', 'Pelatihan ' . $pelatihan->judul . ' berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', $e->getMessage());
+        }
     }
 }

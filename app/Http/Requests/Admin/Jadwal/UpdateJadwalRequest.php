@@ -15,4 +15,31 @@ class UpdateJadwalRequest extends FormRequest {
                 'tgl_pelaksanaan'=>'required|date',
                 'jam_mulai'=>'required','jam_selesai'=>'required|after:jam_mulai'];
     }
+
+    public function messages(): array {
+        return [
+            'tgl_batas_daftar.required'        => 'Tanggal batas pendaftaran wajib diisi.',
+            'tgl_batas_daftar.date'            => 'Tanggal batas pendaftaran harus berupa tanggal yang valid.',
+            'tgl_batas_daftar.before_or_equal' => 'Tanggal batas pendaftaran harus sebelum atau sama dengan tanggal pelaksanaan.',
+            'tgl_pelaksanaan.required'         => 'Tanggal pelaksanaan wajib diisi.',
+            'tgl_pelaksanaan.date'             => 'Tanggal pelaksanaan harus berupa tanggal yang valid.',
+            'kuota_peserta.required'           => 'Kuota peserta wajib diisi.',
+            'kuota_peserta.integer'            => 'Kuota peserta harus berupa angka.',
+            'kuota_peserta.min'                => 'Kuota peserta minimal 1 orang.',
+            'kuota_peserta.max'                => 'Kuota peserta maksimal 500 orang.',
+            'jam_mulai.required'               => 'Jam mulai wajib diisi.',
+            'jam_selesai.required'             => 'Jam selesai wajib diisi.',
+            'jam_selesai.after'                => 'Jam selesai harus setelah jam mulai.',
+        ];
+    }
+
+    public function attributes(): array {
+        return [
+            'tgl_batas_daftar' => 'tanggal batas pendaftaran',
+            'tgl_pelaksanaan'  => 'tanggal pelaksanaan',
+            'kuota_peserta'    => 'kuota peserta',
+            'jam_mulai'        => 'jam mulai',
+            'jam_selesai'      => 'jam selesai',
+        ];
+    }
 }

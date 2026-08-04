@@ -17,7 +17,7 @@
       </a>
       <form action="{{ route('admin.qr.regenerate', $kegiatan) }}" method="POST">
         @csrf
-        <button type="submit" onclick="return confirm('Generate ulang semua QR? QR lama tidak akan bisa digunakan.')" style="padding:9px 14px;border-radius:10px;border:1.5px solid #E2E4EB;background:#F7F8FA;color:#6B7280;font-size:13px;font-weight:700;cursor:pointer;">
+        <button type="submit" onclick="return fccConfirmAction(event, this, 'Regenerate QR', 'Generate ulang semua QR Code presensi? QR lama tidak akan bisa digunakan lagi.', 'Ya, Generate', true)" style="padding:9px 14px;border-radius:10px;border:1.5px solid #E2E4EB;background:#F7F8FA;color:#6B7280;font-size:13px;font-weight:700;cursor:pointer;">
           @include('components.icon',['name'=>'refresh-cw','size'=>13]) Regenerate
         </button>
       </form>

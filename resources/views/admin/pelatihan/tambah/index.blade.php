@@ -36,9 +36,11 @@
                         <div style="display:inline-flex;gap:8px;">
                             <a href="{{ route('admin.pelatihan.show', $p) }}" title="Detail" style="color:#3B82F6;display:flex;">@include('components.icon',['name'=>'eye','size'=>16])</a>
                             <button type="button" onclick="document.getElementById('edit-modal-{{ $p->id }}').style.display='flex'" title="Edit" style="background:none;border:none;cursor:pointer;color:#FFC81A;display:flex;padding:0;">@include('components.icon',['name'=>'edit','size'=>16])</button>
-                            <form action="{{ route('admin.pelatihan.destroy', $p) }}" method="POST" onsubmit="return confirm('Hapus pelatihan ini?')">
+                            <form action="{{ route('admin.pelatihan.destroy', $p) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" title="Hapus" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">@include('components.icon',['name'=>'trash','size'=>16])</button>
+                                <button type="button" onclick="fccConfirmDelete(this, 'Hapus Pelatihan', 'Apakah Anda yakin ingin menghapus pelatihan ini?')" title="Hapus" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">
+                                    @include('components.icon',['name'=>'trash','size'=>16])
+                                </button>
                             </form>
                         </div>
                     </td>

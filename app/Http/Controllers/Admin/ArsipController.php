@@ -12,6 +12,8 @@ class ArsipController extends Controller
 
     public function index()
     {
+        $this->service->autoArchiveCompleted();
+
         return view('admin.lainnya.arsip', [
             'arsip' => ArsipKegiatan::with('kegiatan')->paginate(10)
         ]);

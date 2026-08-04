@@ -55,6 +55,21 @@ trait HasHashid
         return app(HashidService::class)->encode($id, static::class);
     }
 
+    /**
+     * Decode hashid string menjadi integer ID asli.
+     * Jika sudah berupa ID numerik, kembalikan integer ID secara langsung.
+     */
+    public static function decodeHashid(mixed $hashid): ?int
+    {
+        if (is_numeric($hashid)) {
+            return (int) $hashid;
+        }
+        if (empty($hashid)) {
+            return null;
+        }
+        return app(HashidService::class)->decode((string) $hashid, static::class);
+    }
+
     /* ── QUERY ────────────────────────────────────────────────── */
 
     /**

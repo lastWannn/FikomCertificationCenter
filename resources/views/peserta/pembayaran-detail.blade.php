@@ -16,7 +16,7 @@ $sc = match($pembayaran->status_pembayaran) {
                               'desc'=>'Pembayaran tidak dapat diverifikasi. Lihat keterangan atau hubungi Admin.',
                               'icon'=>'x-circle'],
     'kadaluarsa'          => ['color'=>'#6B7280','bg'=>'rgba(107,114,128,0.08)','border'=>'rgba(107,114,128,0.25)','label'=>'Kadaluarsa',
-                              'desc'=>'Batas waktu habis. Anda dapat meminta perpanjangan atau mengaktifkan kode baru.',
+                              'desc'=>'Batas waktu habis. Anda dapat mengajukan permintaan perpanjangan waktu bayar.',
                               'icon'=>'alert-circle'],
     default               => ['color'=>'#3B82F6','bg'=>'rgba(59,130,246,0.08)','border'=>'rgba(59,130,246,0.25)','label'=>'Menunggu Pembayaran',
                               'desc'=>'Transfer tepat nominal berikut sebelum batas waktu habis.',
@@ -33,9 +33,13 @@ $perpStatus = $pembayaran->status_perpanjangan;
 }
 .pembayaran-grid {
     display: grid;
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 1fr 380px;
     gap: 20px;
     align-items: start;
+}
+.pembayaran-grid > div:last-child {
+    position: sticky;
+    top: 24px;
 }
 .form-grid-2col {
     display: grid;
@@ -93,7 +97,7 @@ $perpStatus = $pembayaran->status_perpanjangan;
         </a>
     </div>
 
-    {{-- ── STATUS BANNER ──────────────────────────────────────── --}}
+    @if(!($pembayaran->status_pembayaran === 'kadaluarsa' && $perpStatus === 'menunggu'))
     <div style="background:{{ $sc['bg'] }};border:1.5px solid {{ $sc['border'] }};
                 border-radius:14px;padding:20px 24px;margin-bottom:20px;
                 display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
@@ -107,11 +111,18 @@ $perpStatus = $pembayaran->status_perpanjangan;
                 <p style="margin:0;font-size:13px;color:#6B7280;line-height:1.4">{{ $sc['desc'] }}</p>
             </div>
         </div>
-        <a href="{{ route('peserta.pembayaran.invoice', $pembayaran) }}" target="_blank" class="fcc-btn-outline-dark"
-           style="padding:9px 16px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border-radius:10px;font-weight:700;white-space:nowrap;">
-            @include('components.icon',['name'=>'download','size'=>14]) Unduh Invoice (PDF)
-        </a>
+        @if(($pembayaran->status_pembayaran === 'kadaluarsa' || $pembayaran->minutes_left <= 0) && $pembayaran->bisaRequestPerpanjangan())
+        <form action="{{ route('peserta.pembayaran.request-perpanjangan', $pembayaran) }}" method="POST" style="display:inline;">
+            @csrf
+            <button type="submit" class="fcc-btn-gold"
+               onclick="return fccConfirmAction(this, 'Ajukan Perpanjangan Waktu', 'Apakah Anda yakin ingin mengajukan perpanjangan waktu pembayaran ke Admin?', 'Ya, Ajukan', false)"
+               style="padding:9px 16px;font-size:13px;border-radius:10px;font-weight:800;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:none;">
+                @include('components.icon',['name'=>'clock','size'=>15]) Minta Perpanjangan Waktu
+            </button>
+        </form>
+        @endif
     </div>
+    @endif
 
     {{-- ── PERPANJANGAN BANNER ────────────────────────────────── --}}
     @if($perpStatus === 'menunggu')
@@ -143,7 +154,7 @@ $perpStatus = $pembayaran->status_perpanjangan;
         </p>
         @endif
     </div>
-    @elseif($perpStatus === 'disetujui')
+    @elseif($perpStatus === 'disetujui' && $pembayaran->status_pembayaran === 'kadaluarsa')
     <div style="background:rgba(16,185,129,.08);border:1.5px solid rgba(16,185,129,.25);
                 border-radius:12px;padding:14px 18px;margin-bottom:20px;">
         <p style="margin:0 0 2px;font-weight:800;color:#059669;font-size:13px">
@@ -225,9 +236,6 @@ $perpStatus = $pembayaran->status_perpanjangan;
                             <span style="background:#131218;color:#FFC81A;font-weight:900;font-size:15px;font-family:monospace;padding:3px 10px;border-radius:6px;display:inline-block;letter-spacing:1.5px">
                                 {{ $pembayaran->kode_unik }}
                             </span>
-                            <p style="font-size:9px;color:#9CA3B0;margin:2px 0 0">
-                                {{ str_starts_with($pembayaran->kode_unik,'1') ? '1=Pelatihan' : '2=Sertifikasi' }}
-                            </p>
                         </div>
                         <div style="font-size:18px;color:#9CA3B0;font-weight:600;text-align:center">=</div>
                         <div style="text-align:right">
@@ -248,50 +256,11 @@ $perpStatus = $pembayaran->status_perpanjangan;
                 </div>
                 @endif
 
-                {{-- Tombol aksi jika kadaluarsa --}}
+                {{-- Status perpanjangan jika kadaluarsa --}}
                 @if($pembayaran->status_pembayaran === 'kadaluarsa' || $pembayaran->minutes_left <= 0)
-                    @if($pembayaran->bisaRequestPerpanjangan())
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
-                        <form action="{{ route('peserta.pembayaran.aktifkan', $pembayaran) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="fcc-btn-dark"
-                                    style="width:100%;justify-content:center;padding:11px;font-size:13px;border-radius:10px;">
-                                @include('components.icon',['name'=>'refresh-cw','size'=>14])
-                                Aktifkan Kode Baru
-                            </button>
-                        </form>
-                        <button onclick="document.getElementById('form-perpanjangan').style.display='block';this.style.display='none'"
-                                class="fcc-btn-outline-dark"
-                                style="width:100%;justify-content:center;padding:11px;font-size:13px;border-radius:10px;">
-                            @include('components.icon',['name'=>'clock','size'=>14])
-                            Minta Perpanjangan
-                        </button>
-                    </div>
-
-                    {{-- Form perpanjangan --}}
-                    <div id="form-perpanjangan" style="display:none;margin-top:14px;
-                         background:#F7F8FA;border:1px solid #E2E4EB;border-radius:10px;padding:16px;">
-                        <p style="font-size:13px;font-weight:700;color:#131218;margin:0 0 10px">
-                            Alasan Permintaan Perpanjangan Waktu
-                        </p>
-                        <form action="{{ route('peserta.pembayaran.request-perpanjangan', $pembayaran) }}" method="POST">
-                            @csrf
-                            <textarea name="alasan" rows="3" placeholder="Tuliskan alasan perpanjangan (opsional)..."
-                                      class="fcc-input" style="resize:none;margin-bottom:12px;font-size:13px;"></textarea>
-                            <div style="display:flex;gap:10px;">
-                                <button type="submit" class="fcc-btn-gold" style="flex:1;justify-content:center;padding:10px;font-size:13px;border-radius:8px;">
-                                    @include('components.icon',['name'=>'send','size'=>14]) Kirim Permintaan
-                                </button>
-                                <button type="button" onclick="document.getElementById('form-perpanjangan').style.display='none'"
-                                        class="fcc-btn-outline-dark" style="padding:10px 16px;font-size:13px;border-radius:8px;">
-                                    Batal
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    @elseif($perpStatus === 'menunggu')
+                    @if($perpStatus === 'menunggu')
                     <div style="text-align:center;padding:12px;background:#F7F8FA;border-radius:10px;
-                                border:1px dashed #E2E4EB;color:#9CA3B0;font-size:13px;">
+                                border:1px dashed #E2E4EB;color:#9CA3B0;font-size:13px;margin-top:12px;">
                         @include('components.icon',['name'=>'clock','size'=>14,'style'=>'color:#F59E0B'])
                         Permintaan perpanjangan sedang ditinjau Admin...
                     </div>
@@ -312,7 +281,7 @@ $perpStatus = $pembayaran->status_perpanjangan;
                 </p>
 
                 <form action="{{ route('peserta.pembayaran.konfirmasi', $pembayaran) }}"
-                      method="POST" enctype="multipart/form-data">
+                      method="POST" enctype="multipart/form-data" onsubmit="return validateBuktiTransfer(event)">
                     @csrf
 
                     <div class="form-grid-2col" style="margin-bottom:14px;">
@@ -466,6 +435,7 @@ $perpStatus = $pembayaran->status_perpanjangan;
                         @include('components.icon',['name'=>'download','size'=>14]) Unduh Invoice (PDF)
                     </a>
                 </div>
+
             </div>
         </div>
 
@@ -489,13 +459,54 @@ if (typeof window.initCountdown === 'function') {
 @push('scripts')
 @vite('resources/js/pages/peserta-pembayaran.js')
 <script>
+function validateBuktiTransfer(e) {
+    const inp = document.getElementById('bukti-input');
+    if (!inp || !inp.files || inp.files.length === 0) {
+        if (e && e.preventDefault) e.preventDefault();
+        
+        // Show Warning Popup / Alert
+        if (typeof window.fccConfirmAction === 'function') {
+            window.fccConfirmAction(
+                null,
+                'Bukti Transfer Belum Diunggah',
+                'Mohon pilih / unggah foto bukti struk transfer Anda terlebih dahulu sebelum mengonfirmasi pembayaran.',
+                'Saya Mengerti',
+                true
+            );
+        } else if (typeof window.fccToast === 'function') {
+            window.fccToast('Mohon unggah foto bukti struk transfer Anda terlebih dahulu!', 'error', 'Bukti Transfer Belum Ada');
+        } else {
+            alert('Mohon unggah foto bukti struk transfer Anda terlebih dahulu!');
+        }
+
+        // Highlight upload box with red border
+        const area = document.getElementById('upload-area');
+        if (area) {
+            area.style.borderColor = '#EF4444';
+            area.style.background = 'rgba(239,68,68,.06)';
+            area.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return false;
+    }
+    return true;
+}
+
 function previewImage(input) {
     const file = input.files[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-        fccToast('Hanya file gambar yang diizinkan (JPG, PNG, WebP)', 'error');
+        if (typeof window.fccToast === 'function') {
+            fccToast('Hanya file gambar yang diizinkan (JPG, PNG, WebP)', 'error');
+        } else {
+            alert('Hanya file gambar yang diizinkan (JPG, PNG, WebP)');
+        }
         input.value = '';
         return;
+    }
+    const area = document.getElementById('upload-area');
+    if (area) {
+        area.style.borderColor = '#10B981';
+        area.style.background = 'rgba(16,185,129,.04)';
     }
     const reader = new FileReader();
     reader.onload = e => {
@@ -505,9 +516,9 @@ function previewImage(input) {
     };
     reader.readAsDataURL(file);
 }
+
 function handleDrop(e) {
     e.preventDefault();
-    document.getElementById('upload-area').style.borderColor = '#E2E4EB';
     const file = e.dataTransfer.files[0];
     if (!file) return;
     const inp = document.getElementById('bukti-input');

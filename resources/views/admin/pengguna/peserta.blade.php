@@ -130,7 +130,7 @@
                   <div style="border-top:1px solid #F0F1F5;margin:4px 0;"></div>
                   <form action="{{ route('admin.pengguna.peserta.reset-password', $p) }}" method="POST" style="margin:0;">
                     @csrf
-                    <button type="submit" style="width:100%;padding:8px 12px;background:none;border:none;border-radius:6px;text-align:left;font-size:13px;cursor:pointer;color:#3B82F6;font-weight:600;display:flex;align-items:center;gap:8px;transition:all .15s;" onclick="return confirm('Reset & kirim password baru ke email peserta?')"
+                    <button type="submit" style="width:100%;padding:8px 12px;background:none;border:none;border-radius:6px;text-align:left;font-size:13px;cursor:pointer;color:#3B82F6;font-weight:600;display:flex;align-items:center;gap:8px;transition:all .15s;" onclick="return fccConfirmAction(event, this, 'Reset Password', 'Reset & kirim password baru ke email peserta?', 'Ya, Reset', false)"
                         onmouseover="this.style.background='#3B82F612'" onmouseout="this.style.background='none'">
                       @include('components.icon',['name'=>'mail','size'=>14]) Reset Password
                     </button>
