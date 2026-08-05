@@ -13,9 +13,10 @@ class CetakController extends Controller
         $sertifikat->load(['pendaftaran.peserta','pendaftaran.kegiatan']);
 
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+            $safeNomor = str_replace(['/', '\\'], '-', $sertifikat->nomor_sertifikat);
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.sertifikat-pdf', compact('sertifikat'))
                 ->setPaper('a4','landscape');
-            return $pdf->download("sertifikat-{$sertifikat->nomor_sertifikat}.pdf");
+            return $pdf->stream("sertifikat-{$safeNomor}.pdf");
         }
         // Fallback: tampilkan sebagai HTML untuk di-print
         return view('admin.cetak.sertifikat-pdf', compact('sertifikat'));
@@ -28,9 +29,10 @@ class CetakController extends Controller
         $rekening = \App\Models\Rekening::where('is_active',true)->first();
 
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+            $safeKode = str_replace(['/', '\\'], '-', $pembayaran->kode_pembayaran);
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.invoice-pdf', compact('pembayaran','rekening'))
                 ->setPaper('a5');
-            return $pdf->download("invoice-{$pembayaran->kode_pembayaran}.pdf");
+            return $pdf->stream("invoice-{$safeKode}.pdf");
         }
         return view('admin.cetak.invoice-pdf', compact('pembayaran','rekening'));
     }
@@ -44,23 +46,24 @@ class CetakController extends Controller
         $pembayaran->load(['pendaftaran.peserta','pendaftaran.kegiatan','pendaftaran.biaya']);
 
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+            $safeKode = str_replace(['/', '\\'], '-', $pembayaran->kode_pembayaran);
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.bukti-pdf', compact('pembayaran'))
                 ->setPaper('a5');
-            return $pdf->download("bukti-{$pembayaran->kode_pembayaran}.pdf");
+            return $pdf->stream("bukti-{$safeKode}.pdf");
         }
         return view('admin.cetak.bukti-pdf', compact('pembayaran'));
     }
 
-    /** Daftar Presensi PDF */
+    /** Daftar Presensi PDF / Print View */
     public function presensi(Kegiatan $kegiatan)
     {
-        $kegiatan->load(['pendaftaran.peserta','pendaftaran.pembayaran']);
+        $kegiatan->load([
+            'kegiatanPelatihan.jadwalPelatihan.pelatihan',
+            'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
+            'pendaftaran.peserta',
+            'pendaftaran.pembayaran'
+        ]);
 
-        if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.presensi-pdf', compact('kegiatan'))
-                ->setPaper('a4');
-            return $pdf->download("presensi-{$kegiatan->id}.pdf");
-        }
         return view('admin.cetak.presensi-pdf', compact('kegiatan'));
     }
 

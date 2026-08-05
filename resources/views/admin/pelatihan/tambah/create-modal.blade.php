@@ -21,21 +21,22 @@
             {{-- KODE PELATIHAN --}}
             <div style="margin-bottom:12px;">
                 <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">KODE <span style="font-weight:500;text-transform:none;color:#9CA3B0;">Pelatihan</span></label>
-                <input type="text" name="kode" value="{{ old('kode') }}" placeholder="[Pengisian Kode Wajib diawali angka unik contoh 100-ITFUND1, angka 100 merupakan kode uniknya]" required class="fcc-input" style="padding:8px 12px;font-size:13px;">
+                <input type="text" name="kode" value="{{ old('kode') }}" placeholder="Contoh: 100-ITFUND1" required class="fcc-input" style="padding:8px 12px;font-size:13px;">
+                <p style="font-size:11px;color:#6B7280;margin:4px 0 0;">Catatan: Pengisian kode wajib diawali angka unik, contoh: <strong>100-ITFUND1</strong> (100 = kode unik).</p>
                 @error('kode')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
             </div>
 
             {{-- JUDUL PELATIHAN --}}
             <div style="margin-bottom:12px;">
                 <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">JUDUL <span style="font-weight:500;text-transform:none;color:#9CA3B0;">Pelatihan</span></label>
-                <input type="text" name="judul" value="{{ old('judul') }}" placeholder="..." required class="fcc-input" style="padding:8px 12px;font-size:13px;">
+                <input type="text" name="judul" value="{{ old('judul') }}" placeholder="Contoh: Web Development Dasar Batch 1" required class="fcc-input" style="padding:8px 12px;font-size:13px;">
                 @error('judul')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
             </div>
 
             {{-- ISI PELATIHAN --}}
             <div style="margin-bottom:12px;">
                 <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">ISI <span style="font-weight:500;text-transform:none;color:#9CA3B0;">Pelatihan</span></label>
-                <textarea name="isi" rows="4" placeholder="..." required class="fcc-input" style="resize:vertical;padding:8px 12px;font-size:13px;">{{ old('isi') }}</textarea>
+                <textarea name="isi" rows="4" placeholder="Tuliskan deskripsi dan detail program pelatihan..." required class="fcc-input" style="resize:vertical;padding:8px 12px;font-size:13px;">{{ old('isi') }}</textarea>
                 @error('isi')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
             </div>
 

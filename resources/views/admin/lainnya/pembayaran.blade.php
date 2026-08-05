@@ -4,23 +4,6 @@
 
 @section('page-content')
 
-@if(isset($countPerpanjanganPending) && $countPerpanjanganPending > 0)
-<div style="background:#FFFDF5;border-bottom:1.5px solid #FCD34D;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-    <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:32px;height:32px;border-radius:8px;background:#F59E0B;display:flex;align-items:center;justify-content:center;color:#FFF;flex-shrink:0;">
-            @include('components.icon',['name'=>'clock','size'=>16,'style'=>'color:#FFF'])
-        </div>
-        <p style="margin:0;font-size:13.5px;font-weight:800;color:#92400E;">
-            {{ $countPerpanjanganPending }} Permintaan perpanjangan waktu bayar menunggu persetujuan Anda.
-        </p>
-    </div>
-    <a href="{{ route('admin.pembayaran.index',['perpanjangan'=>'menunggu']) }}"
-       class="fcc-btn-gold" style="padding:6px 14px;font-size:12px;text-decoration:none;">
-        Tinjau Permintaan &rarr;
-    </a>
-</div>
-@endif
-
 <div style="padding:24px;">
     {{-- Header & Title --}}
     <div style="margin-bottom:20px;">
@@ -99,12 +82,13 @@
                 <tbody>
                     @forelse($pembayaran as $p)
                     @php
-                    $sc=match($p->status_pembayaran){
-                        'terverifikasi'=>['#10B981','Terverifikasi'],
-                        'menunggu_verifikasi'=>['#F59E0B','Menunggu Verifikasi'],
-                        'ditolak'=>['#EF4444','Ditolak'],
-                        'kadaluarsa'=>['#6B7280','Kadaluarsa'],
-                        default=>['#3B82F6','Menunggu Bayar'],
+                    $sc = match(true) {
+                        $p->status_perpanjangan === 'menunggu' => ['#D97706', 'Req. Perpanjangan'],
+                        $p->status_pembayaran === 'terverifikasi' => ['#10B981', 'Terverifikasi'],
+                        $p->status_pembayaran === 'menunggu_verifikasi' => ['#F59E0B', 'Menunggu Verifikasi'],
+                        $p->status_pembayaran === 'ditolak' => ['#EF4444', 'Ditolak'],
+                        $p->status_pembayaran === 'kadaluarsa' => ['#6B7280', 'Kadaluarsa'],
+                        default => ['#3B82F6', 'Menunggu Bayar'],
                     };
                     $isPel = $p->pendaftaran?->kegiatan?->jenis_kegiatan === 'pelatihan';
                     @endphp
@@ -158,11 +142,6 @@
                             <span style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;background:{{ $sc[0] }}18;color:{{ $sc[0] }};display:inline-block;">
                                 {{ $sc[1] }}
                             </span>
-                            @if($p->status_perpanjangan === 'menunggu')
-                            <div style="margin-top:4px;">
-                                <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;">Req. Perpanjangan</span>
-                            </div>
-                            @endif
                         </td>
 
                         {{-- Aksi --}}

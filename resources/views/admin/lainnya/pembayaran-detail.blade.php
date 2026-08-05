@@ -231,11 +231,12 @@
 
                 {{-- Status badge --}}
                 @php
-                $sc = match($pembayaran->status_pembayaran) {
-                    'terverifikasi'       => ['#10B981','Terverifikasi'],
-                    'menunggu_verifikasi' => ['#F59E0B','Menunggu Verifikasi'],
-                    'ditolak'             => ['#EF4444','Ditolak'],
-                    'kadaluarsa'          => ['#6B7280','Kadaluarsa'],
+                $sc = match(true) {
+                    $pembayaran->status_perpanjangan === 'menunggu' => ['#D97706', 'Req. Perpanjangan'],
+                    $pembayaran->status_pembayaran === 'terverifikasi'       => ['#10B981','Terverifikasi'],
+                    $pembayaran->status_pembayaran === 'menunggu_verifikasi' => ['#F59E0B','Menunggu Verifikasi'],
+                    $pembayaran->status_pembayaran === 'ditolak'             => ['#EF4444','Ditolak'],
+                    $pembayaran->status_pembayaran === 'kadaluarsa'          => ['#6B7280','Kadaluarsa'],
                     default               => ['#3B82F6','Menunggu Bayar'],
                 };
                 @endphp
@@ -244,11 +245,6 @@
                     <p style="color:{{ $sc[0] }};font-size:14px;font-weight:800;margin:0">
                         {{ $sc[1] }}
                     </p>
-                    @if($pembayaran->status_perpanjangan === 'menunggu')
-                    <p style="color:#F59E0B;font-size:11px;font-weight:700;margin:4px 0 0">
-                        + Request Perpanjangan Pending
-                    </p>
-                    @endif
                 </div>
             </div>
 

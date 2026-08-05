@@ -11,9 +11,13 @@ class SertifikatController extends Controller
     public function __construct(private SertifikatService $service) {}
 
     public function index() {
+        $kegiatanPassed = Kegiatan::passed()->get();
+        if ($kegiatanPassed->isEmpty()) {
+            $kegiatanPassed = Kegiatan::whereHas('pendaftaran', fn($q) => $q->where('status_pendaftaran', 'terdaftar'))->get();
+        }
         return view('admin.sertifikat.index', [
-            'sertifikat' => Sertifikat::with(['pendaftaran.peserta','pendaftaran.kegiatan'])->paginate(15),
-            'kegiatan'   => Kegiatan::all(),
+            'sertifikat' => Sertifikat::with(['pendaftaran.peserta','pendaftaran.kegiatan'])->latest()->paginate(15),
+            'kegiatan'   => $kegiatanPassed,
         ]);
     }
     public function peserta(Kegiatan $kegiatan) {
