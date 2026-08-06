@@ -49,23 +49,27 @@ class PembayaranService
             'catatan_perpanjangan'=> $catatan,
         ]);
 
-        try {
-            Mail::to($pembayaran->pendaftaran->peserta->email)
-                ->send(new PerpanjanganDisetujui($pembayaran));
-        } catch (\Exception $e) {
-            Log::warning('Email perpanjangan disetujui gagal: ' . $e->getMessage());
-        }
+        dispatch(function () use ($pembayaran) {
+            try {
+                Mail::to($pembayaran->pendaftaran->peserta->email)
+                    ->send(new PerpanjanganDisetujui($pembayaran));
+            } catch (\Exception $e) {
+                Log::warning('Email perpanjangan disetujui gagal: ' . $e->getMessage());
+            }
+        })->afterResponse();
     }
 
     public function tolakPerpanjangan(Pembayaran $pembayaran, ?string $catatan = null): void
     {
         $pembayaran->tolakPerpanjangan($catatan);
 
-        try {
-            Mail::to($pembayaran->pendaftaran->peserta->email)
-                ->send(new PerpanjanganDitolak($pembayaran, $catatan));
-        } catch (\Exception $e) {
-            Log::warning('Email perpanjangan ditolak gagal: ' . $e->getMessage());
-        }
+        dispatch(function () use ($pembayaran, $catatan) {
+            try {
+                Mail::to($pembayaran->pendaftaran->peserta->email)
+                    ->send(new PerpanjanganDitolak($pembayaran, $catatan));
+            } catch (\Exception $e) {
+                Log::warning('Email perpanjangan ditolak gagal: ' . $e->getMessage());
+            }
+        })->afterResponse();
     }
 }
