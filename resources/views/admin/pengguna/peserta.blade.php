@@ -10,7 +10,7 @@
 
 {{-- Container Modal Detail --}}
 <div id="peserta-detail-modal" class="hidden" style="position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;">
-  <div id="peserta-detail-content" style="width:100%;max-width:850px;display:flex;justify-content:center;">
+  <div id="peserta-detail-content" style="width:100%;max-width:1080px;display:flex;justify-content:center;padding:16px;box-sizing:border-box;">
     {{-- Content loaded via AJAX --}}
   </div>
 </div>

@@ -61,11 +61,6 @@
 
     {{-- Table Card --}}
     <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:16px;position:relative;">
-        
-        {{-- Loading Indicator --}}
-        <div wire:loading style="position:absolute;top:10px;right:20px;background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:4px 12px;border-radius:20px;z-index:20;">
-            Saving Presence...
-        </div>
 
         <div style="overflow-x:auto;">
             <table class="admin-table" style="width:100%;border-collapse:collapse;">

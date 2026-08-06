@@ -75,9 +75,10 @@
           ],
           [
               'label' => 'PENGGUNA',
-              'items' => [
+              'items' => array_values(array_filter([
                   ['route'=>'admin.pengguna.peserta',    'icon'=>'users',            'label'=>'Manajemen Peserta'],
-              ],
+                  auth('admin')->user()?->isSuperAdmin() ? ['route'=>'admin.pengguna.admin.index', 'icon'=>'user-check', 'label'=>'Manajemen Admin'] : null,
+              ])),
           ],
           [
               'label' => 'LAPORAN',
@@ -242,7 +243,7 @@
         </div>
         <div>
           <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">{{ auth('admin')->user()->nama ?? 'Admin' }}</p>
-          <p style="margin:0;font-size:10px;color:#FFC81A;font-weight:600;">Penyelenggara</p>
+          <p style="margin:0;font-size:10px;color:#FFC81A;font-weight:600;">{{ auth('admin')->user()?->role_label ?? 'Admin' }}</p>
         </div>
       </a>
     </header>

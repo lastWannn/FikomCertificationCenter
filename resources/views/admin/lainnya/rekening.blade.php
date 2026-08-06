@@ -2,16 +2,30 @@
 @section('title','No. Rekening')
 @section('page-content')
 <div style="padding:24px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div>
-            <h1 style="font-size:21px;font-weight:900;color:#0F0F14;margin:0 0 3px;">Nomor Rekening</h1>
-            <p style="color:#6B7280;font-size:14px;margin:0;">Kelola rekening tujuan pembayaran. Hanya satu yang aktif.</p>
+            <h1 style="font-size:21px;font-weight:900;color:#0F0F14;margin:0 0 3px;">Nomor Rekening Pembayaran</h1>
+            <p style="color:#6B7280;font-size:14px;margin:0;">Kelola rekening tujuan pembayaran peserta. Hanya satu rekening yang aktif di website.</p>
         </div>
+
+        @if(auth('admin')->user()?->isSuperAdmin())
         <a href="{{ route('admin.rekening.create') }}" class="fcc-btn-gold" style="padding:9px 20px;font-size:14px;text-decoration:none;">
             @include('components.icon',['name'=>'plus','size'=>15]) Tambah Rekening
         </a>
+        @else
+        <span style="font-size:12px;font-weight:700;padding:6px 14px;border-radius:10px;background:#F3F4F6;color:#6B7280;border:1px solid #E5E7EB;">
+            🔒 Mode Lihat Saja (Super Admin Only)
+        </span>
+        @endif
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+
+    @if(!auth('admin')->user()?->isSuperAdmin())
+    <div style="padding:12px 18px;border-radius:12px;background:rgba(59,130,246,0.1);border:1.5px solid rgba(59,130,246,0.2);color:#1D4ED8;font-size:13px;font-weight:700;margin-bottom:20px;">
+        ℹ️ Informasi: Anda masuk sebagai Admin Biasa. Perubahan nomor rekening hanya dapat dilakukan oleh Super Admin.
+    </div>
+    @endif
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;">
         @forelse($rekening as $r)
         <div class="fcc-card" style="padding:22px;{{ $r->is_active?'border-color:#FFC81A;background:rgba(255,200,26,.02);':'' }}">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
@@ -19,12 +33,14 @@
                     @include('components.icon',['name'=>'wallet','size'=>20,'style'=>"color:".($r->is_active?'#FFC81A':'#A0A3AD')])
                 </div>
                 @if($r->is_active)
-                <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,200,26,.15);color:#B38F00;">&#9733; Aktif</span>
+                <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,200,26,.15);color:#B38F00;">&#9733; Rekening Utama Aktif</span>
                 @endif
             </div>
             <p style="font-size:16px;font-weight:900;color:#0F0F14;margin:0 0 4px;">{{ $r->bank }}</p>
             <p style="font-size:18px;font-weight:800;color:#FFC81A;font-family:monospace;margin:0 0 4px;letter-spacing:1px;">{{ $r->no_rekening }}</p>
             <p style="font-size:13px;color:#6B7280;margin:0 0 16px;">a.n. {{ $r->nama_pemilik }}</p>
+            
+            @if(auth('admin')->user()?->isSuperAdmin())
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
                 @if(!$r->is_active)
                 <form action="{{ route('admin.rekening.aktifkan', $r) }}" method="POST" style="flex:1;">
@@ -40,9 +56,10 @@
                     </button>
                 </form>
             </div>
+            @endif
         </div>
         @empty
-        <div style="grid-column:span 3;padding:48px;text-align:center;color:#A0A3AD;" class="fcc-card">Belum ada rekening terdaftar.</div>
+        <div style="grid-column:1/-1;padding:48px;text-align:center;color:#A0A3AD;" class="fcc-card">Belum ada rekening terdaftar.</div>
         @endforelse
     </div>
     @if($rekening->hasPages())

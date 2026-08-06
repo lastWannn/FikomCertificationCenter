@@ -49,9 +49,15 @@ class Login extends Component
         // ── Guard 2: Peserta ────────────────────────────────────
         if (Auth::guard('peserta')->attempt($credentials, $this->remember)) {
             $peserta = Auth::guard('peserta')->user();
+            $status = $peserta->status_akun ?? 'aktif';
 
-            // Cek status akun (fitur dari project kita)
-            if (($peserta->status_akun ?? 'aktif') === 'ditangguhkan') {
+            if ($status === 'nonaktif') {
+                Auth::guard('peserta')->logout();
+                $this->addError('email', 'Akun Anda telah dinonaktifkan oleh admin. Silakan hubungi Admin FCC.');
+                return;
+            }
+
+            if ($status === 'ditangguhkan') {
                 Auth::guard('peserta')->logout();
                 $this->addError('email', 'Akun Anda telah ditangguhkan. Hubungi Admin FCC.');
                 return;

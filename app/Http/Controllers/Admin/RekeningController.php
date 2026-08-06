@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -10,6 +11,13 @@ class RekeningController extends Controller
 {
     public function __construct(private RekeningService $service) {}
 
+    private function checkSuperAdmin(): void
+    {
+        if (!auth('admin')->user()?->isSuperAdmin()) {
+            abort(403, 'Akses Ditolak. Hanya Super Admin yang berhak mengelola atau mengubah nomor rekening pembayaran.');
+        }
+    }
+
     public function index()
     {
         return view('admin.lainnya.rekening', [
@@ -19,11 +27,13 @@ class RekeningController extends Controller
 
     public function create()
     {
+        $this->checkSuperAdmin();
         return view('admin.lainnya.rekening-form');
     }
 
     public function store(StoreRekeningRequest $request)
     {
+        $this->checkSuperAdmin();
         $this->service->create($request->validated());
         return redirect()->route('admin.rekening.index')
             ->with('success', 'Rekening ditambahkan.');
@@ -36,11 +46,13 @@ class RekeningController extends Controller
 
     public function edit(Rekening $rekening)
     {
+        $this->checkSuperAdmin();
         return view('admin.lainnya.rekening-form', compact('rekening'));
     }
 
     public function update(UpdateRekeningRequest $request, Rekening $rekening)
     {
+        $this->checkSuperAdmin();
         $this->service->update($rekening, $request->validated());
         return redirect()->route('admin.rekening.index')
             ->with('success', 'Rekening diperbarui.');
@@ -48,12 +60,14 @@ class RekeningController extends Controller
 
     public function destroy(Rekening $rekening)
     {
+        $this->checkSuperAdmin();
         $this->service->delete($rekening);
         return back()->with('success', 'Rekening dihapus.');
     }
 
     public function aktifkan(Rekening $rekening)
     {
+        $this->checkSuperAdmin();
         $this->service->aktifkan($rekening);
         return back()->with('success', 'Rekening ' . $rekening->bank . ' diaktifkan.');
     }

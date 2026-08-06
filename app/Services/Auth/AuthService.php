@@ -19,12 +19,22 @@ class AuthService
 
         if (Auth::guard('peserta')->attempt($credentials, $remember)) {
             $peserta = Auth::guard('peserta')->user();
-            if (($peserta->status_akun ?? 'aktif') === 'ditangguhkan') {
+            $status = $peserta->status_akun ?? 'aktif';
+
+            if ($status === 'nonaktif') {
+                Auth::guard('peserta')->logout();
+                throw ValidationException::withMessages([
+                    'email' => 'Akun Anda telah dinonaktifkan oleh admin. Silakan hubungi admin FCC.',
+                ]);
+            }
+
+            if ($status === 'ditangguhkan') {
                 Auth::guard('peserta')->logout();
                 throw ValidationException::withMessages([
                     'email' => 'Akun Anda telah ditangguhkan. Hubungi admin FCC.',
                 ]);
             }
+
             return ['guard' => 'peserta', 'user' => $peserta];
         }
 

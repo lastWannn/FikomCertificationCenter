@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\{
     NilaiController,
     LaporanController,
     UserManagementController,
+    AdminManagementController,
     CetakController,
     ExportController,
     ChartController,
@@ -226,6 +227,12 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::post('/peserta/{peserta}/toggle',      [UserManagementController::class,'toggleStatusPeserta'])->name('peserta.toggle');
         Route::delete('/peserta/{peserta}',           [UserManagementController::class,'hapusPeserta'])->name('peserta.hapus');
         Route::post('/peserta/{peserta}/reset-password',[UserManagementController::class,'resetPassword'])->name('peserta.reset-password');
+
+        /* Kelola Admin & Super Admin */
+        Route::get('/admin',                          [AdminManagementController::class,'index'])->name('admin.index');
+        Route::post('/admin',                         [AdminManagementController::class,'store'])->name('admin.store');
+        Route::put('/admin/{admin}',                  [AdminManagementController::class,'update'])->name('admin.update');
+        Route::delete('/admin/{admin}',               [AdminManagementController::class,'destroy'])->name('admin.destroy');
     });
 
     /* KONTEN */

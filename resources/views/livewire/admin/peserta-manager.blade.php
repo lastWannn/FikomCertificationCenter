@@ -59,11 +59,6 @@
 
   {{-- Table Container --}}
   <div class="fcc-card" style="padding:0;overflow:hidden;position:relative;">
-    
-    {{-- Loading overlay --}}
-    <div wire:loading style="position:absolute;top:10px;right:20px;background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:4px 12px;border-radius:20px;z-index:20;">
-      Updating...
-    </div>
 
     <table class="admin-table" style="width:100%;border-collapse:collapse;">
       <thead>
