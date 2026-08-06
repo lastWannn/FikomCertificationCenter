@@ -11,7 +11,7 @@ class MitraController extends Controller
 {
     public function index()
     {
-        $mitras = Mitra::orderBy('urutan', 'asc')->get();
+        $mitras = Mitra::orderBy('urutan', 'asc')->paginate(12)->withQueryString();
         return view('admin.mitra.index', compact('mitras'));
     }
 

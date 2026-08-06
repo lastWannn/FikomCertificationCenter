@@ -107,6 +107,9 @@
             @endforelse
         </tbody>
         </table>
+        @if($kategori->hasPages())
+        <div style="padding:14px 20px;border-top:1px solid #E2E4EB;">{{ $kategori->links() }}</div>
+        @endif
     </div>
 </div>
 

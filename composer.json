@@ -33,7 +33,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/hashid.php"
+            "app/Helpers/hashid.php",
+            "app/Helpers/image.php"
         ]
     },
     "autoload-dev": {

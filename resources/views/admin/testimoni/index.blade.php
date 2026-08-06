@@ -164,6 +164,11 @@ input[type="file"]::file-selector-button { cursor: pointer; }
         </div>
         @endforelse
     </div>
+    @if($testimonis->hasPages())
+    <div style="margin-top:20px;padding:14px 20px;background:#FFF;border-radius:12px;border:1px solid #E2E4EB;">
+        {{ $testimonis->links() }}
+    </div>
+    @endif
 </div>
 
 <script>

@@ -11,7 +11,7 @@ class TestimoniController extends Controller
 {
     public function index()
     {
-        $testimonis = Testimoni::orderBy('created_at', 'desc')->get();
+        $testimonis = Testimoni::orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         return view('admin.testimoni.index', compact('testimonis'));
     }
 

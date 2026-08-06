@@ -13,7 +13,7 @@ class RekeningController extends Controller
     public function index()
     {
         return view('admin.lainnya.rekening', [
-            'rekening' => Rekening::all()
+            'rekening' => Rekening::paginate(9)->withQueryString()
         ]);
     }
 
