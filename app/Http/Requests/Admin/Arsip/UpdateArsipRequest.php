@@ -14,9 +14,12 @@ class UpdateArsipRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'judul'         => 'required|string|max:255',
-            'ringkasan'     => 'nullable|string',
-            'berita_acara'  => 'nullable|file|mimes:pdf,doc,docx,zip,jpeg,jpg,png|max:5120',
+            'judul'              => 'required|string|max:255',
+            'ringkasan'          => 'nullable|string',
+            'berita_acara'       => 'nullable|file|mimes:pdf,doc,docx,zip,jpeg,jpg,png|max:5120',
+            'dokumentasi'        => 'nullable|array',
+            'dokumentasi.*'      => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'delete_dokumentasi' => 'nullable|array',
         ];
     }
 }

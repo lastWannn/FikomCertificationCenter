@@ -1,8 +1,9 @@
 @extends('layouts.public')
-@section('title',$arsip->judul??'Arsip Kegiatan')
+@section('title', $arsip->judul ?? 'Arsip Kegiatan')
 @section('page-content')
 <div class="page-content-wrap" style="padding-top:68px; background:linear-gradient(180deg, #131218 0%, #0e0d14 120px, #0e0d14 100%); min-height:100vh;">
-  {{-- Header gelap = bagian dari branding, kuning aksesnya --}}
+  
+  {{-- Header --}}
   <div style="background:#131218;padding:52px 24px 40px;position:relative;overflow:hidden;">
     <div style="position:absolute;inset:0;opacity:.04;background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);background-size:64px 64px;"></div>
     <div style="max-width:880px;margin:0 auto;position:relative;z-index:1;">
@@ -12,7 +13,7 @@
         Arsip Kegiatan
       </a>
       <div style="display:inline-block;background:rgba(255,200,26,.14);border:1px solid rgba(255,200,26,.28);border-radius:100px;padding:4px 14px;margin-bottom:14px;">
-        <span style="color:#FFC81A;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">{{ ucfirst($arsip->kegiatan?->jenis_kegiatan??'kegiatan') }}</span>
+        <span style="color:#FFC81A;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">{{ ucfirst($arsip->kegiatan?->jenis_kegiatan ?? 'kegiatan') }}</span>
       </div>
       <h1 class="fcc-gold-text" style="font-size:clamp(22px,4vw,38px);font-weight:900;margin:0 0 10px;line-height:1.15;">
         {{ $arsip->judul ?? $arsip->kegiatan?->judul ?? 'Arsip Kegiatan' }}
@@ -23,8 +24,9 @@
     </div>
   </div>
 
-  {{-- Konten: dark glass --}}
+  {{-- Konten --}}
   <div style="max-width:880px;margin:0 auto;padding:44px 24px;">
+    
     @if($arsip->ringkasan)
     <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:22px 24px;margin-bottom:28px;">
       <p style="color:rgba(255,255,255,.7);font-size:15px;line-height:1.88;margin:0;font-weight:500;">{{ $arsip->ringkasan }}</p>
@@ -49,11 +51,52 @@
     </div>
     @endif
 
+    {{-- GALERI DOKUMENTASI FOTO KEGIATAN --}}
+    @if(!empty($arsip->dokumentasi))
+    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px;margin-bottom:28px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+        <h3 style="font-size:16px;font-weight:900;color:#FFF;margin:0;display:flex;align-items:center;gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          Galeri Dokumentasi Foto
+        </h3>
+        <span style="font-size:12px;color:#FFC81A;font-weight:700;background:rgba(255,200,26,.12);padding:4px 12px;border-radius:20px;">
+          {{ count($arsip->dokumentasi) }} Foto
+        </span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));gap:14px;">
+        @foreach($arsip->dokumentasi as $img)
+        <div style="position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;border:1px solid rgba(255,255,255,.1);cursor:pointer;background:#000;transition:transform .2s;"
+             onmouseover="this.style.transform='scale(1.03)';this.style.borderColor='rgba(255,200,26,.5)'"
+             onmouseout="this.style.transform='scale(1)';this.style.borderColor='rgba(255,255,255,.1)'"
+             onclick="openLightBox('{{ asset('storage/'.$img) }}')">
+          <img src="{{ asset('storage/'.$img) }}" alt="Foto Dokumentasi" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        @endforeach
+      </div>
+    </div>
+
+    {{-- Lightbox Modal --}}
+    <div id="lightbox-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;padding:24px;" onclick="closeLightBox()">
+      <img id="lightbox-img" style="max-width:90vw;max-height:85vh;border-radius:12px;object-fit:contain;box-shadow:0 12px 40px rgba(0,0,0,0.8);">
+    </div>
+
+    <script>
+    function openLightBox(src) {
+        document.getElementById('lightbox-img').src = src;
+        document.getElementById('lightbox-modal').style.display = 'flex';
+    }
+    function closeLightBox() {
+        document.getElementById('lightbox-modal').style.display = 'none';
+    }
+    </script>
+    @endif
+
     {{-- Berita acara --}}
     @if($arsip->berita_acara)
     <div style="background:rgba(255,255,255,.03);border:1.5px solid rgba(255,200,26,.3);border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:14px;margin-bottom:28px;">
       <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,200,26,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2"><path d="M14 2H6a2 2 0 0 1-2 2v16a2 2 0 0 1 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       </div>
       <div style="flex:1;">
         <p style="font-size:14px;font-weight:800;color:#FFF;margin:0 0 3px;">Berita Acara Kegiatan</p>

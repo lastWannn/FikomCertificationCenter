@@ -45,5 +45,10 @@
         <div style="grid-column:span 3;padding:48px;text-align:center;color:#A0A3AD;" class="fcc-card">Belum ada rekening terdaftar.</div>
         @endforelse
     </div>
+    @if($rekening->hasPages())
+    <div style="margin-top:20px;padding:14px 20px;background:#FFF;border-radius:12px;border:1px solid #E2E4EB;">
+        {{ $rekening->links() }}
+    </div>
+    @endif
 </div>
 @endsection

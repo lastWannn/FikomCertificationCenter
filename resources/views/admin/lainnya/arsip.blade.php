@@ -1,45 +1,108 @@
 @extends('layouts.admin')
 @section('title','Arsip Kegiatan')
+@section('page-title','Arsip Kegiatan')
+
 @section('page-content')
 <div style="padding:24px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <h1 style="font-size:21px;font-weight:900;color:#0F0F14;margin:0;">Arsip Kegiatan</h1>
-        <a href="{{ route('admin.arsip.create') }}" class="fcc-btn-gold" style="padding:9px 20px;font-size:14px;text-decoration:none;">
-            @include('components.icon',['name'=>'plus','size'=>15]) Tambah Arsip
+
+    {{-- Header & Title --}}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+        <div>
+            <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0 0 4px;">Arsip & Dokumentasi Kegiatan</h1>
+            <p style="color:#6B7280;font-size:13.5px;margin:0;">Kelola berita acara dan galeri foto dokumentasi pelaksanaan kegiatan yang telah selesai.</p>
+        </div>
+        <a href="{{ route('admin.arsip.create') }}" class="fcc-btn-gold" style="padding:9px 18px;font-size:13px;text-decoration:none;border-radius:10px;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
+            @include('components.icon',['name'=>'plus','size'=>15]) Tambah Arsip Baru
         </a>
     </div>
-    <div class="fcc-card" style="padding:0;overflow:hidden;">
-        <table style="width:100%;border-collapse:collapse;">
-            <thead>
-                <tr style="background:#F8F9FB;border-bottom:2px solid #E2E4EB;">
-                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;">Judul</th>
-                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;">Kegiatan</th>
-                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;">Tanggal</th>
-                    <th style="padding:12px 20px;text-align:center;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($arsip as $a)
-                <tr class="tbl-row" style="border-top:1px solid #F0F1F3;">
-                    <td style="padding:12px 20px;font-size:14px;font-weight:700;color:#0F0F14;">{{ $a->judul ?? '-' }}</td>
-                    <td style="padding:12px 12px;font-size:13px;color:#6B7280;">{{ Str::limit($a->kegiatan->judul,36) }}</td>
-                    <td style="padding:12px 12px;font-size:13px;color:#6B7280;">{{ $a->created_at->format('d M Y') }}</td>
-                    <td style="padding:12px 20px;text-align:center;">
-                        <div style="display:inline-flex;gap:8px;">
-                            <a href="{{ route('admin.arsip.edit', $a) }}" style="color:#FFC81A;display:flex;">@include('components.icon',['name'=>'edit','size'=>16])</a>
-                            <form action="{{ route('admin.arsip.destroy', $a) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Arsip', 'Apakah Anda yakin ingin menghapus arsip ini?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">@include('components.icon',['name'=>'trash','size'=>16])</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr><td colspan="4" style="padding:32px;text-align:center;color:#A0A3AD;font-size:14px;">Belum ada arsip.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-        @if($arsip->hasPages())<div style="padding:14px 20px;border-top:1px solid #E2E4EB;">{{ $arsip->withQueryString()->links() }}</div>@endif
+
+    {{-- Tabel Arsip --}}
+    <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:16px;">
+        <div style="overflow-x:auto;">
+            <table class="admin-table" style="width:100%;border-collapse:collapse;">
+                <thead>
+                    <tr style="background:#F8F9FB;border-bottom:2px solid #E2E4EB;">
+                        <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;letter-spacing:.7px;">Judul Arsip</th>
+                        <th style="padding:14px 14px;text-align:left;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;">Kegiatan</th>
+                        <th style="padding:14px 14px;text-align:center;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;">Dokumentasi Foto</th>
+                        <th style="padding:14px 14px;text-align:center;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;">Berita Acara</th>
+                        <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($arsip as $a)
+                    @php $fotoCount = count($a->dokumentasi ?? []); @endphp
+                    <tr class="tbl-row" style="border-top:1px solid #F0F1F3;">
+                        
+                        {{-- Judul Arsip --}}
+                        <td style="padding:14px 20px;vertical-align:middle;">
+                            <p style="margin:0 0 2px;font-size:13.5px;font-weight:800;color:#131218;">{{ $a->judul ?? '-' }}</p>
+                            <p style="margin:0;font-size:11.5px;color:#6B7280;">Dibuat: {{ $a->created_at->format('d M Y') }}</p>
+                        </td>
+
+                        {{-- Kegiatan --}}
+                        <td style="padding:14px 14px;vertical-align:middle;font-size:13px;color:#374151;font-weight:600;">
+                            {{ Str::limit($a->kegiatan->judul ?? '-', 40) }}
+                        </td>
+
+                        {{-- Dokumentasi Foto --}}
+                        <td style="padding:14px 14px;text-align:center;vertical-align:middle;">
+                            @if($fotoCount > 0)
+                            <span style="font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:20px;background:rgba(59,130,246,.12);color:#2563EB;display:inline-flex;align-items:center;gap:5px;">
+                                @include('components.icon',['name'=>'camera','size'=>13]) {{ $fotoCount }} Foto
+                            </span>
+                            @else
+                            <span style="font-size:11px;color:#9CA3B0;">Belum ada foto</span>
+                            @endif
+                        </td>
+
+                        {{-- Berita Acara PDF --}}
+                        <td style="padding:14px 14px;text-align:center;vertical-align:middle;">
+                            @if($a->berita_acara)
+                            <a href="{{ asset('storage/'.$a->berita_acara) }}" target="_blank" class="fcc-btn-outline-dark" style="padding:4px 10px;font-size:11.5px;text-decoration:none;border-radius:6px;font-weight:700;display:inline-flex;align-items:center;gap:4px;">
+                                @include('components.icon',['name'=>'file-text','size'=>12]) PDF
+                            </a>
+                            @else
+                            <span style="font-size:11px;color:#9CA3B0;">-</span>
+                            @endif
+                        </td>
+
+                        {{-- Aksi --}}
+                        <td style="padding:14px 20px;text-align:center;vertical-align:middle;">
+                            <div style="display:inline-flex;gap:6px;align-items:center;justify-content:center;">
+                                <a href="{{ route('admin.arsip.edit', $a) }}" class="fcc-btn-outline-dark" style="padding:6px 12px;font-size:12px;text-decoration:none;border-radius:8px;font-weight:700;display:inline-flex;align-items:center;gap:4px;" title="Edit Arsip & Dokumentasi">
+                                    @include('components.icon',['name'=>'edit','size'=>13]) Edit
+                                </a>
+                                <form action="{{ route('admin.arsip.destroy', $a) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Arsip', 'Apakah Anda yakin ingin menghapus arsip kegiatan ini?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" style="background:#FFF;border:1px solid #FEE2E2;color:#EF4444;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;" title="Hapus Arsip">
+                                        @include('components.icon',['name'=>'trash','size'=>13])
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" style="padding:48px;text-align:center;color:#9CA3B0;">
+                            <div style="width:52px;height:52px;border-radius:16px;background:#F7F8FA;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                                @include('components.icon',['name'=>'archive','size'=>24,'style'=>'color:#9CA3B0'])
+                            </div>
+                            <p style="font-size:15px;font-weight:700;color:#131218;margin:0 0 4px;">Belum Ada Arsip Kegiatan</p>
+                            <p style="font-size:12.5px;color:#9CA3B0;margin:0;">Klik tombol Tambah Arsip Baru untuk menambahkan berita acara dan foto dokumentasi.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        @if($arsip->hasPages())
+        <div style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8F9FB;">
+            {{ $arsip->withQueryString()->links() }}
+        </div>
+        @endif
     </div>
+
 </div>
 @endsection
