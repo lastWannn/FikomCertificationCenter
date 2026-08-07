@@ -39,6 +39,13 @@
 ::-webkit-scrollbar-thumb { background:rgba(255,200,26,.35); border-radius:8px; }
 ::-webkit-scrollbar-thumb:hover { background:#FFC81A; }
 
+/* ─── CONTENT VISIBILITY (Performance: skip paint for off-screen sections) ── */
+.section-stack,
+.content-lazy {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 600px;
+}
+
 /* ─── KEYFRAMES ─────────────────────────────────────────────────── */
 @keyframes float1  {0%,100%{transform:translateY(0)rotate(0)}50%{transform:translateY(-18px)rotate(12deg)}}
 @keyframes float2  {0%,100%{transform:translateY(0)rotate(0)}50%{transform:translateY(-12px)rotate(-6deg)}}
@@ -57,7 +64,7 @@
 @keyframes spring-left { 0%{opacity:0;transform:translateX(-40px) scale(.96)} 60%{transform:translateX(8px) scale(1.01)} 80%{transform:translateX(-4px)} 100%{opacity:1;transform:translateX(0) scale(1)} }
 @keyframes spring-right{ 0%{opacity:0;transform:translateX(40px) scale(.96)} 60%{transform:translateX(-8px) scale(1.01)} 80%{transform:translateX(4px)} 100%{opacity:1;transform:translateX(0) scale(1)} }
 @keyframes particle-float { 0%,100%{transform:translateY(0px) translateX(0px); opacity:.7} 25%{transform:translateY(-20px) translateX(10px); opacity:1} 50%{transform:translateY(-10px) translateX(-5px); opacity:.5} 75%{transform:translateY(-30px) translateX(8px); opacity:.9} }
-@keyframes glow-pulse { 0%,100%{box-shadow:0 0 20px rgba(255,200,26,.2), 0 0 40px rgba(255,200,26,.1)} 50%{box-shadow:0 0 40px rgba(255,200,26,.5), 0 0 80px rgba(255,200,26,.25)} }
+@keyframes glow-pulse { 0%,100%{box-shadow:0 0 20px rgba(255,200,26,.2)} 50%{box-shadow:0 0 30px rgba(255,200,26,.35)} }
 @keyframes typewriter-cursor { 0%,100%{border-right-color:#FFC81A} 50%{border-right-color:transparent} }
 
 /* ─── BRAND TYPOGRAPHY ─────────────────────────────────────────── */
@@ -839,7 +846,6 @@ input[type="file"].fcc-input::file-selector-button:hover { background:#1C1B22; }
 /* ─── LANDING ANIMATIONS — 3D Tilt Card ────────────────────────── */
 .tilt-card {
     transform-style: preserve-3d;
-    will-change: transform;
 }
 
 /* ─── LANDING ANIMATIONS — Filter Transition ───────────────────── */

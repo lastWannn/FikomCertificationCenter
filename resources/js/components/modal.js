@@ -272,5 +272,7 @@
     window.fccModalClose        = fccModalClose;
     window.fccModalConfirmClick = fccModalConfirmClick;
 
-    document.addEventListener('DOMContentLoaded', initFlash);
+    document.addEventListener('DOMContentLoaded', () => {
+        (window.requestIdleCallback || setTimeout)(initFlash);
+    });
 })();

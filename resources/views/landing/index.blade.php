@@ -1,5 +1,11 @@
 @extends('layouts.public')
 @section('title','Beranda')
+@section('meta-description','FIKOM Certification Center UMI Makassar — Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya. Sertifikasi BNSP, pelatihan IT profesional.')
+
+@push('preloads')
+<link rel="preload" as="image" href="{{ asset('images/herosection.webp') }}" type="image/webp"/>
+<link rel="preload" as="image" href="{{ asset('images/hero-model.webp') }}" type="image/webp"/>
+@endpush
 
 @push('styles')
 <style>
@@ -57,10 +63,17 @@
 {{-- ══════════════════════════════════════════════════════════════
      HERO SECTION — High-Impact Portal Layout with Background Image
   ══════════════════════════════════════════════════════════════════ --}}
-<section data-hero style="min-height:86vh;background:linear-gradient(180deg, rgba(19,18,24,0.84) 0%, rgba(15,14,21,0.92) 70%, #131218 100%), url('{{ asset("images/herosection.webp") }}?v={{ filemtime(public_path("images/herosection.webp")) }}');background-size:cover;background-position:center;position:relative;overflow:hidden;display:flex;align-items:center;padding:110px 0 75px;border-bottom:1px solid #1E1D26;">
+<section data-hero style="min-height:86vh;position:relative;overflow:hidden;display:flex;align-items:center;padding:110px 0 75px;border-bottom:1px solid #1E1D26;background:#131218;">
+    {{-- Hero Background Image (LCP element — loaded as <img> for fastest discovery) --}}
+    <img src="{{ asset('images/herosection.webp') }}" alt="" fetchpriority="high" decoding="async" width="1920" height="1080" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"/>
+    {{-- Gradient Overlay --}}
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(19,18,24,0.84) 0%, rgba(15,14,21,0.92) 70%, #131218 100%);z-index:1;"></div>
+    {{-- Particle Canvas --}}
+    <canvas id="hero-particles" style="position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.6;"></canvas>
     
     {{-- Main Content Container --}}
     <div style="position:relative;z-index:3;max-width:1240px;margin:0 auto;padding:0 24px;width:100%;">
+
         <div class="hero-grid-layout" style="display:grid;grid-template-columns:1fr;gap:44px;align-items:center;">
             
             {{-- Left Column: Clean Typography & CTAs --}}
@@ -117,7 +130,7 @@
                         
                         {{-- Inner Image Arch Container --}}
                         <div style="width:100%;height:100%;border-radius:108px 30px 108px 30px;overflow:hidden;position:relative;background:#131218;">
-                            <img src="{{ asset('images/hero-model.png') }}?v={{ filemtime(public_path('images/hero-model.png')) }}" alt="Peserta Sertifikasi FIKOM UMI" style="width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform 0.5s ease;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+                            <img src="{{ asset('images/hero-model.webp') }}" alt="Peserta Sertifikasi FIKOM UMI" width="520" height="620" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform 0.5s ease;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
                         </div>
 
                         {{-- Floating Badge 1: Top Right Trust Tag --}}
@@ -194,7 +207,7 @@
                     {{-- Poster Container (Height 185px) --}}
                     <div style="position:relative; width:100%; height:185px; overflow:hidden; background:#131218;">
                         @if($posterUrl)
-                        <img src="{{ $posterUrl }}" alt="{{ $k->judul }}" style="width:100%; height:100%; object-fit:cover; object-position:center top; display:block; transition:transform 0.4s ease;"
+                        <img src="{{ $posterUrl }}" alt="{{ $k->judul }}" width="400" height="185" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover; object-position:center top; display:block; transition:transform 0.4s ease;"
                              onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                         @else
                         <div style="width:100%; height:100%; background:#131218; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
@@ -477,7 +490,7 @@
                 {{-- Logo Box --}}
                 <div style="width:76px;height:76px;border-radius:20px;background:#131218;border:2.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;margin-bottom:22px;box-shadow:0 8px 20px rgba(19,18,24,0.25);">
                     @if($mLogo)
-                    <img src="{{ asset('storage/'.$mLogo) }}" alt="{{ $mNama }}" style="width:52px;height:52px;object-fit:contain;filter:brightness(0) invert(1);">
+                    <img src="{{ asset('storage/'.$mLogo) }}" alt="{{ $mNama }}" width="52" height="52" loading="lazy" decoding="async" style="width:52px;height:52px;object-fit:contain;filter:brightness(0) invert(1);">
                     @else
                     <span style="color:#FFC81A;font-size:18px;font-weight:900;letter-spacing:.5px;font-family:monospace;">{{ Str::upper(Str::substr($mInisial ?: $mNama, 0, 4)) }}</span>
                     @endif

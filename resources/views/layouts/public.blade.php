@@ -1,14 +1,16 @@
 @extends('layouts.app')
+@section('async-css', true)
+@section('no-livewire', true)
 @section('content')
 
 {{-- ═══ NAVBAR ══════════════════════════════════════════════════ --}}
-<nav id="fcc-nav" style="position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;padding:0 24px;gap:16px;background:#131218;border-bottom:2px solid #1E1D26;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+<nav id="fcc-nav" role="navigation" aria-label="Navigasi utama" style="position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;padding:0 24px;gap:16px;background:#131218;border-bottom:2px solid #1E1D26;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
     <div style="max-width:1200px;margin:0 auto;width:100%;padding:0 24px;
         display:flex;align-items:center;justify-content:space-between;gap:24px;">
 
         {{-- Logo --}}
         <a href="{{ route('landing.index') }}" id="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="height:36px;width:auto;object-fit:contain;flex-shrink:0;">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" width="36" height="36" style="height:36px;width:auto;object-fit:contain;flex-shrink:0;">
             <div>
                 <p id="nav-brand" style="margin:0;font-weight:900;font-size:12.5px;color:#FFFFFF;transition:color .3s;">FIKOM Certification</p>
                 <p style="margin:0;color:#FFC81A;font-size:8px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;">Center · UMI</p>
@@ -180,7 +182,7 @@
             <div>
                 <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
                     <div style="width:48px;height:48px;border-radius:12px;background:#1E1D26;border:1.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;padding:6px;box-shadow:0 4px 14px rgba(255,200,26,0.25);">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="width:100%;height:100%;object-fit:contain;">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" width="48" height="48" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;">
                     </div>
                     <div>
                         <p style="margin:0;color:#FFFFFF;font-weight:900;font-size:15px;letter-spacing:-.3px;">FIKOM Certification Center</p>
@@ -571,6 +573,7 @@
 </style>
 
 <script>
+(window.requestIdleCallback||setTimeout)(function(){
     const modal = document.getElementById('fcc-auth-modal');
     const dialog = document.getElementById('fcc-auth-dialog');
     const alertBox = document.getElementById('fcc-auth-alert');
@@ -932,12 +935,14 @@
             }
         });
     }
+});
 </script>
 
 {{-- ══ Top Gold Progress Bar Indicator & Instant Prefetcher ══ --}}
 <div id="fcc-top-bar" style="position:fixed; top:0; left:0; width:0%; height:3px; background:#FFC81A; z-index:99999; transition:width 0.25s ease, opacity 0.3s ease; opacity:0; pointer-events:none; box-shadow:0 0 10px #FFC81A, 0 0 5px #FFC81A;"></div>
 
 <script>
+(window.requestIdleCallback||setTimeout)(function(){
 (function() {
     'use strict';
     
@@ -996,7 +1001,8 @@
             setTimeout(() => { bar.style.width = '0%'; }, 300);
         }, 150);
     });
-})();
+});
+});
 </script>
 
 @include('components.fcc-modal')

@@ -41,6 +41,8 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
     document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll(SELECTORS).forEach(el => observer.observe(el));
+        (window.requestIdleCallback || setTimeout)(() => {
+            document.querySelectorAll(SELECTORS).forEach(el => observer.observe(el));
+        });
     });
 })();
