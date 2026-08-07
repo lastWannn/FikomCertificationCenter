@@ -462,24 +462,30 @@
         
         {{-- Database Partners Grid --}}
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:28px;">
-            @foreach($mitras as $index => $m)
-            <div class="spring-up stagger-{{ ($index % 3) + 1 }}" 
+            @foreach($mitras as $m)
+            @php
+                $mLogo    = is_array($m) ? ($m['logo'] ?? null) : ($m->logo ?? null);
+                $mNama    = is_array($m) ? ($m['nama_mitra'] ?? '') : ($m->nama_mitra ?? '');
+                $mInisial = is_array($m) ? ($m['inisial'] ?? '') : ($m->inisial ?? '');
+                $mLink    = is_array($m) ? ($m['link_website'] ?? null) : ($m->link_website ?? null);
+            @endphp
+            <div class="spring-up stagger-{{ ($loop->index % 3) + 1 }}" 
                  style="background:#FFFFFF;border:2px solid #E5E7EB;border-radius:24px;padding:36px 30px;display:flex;flex-direction:column;align-items:center;text-align:center;transition:all .3s ease;box-shadow:0 6px 20px rgba(0,0,0,0.03);"
                  onmouseover="this.style.borderColor='#FFC81A';this.style.transform='translateY(-6px)';this.style.boxShadow='0 16px 36px rgba(0,0,0,0.08)';"
                  onmouseout="this.style.borderColor='#E5E7EB';this.style.transform='translateY(0)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.03)';">
                 
                 {{-- Logo Box --}}
                 <div style="width:76px;height:76px;border-radius:20px;background:#131218;border:2.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;margin-bottom:22px;box-shadow:0 8px 20px rgba(19,18,24,0.25);">
-                    @if($m->logo)
-                    <img src="{{ asset('storage/'.$m->logo) }}" alt="{{ $m->nama_mitra }}" style="width:52px;height:52px;object-fit:contain;filter:brightness(0) invert(1);">
+                    @if($mLogo)
+                    <img src="{{ asset('storage/'.$mLogo) }}" alt="{{ $mNama }}" style="width:52px;height:52px;object-fit:contain;filter:brightness(0) invert(1);">
                     @else
-                    <span style="color:#FFC81A;font-size:18px;font-weight:900;letter-spacing:.5px;font-family:monospace;">{{ Str::upper(Str::substr($m->inisial ?? $m->nama_mitra,0,4)) }}</span>
+                    <span style="color:#FFC81A;font-size:18px;font-weight:900;letter-spacing:.5px;font-family:monospace;">{{ Str::upper(Str::substr($mInisial ?: $mNama, 0, 4)) }}</span>
                     @endif
                 </div>
 
                 {{-- Partner Name --}}
                 <h3 style="color:#131218;font-size:20px;font-weight:900;margin:0 0 8px;line-height:1.3;">
-                    {{ $m->nama_mitra }}
+                    {{ $mNama }}
                 </h3>
 
                 {{-- Sub-label --}}
@@ -488,8 +494,8 @@
                 </p>
 
                 {{-- Button Link --}}
-                @if($m->link_website)
-                <a href="{{ $m->link_website }}" target="_blank" rel="noopener noreferrer" 
+                @if($mLink)
+                <a href="{{ $mLink }}" target="_blank" rel="noopener noreferrer" 
                    style="padding:10px 24px;font-size:13px;font-weight:800;background:#131218;color:#FFC81A;border-radius:30px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s;"
                    onmouseover="this.style.background='#FFC81A';this.style.color='#131218';"
                    onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">
@@ -822,70 +828,7 @@ window.PAGE_DATA = {!! json_encode([
         setStepInline(0);
         startTimer();
     });
-</script>
-@vite('resources/js/pages/landing-index.js')
-@endpusharch'),
-]) !!};
-</script>
-@endpush
-
-{{-- ── EXTERNAL JS: dimuat setelah page-data ─────────────────────── --}}
-@push('scripts')
-<script>
-    const STEP_COUNT = 4;
-    let curStep = 0, stepTimer;
-
-    function setStepInline(s) {
-        curStep = s;
-        for (let i = 0; i < STEP_COUNT; i++) {
-            const wrapper = document.getElementById(`step-wrapper-${i}`);
-            if (!wrapper) continue;
-            
-            const box   = document.getElementById(`step-box-${i}`);
-            const ic    = box ? box.querySelector('svg') : null;
-            const num   = wrapper.querySelector('.step-num-badge');
-            const numText = num ? num.querySelector('span') : null;
-            const title = document.getElementById(`step-title-${i}`);
-            
-            const isActive = i === s;
-            const isPast   = i < s;
-
-            if (box) {
-                box.style.background = isActive
-                    ? 'linear-gradient(135deg,#FFC81A,#FFD84D)'
-                    : isPast ? '#1a1921' : '#16151c';
-                box.style.border = isActive ? '2px solid transparent'
-                    : isPast ? '2px solid rgba(255,200,26,.3)' : '2px solid rgba(255,255,255,.08)';
-                box.style.boxShadow = isActive ? '0 8px 28px rgba(255,200,26,.45)' : '0 2px 8px rgba(0,0,0,.2)';
-            }
-            if (ic) ic.style.color = isActive ? '#111' : (isPast ? '#FFC81A' : 'rgba(255,255,255,.4)');
-            
-            if (num) {
-                num.style.background = i <= s ? 'linear-gradient(135deg,#FFC81A,#FFD84D)' : 'rgba(255,255,255,.08)';
-                num.style.boxShadow  = i <= s ? '0 2px 8px rgba(255,200,26,.4)' : 'none';
-            }
-            if (numText) {
-                numText.style.color = i <= s ? '#111' : 'rgba(255,255,255,.6)';
-            }
-            if (title) {
-                title.style.color = isActive ? '#FFF' : 'rgba(255,255,255,.6)';
-            }
-        }
-
-        const fill = document.getElementById('step-fill-pend');
-        if (fill) fill.style.width = ['0%', '33.33%', '66.66%', '100%'][s];
-
-        document.querySelectorAll('#step-dots div').forEach((d, i) => {
-            d.style.width      = i === s ? '20px' : '8px';
-            d.style.background = i === s ? '#FFC81A' : 'rgba(255,255,255,.1)';
-        });
-    }
-
-    function startTimer() {
-        stepTimer = setInterval(() => setStepInline((curStep + 1) % STEP_COUNT), 2400);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('livewire:navigated', () => {
         setStepInline(0);
         startTimer();
     });

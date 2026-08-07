@@ -339,7 +339,7 @@
     }
 
     /* ── INIT ────────────────────────────────────────────────────── */
-    document.addEventListener('DOMContentLoaded', () => {
+    function initAll() {
         initHeroParallax();
         initParticles();
         initCounters();
@@ -348,5 +348,8 @@
         initFilter();
         initSteps();
         initArsipCarousel();
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', initAll);
+    document.addEventListener('livewire:navigated', initAll);
 })();

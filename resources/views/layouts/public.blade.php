@@ -934,6 +934,71 @@
     }
 </script>
 
+{{-- ══ Top Gold Progress Bar Indicator & Instant Prefetcher ══ --}}
+<div id="fcc-top-bar" style="position:fixed; top:0; left:0; width:0%; height:3px; background:#FFC81A; z-index:99999; transition:width 0.25s ease, opacity 0.3s ease; opacity:0; pointer-events:none; box-shadow:0 0 10px #FFC81A, 0 0 5px #FFC81A;"></div>
+
+<script>
+(function() {
+    'use strict';
+    
+    // 1. Instant Hover Prefetching
+    const prefetched = new Set();
+    function prefetchUrl(url) {
+        if (!url || prefetched.has(url)) return;
+        if (url.startsWith('#') || url.startsWith('javascript:')) return;
+        try {
+            const parsed = new URL(url, window.location.origin);
+            if (parsed.origin !== window.location.origin) return;
+            prefetched.add(url);
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = url;
+            document.head.appendChild(link);
+        } catch(e) {}
+    }
+
+    document.addEventListener('mouseover', function(e) {
+        const anchor = e.target.closest('a');
+        if (anchor && anchor.href && !anchor.target) {
+            prefetchUrl(anchor.href);
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchstart', function(e) {
+        const anchor = e.target.closest('a');
+        if (anchor && anchor.href && !anchor.target) {
+            prefetchUrl(anchor.href);
+        }
+    }, { passive: true });
+
+    // 2. Top Progress Loading Bar Trigger
+    const bar = document.getElementById('fcc-top-bar');
+    function startTopBar() {
+        if (!bar) return;
+        bar.style.opacity = '1';
+        bar.style.width = '30%';
+        setTimeout(() => { if (bar.style.opacity === '1') bar.style.width = '70%'; }, 150);
+        setTimeout(() => { if (bar.style.opacity === '1') bar.style.width = '90%'; }, 400);
+    }
+
+    document.addEventListener('click', function(e) {
+        const anchor = e.target.closest('a');
+        if (anchor && anchor.href && !anchor.target && !anchor.href.includes('#') && anchor.origin === window.location.origin) {
+            startTopBar();
+        }
+    });
+
+    window.addEventListener('pageshow', function() {
+        if (!bar) return;
+        bar.style.width = '100%';
+        setTimeout(() => {
+            bar.style.opacity = '0';
+            setTimeout(() => { bar.style.width = '0%'; }, 300);
+        }, 150);
+    });
+})();
+</script>
+
 @include('components.fcc-modal')
 @endsection
 

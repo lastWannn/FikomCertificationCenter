@@ -9,6 +9,7 @@ use App\Models\ArsipKegiatan;
 use App\Models\KontenHalaman;
 use App\Models\Kontak;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class LandingController extends Controller
 {
@@ -25,18 +26,20 @@ class LandingController extends Controller
             ->limit(3)
             ->get();
 
-        $stats = [
-            'pelatihan'   => \App\Models\Pelatihan::count(),
-            'sertifikasi' => \App\Models\Sertifikasi::count(),
-            'peserta'     => \App\Models\Peserta::count(),
-            'mitra'       => Mitra::count(),
-        ];
+        $stats = Cache::remember('landing_stats', 600, function() {
+            return [
+                'pelatihan'   => \App\Models\Pelatihan::count(),
+                'sertifikasi' => \App\Models\Sertifikasi::count(),
+                'peserta'     => \App\Models\Peserta::count(),
+                'mitra'       => Mitra::count(),
+            ];
+        });
 
-        $mitras    = Mitra::orderBy('urutan', 'asc')->get();
-        $arsips    = ArsipKegiatan::with('kegiatan')->orderBy('created_at','desc')->limit(5)->get();
-        $konten    = KontenHalaman::all()->keyBy('jenis');
-        $faqs      = Informasi::faq()->latest()->get();
-        $infos     = Informasi::info()->aktif()->latest()->limit(3)->get();
+        $mitras     = Mitra::orderBy('urutan', 'asc')->get();
+        $arsips     = ArsipKegiatan::with('kegiatan')->orderBy('created_at','desc')->limit(5)->get();
+        $konten     = KontenHalaman::all()->keyBy('jenis');
+        $faqs       = Informasi::faq()->latest()->get();
+        $infos      = Informasi::info()->aktif()->latest()->limit(3)->get();
         $testimonis = \App\Models\Testimoni::latest()->get();
 
         return view('landing.index', compact(
