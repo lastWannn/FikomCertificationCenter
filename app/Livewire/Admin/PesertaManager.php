@@ -40,12 +40,26 @@ class PesertaManager extends Component
 
         $label = match($newStatus) {
             'aktif' => 'diaktifkan',
-            'nonaktif' => 'dinonaktifkan',
-            default => 'ditangguhkan'
+            default => 'dinonaktifkan',
         };
 
         $this->message = "Status akun {$peserta->nama} berhasil {$label}.";
         $this->messageType = 'success';
+    }
+
+    public function deletePeserta(int $pesertaId): void
+    {
+        $peserta = Peserta::find($pesertaId);
+        if (!$peserta) return;
+
+        try {
+            app(UserManagementService::class)->hapus($peserta);
+            $this->message = "Akun peserta {$peserta->nama} berhasil dihapus.";
+            $this->messageType = 'success';
+        } catch (\Exception $e) {
+            $this->message = $e->getMessage();
+            $this->messageType = 'error';
+        }
     }
 
     public function resetPassword(int $pesertaId): void
@@ -79,10 +93,9 @@ class PesertaManager extends Component
         $pesertaList = $query->paginate(15);
 
         $stats = [
-            'total'        => Peserta::count(),
-            'aktif'        => Peserta::where('status_akun', 'aktif')->count(),
-            'nonaktif'     => Peserta::where('status_akun', 'nonaktif')->count(),
-            'ditangguhkan' => Peserta::where('status_akun', 'ditangguhkan')->count(),
+            'total'    => Peserta::count(),
+            'aktif'    => Peserta::where('status_akun', 'aktif')->count(),
+            'nonaktif' => Peserta::where('status_akun', 'nonaktif')->count(),
         ];
 
         return view('livewire.admin.peserta-manager', [

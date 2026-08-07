@@ -5,59 +5,71 @@
 (function () {
     'use strict';
 
-    const { api = {} } = window.PAGE_DATA || {};
-    const BASE    = api.base    || '/admin/api';
-    const STATS   = api.stats   || `${BASE}/chart/stats`;
-
     let chartPend, chartDaft, chartJenis;
 
     async function loadCharts() {
-        const yr     = document.getElementById('chart-year')?.value || new Date().getFullYear();
+        const { api = {} } = window.PAGE_DATA || {};
+        const BASE = api.base || '/admin/api';
+
+        const canvasPend = document.getElementById('chartPendapatan');
+        const canvasDaft = document.getElementById('chartPendaftaran');
+        if (!canvasPend && !canvasDaft) return;
+
+        const yr = document.getElementById('chart-year')?.value || new Date().getFullYear();
         const yearLbl = document.getElementById('chart-year-label');
         if (yearLbl) yearLbl.textContent = yr;
 
         // Line: pendapatan
-        try {
-            const rPend = await fetch(`${BASE}/chart/pendapatan?tahun=${yr}`).then(r => r.json());
-            if (chartPend) chartPend.destroy();
-            chartPend = new Chart(document.getElementById('chartPendapatan'), {
-                type: 'line',
-                data: rPend,
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins:    { legend: { display: false } },
-                    scales: {
-                        y: {
-                            grid: { color: '#F0F1F5' },
-                            ticks: { callback: v => 'Rp ' + (v >= 1e6 ? (v/1e6).toFixed(1)+'jt' : (v/1e3).toFixed(0)+'k') },
+        if (canvasPend) {
+            try {
+                const rPend = await fetch(`${BASE}/chart/pendapatan?tahun=${yr}`).then(r => r.json());
+                if (chartPend) chartPend.destroy();
+                chartPend = new Chart(canvasPend, {
+                    type: 'line',
+                    data: rPend,
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                grid: { color: '#F0F1F5' },
+                                ticks: { callback: v => 'Rp ' + (v >= 1e6 ? (v/1e6).toFixed(1)+'jt' : (v/1e3).toFixed(0)+'k') },
+                            },
+                            x: { grid: { display: false } },
                         },
-                        x: { grid: { display: false } },
                     },
-                },
-            });
-        } catch (_) {}
+                });
+            } catch (_) {}
+        }
 
         // Bar: pendaftaran
-        try {
-            const rDaft = await fetch(`${BASE}/chart/pendaftaran?tahun=${yr}`).then(r => r.json());
-            if (chartDaft) chartDaft.destroy();
-            chartDaft = new Chart(document.getElementById('chartPendaftaran'), {
-                type: 'bar',
-                data: rDaft,
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { grid: { color: '#F0F1F5' }, beginAtZero: true }, x: { grid: { display: false } } },
-                },
-            });
-        } catch (_) {}
+        if (canvasDaft) {
+            try {
+                const rDaft = await fetch(`${BASE}/chart/pendaftaran?tahun=${yr}`).then(r => r.json());
+                if (chartDaft) chartDaft.destroy();
+                chartDaft = new Chart(canvasDaft, {
+                    type: 'bar',
+                    data: rDaft,
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { grid: { color: '#F0F1F5' }, beginAtZero: true }, x: { grid: { display: false } } },
+                    },
+                });
+            } catch (_) {}
+        }
     }
 
     async function loadPie() {
+        const { api = {} } = window.PAGE_DATA || {};
+        const BASE = api.base || '/admin/api';
+        const canvasJenis = document.getElementById('chartJenis');
+        if (!canvasJenis) return;
+
         try {
             const rJenis = await fetch(`${BASE}/chart/kegiatan`).then(r => r.json());
             if (chartJenis) chartJenis.destroy();
-            chartJenis = new Chart(document.getElementById('chartJenis'), {
+            chartJenis = new Chart(canvasJenis, {
                 type: 'doughnut',
                 data: rJenis,
                 options: {
@@ -83,6 +95,9 @@
     }
 
     async function updateStats() {
+        const { api = {} } = window.PAGE_DATA || {};
+        const STATS = api.stats || '/admin/api/chart/stats';
+
         try {
             const s = await fetch(STATS).then(r => r.json());
             const deltas = [
@@ -97,11 +112,15 @@
         } catch (_) {}
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function initDashboard() {
+        if (!document.getElementById('chartPendapatan') && !document.getElementById('chartPendaftaran')) return;
         loadCharts();
         loadPie();
         updateStats();
+        document.getElementById('chart-year')?.removeEventListener('change', loadCharts);
         document.getElementById('chart-year')?.addEventListener('change', loadCharts);
-        setInterval(() => { loadCharts(); updateStats(); }, 60_000);
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', initDashboard);
+    document.addEventListener('livewire:navigated', initDashboard);
 })();

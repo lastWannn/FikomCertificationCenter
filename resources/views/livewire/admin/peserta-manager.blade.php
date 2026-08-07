@@ -1,9 +1,10 @@
 <div wire:poll.15s>
   {{-- Flash Message Notification --}}
   @if($message)
-  <div style="padding: 12px 18px; border-radius: 12px; background: rgba(16, 185, 129, 0.12); border: 1.5px solid rgba(16, 185, 129, 0.3); color: #059669; font-weight: 700; font-size: 13px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between;">
+  @php $isSuccess = $messageType === 'success'; @endphp
+  <div style="padding: 12px 18px; border-radius: 12px; background: {{ $isSuccess ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)' }}; border: 1.5px solid {{ $isSuccess ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)' }}; color: {{ $isSuccess ? '#059669' : '#DC2626' }}; font-weight: 700; font-size: 13px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between;">
     <span>{{ $message }}</span>
-    <button type="button" wire:click="$set('message', null)" style="background: none; border: none; color: #059669; cursor: pointer; font-size: 16px; font-weight: 900;">&times;</button>
+    <button type="button" wire:click="$set('message', null)" style="background: none; border: none; color: {{ $isSuccess ? '#059669' : '#DC2626' }}; cursor: pointer; font-size: 16px; font-weight: 900;">&times;</button>
   </div>
   @endif
 
@@ -11,9 +12,8 @@
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:14px;margin-bottom:20px;">
     @foreach([
       ['Total Peserta', $stats['total'], 'users', '#131218'],
-      ['Aktif', $stats['aktif'], 'check', '#10B981'],
-      ['Nonaktif', $stats['nonaktif'], 'x', '#F59E0B'],
-      ['Ditangguhkan', $stats['ditangguhkan'], 'alert-triangle', '#EF4444'],
+      ['Status Aktif', $stats['aktif'], 'check', '#10B981'],
+      ['Status Nonaktif', $stats['nonaktif'], 'x', '#F59E0B'],
     ] as [$lbl, $val, $ic, $c])
     <div class="fcc-card" style="padding:16px 20px;border-left:4px solid {{ $c }};">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
@@ -41,7 +41,6 @@
       <option value="">Semua Status Akun</option>
       <option value="aktif">Aktif</option>
       <option value="nonaktif">Nonaktif</option>
-      <option value="ditangguhkan">Ditangguhkan</option>
     </select>
 
     {{-- Reset Filter Button --}}
@@ -68,7 +67,7 @@
           <th style="padding:12px 16px;text-align:center;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;">Status</th>
           <th style="padding:12px 16px;text-align:center;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;">Kegiatan</th>
           <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;">Terdaftar</th>
-          <th style="padding:12px 16px;text-align:center;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;width:200px;">Aksi Quick Status</th>
+          <th style="padding:12px 16px;text-align:center;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;width:200px;">Aksi Akun</th>
         </tr>
       </thead>
       <tbody>
@@ -76,8 +75,7 @@
         @php 
           $sc = match($p->status_akun ?? 'aktif') {
             'aktif' => ['#10B981', 'Aktif'],
-            'nonaktif' => ['#F59E0B', 'Nonaktif'],
-            default => ['#EF4444', 'Ditangguhkan']
+            default => ['#F59E0B', 'Nonaktif']
           }; 
         @endphp
         <tr style="border-top:1px solid #F0F1F5;{{ $p->status_akun !== 'aktif' ? 'background:#FAFBFD;' : '' }}">
@@ -121,19 +119,16 @@
               <button type="button" wire:click="toggleStatus({{ $p->id }}, 'aktif')" style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:#059669;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;" title="Aktifkan Akun">
                 Aktifkan
               </button>
-              @endif
-
-              @if($p->status_akun !== 'nonaktif')
+              @else
               <button type="button" wire:click="toggleStatus({{ $p->id }}, 'nonaktif')" style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);color:#D97706;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;" title="Nonaktifkan Akun">
                 Nonaktif
               </button>
               @endif
 
-              @if($p->status_akun !== 'ditangguhkan')
-              <button type="button" wire:click="toggleStatus({{ $p->id }}, 'ditangguhkan')" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#DC2626;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;" title="Tangguhkan Akun">
-                Tangguhkan
+              {{-- Hapus Akun Button --}}
+              <button type="button" wire:click="deletePeserta({{ $p->id }})" wire:confirm="Apakah Anda yakin ingin menghapus akun peserta '{{ $p->nama }}'?" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#DC2626;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;" title="Hapus Akun Peserta">
+                Hapus
               </button>
-              @endif
 
             </div>
           </td>

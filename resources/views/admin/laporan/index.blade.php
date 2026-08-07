@@ -362,152 +362,162 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const bulanLabels = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
-  
-  // Data dari Server
-  const dataPendapatan = {!! json_encode(array_values($pendapatanBulanan)) !!};
-  const dataPendaftaran = {!! json_encode(array_values($pendaftaranBulanan)) !!};
-  const statusCounts = {!! json_encode($statusPembayaranCounts) !!};
-  const jenisCounts = {!! json_encode($jenisCounts) !!};
+(function() {
+  let chartBulananInstance, chartStatusInstance, chartJenisInstance;
 
-  // 1. Chart Combo Bulanan (Pendapatan & Pendaftaran)
-  const ctxBulanan = document.getElementById('chartLaporanBulanan');
-  if (ctxBulanan) {
-    new Chart(ctxBulanan, {
-      type: 'bar',
-      data: {
-        labels: bulanLabels,
-        datasets: [
-          {
-            label: 'Pendapatan (Rp)',
-            data: dataPendapatan,
-            backgroundColor: '#FFC81A',
-            hoverBackgroundColor: '#FFD84D',
-            borderRadius: 6,
-            yAxisID: 'yPendapatan',
-            order: 2
-          },
-          {
-            label: 'Jumlah Pendaftaran',
-            data: dataPendaftaran,
-            type: 'line',
-            borderColor: '#3B82F6',
-            backgroundColor: 'rgba(59,130,246,0.1)',
-            borderWidth: 3,
-            pointBackgroundColor: '#3B82F6',
-            pointRadius: 4,
-            tension: 0.35,
-            fill: true,
-            yAxisID: 'yPendaftaran',
-            order: 1
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            padding: 12,
-            callbacks: {
-              label: function(context) {
-                let label = context.dataset.label || '';
-                if (label) label += ': ';
-                if (context.dataset.yAxisID === 'yPendapatan') {
-                  label += 'Rp ' + new Intl.NumberFormat('id-ID').format(context.raw);
-                } else {
-                  label += context.raw + ' Pendaftaran';
-                }
-                return label;
-              }
+  function initLaporanCharts() {
+    const bulanLabels = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+    
+    // Data dari Server
+    const dataPendapatan = {!! json_encode(array_values($pendapatanBulanan)) !!};
+    const dataPendaftaran = {!! json_encode(array_values($pendaftaranBulanan)) !!};
+    const statusCounts = {!! json_encode($statusPembayaranCounts) !!};
+    const jenisCounts = {!! json_encode($jenisCounts) !!};
+
+    // 1. Chart Combo Bulanan (Pendapatan & Pendaftaran)
+    const ctxBulanan = document.getElementById('chartLaporanBulanan');
+    if (ctxBulanan) {
+      if (chartBulananInstance) chartBulananInstance.destroy();
+      chartBulananInstance = new Chart(ctxBulanan, {
+        type: 'bar',
+        data: {
+          labels: bulanLabels,
+          datasets: [
+            {
+              label: 'Pendapatan (Rp)',
+              data: dataPendapatan,
+              backgroundColor: '#FFC81A',
+              hoverBackgroundColor: '#FFD84D',
+              borderRadius: 6,
+              yAxisID: 'yPendapatan',
+              order: 2
+            },
+            {
+              label: 'Jumlah Pendaftaran',
+              data: dataPendaftaran,
+              type: 'line',
+              borderColor: '#3B82F6',
+              backgroundColor: 'rgba(59,130,246,0.1)',
+              borderWidth: 3,
+              pointBackgroundColor: '#3B82F6',
+              pointRadius: 4,
+              tension: 0.35,
+              fill: true,
+              yAxisID: 'yPendaftaran',
+              order: 1
             }
-          }
+          ]
         },
-        scales: {
-          x: { grid: { display: false } },
-          yPendapatan: {
-            type: 'linear',
-            position: 'left',
-            grid: { color: '#F0F1F5' },
-            ticks: {
-              callback: function(val) {
-                if (val >= 1000000) return 'Rp ' + (val/1000000).toFixed(1) + 'M';
-                if (val >= 1000) return 'Rp ' + (val/1000).toFixed(0) + 'k';
-                return 'Rp ' + val;
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              padding: 12,
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) label += ': ';
+                  if (context.dataset.yAxisID === 'yPendapatan') {
+                    label += 'Rp ' + new Intl.NumberFormat('id-ID').format(context.raw);
+                  } else {
+                    label += context.raw + ' Pendaftaran';
+                  }
+                  return label;
+                }
               }
             }
           },
-          yPendaftaran: {
-            type: 'linear',
-            position: 'right',
-            grid: { drawOnChartArea: false },
-            ticks: { precision: 0 }
+          scales: {
+            x: { grid: { display: false } },
+            yPendapatan: {
+              type: 'linear',
+              position: 'left',
+              grid: { color: '#F0F1F5' },
+              ticks: {
+                callback: function(val) {
+                  if (val >= 1000000) return 'Rp ' + (val/1000000).toFixed(1) + 'M';
+                  if (val >= 1000) return 'Rp ' + (val/1000).toFixed(0) + 'k';
+                  return 'Rp ' + val;
+                }
+              }
+            },
+            yPendaftaran: {
+              type: 'linear',
+              position: 'right',
+              grid: { drawOnChartArea: false },
+              ticks: { precision: 0 }
+            }
           }
         }
-      }
-    });
+      });
+    }
+
+    // 2. Chart Doughnut Status Pembayaran
+    const ctxStatus = document.getElementById('chartStatusPembayaran');
+    if (ctxStatus) {
+      if (chartStatusInstance) chartStatusInstance.destroy();
+      chartStatusInstance = new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+          labels: ['Terverifikasi', 'Menunggu', 'Ditolak', 'Kadaluarsa'],
+          datasets: [{
+            data: [
+              statusCounts['terverifikasi'] || 0,
+              (statusCounts['menunggu_verifikasi'] || 0) + (statusCounts['menunggu_pembayaran'] || 0),
+              statusCounts['ditolak'] || 0,
+              statusCounts['kadaluarsa'] || 0
+            ],
+            backgroundColor: ['#10B981', '#FFC81A', '#EF4444', '#9CA3B0'],
+            borderWidth: 0,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' } } }
+          },
+          cutout: '70%'
+        }
+      });
+    }
+
+    // 3. Chart Doughnut Jenis Kegiatan
+    const ctxJenis = document.getElementById('chartJenisKegiatan');
+    if (ctxJenis) {
+      if (chartJenisInstance) chartJenisInstance.destroy();
+      chartJenisInstance = new Chart(ctxJenis, {
+        type: 'doughnut',
+        data: {
+          labels: ['Pelatihan', 'Sertifikasi'],
+          datasets: [{
+            data: [
+              jenisCounts['pelatihan'] || 0,
+              jenisCounts['sertifikasi'] || 0
+            ],
+            backgroundColor: ['#3B82F6', '#8B5CF6'],
+            borderWidth: 0,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' } } }
+          },
+          cutout: '70%'
+        }
+      });
+    }
   }
 
-  // 2. Chart Doughnut Status Pembayaran
-  const ctxStatus = document.getElementById('chartStatusPembayaran');
-  if (ctxStatus) {
-    new Chart(ctxStatus, {
-      type: 'doughnut',
-      data: {
-        labels: ['Terverifikasi', 'Menunggu', 'Ditolak', 'Kadaluarsa'],
-        datasets: [{
-          data: [
-            statusCounts['terverifikasi'] || 0,
-            (statusCounts['menunggu_verifikasi'] || 0) + (statusCounts['menunggu_pembayaran'] || 0),
-            statusCounts['ditolak'] || 0,
-            statusCounts['kadaluarsa'] || 0
-          ],
-          backgroundColor: ['#10B981', '#FFC81A', '#EF4444', '#9CA3B0'],
-          borderWidth: 0,
-          hoverOffset: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' } } }
-        },
-        cutout: '70%'
-      }
-    });
-  }
-
-  // 3. Chart Doughnut Jenis Kegiatan
-  const ctxJenis = document.getElementById('chartJenisKegiatan');
-  if (ctxJenis) {
-    new Chart(ctxJenis, {
-      type: 'doughnut',
-      data: {
-        labels: ['Pelatihan', 'Sertifikasi'],
-        datasets: [{
-          data: [
-            jenisCounts['pelatihan'] || 0,
-            jenisCounts['sertifikasi'] || 0
-          ],
-          backgroundColor: ['#3B82F6', '#8B5CF6'],
-          borderWidth: 0,
-          hoverOffset: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' } } }
-        },
-        cutout: '70%'
-      }
-    });
-  }
-});
+  document.addEventListener('DOMContentLoaded', initLaporanCharts);
+  document.addEventListener('livewire:navigated', initLaporanCharts);
+})();
 </script>
 @endpush

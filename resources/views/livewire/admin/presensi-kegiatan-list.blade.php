@@ -89,27 +89,27 @@
                         </td>
 
                         {{-- Aksi Presensi --}}
-                        <td style="padding:14px 20px;text-align:center;vertical-align:middle;">
-                            <div style="display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;">
+                        <td style="padding:14px 20px;text-align:center;vertical-align:middle;white-space:nowrap;">
+                            <div style="display:inline-flex;gap:6px;align-items:center;justify-content:center;">
+                                {{-- Kelola Presensi --}}
+                                <a href="{{ route('admin.presensi.show', $kegiatan) }}" class="fcc-btn-gold"
+                                   style="padding:6px 14px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border-radius:8px;font-weight:800;">
+                                    @include('components.icon',['name'=>'users','size'=>14]) Kelola Presensi
+                                </a>
 
                                 {{-- Cetak PDF Presensi Kertas --}}
-                                <a href="{{ route('admin.cetak.presensi', $kegiatan) }}" target="_blank" class="fcc-btn-gold"
-                                   style="padding:6px 14px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border-radius:8px;font-weight:800;">
-                                    @include('components.icon',['name'=>'printer','size'=>14]) Cetak Lembar Presensi (PDF)
+                                <a href="{{ route('admin.cetak.presensi', $kegiatan) }}" target="_blank" class="fcc-btn-outline-dark"
+                                   style="padding:6px 12px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;border-radius:8px;background:#FFF;border:1.5px solid #E2E4EB;font-weight:700;"
+                                   title="Cetak Lembar Presensi PDF">
+                                    @include('components.icon',['name'=>'printer','size'=>13]) PDF
                                 </a>
 
                                 {{-- Export CSV --}}
                                 <a href="{{ route('admin.presensi.export', $kegiatan) }}" class="fcc-btn-outline-dark"
-                                   style="padding:6px 12px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;border-radius:8px;">
-                                    @include('components.icon',['name'=>'download','size'=>13]) Export CSV
+                                   style="padding:6px 12px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;border-radius:8px;background:#FFF;border:1.5px solid #E2E4EB;font-weight:700;"
+                                   title="Export Data CSV">
+                                    @include('components.icon',['name'=>'download','size'=>13]) CSV
                                 </a>
-
-                                {{-- Detail Peserta --}}
-                                <a href="{{ route('admin.presensi.show', $kegiatan) }}" class="fcc-btn-dark"
-                                   style="padding:6px 14px;font-size:12px;text-decoration:none;">
-                                    Detail & Live Presensi
-                                </a>
-
                             </div>
                         </td>
                     </tr>

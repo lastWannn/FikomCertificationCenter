@@ -24,11 +24,13 @@
         {{-- Action Buttons --}}
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
             <a href="{{ route('admin.cetak.presensi', $kegiatan) }}" target="_blank" class="fcc-btn-gold"
-               style="padding:9px 16px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border-radius:10px;font-weight:800;">
-                @include('components.icon',['name'=>'printer','size'=>14]) Cetak Lembar Presensi (PDF)
+               style="padding:8px 16px;font-size:12.5px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border-radius:10px;font-weight:800;"
+               title="Cetak Lembar Presensi Kertas PDF">
+                @include('components.icon',['name'=>'printer','size'=>14]) Cetak PDF
             </a>
             <a href="{{ route('admin.presensi.export', $kegiatan) }}" class="fcc-btn-outline-dark"
-               style="padding:9px 14px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border-radius:10px;font-weight:700;background:#FFF;border:1.5px solid #E2E4EB;">
+               style="padding:8px 14px;font-size:12.5px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border-radius:10px;font-weight:700;background:#FFF;border:1.5px solid #E2E4EB;"
+               title="Export Data CSV">
                 @include('components.icon',['name'=>'download','size'=>14]) Export CSV
             </a>
         </div>

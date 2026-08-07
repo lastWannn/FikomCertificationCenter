@@ -3,7 +3,7 @@
 <div style="display:flex;height:100vh;overflow:hidden;background:#F7F8FA;font-family:'Inter',sans-serif;">
 
   {{-- ═══ SIDEBAR ══════════════════════════════════════════════ --}}
-  <aside id="sidebar" style="width:256px;min-width:256px;height:100vh;background:#131218;
+  <aside id="sidebar" wire:persist="sidebar" style="width:256px;min-width:256px;height:100vh;background:#131218;
       border-right:1px solid rgba(255,200,26,.12);display:flex;flex-direction:column;
       transition:width .26s cubic-bezier(.4,0,.2,1),min-width .26s cubic-bezier(.4,0,.2,1);
       z-index:100;flex-shrink:0;overflow:hidden;">
@@ -19,7 +19,21 @@
     </div>
 
     {{-- Navigation --}}
-    <nav style="flex:1;padding:10px 0;overflow-y:auto;overflow-x:hidden;">
+    <nav id="sidebar-nav" wire:persist="sidebar-nav" style="flex:1;padding:10px 0;overflow-y:auto;overflow-x:hidden;">
+      <script>
+        (function() {
+          try {
+            var val = sessionStorage.getItem('fcc_sb_pos_val');
+            var nav = document.currentScript.parentElement;
+            if (val !== null && parseInt(val, 10) > 0) {
+              nav.scrollTop = parseInt(val, 10);
+            } else {
+              var active = nav.querySelector('.sidebar-link.active');
+              if (active) active.scrollIntoView({ block: 'center', behavior: 'instant' });
+            }
+          } catch(e) {}
+        })();
+      </script>
       @php
       $currentRoute = Route::currentRouteName();
       function sbActive(string $prefix): bool {
@@ -116,7 +130,7 @@
               });
             @endphp
             <div class="sb-dropdown">
-              <a href="{{ isset($item['route']) ? route($item['route']) : 'javascript:void(0)' }}" 
+              <a wire:navigate href="{{ isset($item['route']) ? route($item['route']) : 'javascript:void(0)' }}" 
                  class="sidebar-link {{ $isGroupActive ? 'active' : '' }}"
                  style="text-decoration:none;display:flex;justify-content:space-between;align-items:center;">
                 <div style="display:flex;align-items:center;gap:.75rem;">
@@ -145,7 +159,7 @@
                     
                     $childHref = isset($child['route']) ? route($child['route']) : $child['url'];
                   @endphp
-                  <a href="{{ $childHref }}"
+                  <a wire:navigate href="{{ $childHref }}"
                      class="sidebar-link {{ $childActive ? 'active' : '' }}"
                      style="padding:6px 12px 6px 0;margin:2px 0;min-height:30px;font-weight:{{ $childActive ? '600' : '400' }};display:flex;align-items:center;gap:10px;border-radius:0 6px 6px 0;">
                     <span style="width:16px;height:1px;background:{{ $childActive ? '#FFC81A' : 'rgba(255,255,255,.15)' }};display:inline-block;flex-shrink:0;"></span>
@@ -155,7 +169,7 @@
               </div>
             </div>
           @else
-            <a href="{{ route($item['route']) }}"
+            <a wire:navigate href="{{ route($item['route']) }}"
                class="sidebar-link {{ $isActive ? 'active' : '' }}"
                style="text-decoration:none;">
               @include('components.icon',['name'=>$item['icon'],'size'=>17,'class'=>'sb-icon'])
@@ -372,9 +386,54 @@ setTimeout(() => {
             const wrapper = alert.parentElement;
             alert.remove();
             if(wrapper && wrapper.children.length === 0) wrapper.remove();
-        }, 500);
-    });
-}, 3500);
+// Auto Scroll & Save/Focus Active Sidebar Item
+(function() {
+    function getNav() {
+        return document.getElementById('sidebar-nav') || document.querySelector('aside nav');
+    }
+
+    function saveSidebarScroll() {
+        const nav = getNav();
+        if (nav) {
+            sessionStorage.setItem('fcc_sb_pos_val', nav.scrollTop.toString());
+        }
+    }
+
+    function restoreSidebarScroll() {
+        const nav = getNav();
+        if (!nav) return;
+
+        const stored = sessionStorage.getItem('fcc_sb_pos_val');
+        if (stored !== null && parseInt(stored, 10) > 0) {
+            const pos = parseInt(stored, 10);
+            [0, 15, 60, 150].forEach(function(d) {
+                setTimeout(function() { if (nav) nav.scrollTop = pos; }, d);
+            });
+        } else {
+            const active = nav.querySelector('.sidebar-link.active');
+            if (active) {
+                [0, 15, 60, 150].forEach(function(d) {
+                    setTimeout(function() { if (active) active.scrollIntoView({ block: 'center', behavior: 'instant' }); }, d);
+                });
+            }
+        }
+    }
+
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.closest('aside a')) {
+            saveSidebarScroll();
+        }
+    }, true);
+
+    document.addEventListener('scroll', function(e) {
+        if (e.target && (e.target.id === 'sidebar-nav' || (e.target.tagName === 'NAV' && e.target.closest('aside')))) {
+            saveSidebarScroll();
+        }
+    }, true);
+
+    document.addEventListener('livewire:navigated', restoreSidebarScroll);
+    document.addEventListener('DOMContentLoaded', restoreSidebarScroll);
+})();
 </script>
 @endpush
 @endsection
