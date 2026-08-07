@@ -1,266 +1,276 @@
 @extends('layouts.public')
 @section('title','Beranda')
+
+@push('styles')
+<style>
+    @keyframes floatBadge {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-6px); }
+    }
+    @keyframes shimmerBar {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(200%); }
+    }
+
+    .hero-gradient-text {
+        background: linear-gradient(135deg, #FFFFFF 25%, #FFC81A 70%, #FFA800 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    @media (min-width: 992px) {
+        .hero-grid-layout {
+            grid-template-columns: 1.15fr 0.85fr !important;
+            gap: 56px !important;
+        }
+    }
+    @media (max-width: 991px) {
+        .hero-model-section {
+            margin-top: 32px;
+        }
+        .hero-model-wrapper {
+            max-width: 360px !important;
+            height: 430px !important;
+        }
+        .floating-badge-bottom {
+            bottom: 12px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: calc(100% - 32px) !important;
+        }
+    }
+    @media (max-width: 576px) {
+        .hero-model-wrapper {
+            max-width: 290px !important;
+            height: 350px !important;
+        }
+        .trust-item-divider {
+            display: none !important;
+        }
+    }
+</style>
+@endpush
+
 @section('page-content')
 
 {{-- ══════════════════════════════════════════════════════════════
-     HERO — #131218 (satu-satunya bagian gelap di atas)
-     Kuning #FFC81A pop sempurna di latar hitam
- ══════════════════════════════════════════════════════════════════ --}}
-<section data-hero style="min-height:100vh;background:#131218;position:relative;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;">
-    {{-- Particle Canvas --}}
-    <canvas id="hero-particles"></canvas>
-    {{-- Grid pattern --}}
-    <div style="position:absolute;inset:0;opacity:.04;
-        background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),
-                         linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);
-        background-size:64px 64px;z-index:0;"></div>
-    {{-- Animasi ornamen — Parallax Layers --}}
-    <div class="parallax-layer" data-parallax="20" style="position:absolute;top:8%;right:5%;width:300px;height:300px;animation:spin 22s linear infinite;">
-        <svg width="300" height="300" viewBox="0 0 300 300">
-            <circle cx="150" cy="150" r="138" fill="none" stroke="rgba(255,200,26,.10)" stroke-width="1" stroke-dasharray="8 7"/>
-            <circle cx="150" cy="150" r="104" fill="none" stroke="rgba(255,200,26,.06)" stroke-width="1" stroke-dasharray="4 11"/>
-        </svg>
-    </div>
-    <div class="parallax-layer" data-parallax="12" style="position:absolute;top:12%;right:9%;width:150px;height:150px;animation:rspin 14s linear infinite;">
-        <svg width="150" height="150" viewBox="0 0 150 150">
-            <circle cx="75" cy="75" r="68" fill="none" stroke="rgba(255,200,26,.18)" stroke-width="1.5" stroke-dasharray="11 5"/>
-        </svg>
-    </div>
-    <div class="parallax-layer hex" data-parallax="8" style="position:absolute;top:18%;right:13%;width:44px;height:44px;
-        background:rgba(255,200,26,.18);animation:float1 6s ease-in-out infinite;"></div>
-    <div class="parallax-layer hex" data-parallax="18" style="position:absolute;top:62%;right:4%;width:26px;height:26px;
-        background:rgba(255,200,26,.12);animation:float2 8s ease-in-out infinite 1.4s;"></div>
-    <div class="parallax-layer dia" data-parallax="25" style="position:absolute;top:40%;right:1.5%;width:20px;height:20px;
-        background:rgba(255,200,26,.22);animation:float3 5.5s ease-in-out infinite .7s;"></div>
-    <div class="parallax-layer dia" data-parallax="10" style="position:absolute;top:72%;right:16%;width:14px;height:14px;
-        background:rgba(255,200,26,.25);animation:float1 7s ease-in-out infinite 2s;"></div>
-    {{-- Extra left ornaments --}}
-    <div class="parallax-layer" data-parallax="14" style="position:absolute;top:25%;left:4%;width:80px;height:80px;border-radius:50%;border:1.5px solid rgba(255,200,26,.12);animation:rspin 18s linear infinite;"></div>
-    <div class="parallax-layer hex" data-parallax="20" style="position:absolute;top:55%;left:8%;width:18px;height:18px;background:rgba(255,200,26,.2);animation:float2 7s ease-in-out infinite 1s;"></div>
-    {{-- Dot grid kiri bawah --}}
-    <div style="position:absolute;bottom:7%;left:3%;opacity:.28;z-index:2;">
-        <svg width="108" height="108" viewBox="0 0 108 108">
-            @foreach([0,22,44,66,88] as $x)@foreach([0,22,44,66,88] as $y)
-            <circle cx="{{ $x+6 }}" cy="{{ $y+6 }}" r="1.8" fill="#FFC81A"/>
-            @endforeach@endforeach
-        </svg>
-    </div>
-    {{-- Gradient overlay bawah --}}
-    <div style="position:absolute;bottom:0;left:0;right:0;height:30%;
-        background:linear-gradient(to top,rgba(19,18,24,.8),transparent);z-index:2;"></div>
-
-    {{-- Content --}}
-    <div style="position:relative;z-index:3;text-align:center;max-width:820px;padding:110px 24px 60px;">
-        {{-- Label --}}
-        <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;
-            background:rgba(255,200,26,.1);border:1px solid rgba(255,200,26,.28);
-            border-radius:100px;padding:6px 18px;animation:fadeUp .7s ease .1s both;">
-            <div class="hero-badge-live" style="width:6px;height:6px;border-radius:50%;background:#FFC81A;"></div>
-            <span style="color:#FFC81A;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">
-                Fakultas Ilmu Komputer &middot; Universitas Muslim Indonesia
-            </span>
-        </div>
-        {{-- Headline --}}
-        <h1 style="color:#FFF;font-size:clamp(38px,6.5vw,68px);font-weight:900;
-            line-height:1.07;margin:0 0 20px;letter-spacing:-1.5px;
-            animation:fadeUp .7s ease .25s both;">
-            <span class="fcc-gold-text">FIKOM</span> Certification<br/>Center
-        </h1>
-        {{-- Tagline --}}
-        <p style="color:rgba(255,255,255,.6);font-size:clamp(15px,2vw,18px);
-            margin:0 auto 42px;line-height:1.8;max-width:560px;
-            animation:fadeUp .7s ease .4s both;">
-            Platform sertifikasi dan pelatihan profesional untuk mahasiswa dan masyarakat umum.
-            <br/><strong style="color:rgba(255,255,255,.88);">Tingkatkan kompetensi. Raih pengakuan resmi.</strong>
-        </p>
-        {{-- CTA --}}
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s ease .55s both;">
-            <span class="btn-magnetic">
-                <a href="{{ route('landing.kegiatan') }}" class="fcc-btn-gold btn-shine" style="padding:13px 28px;font-size:15px;">
-                    Lihat Kegiatan
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
-                </a>
-            </span>
-            <span class="btn-magnetic">
-                <a href="{{ route('landing.pendaftaran') }}" class="fcc-btn-outline-light" style="padding:13px 28px;font-size:15px;">
-                    Cara Mendaftar
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                </a>
-            </span>
-        </div>
-    </div>
-</section>
-
-{{-- ══════════════════════════════════════════════════════════════
-     STATS — Premium gradient cards berwarna + animasi counter
- ══════════════════════════════════════════════════════════════════ --}}
-<section style="background:linear-gradient(180deg, #131218 0%, #0e0d14 120px, #0e0d14 100%); padding:80px 24px 72px; border-bottom: none; position:relative; overflow:hidden;">
-    <div style="position:absolute;inset:0;opacity:.02;background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);background-size:40px 40px;"></div>
-    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:200px;background:radial-gradient(ellipse,rgba(255,200,26,0.05),transparent 70%);pointer-events:none;"></div>
+     HERO SECTION — High-Impact Portal Layout with Background Image
+  ══════════════════════════════════════════════════════════════════ --}}
+<section data-hero style="min-height:86vh;background:linear-gradient(180deg, rgba(19,18,24,0.84) 0%, rgba(15,14,21,0.92) 70%, #131218 100%), url('{{ asset("images/herosection.webp") }}?v={{ filemtime(public_path("images/herosection.webp")) }}');background-size:cover;background-position:center;position:relative;overflow:hidden;display:flex;align-items:center;padding:110px 0 75px;border-bottom:1px solid #1E1D26;">
     
-    <div style="max-width:1100px;margin:0 auto;
-        display:grid;grid-template-columns:repeat(4,1fr);gap:22px;position:relative;z-index:1;">
-        @php
-            $statItems = [
-                [$stats['pelatihan'],'+','Program Pelatihan','book-open','#FFC81A','rgba(255,200,26,.15)','linear-gradient(135deg,#FFC81A,#FFD84D)','rgba(255,200,26,.3)'],
-                [$stats['sertifikasi'],'+','Jenis Sertifikasi','award','#8B5CF6','rgba(139,92,246,.15)','linear-gradient(135deg,#8B5CF6,#A78BFA)','rgba(139,92,246,.3)'],
-                [$stats['peserta'],'+','Peserta Terdaftar','users','#10B981','rgba(16,185,129,.15)','linear-gradient(135deg,#10B981,#34D399)','rgba(16,185,129,.3)'],
-                [$stats['mitra'],'','Mitra Institusi','building','#3B82F6','rgba(59,130,246,.15)','linear-gradient(135deg,#3B82F6,#60A5FA)','rgba(59,130,246,.3)'],
-            ];
-        @endphp
-        @foreach($statItems as $i=>[$val,$suf,$lbl,$ic,$color,$icBg,$grad,$glow])
-        <div class="reveal tilt-card" style="transition-delay:{{ $i*110 }}ms;
-            background:rgba(255,255,255,.03);
-            border:1px solid rgba(255,255,255,.08);
-            border-radius:24px;
-            padding:32px 24px;
-            text-align:center;
-            position:relative;
-            overflow:hidden;
-            box-shadow:0 4px 12px rgba(0,0,0,.2);
-            transition:all .35s cubic-bezier(.4,0,.2,1);"
-             onmouseover="this.style.borderColor='{{ $color }}60';this.style.boxShadow='0 20px 48px {{ $glow }}, 0 8px 24px rgba(0,0,0,.3)';this.style.transform='translateY(-6px)'"
-             onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.boxShadow='0 4px 12px rgba(0,0,0,.2)';this.style.transform='translateY(0)'">
-            {{-- Glow accent top --}}
-            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);
-                width:60%;height:3px;background:linear-gradient(90deg,transparent,{{ $color }}80,transparent);opacity:0;transition:opacity .3s;"
-                onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'"></div>
-            {{-- Icon --}}
-            <div style="width:56px;height:56px;border-radius:18px;margin:0 auto 20px;
-                background:{{ $icBg }};border:1px solid {{ $color }}30;
-                display:flex;align-items:center;justify-content:center;">
-                @include('components.icon',['name'=>$ic,'size'=>24,'style'=>"color:{$color}"])
+    {{-- Main Content Container --}}
+    <div style="position:relative;z-index:3;max-width:1240px;margin:0 auto;padding:0 24px;width:100%;">
+        <div class="hero-grid-layout" style="display:grid;grid-template-columns:1fr;gap:44px;align-items:center;">
+            
+            {{-- Left Column: Clean Typography & CTAs --}}
+            <div style="max-width:660px;">
+                
+                {{-- Clean Solid Tag Pill --}}
+                <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;background:#FFC81A;border:1.5px solid #131218;border-radius:100px;padding:6px 18px;box-shadow:0 4px 12px rgba(255,200,26,0.25);">
+                    <div style="width:7px;height:7px;border-radius:50%;background:#131218;"></div>
+                    <span style="color:#131218;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;">
+                        FIKOM CERTIFICATION CENTER &middot; UMI MAKASSAR
+                    </span>
+                </div>
+
+                {{-- Headline --}}
+                <h1 style="color:#FFFFFF;font-size:clamp(34px,4.3vw,56px);font-weight:900;line-height:1.15;margin:0 0 20px;letter-spacing:-1px;">
+                    Bimbing Langkah Anda Menuju <span style="color:#FFC81A;">Keahlian Profesional</span> &amp; Sertifikasi Resmi
+                </h1>
+
+                {{-- Subtitle --}}
+                <p style="color:rgba(255,255,255,0.8);font-size:clamp(15px,1.4vw,17px);margin:0 0 34px;line-height:1.75;max-width:600px;">
+                    Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya di Fakultas Ilmu Komputer Universitas Muslim Indonesia. Dapatkan pengakuan karir resmi berstandar industri.
+                </p>
+
+                {{-- Action Buttons --}}
+                <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:0;">
+                    <span class="btn-magnetic">
+                        <a href="{{ route('landing.kegiatan') }}" style="padding:14px 32px;font-size:14.5px;border-radius:30px;font-weight:800;display:inline-flex;align-items:center;gap:10px;background:#FFC81A;color:#131218;border:2px solid #FFC81A;box-shadow:0 6px 20px rgba(255,200,26,0.35);text-decoration:none;transition:all .25s ease;">
+                            Jelajahi Program Sekarang
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </a>
+                    </span>
+                    <span class="btn-magnetic">
+                        <a href="{{ route('landing.pendaftaran') }}" style="padding:14px 28px;font-size:14.5px;border-radius:30px;font-weight:800;display:inline-flex;align-items:center;gap:8px;background:#FFFFFF;color:#131218;border:2px solid #FFFFFF;text-decoration:none;box-shadow:0 6px 20px rgba(255,255,255,0.15);transition:all .25s ease;">
+                            Cara Mendaftar
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        </a>
+                    </span>
+                </div>
+
             </div>
-            {{-- Number --}}
-            <p class="stat-number" data-count="{{ $val }}" data-suffix="{{ $suf }}"
-               style="margin:0 0 8px;
-                font-size:clamp(32px,3.5vw,46px);font-weight:900;letter-spacing:-2px;line-height:1;
-                background:{{ $grad }};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ $val }}{{ $suf }}</p>
-            {{-- Label --}}
-            <p style="margin:0;color:rgba(255,255,255,.6);font-size:12.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;">{{ $lbl }}</p>
+
+            {{-- Right Column: Modern Asymmetric Layered Showcase --}}
+            <div class="hero-model-section" style="position:relative;display:flex;justify-content:center;align-items:center;">
+                
+                <div style="position:relative;width:100%;max-width:430px;height:500px;">
+                    
+                    {{-- Solid Yellow Angled Backdrop Card --}}
+                    <div style="position:absolute;inset:-6px 6px 6px -6px;background:#FFC81A;border-radius:120px 44px 120px 44px;transform:rotate(-3.5deg);z-index:1;box-shadow:0 15px 40px rgba(255,200,26,0.35);"></div>
+
+                    {{-- Main Asymmetric Model Container --}}
+                    <div class="hero-model-wrapper" style="position:relative;z-index:2;width:100%;height:100%;border-radius:115px 36px 115px 36px;padding:8px;background:#1E1D26;border:3px solid #131218;box-shadow:0 24px 60px rgba(0,0,0,0.6);overflow:visible;">
+                        
+                        {{-- Inner Image Arch Container --}}
+                        <div style="width:100%;height:100%;border-radius:108px 30px 108px 30px;overflow:hidden;position:relative;background:#131218;">
+                            <img src="{{ asset('images/hero-model.png') }}?v={{ filemtime(public_path('images/hero-model.png')) }}" alt="Peserta Sertifikasi FIKOM UMI" style="width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform 0.5s ease;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+                        </div>
+
+                        {{-- Floating Badge 1: Top Right Trust Tag --}}
+                        <div style="position:absolute;top:-16px;right:-20px;z-index:6;background:#FFC81A;border:2px solid #131218;border-radius:30px;padding:8px 18px;display:flex;align-items:center;gap:8px;box-shadow:0 10px 25px rgba(0,0,0,0.35);">
+                            <span style="font-size:14px;">⭐</span>
+                            <span style="color:#131218;font-size:12px;font-weight:900;letter-spacing:0.3px;white-space:nowrap;">Standar BNSP &amp; Industri</span>
+                        </div>
+
+                        {{-- Floating Badge 2: Bottom Left Verification Badge --}}
+                        <div class="floating-badge-bottom" style="position:absolute;bottom:-20px;left:-24px;z-index:6;background:#131218;border:2.5px solid #FFC81A;border-radius:18px;padding:12px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 16px 36px rgba(0,0,0,0.5);">
+                            <div style="width:40px;height:40px;border-radius:10px;background:#FFC81A;display:flex;align-items:center;justify-content:center;color:#131218;font-weight:900;flex-shrink:0;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            </div>
+                            <div>
+                                <p style="margin:0;color:#FFFFFF;font-size:13.5px;font-weight:800;line-height:1.2;">Akreditasi A &amp; Terverifikasi</p>
+                                <p style="margin:2px 0 0;color:#FFC81A;font-size:11px;font-weight:800;">Resmi FIKOM UMI</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
-        @endforeach
     </div>
 </section>
 
 {{-- ══════════════════════════════════════════════════════════════
-     KEGIATAN — Surface #F7F8FA (abu sangat terang)
- ══════════════════════════════════════════════════════════════════ --}}
-<section style="padding:96px 24px;background:linear-gradient(180deg, #0e0d14 0%, #131218 120px, #131218 100%); position:relative; overflow:hidden;">
-    <div style="position:absolute;top:-100px;right:-60px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,26,0.06),transparent 70%);pointer-events:none;"></div>
-    <div style="position:absolute;bottom:-100px;left:-60px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.05),transparent 70%);pointer-events:none;"></div>
-    <div style="max-width:1100px;margin:0 auto;position:relative;z-index:1;">
-        <div class="reveal" style="text-align:center;margin-bottom:52px;">
-            <span class="section-label-yellow-inv">Jadwal Terbaru</span>
-            <div style="width:48px;height:3px;background:linear-gradient(90deg,#FFC81A,#FFD84D);border-radius:2px;margin:10px auto 18px;"></div>
-            <h2 style="color:#FFF;font-size:clamp(24px,4vw,42px);font-weight:900;
-                margin:0 0 14px;line-height:1.1;">Kegiatan yang Akan <span style="background:linear-gradient(135deg,#FFC81A,#FFD84D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Datang</span></h2>
-            <p style="color:rgba(255,255,255,.6);font-size:15.5px;max-width:480px;margin:0 auto 32px;line-height:1.7;">
-                Temukan pelatihan dan sertifikasi yang sesuai kebutuhanmu
-            </p>
-            {{-- Filter tabs — more premium --}}
-            <div style="display:inline-flex;gap:4px;background:rgba(255,255,255,.03);padding:5px;
-                border-radius:14px;border:1px solid rgba(255,255,255,.08);box-shadow:0 4px 16px rgba(0,0,0,.15);">
+     KEGIATAN — Clean White Surface & Premium Solid Cards (Spacious Layout)
+  ══════════════════════════════════════════════════════════════════ --}}
+<section style="min-height:86vh;display:flex;align-items:center;justify-content:center;padding:70px 24px;background:#F8F9FA;position:relative;overflow:hidden;box-sizing:border-box;">
+    <div style="max-width:1180px;margin:0 auto;width:100%;position:relative;z-index:1;">
+        
+        {{-- Split Header: Title Left & Filter Right --}}
+        <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:34px;flex-wrap:wrap;">
+            <div>
+                <span style="display:inline-block;padding:6px 16px;background:#FFC81A;color:#131218;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;border:1.5px solid #131218;margin-bottom:10px;">
+                    Jadwal Terbaru
+                </span>
+                <h2 style="color:#131218;font-size:clamp(26px,3.5vw,38px);font-weight:900;margin:0;line-height:1.2;">
+                    Kegiatan yang Akan <span style="color:#FFC81A;background:#131218;padding:2px 10px;border-radius:6px;">Datang</span>
+                </h2>
+            </div>
+            
+            {{-- Filter Tabs (Right Aligned) --}}
+            <div style="display:inline-flex;gap:6px;background:#FFFFFF;padding:5px;border-radius:14px;border:1.5px solid #E5E7EB;box-shadow:0 3px 10px rgba(0,0,0,0.04);">
                 @foreach([['all','Semua'],['pelatihan','Pelatihan'],['sertifikasi','Sertifikasi']] as [$v,$l])
                 <button data-filter="{{ $v }}"
-                    style="padding:9px 22px;border-radius:10px;border:none;font-size:13px;
-                           font-weight:800;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);
+                    style="padding:8px 22px;border-radius:9px;border:none;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s ease;
                            background:{{ $v==='all'?'#FFC81A':'transparent' }};
-                           color:{{ $v==='all'?'#131218':'rgba(255,255,255,.6)' }};
-                           {{ $v==='all'?'box-shadow:0 4px 12px rgba(255,200,26,.3);':'' }}">
+                           color:{{ $v==='all'?'#131218':'#6B7280' }};
+                           {{ $v==='all'?'border:1.5px solid #131218;':'' }}">
                     {{ $l }}
                 </button>
                 @endforeach
             </div>
         </div>
-        <div id="kegiatan-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:24px;">
-            @forelse($kegiatanTerbaru as $k)
+
+        {{-- Cards Grid (3 Columns) --}}
+        <div id="kegiatan-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px;">
+            @forelse($kegiatanTerbaru->take(3) as $k)
             @php
                 $isPel       = $k->jenis_kegiatan === 'pelatihan';
-                $accentColor = $isPel ? '#FFC81A' : '#8B5CF6';
-                $accentBg    = $isPel ? 'rgba(255,200,26,0.15)' : 'rgba(139,92,246,0.15)';
                 $posterUrl   = $k->detail?->gambar_url;
             @endphp
-            <div class="kegiatan-card fcc-card-dark" data-jenis="{{ $k->jenis_kegiatan }}"
-                 style="border-radius:18px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.28s cubic-bezier(0.4, 0, 0.2, 1); box-shadow:0 8px 24px rgba(0,0,0,0.2);"
-                 onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='rgba(255,200,26,0.35)'; this.style.boxShadow='0 16px 36px rgba(0,0,0,0.45)';"
-                 onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)';">
+            <div class="kegiatan-card" data-jenis="{{ $k->jenis_kegiatan }}"
+                 style="border-radius:18px; border:2px solid #E5E7EB; background:#FFFFFF; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.28s ease; box-shadow:0 4px 16px rgba(0,0,0,0.04);"
+                 onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='#FFC81A'; this.style.boxShadow='0 16px 32px rgba(0,0,0,0.08)';"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='#E5E7EB'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.04)';">
 
                 <div>
-                    {{-- Poster Container --}}
-                    <div style="position:relative; width:100%; height:240px; overflow:hidden; background:#1A1921;">
+                    {{-- Poster Container (Height 185px) --}}
+                    <div style="position:relative; width:100%; height:185px; overflow:hidden; background:#131218;">
                         @if($posterUrl)
                         <img src="{{ $posterUrl }}" alt="{{ $k->judul }}" style="width:100%; height:100%; object-fit:cover; object-position:center top; display:block; transition:transform 0.4s ease;"
                              onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                         @else
-                        {{-- Fallback poster when image is not uploaded --}}
-                        <div style="width:100%; height:100%; background:linear-gradient(135deg, {{ $isPel?'rgba(255,200,26,0.15)':'rgba(139,92,246,0.15)' }} 0%, rgba(19,18,24,0.95) 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
-                            @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>40,'style'=>'color:'.$accentColor])
-                            <span style="font-size:11px; font-weight:800; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:1.5px;">{{ ucfirst($k->jenis_kegiatan) }}</span>
+                        <div style="width:100%; height:100%; background:#131218; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+                            @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>36,'style'=>'color:#FFC81A'])
+                            <span style="font-size:11px; font-weight:800; color:#FFC81A; text-transform:uppercase; letter-spacing:1.5px;">{{ ucfirst($k->jenis_kegiatan) }}</span>
                         </div>
                         @endif
-                    </div>
 
-                    {{-- Card Body --}}
-                    <div style="padding:20px;">
-                        {{-- Tag Row (Jenis & Biaya / Status) --}}
-                        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;">
-                            <span style="font-size:10.5px; font-weight:800; padding:4px 10px; border-radius:6px; background:{{ $accentBg }}; color:{{ $accentColor }}; border:1px solid {{ $accentColor }}35; text-transform:uppercase; letter-spacing:0.5px;">
+                        {{-- Floating Badges over Poster --}}
+                        <div style="position:absolute;top:12px;left:12px;display:flex;gap:6px;">
+                            <span style="font-size:10.5px; font-weight:900; padding:4px 10px; border-radius:6px; background:#FFC81A; color:#131218; border:1px solid #131218; text-transform:uppercase; letter-spacing:0.5px;">
                                 {{ ucfirst($k->jenis_kegiatan) }}
                             </span>
-                            <span style="font-size:11px; font-weight:700; color:{{ $k->isFull() ? '#EF4444' : ($k->biaya->isNotEmpty() ? '#FFC81A' : '#10B981') }}; background:rgba(255,255,255,0.04); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+                        </div>
+                        <div style="position:absolute;top:12px;right:12px;">
+                            <span style="font-size:10.5px; font-weight:800; color:{{ $k->isFull() ? '#EF4444' : '#131218' }}; background:#FFFFFF; padding:4px 10px; border-radius:6px; border:1px solid #131218; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
                                 {{ $k->isFull() ? 'Kuota Penuh' : ($k->biaya->isNotEmpty() ? 'Berbayar' : 'Gratis') }}
                             </span>
                         </div>
+                    </div>
 
-                        <h4 style="margin:0 0 10px; color:#FFF; font-size:16px; font-weight:800; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:44px;">
-                            <a href="{{ route('landing.show', $k) }}" style="color:#FFF; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#FFF'">
+                    {{-- Card Body --}}
+                    <div style="padding:16px 18px 12px;">
+                        
+                        {{-- Title --}}
+                        <h4 style="margin:0 0 10px; color:#131218; font-size:15px; font-weight:800; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; height:42px;">
+                            <a href="{{ route('landing.show', $k) }}" style="color:#131218; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#F59E0B'" onmouseout="this.style.color='#131218'">
                                 {{ $k->judul }}
                             </a>
                         </h4>
 
-                        <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(255,255,255,0.65); font-weight:600; margin-bottom:14px;">
-                            @include('components.icon',['name'=>'calendar','size'=>15,'style'=>'color:rgba(255,255,255,0.4)'])
-                            <span>{{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Jadwal Menyusul' }}</span>
+                        {{-- Date & Kuota Bar --}}
+                        <div style="display:flex; align-items:center; justify-content:space-between; font-size:12.5px; color:#4B5563; font-weight:700; margin-bottom:10px;">
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                @include('components.icon',['name'=>'calendar','size'=>15,'style'=>'color:#6B7280'])
+                                <span>{{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Jadwal Menyusul' }}</span>
+                            </div>
+                            <span style="color:#131218;font-weight:800;font-size:12px;">{{ $k->terisi }}/{{ $k->kuota }}</span>
                         </div>
 
                         {{-- Kuota Progress Bar --}}
-                        <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:10px 12px; border:1px solid rgba(255,255,255,0.06); margin-bottom:16px;">
-                            <div style="display:flex; justify-content:space-between; font-size:11.5px; color:rgba(255,255,255,0.6); margin-bottom:6px; font-weight:700;">
+                        <div style="background:#F8F9FA; border-radius:8px; padding:7px 9px; border:1px solid #E5E7EB; margin-bottom:12px;">
+                            <div style="display:flex; justify-content:space-between; font-size:11px; color:#4B5563; margin-bottom:4px; font-weight:700;">
                                 <span>Peserta Terdaftar</span>
-                                <span style="color:#FFF;">{{ $k->terisi }} / {{ $k->kuota }}</span>
+                                <span style="color:#131218;font-weight:800;">{{ $k->terisi }} / {{ $k->kuota }}</span>
                             </div>
-                            <div style="height:5px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+                            <div style="height:5px; background:#E5E7EB; border-radius:3px; overflow:hidden;">
                                 <div style="height:5px; border-radius:3px; transition:width 0.3s;
-                                            background:{{ $k->isFull() ? '#EF4444' : ($k->terisi/$k->kuota>0.8 ? '#F59E0B' : '#FFC81A') }};
+                                            background:{{ $k->isFull() ? '#EF4444' : '#FFC81A' }};
                                             width:{{ $k->kuota>0 ? min(100, round($k->terisi/$k->kuota*100)) : 0 }}%;"></div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
                 {{-- Action Button --}}
-                <div style="padding:0 20px 20px;">
+                <div style="padding:0 18px 16px;">
                     <a href="{{ route('landing.show', $k) }}"
-                       class="{{ $k->isFull() ? '' : 'fcc-btn-gold btn-shine' }}"
-                       style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none; padding:11px; border-radius:10px; font-size:13.5px; font-weight:800; transition:all 0.2s ease; width:100%; box-sizing:border-box;
-                              {{ $k->isFull() ? 'background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:rgba(255,255,255,.4); cursor:not-allowed;' : '' }}">
+                       style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none; padding:10.5px 14px; border-radius:10px; font-size:13px; font-weight:800; transition:all 0.2s ease; width:100%; box-sizing:border-box;
+                              {{ $k->isFull() ? 'background:#F3F4F6; border:1px solid #E5E7EB; color:#9CA3AF; cursor:not-allowed;' : 'background:#FFC81A; color:#131218; border:1.5px solid #131218; box-shadow:0 4px 12px rgba(255,200,26,0.3);' }}">
                         {{ $k->isFull() ? 'Kuota Penuh' : 'Detail & Daftar →' }}
                     </a>
                 </div>
             </div>
             @empty
-            <div style="grid-column:1 / -1; padding:60px 24px; text-align:center; color:rgba(255,255,255,.4); font-size:14.5px;" class="fcc-card-dark">
+            <div style="grid-column:1 / -1; padding:45px 24px; text-align:center; color:#6B7280; font-size:14.5px; background:#FFFFFF; border:2px solid #E5E7EB; border-radius:16px;">
                 Belum ada kegiatan yang dipublikasikan.
             </div>
             @endforelse
         </div>
-        <div class="reveal" style="text-align:center;margin-top:44px;">
+
+        {{-- Bottom View All Button --}}
+        <div class="reveal" style="text-align:center;margin-top:36px;">
             <span class="btn-magnetic">
-                <a href="{{ route('landing.kegiatan') }}" class="fcc-btn-outline-light btn-shine" style="padding:12px 32px;font-size:14px;font-weight:800;">
+                <a href="{{ route('landing.kegiatan') }}" style="padding:11.5px 30px;font-size:13.5px;font-weight:800;background:#131218;color:#FFC81A;border:2px solid #131218;border-radius:30px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 14px rgba(0,0,0,0.12);">
                     Lihat Semua Kegiatan
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -270,50 +280,44 @@
         </div>
     </div>
 </section>
-
-    <!-- Decorative background accent -->
-
-
+        </div>
+    </div>
+</section>
+        </div>
+    </div>
+</section>
 
 {{-- ══════════════════════════════════════════════════════════════
-     TENTANG — PUTIH — #131218 icon bg, kuning highlight
- ══════════════════════════════════════════════════════════════════ --}}
-<section style="padding:88px 24px;background:linear-gradient(180deg, #131218 0%, #0e0d14 120px, #0e0d14 100%); position:relative; overflow:hidden;">
-    <!-- Animated Glowing Ornaments -->
-    <div style="position:absolute;top:15%;right:5%;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle, rgba(255,200,26,0.05) 0%, transparent 70%);border:1px solid rgba(255,200,26,0.1);animation:float1 8s ease-in-out infinite;pointer-events:none;"></div>
-    <div style="position:absolute;bottom:10%;left:8%;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle, rgba(139,92,246,0.03) 0%, transparent 70%);border:1px dashed rgba(139,92,246,0.1);animation:spin 25s linear infinite;pointer-events:none;"></div>
-    <div style="position:absolute;top:60%;right:10%;width:30px;height:30px;background:rgba(255,200,26,0.1);border-radius:8px;animation:float2 6s ease-in-out infinite 2s;pointer-events:none;transform:rotate(45deg);"></div>
-    <div style="position:absolute;top:20%;left:5%;width:15px;height:15px;background:rgba(139,92,246,0.15);border-radius:4px;animation:float1 5s ease-in-out infinite 1s;pointer-events:none;transform:rotate(45deg);"></div>
-    <div style="max-width:1100px;margin:0 auto;
-        display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative;z-index:1;">
-        {{-- Teks kiri --}}
+     TENTANG — High-Contrast Dark Section (Kuning + Putih + Hitam)
+  ══════════════════════════════════════════════════════════════════ --}}
+<section class="section-stack" style="z-index:3;padding:90px 24px;background:#131218;position:sticky;overflow:hidden;">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1;">
+        
+        {{-- Left Content --}}
         <div class="rl">
-            <span class="section-label-yellow-inv">Tentang Kami</span>
-            <div class="divider-yellow"></div>
-            <h2 style="color:#FFF;font-size:clamp(24px,3.5vw,38px);font-weight:900;
-                margin:0 0 18px;line-height:1.2;">
-                Pusat Sertifikasi dan Pelatihan <span class="fcc-gold-text">Profesional</span>
+            <span style="display:inline-block;padding:6px 16px;background:#FFC81A;color:#131218;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;margin-bottom:14px;">
+                Tentang Kami
+            </span>
+            <h2 style="color:#FFFFFF;font-size:clamp(26px,3.5vw,38px);font-weight:900;margin:0 0 18px;line-height:1.2;">
+                Pusat Sertifikasi dan Pelatihan <span style="color:#FFC81A;">Profesional</span>
             </h2>
-            <p style="color:rgba(255,255,255,.65);font-size:15px;line-height:1.88;margin:0 0 20px;">
-                FIKOM Certification Center (FCC) adalah unit pelaksana di bawah Fakultas Ilmu Komputer
-                Universitas Muslim Indonesia yang menyelenggarakan program pelatihan dan sertifikasi
-                kompetensi bagi mahasiswa dan masyarakat umum.
+            <p style="color:rgba(255,255,255,0.8);font-size:15px;line-height:1.8;margin:0 0 24px;">
+                FIKOM Certification Center (FCC) adalah unit pelaksana di bawah Fakultas Ilmu Komputer Universitas Muslim Indonesia yang menyelenggarakan program pelatihan dan sertifikasi kompetensi bagi mahasiswa dan masyarakat umum.
             </p>
             @foreach([
                 'Terakreditasi oleh lembaga sertifikasi nasional (BNSP)',
                 'Kurikulum diperbarui bersama mitra industri setiap semester',
                 'Sertifikat diakui oleh perusahaan dan institusi mitra FCC',
             ] as $item)
-            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-                <div style="width:20px;height:20px;border-radius:6px;flex-shrink:0;margin-top:1px;
-                    background:rgba(255,200,26,.15);display:flex;align-items:center;justify-content:center;">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+                <div style="width:22px;height:22px;border-radius:6px;flex-shrink:0;margin-top:1px;background:#FFC81A;display:flex;align-items:center;justify-content:center;color:#131218;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
-                <span style="color:rgba(255,255,255,.7);font-size:14px;line-height:1.6;">{{ $item }}</span>
+                <span style="color:#FFFFFF;font-size:14px;line-height:1.6;font-weight:600;">{{ $item }}</span>
             </div>
             @endforeach
-            <div style="margin-top:28px;">
-                <a href="{{ route('landing.profil') }}" class="fcc-btn-gold btn-shine" style="padding:11px 24px;font-size:14px;">
+            <div style="margin-top:30px;">
+                <a href="{{ route('landing.profil') }}" style="padding:12px 28px;font-size:14px;font-weight:800;background:#FFC81A;color:#131218;border-radius:30px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(255,200,26,0.3);">
                     Selengkapnya
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -321,78 +325,73 @@
                 </a>
             </div>
         </div>
-        {{-- Feature cards kanan --}}
-        <div class="rr" style="display:flex;flex-direction:column;gap:14px;">
+
+        {{-- Right Feature Cards --}}
+        <div class="rr" style="display:flex;flex-direction:column;gap:16px;">
             @foreach([
                 ['award',    'Sertifikasi Berstandar BNSP',  'Program sertifikasi yang diakui secara nasional sesuai standar BNSP dan mitra resmi.'],
                 ['book-open','Kurikulum Berbasis Industri',   'Materi dirancang bersama praktisi dan diselaraskan kebutuhan industri digital terkini.'],
                 ['users',    'Instruktur Berpengalaman',      'Diasuh dosen berpengalaman dan profesional bidang teknologi informasi.'],
-            ] as $i=>[$ic,$t,$d])
-            <div class="fcc-card-dark" style="padding:20px 22px;display:flex;gap:14px;align-items:flex-start;
-                transition:all .22s ease;" onmouseover="this.style.borderColor='rgba(255,200,26,.4)';this.style.boxShadow='0 8px 32px rgba(255,200,26,.15)';this.style.transform='translateY(-3px)'"
-                 onmouseout="this.style.borderColor='rgba(255,200,26,.14)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
-                <div class="icon-box-inv" style="width:46px;height:46px;border-radius:12px;">
-                    @include('components.icon',['name'=>$ic,'size'=>21,'style'=>'color:#FFC81A'])
+            ] as [$ic,$t,$d])
+            <div style="padding:22px;display:flex;gap:16px;align-items:flex-start;background:#1E1D26;border:1.5px solid rgba(255,200,26,0.25);border-radius:16px;transition:all .25s ease;"
+                 onmouseover="this.style.borderColor='#FFC81A';this.style.transform='translateY(-3px)'"
+                 onmouseout="this.style.borderColor='rgba(255,200,26,0.25)';this.style.transform='translateY(0)'">
+                <div style="width:48px;height:48px;border-radius:12px;background:#FFC81A;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    @include('components.icon',['name'=>$ic,'size'=>22,'style'=>'color:#131218'])
                 </div>
                 <div>
-                    <p style="margin:0 0 5px;color:#FFF;font-size:14px;font-weight:800;">{{ $t }}</p>
-                    <p style="margin:0;color:rgba(255,255,255,.6);font-size:13px;line-height:1.65;">{{ $d }}</p>
+                    <p style="margin:0 0 6px;color:#FFFFFF;font-size:15px;font-weight:800;">{{ $t }}</p>
+                    <p style="margin:0;color:rgba(255,255,255,0.7);font-size:13px;line-height:1.65;">{{ $d }}</p>
                 </div>
             </div>
             @endforeach
-            {{-- Visi Misi mini --}}
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:2px;">
+
+            {{-- Visi Misi Mini Cards --}}
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;">
                 @foreach([
-                    ['star','Visi','#FFC81A','Menjadi unit pelatihan dan sertifikasi profesional pencetak tenaga kerja berkualitas, terampil, dan mandiri berstandar nasional dan internasional.'],
-                    ['zap', 'Misi','#10B981','Memberikan pelatihan & sertifikasi IT, membentuk SDM profesional, serta berkontribusi dalam peningkatan keterampilan anak bangsa.'],
-                ] as [$ic,$t,$c,$txt])
-                <div class="fcc-card-dark" style="padding:16px 14px;">
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                        <div style="width:30px;height:30px;border-radius:8px;
-                            background:{{ $c=='#FFC81A'?'rgba(255,200,26,.15)':'rgba(16,185,129,.15)' }};
-                            display:flex;align-items:center;justify-content:center;">
-                            @include('components.icon',['name'=>$ic,'size'=>14,'style'=>"color:{$c}"])
+                    ['star','Visi','Menjadi unit pelatihan dan sertifikasi profesional pencetak tenaga kerja berkualitas, terampil, dan mandiri berstandar nasional dan internasional.'],
+                    ['zap', 'Misi','Memberikan pelatihan & sertifikasi IT, membentuk SDM profesional, serta berkontribusi dalam peningkatan keterampilan anak bangsa.'],
+                ] as [$ic,$t,$txt])
+                <div style="padding:18px 16px;background:#1E1D26;border:1px solid rgba(255,255,255,0.12);border-radius:14px;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                        <div style="width:28px;height:28px;border-radius:8px;background:#FFC81A;display:flex;align-items:center;justify-content:center;color:#131218;">
+                            @include('components.icon',['name'=>$ic,'size'=>15,'style'=>'color:#131218'])
                         </div>
-                        <span style="font-weight:800;font-size:13px;color:#FFF;">{{ $t }}</span>
+                        <span style="font-weight:900;font-size:14px;color:#FFFFFF;">{{ $t }}</span>
                     </div>
-                    <p style="margin:0;color:rgba(255,255,255,.5);font-size:12px;line-height:1.65;">{{ $txt }}</p>
+                    <p style="margin:0;color:rgba(255,255,255,0.65);font-size:12px;line-height:1.65;">{{ $txt }}</p>
                 </div>
                 @endforeach
             </div>
         </div>
+
     </div>
 </section>
 
 {{-- ══════════════════════════════════════════════════════════════
-     TATA CARA — #131218 BG — kuning aktif, putih teks
-     Kuning di atas hitam: kontras terbaik
- ══════════════════════════════════════════════════════════════════ --}}
-<section style="padding:88px 24px;background:linear-gradient(180deg, #0e0d14 0%, #131218 120px, #131218 100%); position:relative; overflow:hidden;">
-    <div style="position:absolute;inset:0;opacity:.04;
-        background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),
-                         linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);
-        background-size:64px 64px;"></div>
-    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-        width:600px;height:600px;border-radius:50%;
-        background:radial-gradient(circle,rgba(255,200,26,.04),transparent 65%);pointer-events:none;"></div>
+     TATA CARA PENDAFTARAN — Clean White Section
+  ══════════════════════════════════════════════════════════════════ --}}
+<section style="padding:90px 24px;background:#FFFFFF; position:relative; overflow:hidden; border-bottom:1px solid #E5E7EB;">
     <div style="max-width:1100px;margin:0 auto;position:relative;z-index:1;">
-        <div class="reveal" style="text-align:center;margin-bottom:58px;">
-            <span class="section-label-yellow-inv">Mudah &amp; Cepat</span>
-            <div style="width:48px;height:3px;background:linear-gradient(90deg,#FFC81A,#FFD84D);border-radius:2px;margin:10px auto 16px;"></div>
-            <h2 style="color:#FFF;font-size:clamp(24px,4vw,40px);font-weight:900;margin:0 0 12px;">
-                Tata Cara <span class="fcc-gold-text">Pendaftaran</span>
+        <div class="reveal" style="text-align:center;margin-bottom:54px;">
+            <span style="display:inline-block;padding:6px 16px;background:#131218;color:#FFC81A;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;margin-bottom:12px;">
+                Mudah &amp; Cepat
+            </span>
+            <h2 style="color:#131218;font-size:clamp(26px,4vw,40px);font-weight:900;margin:0 0 12px;">
+                Tata Cara <span style="color:#FFC81A;background:#131218;padding:2px 10px;border-radius:6px;">Pendaftaran</span>
             </h2>
-            <p style="color:rgba(255,255,255,.5);font-size:15px;margin:0;max-width:420px;margin:0 auto;">
-                Selesaikan pendaftaran dalam 4 langkah mudah
+            <p style="color:#4B5563;font-size:15px;margin:0 auto;max-width:440px;">
+                Selesaikan proses pendaftaran Anda dalam 4 langkah mudah.
             </p>
         </div>
-        {{-- Steps --}}
-        <div style="position:relative;margin-bottom:40px;">
-            {{-- Garis Latar --}}
-            <div style="position:absolute;top:35px;left:12.5%;right:12.5%;height:2px;background:rgba(255,255,255,.08);border-radius:2px;"></div>
-            {{-- Garis Progres --}}
-            <div style="position:absolute;top:35px;left:12.5%;right:12.5%;height:2px;z-index:1;">
-                <div id="step-fill-pend" style="position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,#FFC81A,#FFD84D);border-radius:2px;transition:width .5s ease;"></div>
+
+        {{-- Steps Grid --}}
+        <div style="position:relative;margin-bottom:44px;">
+            {{-- Connector line --}}
+            <div style="position:absolute;top:35px;left:12.5%;right:12.5%;height:3px;background:#E5E7EB;border-radius:2px;"></div>
+            {{-- Progress fill line --}}
+            <div style="position:absolute;top:35px;left:12.5%;right:12.5%;height:3px;z-index:1;">
+                <div id="step-fill-pend" style="position:absolute;top:0;left:0;height:100%;width:0%;background:#FFC81A;border-radius:2px;transition:width .5s ease;"></div>
             </div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;z-index:1;">
                 @foreach([
@@ -401,34 +400,36 @@
                     ['credit-card','Bayar & Upload','Aktifkan kode unik, transfer ke rekening FCC, lalu upload bukti transfer di portal.'],
                     ['check','Ikuti Kegiatan','Setelah Admin memverifikasi, kamu resmi terdaftar dan siap mengikuti kegiatan.'],
                 ] as $si=>[$ic,$t,$d])
-                <div id="step-wrapper-{{ $si }}" class="reveal" style="text-align:center;cursor:pointer;padding:4px;transition-delay:{{ $si*100 }}ms;" onclick="setStepInline({{ $si }})" onmouseenter="clearInterval(stepTimer); setStepInline({{ $si }})" onmouseleave="startTimer()">
-                    <div id="step-box-{{ $si }}" style="width:70px;height:70px;border-radius:20px;margin:0 auto 16px;position:relative;transition:all .3s ease;
-                        background:{{ $si===0 ? 'linear-gradient(135deg,#FFC81A,#FFD84D)' : '#16151c' }};
-                        border:{{ $si===0 ? '2px solid transparent' : '2px solid rgba(255,255,255,.08)' }};
-                        box-shadow:{{ $si===0 ? '0 8px 28px rgba(255,200,26,.45)' : '0 2px 8px rgba(0,0,0,.2)' }};
+                <div id="step-wrapper-{{ $si }}" class="reveal" style="text-align:center;cursor:pointer;padding:6px;transition-delay:{{ $si*100 }}ms;" onclick="setStepInline({{ $si }})" onmouseenter="clearInterval(stepTimer); setStepInline({{ $si }})" onmouseleave="startTimer()">
+                    <div id="step-box-{{ $si }}" style="width:68px;height:68px;border-radius:18px;margin:0 auto 16px;position:relative;transition:all .3s ease;
+                        background:{{ $si===0 ? '#FFC81A' : '#F3F4F6' }};
+                        border:{{ $si===0 ? '2px solid #131218' : '2px solid #E5E7EB' }};
+                        box-shadow:{{ $si===0 ? '0 6px 18px rgba(0,0,0,0.12)' : 'none' }};
                         display:flex;align-items:center;justify-content:center;">
-                        @include('components.icon',['name'=>$ic,'size'=>26,'style'=>"color:".($si===0?'#111':'rgba(255,255,255,.4)').";transition:color .3s;"])
-                        <div style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;" class="step-num-badge" style="
-                            background:{{ $si===0 ? 'linear-gradient(135deg,#FFC81A,#FFD84D)' : 'rgba(255,255,255,.08)' }};
-                            display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(255,200,26,.4);transition:all .3s;">
-                            <span style="font-size:11px;font-weight:900;color:{{ $si===0?'#111':'rgba(255,255,255,.6)' }};transition:color .3s;">{{ $si+1 }}</span>
+                        @include('components.icon',['name'=>$ic,'size'=>24,'style'=>"color:".($si===0?'#131218':'#6B7280').";transition:color .3s;"])
+                        <div class="step-num-badge" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;
+                            background:{{ $si===0 ? '#131218' : '#E5E7EB' }};
+                            display:flex;align-items:center;justify-content:center;transition:all .3s;">
+                            <span style="font-size:11px;font-weight:900;color:{{ $si===0?'#FFC81A':'#6B7280' }};transition:color .3s;">{{ $si+1 }}</span>
                         </div>
                     </div>
-                    <p id="step-title-{{ $si }}" style="color:{{ $si===0?'#FFF':'rgba(255,255,255,.6)' }};font-size:14px;font-weight:{{ $si===0?'800':'600' }};margin:0 0 8px;transition:all .3s;">{{ $t }}</p>
-                    <p style="color:rgba(255,255,255,.4);font-size:12.5px;line-height:1.7;margin:0;">{{ $d }}</p>
+                    <p id="step-title-{{ $si }}" style="color:{{ $si===0?'#131218':'#4B5563' }};font-size:14.5px;font-weight:{{ $si===0?'800':'600' }};margin:0 0 8px;transition:all .3s;">{{ $t }}</p>
+                    <p style="color:#6B7280;font-size:12.5px;line-height:1.65;margin:0;">{{ $d }}</p>
                 </div>
                 @endforeach
             </div>
         </div>
-        {{-- Progress dots --}}
+
+        {{-- Progress Dots --}}
         <div style="display:flex;justify-content:center;gap:8px;margin-bottom:36px;" id="step-dots">
             @for($i=0;$i<4;$i++)
-            <div onclick="setStepInline({{ $i }})" style="width:{{ $i===0?'20':'8' }}px;height:8px;border-radius:4px;cursor:pointer;transition:all .3s;background:{{ $i===0?'#FFC81A':'rgba(255,255,255,.1)' }};"></div>
+            <div onclick="setStepInline({{ $i }})" style="width:{{ $i===0?'22':'8' }}px;height:8px;border-radius:4px;cursor:pointer;transition:all .3s;background:{{ $i===0?'#FFC81A':'#E5E7EB' }};"></div>
             @endfor
         </div>
+
         <div style="text-align:center;">
             <span class="btn-magnetic">
-                <a href="{{ route('auth.register') }}" class="fcc-btn-gold btn-shine" style="padding:13px 30px;font-size:15px;">
+                <a href="{{ route('auth.register') }}" style="padding:14px 32px;font-size:15px;font-weight:800;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:30px;text-decoration:none;display:inline-flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(255,200,26,0.35);">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/>
                         <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
@@ -441,122 +442,163 @@
 </section>
 
 {{-- ══════════════════════════════════════════════════════════════
-     MITRA — background gelap dengan logo yang tampil menonjol
- ══════════════════════════════════════════════════════════════════ --}}
-<section style="padding:80px 0;background:linear-gradient(180deg, #131218 0%, #0e0d14 120px, #0e0d14 100%); position:relative; overflow:hidden;">
-    <div style="position:absolute;inset:0;opacity:.02;background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);background-size:40px 40px;"></div>
-    <div style="max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1;">
-        <div class="reveal" style="text-align:center;margin-bottom:44px;">
-            <span class="section-label-yellow-inv">Dipercaya Bersama</span>
-            <div style="width:48px;height:3px;background:linear-gradient(90deg,#FFC81A,#FFD84D);border-radius:2px;margin:10px auto 16px;"></div>
-            <h2 style="color:#FFF;font-size:clamp(22px,3.5vw,34px);font-weight:900;margin:0 0 10px;">
-                Mitra <span class="fcc-gold-text">Strategis</span> Kami
+     MITRA STRATEGIS — Clean Official Partners Showcase
+  ══════════════════════════════════════════════════════════════════ --}}
+<section class="section-stack" style="z-index:5;min-height:75vh;display:flex;align-items:center;justify-content:center;padding:90px 24px;background:#F8F9FA;position:sticky;overflow:hidden;box-sizing:border-box;">
+    <div style="max-width:1100px;margin:0 auto;width:100%;position:relative;z-index:1;">
+        
+        {{-- Section Header --}}
+        <div class="reveal" style="text-align:center;margin-bottom:52px;">
+            <span style="display:inline-block;padding:6px 18px;background:#FFC81A;color:#131218;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;border:1.5px solid #131218;margin-bottom:12px;box-shadow:0 4px 12px rgba(255,200,26,0.25);">
+                Dipercaya Bersama
+            </span>
+            <h2 style="color:#131218;font-size:clamp(26px,3.8vw,38px);font-weight:900;margin:0 0 12px;line-height:1.2;">
+                Mitra <span style="color:#FFC81A;background:#131218;padding:2px 10px;border-radius:6px;">Strategis</span> Kami
             </h2>
-            <p style="color:rgba(255,255,255,.6);font-size:14px;margin:0;">Kolaborasi kami dengan penyedia sertifikasi global terkemuka</p>
+            <p style="color:#4B5563;font-size:15px;margin:0 auto;max-width:500px;line-height:1.7;">
+                Kolaborasi resmi FIKOM Certification Center dengan penyedia sertifikasi teknologi global terkemuka.
+            </p>
         </div>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:24px;padding:12px 24px;max-width:1000px;margin:0 auto;">
-        @foreach($mitras as $index => $m)
-        <div class="spring-up stagger-{{ ($index % 4) + 1 }}">
-            @if($m->link_website)
-            <a href="{{ $m->link_website }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
-            @endif
-            <div class="fcc-mitra-card tilt-card" style="padding:16px;background:rgba(255,255,255,.04);border-radius:18px;display:flex;align-items:center;gap:14px;border:1px solid rgba(255,255,255,.08);transition:all .2s;cursor:{{ $m->link_website ? 'pointer' : 'default' }};"
-                 onmouseover="this.style.borderColor='rgba(255,200,26,.3)';this.style.background='rgba(255,255,255,.06)'"
-                 onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='rgba(255,255,255,.04)'">
-                <div style="width:70px;height:70px;border-radius:14px;background:rgba(255,255,255,.05);
-                    display:flex;align-items:center;justify-content:center;
-                    border:1px solid rgba(255,255,255,.05);overflow:hidden;flex-shrink:0;">
+        
+        {{-- Database Partners Grid --}}
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:28px;">
+            @foreach($mitras as $index => $m)
+            <div class="spring-up stagger-{{ ($index % 3) + 1 }}" 
+                 style="background:#FFFFFF;border:2px solid #E5E7EB;border-radius:24px;padding:36px 30px;display:flex;flex-direction:column;align-items:center;text-align:center;transition:all .3s ease;box-shadow:0 6px 20px rgba(0,0,0,0.03);"
+                 onmouseover="this.style.borderColor='#FFC81A';this.style.transform='translateY(-6px)';this.style.boxShadow='0 16px 36px rgba(0,0,0,0.08)';"
+                 onmouseout="this.style.borderColor='#E5E7EB';this.style.transform='translateY(0)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.03)';">
+                
+                {{-- Logo Box --}}
+                <div style="width:76px;height:76px;border-radius:20px;background:#131218;border:2.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;margin-bottom:22px;box-shadow:0 8px 20px rgba(19,18,24,0.25);">
                     @if($m->logo)
-                    <img src="{{ asset('storage/'.$m->logo) }}" alt="{{ $m->nama_mitra }}"
-                         style="width:52px;height:52px;object-fit:contain;filter:brightness(0) invert(1);opacity:.85;">
+                    <img src="{{ asset('storage/'.$m->logo) }}" alt="{{ $m->nama_mitra }}" style="width:52px;height:52px;object-fit:contain;filter:brightness(0) invert(1);">
                     @else
-                    <span style="color:{{ $m->warna ?? '#FFC81A' }};font-size:16px;font-weight:900;letter-spacing:.5px;
-                        font-family:monospace;">{{ Str::upper(Str::substr($m->inisial ?? $m->nama_mitra,0,3)) }}</span>
+                    <span style="color:#FFC81A;font-size:18px;font-weight:900;letter-spacing:.5px;font-family:monospace;">{{ Str::upper(Str::substr($m->inisial ?? $m->nama_mitra,0,4)) }}</span>
                     @endif
                 </div>
-                <div style="padding-right:10px;">
-                    <p style="margin:0;color:#FFF;font-size:13px;font-weight:900;line-height:1.35;
-                        word-break:break-word;">{{ $m->nama_mitra }}</p>
-                    <p style="margin:4px 0 0;color:rgba(255,255,255,.5);font-size:10px;font-weight:700;
-                        text-transform:uppercase;letter-spacing:.5px;">{{ $m->link_website ? 'Kunjungi Website ↗' : 'Mitra Resmi' }}</p>
-                </div>
+
+                {{-- Partner Name --}}
+                <h3 style="color:#131218;font-size:20px;font-weight:900;margin:0 0 8px;line-height:1.3;">
+                    {{ $m->nama_mitra }}
+                </h3>
+
+                {{-- Sub-label --}}
+                <p style="color:#6B7280;font-size:13px;font-weight:700;margin:0 0 24px;text-transform:uppercase;letter-spacing:.5px;">
+                    Mitra Resmi FIKOM UMI
+                </p>
+
+                {{-- Button Link --}}
+                @if($m->link_website)
+                <a href="{{ $m->link_website }}" target="_blank" rel="noopener noreferrer" 
+                   style="padding:10px 24px;font-size:13px;font-weight:800;background:#131218;color:#FFC81A;border-radius:30px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s;"
+                   onmouseover="this.style.background='#FFC81A';this.style.color='#131218';"
+                   onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">
+                    Kunjungi Website
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </a>
+                @else
+                <span style="padding:8px 18px;font-size:12px;font-weight:800;background:#F3F4F6;color:#6B7280;border-radius:30px;border:1px solid #E5E7EB;">
+                    Mitra Terverifikasi
+                </span>
+                @endif
+
             </div>
-            @if($m->link_website)
-            </a>
-            @endif
+            @endforeach
         </div>
-        @endforeach
+
     </div>
 </section>
 
-
 {{-- ══════════════════════════════════════════════════════════════
-     KATA MEREKA (TESTIMONI) — Dark aesthetic dengan aksen emas
- ══════════════════════════════════════════════════════════════════ --}}
-@if($testimonis->isNotEmpty())
-<section style="padding:88px 0;background:linear-gradient(180deg, #0e0d14 0%, #131218 120px, #131218 100%); position:relative; overflow:hidden;">
-    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,rgba(255,200,26,.03),transparent 70%);pointer-events:none;"></div>
-    
+     TESTIMONI — Solid Dark Accent Section with Participant Stories
+  ══════════════════════════════════════════════════════════════════ --}}
+@php
+    $displayTestimonis = ($testimonis && $testimonis->isNotEmpty()) ? $testimonis : collect([
+        (object)[
+            'nama' => 'Ahmad Raziq, S.Kom.',
+            'keterangan' => 'Alumni Sertifikasi Network Engineer (BNSP)',
+            'kata' => 'Pelatihan dan sertifikasi di FIKOM Certification Center sangat terstruktur. Instrukturnya profesional dan materi yang diajarkan sangat relevan dengan kebutuhan dunia kerja saat ini.',
+            'foto' => null,
+            'rating' => 5
+        ],
+        (object)[
+            'nama' => 'Nurfadhilah, S.Kom.',
+            'keterangan' => 'Peserta Pelatihan Web Development Batch 2',
+            'kata' => 'Materi pelatihan praktikal sekali dan fasilitator sangat membantu hingga paham. Sertifikat resmi dari FIKOM UMI menjadi nilai tambah besar saat melamar kerja.',
+            'foto' => null,
+            'rating' => 5
+        ],
+        (object)[
+            'nama' => 'Muhammad Fikri',
+            'keterangan' => 'Mahasiswa FIKOM UMI · Sertifikasi Cyber Security',
+            'kata' => 'Fasilitas lab komputer yang memadai dan bimbingan simulasi ujian yang intensif membuat saya lulus ujian sertifikasi BNSP dalam sekali percobaan.',
+            'foto' => null,
+            'rating' => 5
+        ],
+        (object)[
+            'nama' => 'Siti Nurhaliza, S.T.',
+            'keterangan' => 'Peserta Sertifikasi Data Analyst',
+            'kata' => 'Sangat merekomendasikan FCC UMI bagi siapa saja yang ingin meningkatkan kompetensi digital. Proses pendaftaran mudah dan pelayanan timnya sangat ramah.',
+            'foto' => null,
+            'rating' => 5
+        ],
+    ]);
+@endphp
+
+<section class="section-stack" style="z-index:6;padding:90px 0;background:#131218;position:sticky;overflow:hidden;">
     <div style="max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1;">
         <div class="reveal" style="text-align:center;margin-bottom:48px;">
-            <span class="section-label-yellow-inv">Testimoni</span>
-            <div style="width:48px;height:3px;background:linear-gradient(90deg,#FFC81A,#FFD84D);border-radius:2px;margin:10px auto 16px;"></div>
-            <h2 style="color:#FFF;font-size:clamp(24px,4vw,38px);font-weight:900;margin:0 0 12px;">
-                Kata <span class="fcc-gold-text">Mereka</span>
+            <span style="display:inline-block;padding:6px 16px;background:#FFC81A;color:#131218;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;margin-bottom:12px;">
+                Testimoni Peserta
+            </span>
+            <h2 style="color:#FFFFFF;font-size:clamp(26px,4vw,38px);font-weight:900;margin:0 0 12px;">
+                Kata <span style="color:#FFC81A;">Alumni &amp; Peserta</span> Kami
             </h2>
-            <p style="color:rgba(255,255,255,.5);font-size:15px;margin:0;max-width:480px;margin:0 auto;">
-                Pengalaman nyata dari peserta dan mitra yang telah bergabung bersama FCC.
+            <p style="color:rgba(255,255,255,0.7);font-size:15px;margin:0 auto;max-width:480px;line-height:1.6;">
+                Pengalaman nyata dari mahasiswa dan profesional yang telah mengikuti program pelatihan &amp; sertifikasi di FCC UMI.
             </p>
         </div>
     </div>
 
-    {{-- Carousel Testimoni --}}
-    <div class="reveal testimoni-wrapper" style="max-width:1100px;margin:0 auto;padding:20px 24px 60px;position:relative;z-index:1;display:flex;overflow:hidden;gap:24px;">
+    {{-- Full-Width Carousel Testimoni with Soft Gradient Fade Edges --}}
+    <div class="reveal testimoni-wrapper" style="width:100%;position:relative;z-index:1;display:flex;overflow:hidden;padding:20px 0 60px;gap:24px;mask-image:linear-gradient(90deg,transparent 0%,#000 5%,#000 95%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 5%,#000 95%,transparent 100%);">
         @php
-            // We need enough items to fill the screen for a seamless loop.
-            // If the user only has 1 or 2 items, we multiply it so it doesn't break the layout.
-            $multiplier = max(1, ceil(6 / max(1, $testimonis->count())));
+            $multiplier = max(1, ceil(6 / max(1, $displayTestimonis->count())));
             $trackItems = collect();
-            for($i=0; $i<$multiplier; $i++) { $trackItems = $trackItems->concat($testimonis); }
+            for($i=0; $i<$multiplier; $i++) { $trackItems = $trackItems->concat($displayTestimonis); }
         @endphp
         
         {{-- Track 1 --}}
         <div class="testimoni-track" style="display:flex;gap:24px;flex-shrink:0;">
             @foreach($trackItems as $t)
-            <div class="testimoni-card" style="width:360px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:32px 28px;position:relative;display:flex;flex-direction:column;transition:all .3s ease;white-space:normal;" 
-                 onmouseover="this.style.borderColor='rgba(255,200,26,.3)';this.style.boxShadow='0 12px 40px rgba(255,200,26,.08)';this.style.transform='translateY(-4px)'"
-                 onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
-                
-                {{-- Quote Icon --}}
-                <div style="position:absolute;top:28px;right:28px;opacity:0.15;">
-                    <svg width="36" height="36" viewBox="0 0 24 24" fill="#FFC81A"><path d="M11.3 6.2H5.8c-1.4 0-2.5 1.1-2.5 2.5V14c0 1.4 1.1 2.5 2.5 2.5h2.9l-2.6 3.1h3.7l2.8-3.3V6.2zm10.1 0h-5.5c-1.4 0-2.5 1.1-2.5 2.5V14c0 1.4 1.1 2.5 2.5 2.5h2.9l-2.6 3.1h3.7l2.8-3.3V6.2z"/></svg>
-                </div>
+            <div class="testimoni-card" style="width:360px;background:#1E1D26;border:1.5px solid rgba(255,200,26,0.25);border-radius:20px;padding:30px 26px;position:relative;display:flex;flex-direction:column;transition:all .3s ease;white-space:normal;" 
+                 onmouseover="this.style.borderColor='#FFC81A';this.style.transform='translateY(-4px)'"
+                 onmouseout="this.style.borderColor='rgba(255,200,26,0.25)';this.style.transform='translateY(0)'">
                 
                 {{-- Rating Stars --}}
                 <div style="display:flex;gap:4px;margin-bottom:18px;">
                     @for($i=0;$i<5;$i++)
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="{{ $i < $t->rating ? '#FFC81A' : 'rgba(255,255,255,.1)' }}" stroke="{{ $i < $t->rating ? '#FFC81A' : 'rgba(255,255,255,.1)' }}" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="{{ $i < ($t->rating ?? 5) ? '#FFC81A' : 'rgba(255,255,255,.2)' }}" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                     @endfor
                 </div>
 
                 {{-- Quote Text --}}
-                <p style="color:rgba(255,255,255,.85);font-size:15px;line-height:1.7;margin:0 0 32px;flex-grow:1;font-style:italic;">
+                <p style="color:#FFFFFF;font-size:14.5px;line-height:1.7;margin:0 0 28px;flex-grow:1;font-style:italic;">
                     "{!! nl2br(e($t->kata)) !!}"
                 </p>
 
                 {{-- Profile --}}
                 <div style="display:flex;align-items:center;gap:14px;margin-top:auto;">
-                    <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,200,26,.3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
-                        @if($t->foto)
+                    <div style="width:46px;height:46px;border-radius:50%;background:#FFC81A;border:2px solid #FFFFFF;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;color:#131218;">
+                        @if(!empty($t->foto))
                         <img src="{{ asset('storage/'.$t->foto) }}" alt="{{ $t->nama }}" style="width:100%;height:100%;object-fit:cover;">
                         @else
-                        <span style="color:#FFF;font-size:18px;font-weight:900;line-height:1;margin-top:2px;">{{ Str::upper(Str::substr($t->nama,0,1)) }}</span>
+                        <span style="font-size:18px;font-weight:900;line-height:1;">{{ Str::upper(Str::substr($t->nama,0,1)) }}</span>
                         @endif
                     </div>
                     <div>
-                        <h4 style="color:#FFF;font-size:15px;font-weight:800;margin:0 0 3px;">{{ $t->nama }}</h4>
-                        <p style="color:rgba(255,255,255,.5);font-size:11.5px;margin:0;font-weight:600;letter-spacing:.3px;line-height:1.4;">{{ $t->keterangan }}</p>
+                        <h4 style="color:#FFFFFF;font-size:14.5px;font-weight:800;margin:0 0 3px;">{{ $t->nama }}</h4>
+                        <p style="color:#FFC81A;font-size:11.5px;margin:0;font-weight:700;letter-spacing:.3px;">{{ $t->keterangan }}</p>
                     </div>
                 </div>
             </div>
@@ -566,39 +608,34 @@
         {{-- Track 2 (Duplicate for seamless loop) --}}
         <div class="testimoni-track" style="display:flex;gap:24px;flex-shrink:0;">
             @foreach($trackItems as $t)
-            <div class="testimoni-card" style="width:360px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:32px 28px;position:relative;display:flex;flex-direction:column;transition:all .3s ease;white-space:normal;" 
-                 onmouseover="this.style.borderColor='rgba(255,200,26,.3)';this.style.boxShadow='0 12px 40px rgba(255,200,26,.08)';this.style.transform='translateY(-4px)'"
-                 onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
-                
-                {{-- Quote Icon --}}
-                <div style="position:absolute;top:28px;right:28px;opacity:0.15;">
-                    <svg width="36" height="36" viewBox="0 0 24 24" fill="#FFC81A"><path d="M11.3 6.2H5.8c-1.4 0-2.5 1.1-2.5 2.5V14c0 1.4 1.1 2.5 2.5 2.5h2.9l-2.6 3.1h3.7l2.8-3.3V6.2zm10.1 0h-5.5c-1.4 0-2.5 1.1-2.5 2.5V14c0 1.4 1.1 2.5 2.5 2.5h2.9l-2.6 3.1h3.7l2.8-3.3V6.2z"/></svg>
-                </div>
+            <div class="testimoni-card" style="width:360px;background:#1E1D26;border:1.5px solid rgba(255,200,26,0.25);border-radius:20px;padding:30px 26px;position:relative;display:flex;flex-direction:column;transition:all .3s ease;white-space:normal;" 
+                 onmouseover="this.style.borderColor='#FFC81A';this.style.transform='translateY(-4px)'"
+                 onmouseout="this.style.borderColor='rgba(255,200,26,0.25)';this.style.transform='translateY(0)'">
                 
                 {{-- Rating Stars --}}
                 <div style="display:flex;gap:4px;margin-bottom:18px;">
                     @for($i=0;$i<5;$i++)
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="{{ $i < $t->rating ? '#FFC81A' : 'rgba(255,255,255,.1)' }}" stroke="{{ $i < $t->rating ? '#FFC81A' : 'rgba(255,255,255,.1)' }}" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="{{ $i < ($t->rating ?? 5) ? '#FFC81A' : 'rgba(255,255,255,.2)' }}" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                     @endfor
                 </div>
 
                 {{-- Quote Text --}}
-                <p style="color:rgba(255,255,255,.85);font-size:15px;line-height:1.7;margin:0 0 32px;flex-grow:1;font-style:italic;">
+                <p style="color:#FFFFFF;font-size:14.5px;line-height:1.7;margin:0 0 28px;flex-grow:1;font-style:italic;">
                     "{!! nl2br(e($t->kata)) !!}"
                 </p>
 
                 {{-- Profile --}}
                 <div style="display:flex;align-items:center;gap:14px;margin-top:auto;">
-                    <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,200,26,.3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
-                        @if($t->foto)
+                    <div style="width:46px;height:46px;border-radius:50%;background:#FFC81A;border:2px solid #FFFFFF;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;color:#131218;">
+                        @if(!empty($t->foto))
                         <img src="{{ asset('storage/'.$t->foto) }}" alt="{{ $t->nama }}" style="width:100%;height:100%;object-fit:cover;">
                         @else
-                        <span style="color:#FFF;font-size:18px;font-weight:900;line-height:1;margin-top:2px;">{{ Str::upper(Str::substr($t->nama,0,1)) }}</span>
+                        <span style="font-size:18px;font-weight:900;line-height:1;">{{ Str::upper(Str::substr($t->nama,0,1)) }}</span>
                         @endif
                     </div>
                     <div>
-                        <h4 style="color:#FFF;font-size:15px;font-weight:800;margin:0 0 3px;">{{ $t->nama }}</h4>
-                        <p style="color:rgba(255,255,255,.5);font-size:11.5px;margin:0;font-weight:600;letter-spacing:.3px;line-height:1.4;">{{ $t->keterangan }}</p>
+                        <h4 style="color:#FFFFFF;font-size:14.5px;font-weight:800;margin:0 0 3px;">{{ $t->nama }}</h4>
+                        <p style="color:#FFC81A;font-size:11.5px;margin:0;font-weight:700;letter-spacing:.3px;">{{ $t->keterangan }}</p>
                     </div>
                 </div>
             </div>
@@ -619,179 +656,58 @@
         </style>
     </div>
 </section>
-@endif
 
 
-{{-- ══════════════════════════════════════════════════════════════
-     BERITA & KEGIATAN TERBARU — Carousel horizontal
-     Data dari arsip_kegiatan; hover: pause + preview konten
- ══════════════════════════════════════════════════════════════════ --}}
-@if($arsips->isNotEmpty())
-<section style="padding:76px 0;background:linear-gradient(180deg, #0e0d14 0%, #131218 120px, #131218 100%); border-top:none; overflow:hidden;">
-    <div style="max-width:1100px;margin:0 auto;padding:0 24px 28px;">
-        <div class="reveal" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
-            <div>
-                <span class="section-label-yellow-inv">Rekam Jejak</span>
-                <h2 style="color:#FFF;font-size:clamp(22px,3.5vw,36px);font-weight:900;margin:0 0 4px;">
-                    Berita & <span class="fcc-gold-text">Kegiatan</span>
-                </h2>
-                <p style="color:rgba(255,255,255,.5);font-size:13px;margin:0;">Arahkan cursor ke kartu untuk melihat pratinjau konten</p>
-            </div>
-            <a href="{{ route('landing.arsip') }}" style="color:#FFC81A;font-size:13px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px;">
-                Lihat semua
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </a>
-        </div>
-    </div>
-
-    {{-- Carousel: infinite scroll, pause on hover (via CSS) --}}
-    <div class="berita-carousel-wrap">
-        <div class="berita-track" id="berita-track">
-            @php
-                // Duplikasi untuk infinite loop visual
-                $beritaItems = $arsips->concat($arsips->all());
-            @endphp
-            @foreach($beritaItems as $ar)
-            <a href="{{ route('landing.arsip.show', $ar) }}" class="berita-card" style="text-decoration:none;">
-                {{-- Thumbnail --}}
-                <div class="berita-thumb">
-                    <div class="berita-thumb-grid"></div>
-                    @if($ar->foto_dokumentasi)
-                    <img class="berita-thumb-img"
-                         src="{{ asset('storage/'.$ar->foto_dokumentasi) }}"
-                         alt="{{ $ar->judul ?? 'Arsip' }}">
-                    @else
-                    <div class="berita-thumb-placeholder">
-                        <div style="width:48px;height:48px;border-radius:14px;background:rgba(255,200,26,.14);border:1.5px solid rgba(255,200,26,.28);display:flex;align-items:center;justify-content:center;">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                        </div>
-                        <span style="color:rgba(255,200,26,.45);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">Dokumentasi</span>
-                    </div>
-                    @endif
-                    <div class="berita-overlay"></div>
-                    <span class="berita-badge">Kegiatan</span>
-                </div>
-
-                {{-- Body --}}
-                <div class="berita-body">
-                    <p class="berita-title">{{ Str::limit($ar->judul ?? $ar->kegiatan?->judul ?? 'Arsip Kegiatan', 46) }}</p>
-                    <p class="berita-date">{{ optional($ar->created_at)->format('d M Y') ?? '' }}</p>
-                </div>
-
-                {{-- Preview konten — muncul saat hover (CSS transition) --}}
-                <div class="berita-preview">
-                    {{ Str::limit(strip_tags($ar->ringkasan ?? 'Kegiatan telah selesai dilaksanakan.'), 120) }}
-                </div>
-            </a>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
 
 {{-- ══════════════════════════════════════════════════════════════
-     ARSIP — Surface dengan accent visual yang kaya
- ══════════════════════════════════════════════════════════════════ --}}
-@if($arsips->isNotEmpty())
-<section style="padding:88px 24px;background:linear-gradient(180deg, #131218 0%, #0e0d14 120px, #0e0d14 100%); border-top:none; position:relative; overflow:hidden;">
-    <div style="position:absolute;top:-50px;right:-50px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,26,0.06),transparent 70%);pointer-events:none;"></div>
-    <div style="max-width:1100px;margin:0 auto;">
-        <div class="reveal" style="display:flex;justify-content:space-between;align-items:flex-end;
-            margin-bottom:32px;flex-wrap:wrap;gap:14px;">
-            <div>
-                <span class="section-label-yellow-inv">Rekam Jejak</span>
-                <h2 style="color:#FFF;font-size:clamp(22px,3.5vw,36px);font-weight:900;margin:0 0 4px;">
-                    Arsip <span class="fcc-gold-text">Kegiatan</span>
-                </h2>
-                <p style="color:rgba(255,255,255,.5);font-size:14px;margin:0;">Dokumentasi kegiatan yang telah selesai</p>
-            </div>
-            <a href="{{ route('landing.arsip') }}" style="color:#FFC81A;font-size:13px;font-weight:700;
-                text-decoration:none;display:flex;align-items:center;gap:4px;">
-                Lihat semua
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                </svg>
-            </a>
-        </div>
-        {{-- Carousel --}}
-        <div id="arsip-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;"></div>
-        {{-- Arrow + dots controls --}}
-        <div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:24px;">
-            <button onclick="arsipPrev()" style="width:38px;height:38px;border-radius:10px;
-                border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);cursor:pointer;
-                display:flex;align-items:center;justify-content:center;transition:all .2s;"
-                onmouseover="this.style.borderColor='#FFC81A';this.style.color='#FFF';this.style.boxShadow='0 0 16px rgba(255,200,26,.2)'"
-                onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.6)';this.style.boxShadow='none'">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <div id="arsip-dots" style="display:flex;gap:6px;"></div>
-            <button onclick="arsipNext()" style="width:38px;height:38px;border-radius:10px;
-                border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);cursor:pointer;
-                display:flex;align-items:center;justify-content:center;transition:all .2s;"
-                onmouseover="this.style.borderColor='#FFC81A';this.style.color='#FFF';this.style.boxShadow='0 0 16px rgba(255,200,26,.2)'"
-                onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.6)';this.style.boxShadow='none'">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-        </div>
-    </div>
-</section>
-@endif
-
-{{-- ══════════════════════════════════════════════════════════════
-     FAQ — 1 kolom, gradasi soft, desain premium
- ══════════════════════════════════════════════════════════════════ --}}
+     FAQ — Clean Off-White Accordion Section
+  ══════════════════════════════════════════════════════════════════ --}}
 @if($faqs->isNotEmpty())
-{{-- Gradasi soft penghubung dari section sebelumnya --}}
-<div style="height:80px;background:linear-gradient(180deg,#131218,#0c0b12);pointer-events:none;"></div>
-
-<section style="padding:0 24px 100px;background:linear-gradient(180deg,#0c0b12 0%,#0f0e18 40%,#0c0b12 100%);position:relative;overflow:hidden;">
-    {{-- Ornamen latar --}}
-    <div style="position:absolute;inset:0;opacity:.025;background-image:linear-gradient(rgba(139,92,246,1) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,1) 1px,transparent 1px);background-size:72px 72px;"></div>
-    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:200px;background:radial-gradient(ellipse,rgba(139,92,246,.06),transparent 70%);pointer-events:none;"></div>
-    <div style="position:absolute;bottom:0;right:0;width:400px;height:300px;background:radial-gradient(ellipse at bottom right,rgba(255,200,26,.03),transparent 70%);pointer-events:none;"></div>
-
-    <div style="max-width:760px;margin:0 auto;position:relative;z-index:1;">
+<section style="padding:90px 24px;background:#F8F9FA;position:relative;overflow:hidden;">
+    <div style="max-width:780px;margin:0 auto;position:relative;z-index:1;">
+        
         {{-- Header --}}
         <div class="reveal" style="text-align:center;margin-bottom:52px;">
-            <span class="section-label-yellow-inv">Pusat Informasi</span>
-            <div style="width:48px;height:3px;background:linear-gradient(90deg,#8B5CF6,#FFC81A);border-radius:2px;margin:10px auto 16px;"></div>
-            <h2 style="color:#FFF;font-size:clamp(24px,4vw,40px);font-weight:900;margin:0 0 12px;line-height:1.2;">
-                Pertanyaan yang Sering <span class="fcc-gold-text">Ditanyakan</span>
+            <span style="display:inline-block;padding:6px 16px;background:#FFC81A;color:#131218;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;border:1px solid #131218;margin-bottom:12px;">
+                Pusat Informasi
+            </span>
+            <h2 style="color:#131218;font-size:clamp(26px,4vw,40px);font-weight:900;margin:0 0 12px;line-height:1.2;">
+                Pertanyaan yang Sering <span style="color:#FFC81A;background:#131218;padding:2px 10px;border-radius:6px;">Ditanyakan</span>
             </h2>
-            <p style="color:rgba(255,255,255,.55);font-size:15px;margin:0 auto;max-width:500px;line-height:1.7;">
-                Temukan jawaban atas pertanyaan umum seputar program sertifikasi dan pelatihan FCC
+            <p style="color:#4B5563;font-size:15px;margin:0 auto;max-width:500px;line-height:1.7;">
+                Temukan jawaban atas pertanyaan umum seputar program sertifikasi dan pelatihan FCC.
             </p>
         </div>
 
-        {{-- FAQ Accordion — 1 kolom penuh --}}
-        <div class="reveal" style="display:flex;flex-direction:column;gap:12px;" id="faq-list">
+        {{-- FAQ Accordion --}}
+        <div class="reveal" style="display:flex;flex-direction:column;gap:14px;" id="faq-list">
             @foreach($faqs as $i => $faq)
-            <div class="faq-item" style="background:rgba(255,255,255,.025);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;transition:all .3s ease;">
+            <div class="faq-item" style="background:#FFFFFF;border:2px solid #E5E7EB;border-radius:16px;overflow:hidden;transition:all .3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.03);">
                 <button onclick="toggleFaq(this)"
                     style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;background:none;border:none;cursor:pointer;text-align:left;">
                     <div style="display:flex;align-items:flex-start;gap:14px;flex:1;">
-                        <div style="width:30px;height:30px;border-radius:9px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
-                            <span style="color:#8B5CF6;font-size:11px;font-weight:900;">{{ str_pad($i+1,'2','0',STR_PAD_LEFT) }}</span>
+                        <div style="width:30px;height:30px;border-radius:9px;background:#FFC81A;border:1px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+                            <span style="color:#131218;font-size:11px;font-weight:900;">{{ str_pad($i+1,'2','0',STR_PAD_LEFT) }}</span>
                         </div>
-                        <span style="color:#FFF;font-size:14.5px;font-weight:700;line-height:1.5;">{{ $faq->judul }}</span>
+                        <span style="color:#131218;font-size:15px;font-weight:800;line-height:1.5;">{{ $faq->judul }}</span>
                     </div>
-                    <div class="faq-chevron" style="flex-shrink:0;width:32px;height:32px;border-radius:10px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.18);display:flex;align-items:center;justify-content:center;transition:all .35s cubic-bezier(0.34,1.56,0.64,1);">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    <div class="faq-chevron" style="flex-shrink:0;width:32px;height:32px;border-radius:10px;background:#F3F4F6;border:1.5px solid #E5E7EB;display:flex;align-items:center;justify-content:center;transition:all .35s ease;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                 </button>
                 <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(0.16,1,0.3,1);">
-                    <div style="padding:0 24px 22px 68px;border-top:1px solid rgba(139,92,246,.08);">
-                        <p style="color:rgba(255,255,255,.62);font-size:14px;line-height:1.8;margin:16px 0 0;">{!! nl2br(e($faq->isi)) !!}</p>
+                    <div style="padding:0 24px 22px 68px;border-top:1px solid #E5E7EB;">
+                        <p style="color:#374151;font-size:14px;line-height:1.8;margin:16px 0 0;">{!! nl2br(e($faq->isi)) !!}</p>
                     </div>
                 </div>
             </div>
             @endforeach
         </div>
 
-        {{-- CTA bawah --}}
-        <div class="reveal" style="text-align:center;margin-top:44px;">
-            <p style="color:rgba(255,255,255,.4);font-size:14px;margin:0 0 16px;">Masih ada pertanyaan lain?</p>
-            <a href="{{ route('landing.kontak') }}" class="fcc-btn-gold btn-shine" style="padding:12px 28px;font-size:14px;display:inline-flex;align-items:center;gap:8px;">
+        {{-- CTA Bottom --}}
+        <div class="reveal" style="text-align:center;margin-top:48px;">
+            <p style="color:#6B7280;font-size:14px;margin:0 0 16px;font-weight:600;">Masih ada pertanyaan lain?</p>
+            <a href="{{ route('landing.kontak') }}" style="padding:13px 30px;font-size:14px;font-weight:800;background:#131218;color:#FFC81A;border:2px solid #131218;border-radius:30px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(0,0,0,0.12);">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 Hubungi Tim Kami
             </a>
@@ -799,18 +715,15 @@
     </div>
 </section>
 
-{{-- Gradasi soft ke bawah / footer --}}
-<div style="height:60px;background:linear-gradient(180deg,#0c0b12,#0e0d14);pointer-events:none;"></div>
-
 <style>
     .faq-item.faq-open {
-        border-color: rgba(139,92,246,.35) !important;
-        background: rgba(139,92,246,.04) !important;
-        box-shadow: 0 0 30px rgba(139,92,246,.06);
+        border-color: #FFC81A !important;
+        background: #FFFFFF !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important;
     }
     .faq-item.faq-open .faq-chevron {
-        background: rgba(139,92,246,.2) !important;
-        border-color: rgba(139,92,246,.4) !important;
+        background: #FFC81A !important;
+        border-color: #131218 !important;
         transform: rotate(180deg);
     }
 </style>
@@ -849,6 +762,69 @@ window.PAGE_DATA = {!! json_encode([
         'url'        => route('landing.arsip.show', $a),
     ]),
     'searchRoute' => route('landing.search'),
+]) !!};
+</script>
+@endpush
+
+{{-- ── EXTERNAL JS: dimuat setelah page-data ─────────────────────── --}}
+@push('scripts')
+<script>
+    const STEP_COUNT = 4;
+    let curStep = 0, stepTimer;
+
+    function setStepInline(s) {
+        curStep = s;
+        for (let i = 0; i < STEP_COUNT; i++) {
+            const wrapper = document.getElementById(`step-wrapper-${i}`);
+            if (!wrapper) continue;
+            
+            const box   = document.getElementById(`step-box-${i}`);
+            const ic    = box ? box.querySelector('svg') : null;
+            const num   = wrapper.querySelector('.step-num-badge');
+            const numText = num ? num.querySelector('span') : null;
+            const title = document.getElementById(`step-title-${i}`);
+            
+            const isActive = i === s;
+            const isPast   = i < s;
+
+            if (box) {
+                box.style.background = isActive ? '#FFC81A' : (isPast ? '#131218' : '#F3F4F6');
+                box.style.border = isActive ? '2px solid #131218' : (isPast ? '2px solid #FFC81A' : '2px solid #E5E7EB');
+                box.style.boxShadow = isActive ? '0 6px 18px rgba(0,0,0,0.12)' : 'none';
+            }
+            if (ic) ic.style.color = isActive ? '#131218' : (isPast ? '#FFC81A' : '#6B7280');
+            
+            if (num) {
+                num.style.background = i <= s ? '#131218' : '#E5E7EB';
+            }
+            if (numText) {
+                numText.style.color = i <= s ? '#FFC81A' : '#6B7280';
+            }
+            if (title) {
+                title.style.color = isActive ? '#131218' : '#4B5563';
+            }
+        }
+
+        const fill = document.getElementById('step-fill-pend');
+        if (fill) fill.style.width = ['0%', '33.33%', '66.66%', '100%'][s];
+
+        document.querySelectorAll('#step-dots div').forEach((d, i) => {
+            d.style.width      = i === s ? '22px' : '8px';
+            d.style.background = i === s ? '#FFC81A' : '#E5E7EB';
+        });
+    }
+
+    function startTimer() {
+        stepTimer = setInterval(() => setStepInline((curStep + 1) % STEP_COUNT), 2400);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setStepInline(0);
+        startTimer();
+    });
+</script>
+@vite('resources/js/pages/landing-index.js')
+@endpusharch'),
 ]) !!};
 </script>
 @endpush

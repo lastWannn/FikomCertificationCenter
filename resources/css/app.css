@@ -324,11 +324,11 @@
 }
 
 /* ─── SCROLL REVEAL ─────────────────────────────────────────────── */
-.reveal      { opacity:0; transform:translateY(20px); transition:opacity .6s ease,transform .6s ease; }
+.reveal      { opacity:0; transform:translateY(24px); transition:opacity .7s cubic-bezier(0.16,1,0.3,1),transform .7s cubic-bezier(0.16,1,0.3,1); }
 .reveal.vis  { opacity:1; transform:translateY(0); }
-.rl          { opacity:0; transform:translateX(-22px); transition:opacity .6s ease,transform .6s ease; }
+.rl          { opacity:0; transform:translateX(-54px); transition:opacity .8s cubic-bezier(0.16,1,0.3,1),transform .8s cubic-bezier(0.16,1,0.3,1); }
 .rl.vis      { opacity:1; transform:translateX(0); }
-.rr          { opacity:0; transform:translateX(22px); transition:opacity .6s ease,transform .6s ease; }
+.rr          { opacity:0; transform:translateX(54px); transition:opacity .8s cubic-bezier(0.16,1,0.3,1),transform .8s cubic-bezier(0.16,1,0.3,1); }
 .rr.vis      { opacity:1; transform:translateX(0); }
 
 /* ─── HOVER CARD ─────────────────────────────────────────────── */
@@ -510,8 +510,8 @@
 }
 /* Navbar selalu dark — links putih */
 #fcc-nav #nav-brand { color:#FFF; }
-.nav-lnk:not(.nav-active) { color:rgba(255,255,255,.72); }
-.nav-lnk.nav-active { color:#FFC81A !important; }
+.nav-lnk:not(.nav-active) { color:rgba(255,255,255,.82); }
+.nav-lnk.nav-active { color:#131218 !important; background:#FFC81A; font-weight:800; }
 .nav-lnk:hover:not(.nav-active) { color:#FFC81A; }
 
 /* Nav search dropdown items */

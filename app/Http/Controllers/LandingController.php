@@ -22,7 +22,7 @@ class LandingController extends Controller
                     'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
                     'biaya'])
             ->orderBy('created_at', 'desc')
-            ->limit(6)
+            ->limit(3)
             ->get();
 
         $stats = [

@@ -2,21 +2,21 @@
 @section('content')
 
 {{-- ═══ NAVBAR ══════════════════════════════════════════════════ --}}
-<nav id="fcc-nav" style="position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;padding:0 24px;gap:16px;background:#131218;box-shadow:0 1px 0 rgba(255,200,26,.15);">
+<nav id="fcc-nav" style="position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;padding:0 24px;gap:16px;background:#131218;border-bottom:2px solid #1E1D26;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
     <div style="max-width:1200px;margin:0 auto;width:100%;padding:0 24px;
-        display:flex;align-items:center;gap:24px;">
+        display:flex;align-items:center;justify-content:space-between;gap:24px;">
 
         {{-- Logo --}}
         <a href="{{ route('landing.index') }}" id="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
             <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="height:36px;width:auto;object-fit:contain;flex-shrink:0;">
             <div>
-                <p id="nav-brand" style="margin:0;font-weight:900;font-size:12.5px;color:#FFF;transition:color .3s;">FIKOM Certification</p>
-                <p style="margin:0;color:#FFC81A;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;">Center · UMI</p>
+                <p id="nav-brand" style="margin:0;font-weight:900;font-size:12.5px;color:#FFFFFF;transition:color .3s;">FIKOM Certification</p>
+                <p style="margin:0;color:#FFC81A;font-size:8px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;">Center · UMI</p>
             </div>
         </a>
 
-        {{-- Nav links --}}
-        <div style="display:flex;align-items:center;gap:2px;flex:1;">
+        {{-- Nav links (Centered) --}}
+        <div style="display:flex;align-items:center;justify-content:center;gap:4px;flex:1;">
             @php
             $navLinks = [
                 ['landing.index',    'Home'],
@@ -31,8 +31,12 @@
             @php $isActive = request()->routeIs($route); @endphp
             <a href="{{ route($route) }}"
                class="nav-lnk {{ $isActive?'nav-active':'' }}"
-               style="padding:8px 10px;border-radius:8px;text-decoration:none;font-size:13.5px;
-                      font-weight:{{ $isActive?700:500 }};transition:color .2s;">
+               style="padding:6px 16px;border-radius:20px;text-decoration:none;font-size:13.5px;transition:all .2s ease;
+                      {{ $isActive ? 'background:#FFC81A;color:#131218 !important;font-weight:900;border:1.5px solid #131218;box-shadow:0 4px 12px rgba(255,200,26,0.25);' : 'color:rgba(255,255,255,0.85);font-weight:600;' }}"
+               @if(!$isActive)
+               onmouseover="this.style.color='#FFC81A';this.style.background='rgba(255,255,255,0.06)'"
+               onmouseout="this.style.color='rgba(255,255,255,0.85)';this.style.background='transparent'"
+               @endif>
                 {{ $label }}
             </a>
             @endforeach
@@ -57,17 +61,15 @@
         {{-- CTA right --}}
         <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
             @auth('peserta')
-            <a href="{{ route('peserta.dashboard') }}" class="fcc-btn-gold" style="padding:8px 18px;font-size:13px;">
+            <a href="{{ route('peserta.dashboard') }}" style="padding:8px 20px;font-size:13px;font-weight:900;background:#FFC81A;color:#131218;border-radius:20px;text-decoration:none;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.3);display:inline-flex;align-items:center;gap:6px;">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 Portal Saya
             </a>
             @elseauth('admin')
-            <a href="{{ route('admin.dashboard') }}" class="fcc-btn-gold" style="padding:8px 18px;font-size:13px;">Admin Panel</a>
+            <a href="{{ route('admin.dashboard') }}" style="padding:8px 20px;font-size:13px;font-weight:900;background:#FFC81A;color:#131218;border-radius:20px;text-decoration:none;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.3);">Admin Panel</a>
             @else
-            {{-- Navbar pojok kanan: hanya tombol Masuk --}}
-            <a href="{{ route('auth.login') }}" class="fcc-btn-gold"
-               style="padding:8px 20px;font-size:13px;font-weight:700;text-decoration:none;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;margin-right:5px;vertical-align:middle;">
+            <a href="{{ route('auth.login') }}" style="padding:8px 22px;font-size:13.5px;font-weight:900;background:#FFC81A;color:#131218;border-radius:20px;text-decoration:none;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.3);display:inline-flex;align-items:center;gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;">
                     <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                     <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
                 </svg>
@@ -94,18 +96,15 @@
         min-height: calc(100vh - 40px) !important;
     }
 </style>
-<div id="fcc-ticker" style="position:fixed;top:64px;left:0;right:0;background:linear-gradient(180deg,#131218 0%,#0f0e15 100%);border-bottom:1px solid rgba(255,200,26,.15);z-index:499;overflow:hidden;">
-    {{-- Accent line --}}
-    <div style="height:1.5px;background:linear-gradient(90deg,transparent 0%,rgba(255,200,26,.7) 20%,#FFC81A 50%,rgba(255,200,26,.7) 80%,transparent 100%);"></div>
+<div id="fcc-ticker" style="position:fixed;top:64px;left:0;right:0;background:#1E1D26;border-bottom:1.5px solid #FFC81A;z-index:499;overflow:hidden;">
     <div style="display:flex;align-items:center;height:36px;">
 
         {{-- Label kiri: ikon pulse + teks --}}
-        <div style="flex-shrink:0;display:flex;align-items:center;gap:9px;padding:0 20px;height:100%;background:linear-gradient(90deg,rgba(255,200,26,.12) 0%,transparent 100%);border-right:1px solid rgba(255,200,26,.15);">
+        <div style="flex-shrink:0;display:flex;align-items:center;gap:9px;padding:0 20px;height:100%;background:#FFC81A;border-right:1.5px solid #131218;">
             <span class="fcc-bell-wrap" style="position:relative;display:flex;align-items:center;justify-content:center;">
-                <span class="fcc-bell-pulse"></span>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             </span>
-            <span style="color:#FFC81A;font-size:9.5px;font-weight:800;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;">Info</span>
+            <span style="color:#131218;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;">Info</span>
         </div>
 
         {{-- Marquee wrapper dengan fade edges --}}
@@ -167,106 +166,124 @@
 {{-- Page Content --}}
 @yield('page-content')
 
-{{-- ═══ FOOTER — Premium Dark ═══════════════════════════════════════ --}}
-<footer style="background:#0e0d14;position:relative;overflow:hidden;">
-    {{-- Background ornament --}}
-    <div style="position:absolute;inset:0;opacity:.02;background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;"></div>
-    <div style="position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:600px;height:120px;background:radial-gradient(ellipse,rgba(255,200,26,.04),transparent 70%);pointer-events:none;"></div>
+{{-- ═══ FOOTER — High-Contrast Dark & Yellow (Selaras Seksi Landing Page) ═══════════════════════════════════════ --}}
+<footer style="background:#131218;border-top:3px solid #FFC81A;position:relative;z-index:20;overflow:hidden;">
+    {{-- Ambient Background Glow --}}
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:140px;background:radial-gradient(ellipse,rgba(255,200,26,.06),transparent 70%);pointer-events:none;"></div>
 
-    {{-- Rainbow top border --}}
-    <div style="height:3px;background:linear-gradient(90deg,transparent 0%,#FFC81A 20%,#8B5CF6 40%,#3B82F6 60%,#10B981 80%,transparent 100%);"></div>
-
-    <div style="max-width:1180px;margin:0 auto;padding:60px 32px 0;position:relative;z-index:1;">
-        <div style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1.8fr;gap:52px;margin-bottom:48px;">
+    <div style="max-width:1180px;margin:0 auto;padding:64px 24px 0;position:relative;z-index:1;">
+        
+        {{-- Main 4-Column Grid --}}
+        <div style="display:grid;grid-template-columns:2.4fr 1.1fr 1.1fr 1.8fr;gap:48px;margin-bottom:52px;">
 
             {{-- Brand Column --}}
             <div>
-                <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="height:42px;width:auto;object-fit:contain;flex-shrink:0;">
+                <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+                    <div style="width:48px;height:48px;border-radius:12px;background:#1E1D26;border:1.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;padding:6px;box-shadow:0 4px 14px rgba(255,200,26,0.25);">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="width:100%;height:100%;object-fit:contain;">
+                    </div>
                     <div>
-                        <p style="margin:0;color:#FFF;font-weight:900;font-size:13.5px;letter-spacing:-.2px;">FIKOM Certification Center</p>
-                        <p style="margin:2px 0 0;color:#FFC81A;font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;opacity:.8;">Universitas Muslim Indonesia</p>
+                        <p style="margin:0;color:#FFFFFF;font-weight:900;font-size:15px;letter-spacing:-.3px;">FIKOM Certification Center</p>
+                        <span style="display:inline-block;padding:2px 8px;background:#FFC81A;color:#131218;font-size:9px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:4px;margin-top:3px;">
+                            Universitas Muslim Indonesia
+                        </span>
                     </div>
                 </div>
-                <p style="color:rgba(255,255,255,.35);font-size:13px;line-height:1.85;max-width:280px;margin:0 0 24px;">
-                    Platform resmi sertifikasi dan pelatihan profesional FIKOM UMI Makassar. Tingkatkan kompetensi SDM digital Anda bersama kami.
+                <p style="color:rgba(255,255,255,0.75);font-size:13.5px;line-height:1.8;max-width:300px;margin:0 0 24px;">
+                    Platform resmi sertifikasi dan pelatihan profesional FIKOM UMI Makassar. Bimbing langkah Anda menuju keahlian IT berstandar industri.
                 </p>
-                {{-- Social Media Icons --}}
-                <div style="display:flex;gap:8px;">
+
+                {{-- Social Media Links with Hover Glow --}}
+                <div style="display:flex;gap:10px;">
                     @foreach([
                         ['M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z','Instagram'],
                         ['M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z','Facebook'],
                         ['M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z','YouTube'],
                     ] as [$path, $name])
-                    <a href="#" title="{{ $name }}" style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;transition:all .22s;text-decoration:none;"
-                       onmouseover="this.style.background='rgba(255,200,26,.12)';this.style.borderColor='rgba(255,200,26,.3)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(255,200,26,.12)';"
-                       onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.borderColor='rgba(255,255,255,.08)';this.style.transform='translateY(0)';this.style.boxShadow='none';">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.55)"><path d="{{ $path }}"/></svg>
+                    <a href="#" title="{{ $name }}" style="width:38px;height:38px;border-radius:12px;background:#1E1D26;border:1.5px solid rgba(255,200,26,0.25);display:flex;align-items:center;justify-content:center;transition:all .25s ease;text-decoration:none;"
+                       onmouseover="this.style.background='#FFC81A';this.style.borderColor='#FFC81A';this.style.transform='translateY(-3px)';this.querySelector('svg').style.fill='#131218';"
+                       onmouseout="this.style.background='#1E1D26';this.style.borderColor='rgba(255,200,26,0.25)';this.style.transform='translateY(0)';this.querySelector('svg').style.fill='#FFC81A';">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#FFC81A" style="transition:fill .25s ease;"><path d="{{ $path }}"/></svg>
                     </a>
                     @endforeach
                 </div>
             </div>
 
-            {{-- Navigasi + Layanan Columns --}}
-            @foreach([
-                ['Navigasi', [['Home','landing.index'],['Kegiatan','landing.kegiatan'],['Profil','landing.profil'],['Arsip','landing.arsip']]],
-                ['Layanan',  [['Pelatihan','landing.kegiatan'],['Sertifikasi','landing.kegiatan'],['Tata Cara Daftar','landing.pendaftaran'],['Hubungi Kami','landing.kontak']]],
-            ] as [$title,$links])
+            {{-- Navigasi Column --}}
             <div>
-                <p style="color:#FFC81A;font-weight:800;font-size:11px;margin:0 0 18px;text-transform:uppercase;letter-spacing:1.5px;">{{ $title }}</p>
-                @foreach($links as [$l,$r])
+                <span style="display:inline-block;padding:4px 12px;background:#1E1D26;color:#FFC81A;border:1px solid rgba(255,200,26,0.3);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;margin-bottom:18px;">
+                    Navigasi
+                </span>
+                @foreach([['Home','landing.index'],['Kegiatan','landing.kegiatan'],['Profil','landing.profil'],['Arsip','landing.arsip']] as [$l,$r])
                 <a href="{{ route($r) }}"
-                   style="display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.38);font-size:13px;text-decoration:none;margin-bottom:11px;transition:all .18s;group;"
-                   onmouseover="this.style.color='#FFF';this.style.paddingLeft='4px';"
-                   onmouseout="this.style.color='rgba(255,255,255,.38)';this.style.paddingLeft='0';">
-                    <span style="width:4px;height:4px;border-radius:50%;background:rgba(255,200,26,.4);flex-shrink:0;"></span>
+                   style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.7);font-size:13.5px;font-weight:600;text-decoration:none;margin-bottom:12px;transition:all .2s ease;"
+                   onmouseover="this.style.color='#FFC81A';this.style.paddingLeft='6px';"
+                   onmouseout="this.style.color='rgba(255,255,255,0.7)';this.style.paddingLeft='0';">
+                    <span style="width:5px;height:5px;border-radius:50%;background:#FFC81A;flex-shrink:0;"></span>
                     {{ $l }}
                 </a>
                 @endforeach
             </div>
-            @endforeach
+
+            {{-- Layanan Column --}}
+            <div>
+                <span style="display:inline-block;padding:4px 12px;background:#1E1D26;color:#FFC81A;border:1px solid rgba(255,200,26,0.3);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;margin-bottom:18px;">
+                    Layanan
+                </span>
+                @foreach([['Pelatihan IT','landing.kegiatan'],['Sertifikasi BNSP','landing.kegiatan'],['Tata Cara Daftar','landing.pendaftaran'],['Hubungi Kami','landing.kontak']] as [$l,$r])
+                <a href="{{ route($r) }}"
+                   style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.7);font-size:13.5px;font-weight:600;text-decoration:none;margin-bottom:12px;transition:all .2s ease;"
+                   onmouseover="this.style.color='#FFC81A';this.style.paddingLeft='6px';"
+                   onmouseout="this.style.color='rgba(255,255,255,0.7)';this.style.paddingLeft='0';">
+                    <span style="width:5px;height:5px;border-radius:50%;background:#FFC81A;flex-shrink:0;"></span>
+                    {{ $l }}
+                </a>
+                @endforeach
+            </div>
 
             {{-- Kontak Column --}}
             <div>
-                <p style="color:#FFC81A;font-weight:800;font-size:11px;margin:0 0 18px;text-transform:uppercase;letter-spacing:1.5px;">Hubungi Kami</p>
+                <span style="display:inline-block;padding:4px 12px;background:#1E1D26;color:#FFC81A;border:1px solid rgba(255,200,26,0.3);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;margin-bottom:18px;">
+                    Hubungi Kami
+                </span>
 
                 @foreach([
                     ['M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0','Alamat','Jl. Urip Sumoharjo No.225, Makassar 90232'],
                     ['M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z','Telepon','(0411) 455 855'],
                     ['M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6','Email','fcc@fikom.umi.ac.id'],
-                    ['M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z','Website','www.fcc.fikom.umi.ac.id'],
                 ] as [$path,$label,$val])
-                <div style="display:flex;align-items:flex-start;gap:11px;margin-bottom:14px;">
-                    <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,rgba(255,200,26,.1),rgba(255,200,26,.03));border:1px solid rgba(255,200,26,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $path }}"/></svg>
+                <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;background:#1E1D26;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,200,26,0.15);">
+                    <div style="width:30px;height:30px;border-radius:8px;background:#FFC81A;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#131218;margin-top:1px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $path }}"/></svg>
                     </div>
                     <div>
-                        <p style="color:rgba(255,255,255,.35);font-size:9px;font-weight:800;margin:0 0 2px;text-transform:uppercase;letter-spacing:1.2px;">{{ $label }}</p>
-                        <p style="color:rgba(255,255,255,.82);font-size:12.5px;font-weight:500;margin:0;line-height:1.45;">{{ $val }}</p>
+                        <p style="color:#FFC81A;font-size:9.5px;font-weight:900;margin:0 0 2px;text-transform:uppercase;letter-spacing:1px;">{{ $label }}</p>
+                        <p style="color:#FFFFFF;font-size:12.5px;font-weight:600;margin:0;line-height:1.4;">{{ $val }}</p>
                     </div>
                 </div>
                 @endforeach
             </div>
         </div>
 
-        {{-- Bottom Bar --}}
-        <div style="border-top:1px solid rgba(255,255,255,.06);padding:20px 0 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-            <p style="color:rgba(255,255,255,.22);font-size:12px;margin:0;">
+        {{-- Bottom Copyright Bar --}}
+        <div style="border-top:1.5px solid rgba(255,200,26,0.2);padding:22px 0 30px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+            <p style="color:rgba(255,255,255,0.6);font-size:12.5px;font-weight:600;margin:0;">
                 &copy; {{ date('Y') }} FIKOM Certification Center &middot; Universitas Muslim Indonesia
             </p>
             <div style="display:flex;align-items:center;gap:20px;">
                 @foreach(['Kebijakan Privasi','Syarat & Ketentuan'] as $l)
-                <span style="color:rgba(255,255,255,.22);font-size:12px;cursor:pointer;transition:color .18s;"
-                      onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='rgba(255,255,255,.22)'">
+                <span style="color:rgba(255,255,255,0.6);font-size:12.5px;font-weight:600;cursor:pointer;transition:color .2s;"
+                      onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">
                     {{ $l }}
                 </span>
                 @endforeach
-                <span style="color:rgba(255,255,255,.15);font-size:11px;">|</span>
-                <span style="color:rgba(255,255,255,.22);font-size:11.5px;">Made with <span style="color:#FFC81A;">♥</span> by FCC Team</span>
+                <span style="color:rgba(255,200,26,0.4);font-size:11px;">|</span>
+                <span style="color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;">Dikelola oleh <span style="color:#FFC81A;font-weight:800;">FCC FIKOM UMI</span></span>
             </div>
         </div>
     </div>
 </footer>
+
 {{-- ═══ MODAL LOGIN & REGISTER ════════════════════════════════════ --}}
 <div id="fcc-auth-modal" style="position:fixed;inset:0;background:rgba(14,13,20,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);">
     <div id="fcc-auth-dialog" style="width:100%;max-width:440px;background:#131218;border:1.5px solid rgba(255,200,26,.15);border-radius:20px;padding:36px;box-sizing:border-box;position:relative;transform:scale(0.92);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 24px 64px rgba(0,0,0,.6), 0 0 40px rgba(255,200,26,.03);">
