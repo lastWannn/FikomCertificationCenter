@@ -1,18 +1,21 @@
-{{-- ── TAMBAH PELATIHAN MODAL ────────────────────────────────────── --}}
-<div id="create-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-    <div style="background:#FFF;border-radius:18px;padding:32px 28px;max-width:580px;width:90%;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.18);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;">
+{{-- ── TAMBAH PELATIHAN MODAL (Neo-Brutalist Glassmorphism) ────────────────────────────────────── --}}
+<div id="create-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
+    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:620px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;">
         
         {{-- Close button --}}
         <button type="button" onclick="document.getElementById('create-modal').style.display='none'" aria-label="Tutup" style="
-            position:absolute;top:18px;right:18px;width:28px;height:28px;
-            border:none;background:none;cursor:pointer;color:#9CA3B0;
-            font-size:20px;line-height:1;border-radius:8px;transition:background .15s;"
-            onmouseover="this.style.background='#F7F8FA'"
-            onmouseout="this.style.background='none'">&#215;</button>
+            position:absolute;top:20px;right:20px;width:32px;height:32px;
+            border:1.5px solid #131218;background:#FFC81A;cursor:pointer;color:#131218;
+            font-size:18px;font-weight:900;line-height:1;border-radius:10px;transition:all .18s;display:flex;align-items:center;justify-content:center;"
+            onmouseover="this.style.transform='rotate(90deg)'"
+            onmouseout="this.style.transform='rotate(0deg)'">&#215;</button>
 
-        <div style="margin-bottom:20px;">
-            <h2 style="font-size:18px;font-weight:900;color:#0F0F14;margin:0 0 4px;">Tambah Program Pelatihan</h2>
-            <p style="color:#6B7280;font-size:13px;margin:0;">Isi informasi program pelatihan baru.</p>
+        <div style="margin-bottom:20px;border-bottom:2px solid #E5E7EB;padding-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span style="background:#131218;color:#FFC81A;font-size:10.5px;font-weight:900;padding:2px 8px;border-radius:6px;text-transform:uppercase;">Master Data</span>
+                <h2 style="font-size:19px;font-weight:900;color:#131218;margin:0;">Tambah Program Pelatihan</h2>
+            </div>
+            <p style="color:#64748B;font-size:12.5px;margin:0;font-weight:500;">Isi informasi detail program pelatihan baru.</p>
         </div>
 
         <form action="{{ route('admin.pelatihan.store') }}" method="POST" enctype="multipart/form-data">
@@ -132,12 +135,16 @@
             </div>
 
             {{-- Actions --}}
-            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px;">
-                <button type="button" onclick="document.getElementById('create-modal').style.display='none'" style="padding:10px 20px;font-size:13px;font-weight:700;color:#6B7280;background:#F7F8FA;border:1px solid #E2E4EB;border-radius:10px;cursor:pointer;">
+            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:16px;">
+                <button type="button" onclick="document.getElementById('create-modal').style.display='none'"
+                        style="padding:11px 22px;font-size:13px;font-weight:800;color:#64748B;background:#F1F5F9;border:1.5px solid #CBD5E1;border-radius:30px;cursor:pointer;transition:all .18s;"
+                        onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#CBD5E1';">
                     Batal
                 </button>
-                <button type="submit" class="fcc-btn-gold" style="padding:10px 24px;font-size:13px;border:none;cursor:pointer;font-weight:700;border-radius:10px;">
-                    @include('components.icon',['name'=>'check','size'=>14]) Simpan Pelatihan
+                <button type="submit"
+                        style="padding:11px 26px;font-size:13.5px;font-weight:900;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:30px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(255,200,26,0.35);transition:all .18s;"
+                        onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
+                    @include('components.icon',['name'=>'check','size'=>16]) Simpan Pelatihan
                 </button>
             </div>
         </form>

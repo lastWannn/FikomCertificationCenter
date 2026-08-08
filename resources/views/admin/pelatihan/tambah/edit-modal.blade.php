@@ -1,19 +1,27 @@
-{{-- ── EDIT PELATIHAN MODALS ────────────────────────────────────── --}}
-@foreach($pelatihan as $pEdit)
-<div id="edit-modal-{{ $pEdit->id }}" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-    <div style="background:#FFF;border-radius:18px;padding:32px 28px;max-width:580px;width:90%;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.18);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;">
+{{-- ── EDIT PELATIHAN MODALS (Neo-Brutalist Glassmorphism) ────────────────────────────────────── --}}
+@php
+  $kategoriList = $kategori ?? \App\Models\Kategori::orderBy('nama_kategori')->get();
+  $allPelatihanList = $pelatihanList ?? \App\Models\Pelatihan::orderBy('judul')->get();
+  $itemsToLoop = is_iterable($pelatihan) && !($pelatihan instanceof \App\Models\Pelatihan) ? $pelatihan : [$pelatihan];
+@endphp
+@foreach($itemsToLoop as $pEdit)
+<div id="edit-modal-{{ $pEdit->id }}" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
+    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:620px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;">
         
         {{-- Close button --}}
         <button type="button" onclick="document.getElementById('edit-modal-{{ $pEdit->id }}').style.display='none'" aria-label="Tutup" style="
-            position:absolute;top:18px;right:18px;width:28px;height:28px;
-            border:none;background:none;cursor:pointer;color:#9CA3B0;
-            font-size:20px;line-height:1;border-radius:8px;transition:background .15s;"
-            onmouseover="this.style.background='#F7F8FA'"
-            onmouseout="this.style.background='none'">&#215;</button>
+            position:absolute;top:20px;right:20px;width:32px;height:32px;
+            border:1.5px solid #131218;background:#FFC81A;cursor:pointer;color:#131218;
+            font-size:18px;font-weight:900;line-height:1;border-radius:10px;transition:all .18s;display:flex;align-items:center;justify-content:center;"
+            onmouseover="this.style.transform='rotate(90deg)'"
+            onmouseout="this.style.transform='rotate(0deg)'">&#215;</button>
 
-        <div style="margin-bottom:20px;">
-            <h2 style="font-size:18px;font-weight:900;color:#0F0F14;margin:0 0 4px;text-transform:uppercase;">EDIT PELATIHAN <span style="font-weight:500;color:#A0A3AD;font-size:16px;">{{ $pEdit->kode }}</span></h2>
-            <p style="color:#6B7280;font-size:13px;margin:0;">Perbarui informasi pelatihan ini.</p>
+        <div style="margin-bottom:20px;border-bottom:2px solid #E5E7EB;padding-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span style="background:#131218;color:#FFC81A;font-size:10.5px;font-weight:900;padding:2px 8px;border-radius:6px;font-family:monospace;">{{ $pEdit->kode }}</span>
+                <h2 style="font-size:19px;font-weight:900;color:#131218;margin:0;">Edit Program Pelatihan</h2>
+            </div>
+            <p style="color:#64748B;font-size:12.5px;margin:0;font-weight:500;">Perbarui informasi master program pelatihan {{ $pEdit->judul }}.</p>
         </div>
 
         <form action="{{ route('admin.pelatihan.update', $pEdit) }}" method="POST" enctype="multipart/form-data">
@@ -48,7 +56,7 @@
                 <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Kategori Pelatihan</label>
                 <select name="kategori_id" required class="fcc-input" style="padding:8px 12px;font-size:13px;">
                     <option value="">Pilih Kategori...</option>
-                    @foreach($kategori as $k)
+                    @foreach($kategoriList as $k)
                     <option value="{{ $k->id }}" {{ old('kategori_id', $pEdit->kategori_id)==$k->id?'selected':'' }}>{{ $k->nama_kategori }}</option>
                     @endforeach
                 </select>
@@ -67,7 +75,7 @@
                 <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Persyaratan Pelatihan</label>
                 <select name="prasyarat_id" class="fcc-input" style="padding:8px 12px;font-size:13px;">
                     <option value="">Tidak ada (Opsional)</option>
-                    @foreach($pelatihanList as $p)
+                    @foreach($allPelatihanList as $p)
                         @if($p->id != $pEdit->id)
                             <option value="{{ $p->id }}" {{ old('prasyarat_id', $pEdit->prasyarat_id)==$p->id?'selected':'' }}>{{ $p->judul }}</option>
                         @endif
@@ -76,20 +84,36 @@
                 @error('prasyarat_id')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
             </div>
 
-            {{-- GAMBAR --}}
+            {{-- GAMBAR / POSTER --}}
             <div style="margin-bottom:20px;">
-                <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Gambar / Poster</label>
-                <label style="display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px dashed #E2E4EB;border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .2s;background:#F8F9FB;height:42px;"
-                       onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E2E4EB'">
-                    @include('components.icon',['name'=>'image','size'=>16,'style'=>'color:#A0A3AD'])
-                    <span style="font-size:12px;color:#6B7280;">{{ $pEdit->gambar ? 'Ganti Gambar (Opsional)' : 'Pilih File Gambar' }}</span>
-                    <input type="file" name="gambar" accept="image/*" style="display:none;" onchange="previewGambar(this, 'gambar-preview-{{ $pEdit->id }}')">
+                <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Foto Poster / Sampul Pelatihan</label>
+                
+                {{-- Preview Box --}}
+                <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;background:#F8FAFC;border:1.5px solid #E2E8F0;padding:12px;border-radius:14px;">
+                    <img id="gambar-preview-{{ $pEdit->id }}" 
+                         src="{{ $pEdit->gambar_url ?? '' }}" 
+                         style="{{ $pEdit->gambar_url ? 'display:block;' : 'display:none;' }}width:80px;height:80px;border-radius:12px;object-fit:cover;border:1.5px solid #131218;box-shadow:0 4px 10px rgba(0,0,0,0.1);flex-shrink:0;" 
+                         alt="Preview Poster">
+                    
+                    <div style="flex:1;min-width:0;">
+                        <p id="gambar-status-{{ $pEdit->id }}" style="margin:0 0 4px;font-size:12.5px;font-weight:800;color:#131218;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            {!! $pEdit->gambar_url ? '📷 Poster Saat Ini Terpasang' : '📷 Belum Ada Foto Poster' !!}
+                        </p>
+                        <p style="margin:0;font-size:11px;color:#64748B;font-weight:500;">Pilih file gambar baru (JPG, PNG, WebP) untuk mengganti poster ini.</p>
+                    </div>
+                </div>
+
+                {{-- Upload Input Label --}}
+                <label style="display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px dashed #131218;border-radius:12px;padding:10px 14px;cursor:pointer;transition:all .18s;background:#FFFDF5;"
+                       onmouseover="this.style.background='#FFC81A'" onmouseout="this.style.background='#FFFDF5'">
+                    @include('components.icon',['name'=>'image','size'=>18])
+                    <span id="gambar-label-{{ $pEdit->id }}" style="font-size:12.5px;font-weight:800;color:#131218;">
+                        {{ $pEdit->gambar_url ? 'Pilih Foto Poster Baru...' : 'Upload File Gambar Poster...' }}
+                    </span>
+                    <input type="file" name="gambar" accept="image/*" style="display:none;" 
+                           onchange="handleImagePreview(this, 'gambar-preview-{{ $pEdit->id }}', 'gambar-label-{{ $pEdit->id }}', 'gambar-status-{{ $pEdit->id }}')">
                 </label>
                 @error('gambar')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-            </div>
-
-            <div style="text-align:center;margin-bottom:14px;">
-                <img id="gambar-preview-{{ $pEdit->id }}" src="{{ $pEdit->gambar ? asset('storage/'.$pEdit->gambar) : '' }}" style="{{ $pEdit->gambar ? 'display:block;' : 'display:none;' }}max-width:200px;margin:0 auto;border-radius:10px;object-fit:cover;max-height:120px;" alt="Preview">
             </div>
 
             <hr style="border:none;border-top:1px solid #E2E4EB;margin:16px 0;">

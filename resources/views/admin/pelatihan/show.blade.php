@@ -1,37 +1,43 @@
 @extends('layouts.admin')
-@section('title','Detail Pelatihan')
-@section('page-title','Detail Pelatihan')
+@section('title','Detail Pelatihan — ' . $pelatihan->judul)
+
 @section('page-content')
-<div style="padding:20px 24px;">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:12px;">
+<div style="padding:24px;">
+
+  {{-- Header Bar --}}
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
     <div>
-      <a href="{{ route('admin.pelatihan.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#9CA3B0;font-size:13px;text-decoration:none;margin-bottom:8px;">
-        @include('components.icon',['name'=>'chevron-left','size'=>14]) Kembali
+      <a href="{{ route('admin.pelatihan.index') }}"
+         style="display:inline-flex;align-items:center;gap:6px;color:#64748B;font-size:12.5px;font-weight:700;text-decoration:none;margin-bottom:10px;background:#F1F5F9;padding:5px 12px;border-radius:20px;border:1px solid #CBD5E1;transition:all .18s;"
+         onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#CBD5E1';">
+        @include('components.icon',['name'=>'chevron-left','size'=>14]) Kembali ke Katalog Pelatihan
       </a>
-      <h1 style="font-size:20px;font-weight:900;color:#131218;margin:0 0 4px;">{{ $pelatihan->judul }}</h1>
-      <p style="color:#FFC81A;font-size:13px;font-weight:700;margin:0;font-family:monospace;">{{ $pelatihan->kode }}</p>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="font-size:12px;font-weight:900;color:#FFC81A;background:#131218;padding:4px 12px;border-radius:8px;font-family:monospace;letter-spacing:0.5px;border:1px solid #131218;">
+          {{ $pelatihan->kode }}
+        </span>
+        <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0;letter-spacing:-0.02em;">{{ $pelatihan->judul }}</h1>
+      </div>
     </div>
-    <div style="display:flex;gap:8px;">
-      <button onclick="openMateriModal()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:10px;border:1.5px solid #E2E4EB;background:#F7F8FA;font-size:13px;font-weight:700;color:#131218;text-decoration:none;transition:all .18s;cursor:pointer;"
-         onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E2E4EB'">
-        @include('components.icon',['name'=>'plus','size'=>13]) Tambah Materi
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button type="button" onclick="openJadwalModal()" style="display:inline-flex;align-items:center;gap:8px;padding:9.5px 20px;border-radius:30px;border:1.5px solid #131218;background:#FFC81A;color:#131218;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(255,200,26,0.35);transition:all .18s;"
+         onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
+        @include('components.icon',['name'=>'calendar','size'=>14]) Tambah Batch Jadwal
       </button>
-      <a href="{{ route('admin.jadwal-pelatihan.create', $pelatihan) }}" class="fcc-btn-gold" style="padding:9px 16px;font-size:13px;text-decoration:none;">
-        @include('components.icon',['name'=>'calendar','size'=>13]) Tambah Jadwal
-      </a>
-      <a href="{{ route('admin.pelatihan.edit', $pelatihan) }}" class="fcc-btn-dark" style="padding:9px 14px;font-size:13px;text-decoration:none;">
-        @include('components.icon',['name'=>'edit','size'=>13,'style'=>'color:#FFC81A'])
-      </a>
+      <button type="button" onclick="document.getElementById('edit-modal-{{ $pelatihan->id }}').style.display='flex'" style="display:inline-flex;align-items:center;gap:8px;padding:9.5px 16px;border-radius:30px;border:1.5px solid #131218;background:#131218;color:#FFC81A;font-size:13px;font-weight:800;cursor:pointer;transition:all .18s;">
+        @include('components.icon',['name'=>'edit','size'=>14,'style'=>'color:#FFC81A']) Edit Pelatihan
+      </button>
     </div>
   </div>
 
   <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
     {{-- Kiri: Jadwal --}}
-    <div>      {{-- Jadwal --}}
+    <div>
       <div class="fcc-card" style="padding:0;overflow:hidden;">
         <div style="padding:14px 18px;border-bottom:1px solid #E2E4EB;display:flex;justify-content:space-between;align-items:center;">
           <p style="margin:0;font-size:14px;font-weight:800;color:#131218;">Jadwal ({{ $pelatihan->jadwal->count() }})</p>
-          <a href="{{ route('admin.jadwal-pelatihan.create', $pelatihan) }}" style="font-size:12px;color:#FFC81A;font-weight:700;text-decoration:none;">+ Tambah Jadwal</a>
+          <button type="button" onclick="openJadwalModal()" style="font-size:12px;color:#FFC81A;font-weight:800;background:#131218;padding:4px 12px;border-radius:14px;border:none;cursor:pointer;">+ Tambah Jadwal</button>
         </div>
         @forelse($pelatihan->jadwal as $j)
         @php $kp = $j->kegiatanPelatihan; @endphp
@@ -84,8 +90,8 @@
           </div>
         </div>
         @empty
-        <div style="padding:18px;text-align:center;color:#9CA3B0;font-size:13px;">
-          Belum ada jadwal. <a href="{{ route('admin.jadwal-pelatihan.create', $pelatihan) }}" style="color:#FFC81A;font-weight:700;text-decoration:none;">Tambah jadwal &rarr;</a>
+        <div style="padding:24px;text-align:center;color:#94A3B8;font-size:13px;font-weight:600;">
+          Belum ada jadwal pelaksanaan. <button type="button" onclick="openJadwalModal()" style="color:#FFC81A;background:none;border:none;font-weight:800;cursor:pointer;padding:0;">Tambah batch jadwal &rarr;</button>
         </div>
         @endforelse
       </div>
@@ -93,81 +99,197 @@
 
     {{-- Kanan: Info --}}
     <div>
-      <div class="fcc-card" style="padding:20px;margin-bottom:14px;">
-        <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="fcc-card" style="padding:20px;margin-bottom:14px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <div style="display:flex;flex-direction:column;gap:14px;">
           @foreach([
             ['Kategori',  $pelatihan->kategori->nama_kategori??'—'],
-            ['Total JP',  $pelatihan->materi->sum('jam_pelajaran').' JP'],
-            ['Dibuat',    $pelatihan->created_at->format('d M Y')],
+            ['Total Jam Pelajaran',  $pelatihan->materi->sum('jam_pelajaran').' JP'],
+            ['Tanggal Dibuat',    $pelatihan->created_at->format('d M Y')],
           ] as [$l,$v])
           <div>
-            <p style="margin:0;font-size:10px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.7px;">{{ $l }}</p>
-            <p style="margin:3px 0 0;font-size:14px;font-weight:600;color:#131218;">{{ $v }}</p>
+            <p style="margin:0;font-size:10.5px;font-weight:900;color:#64748B;text-transform:uppercase;letter-spacing:.7px;">{{ $l }}</p>
+            <p style="margin:3px 0 0;font-size:14px;font-weight:900;color:#131218;">{{ $v }}</p>
           </div>
           @endforeach
           @if($pelatihan->link_materi)
           <div>
-            <p style="margin:0 0 3px;font-size:10px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.7px;">Link Materi</p>
-            <a href="{{ $pelatihan->link_materi }}" target="_blank" style="font-size:13px;color:#FFC81A;font-weight:700;text-decoration:none;">Buka Link &rarr;</a>
+            <p style="margin:0 0 3px;font-size:10.5px;font-weight:900;color:#64748B;text-transform:uppercase;letter-spacing:.7px;">Link Utama</p>
+            <a href="{{ $pelatihan->link_materi }}" target="_blank" style="font-size:13px;color:#FFC81A;background:#131218;padding:4px 12px;border-radius:8px;font-weight:800;text-decoration:none;display:inline-block;">Buka Link &rarr;</a>
           </div>
           @endif
         </div>
       </div>
-      <div class="fcc-card" style="padding:18px;">
-        <p style="font-size:13px;font-weight:800;color:#131218;margin:0 0 10px;">Deskripsi</p>
-        <p style="color:#6B7280;font-size:13px;line-height:1.75;margin:0;">{{ $pelatihan->isi }}</p>
+
+      <div class="fcc-card" style="padding:20px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <p style="font-size:14px;font-weight:900;color:#131218;margin:0 0 10px;">Deskripsi Program</p>
+        <p style="color:#475569;font-size:13px;line-height:1.75;margin:0;font-weight:500;">{{ $pelatihan->isi }}</p>
       </div>
     </div>
   </div>
 </div>
-</div>
 
-{{-- ── Custom Confirm Modal ─────────────────────────────────────── --}}
-<div id="fcc-confirm-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(19,18,24,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-    <div style="background:#FFF;border-radius:18px;padding:32px;max-width:420px;width:90%;box-shadow:0 24px 64px rgba(0,0,0,.18);text-align:center;position:relative;animation:modalIn .25s ease;">
-        <div id="fcc-confirm-icon" style="width:56px;height:56px;border-radius:16px;background:#FEF2F2;border:1.5px solid #FEE2E2;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+{{-- ── TAMBAH BATCH JADWAL MODAL (Neo-Brutalist Glassmorphism) ────────────────────────────────────── --}}
+<div id="jadwal-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
+    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:640px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;">
+        
+        {{-- Close button --}}
+        <button type="button" onclick="closeJadwalModal()" aria-label="Tutup" style="
+            position:absolute;top:20px;right:20px;width:32px;height:32px;
+            border:1.5px solid #131218;background:#FFC81A;cursor:pointer;color:#131218;
+            font-size:18px;font-weight:900;line-height:1;border-radius:10px;transition:all .18s;display:flex;align-items:center;justify-content:center;"
+            onmouseover="this.style.transform='rotate(90deg)'"
+            onmouseout="this.style.transform='rotate(0deg)'">&#215;</button>
+
+        <div style="margin-bottom:20px;border-bottom:2px solid #E5E7EB;padding-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span style="background:#131218;color:#FFC81A;font-size:10.5px;font-weight:900;padding:2px 8px;border-radius:6px;">BATCH JADWAL</span>
+                <h2 style="font-size:19px;font-weight:900;color:#131218;margin:0;">Tambah Batch Jadwal Pelatihan</h2>
+            </div>
+            <p style="color:#64748B;font-size:12.5px;margin:0;font-weight:500;">Jadwalkan tanggal dan jam pelaksanaan untuk {{ $pelatihan->judul }}.</p>
         </div>
-        <h3 id="fcc-confirm-title" style="color:#0F0F14;font-size:18px;font-weight:900;margin:0 0 8px;">Hapus Jadwal?</h3>
-        <p id="fcc-confirm-msg" style="color:#6B7280;font-size:14px;margin:0 0 28px;line-height:1.6;"></p>
-        <div style="display:flex;gap:12px;justify-content:center;">
-            <button onclick="closeConfirm()" style="padding:11px 28px;border-radius:12px;border:1px solid #E2E4EB;background:#F7F8FA;color:#6B7280;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='#F0F1F5'" onmouseout="this.style.background='#F7F8FA'">Batal</button>
-            <form id="fcc-confirm-form" method="POST" style="margin:0;">
-                @csrf @method('DELETE')
-                <button type="submit" style="padding:11px 28px;border-radius:12px;border:none;background:#EF4444;color:#FFF;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(239,68,68,.3);transition:all .2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">Ya, Hapus</button>
-            </form>
-        </div>
+
+        <form action="{{ route('admin.jadwal-pelatihan.store', $pelatihan) }}" method="POST">
+            @csrf
+            
+            {{-- NAMA KEGIATAN --}}
+            <div style="margin-bottom:14px;">
+                <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Nama / Label Batch <span style="font-weight:500;color:#64748B;">(Opsional)</span></label>
+                <input type="text" name="nama_kegiatan" value="{{ old('nama_kegiatan') }}" placeholder="Contoh: {{ $pelatihan->judul }} - Batch {{ $pelatihan->jadwal->count() + 1 }}" class="fcc-input" style="padding:9px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
+                @error('nama_kegiatan')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+            </div>
+
+            {{-- TANGGAL GRID --}}
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+                <div>
+                    <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Tanggal Pelaksanaan <span style="color:#EF4444;">*</span></label>
+                    <input type="date" name="tgl_pelaksanaan" value="{{ old('tgl_pelaksanaan', date('Y-m-d', strtotime('+7 days'))) }}" required class="fcc-input" style="padding:9px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
+                    @error('tgl_pelaksanaan')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Batas Pendaftaran <span style="color:#EF4444;">*</span></label>
+                    <input type="date" name="tgl_batas_daftar" value="{{ old('tgl_batas_daftar', date('Y-m-d', strtotime('+5 days'))) }}" required class="fcc-input" style="padding:9px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
+                    @error('tgl_batas_daftar')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            {{-- JAM & KUOTA GRID --}}
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px;">
+                <div>
+                    <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Jam Mulai <span style="color:#EF4444;">*</span></label>
+                    <input type="time" name="jam_mulai" value="{{ old('jam_mulai', '08:00') }}" required class="fcc-input" style="padding:9px 10px;font-size:13px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
+                    @error('jam_mulai')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Jam Selesai <span style="color:#EF4444;">*</span></label>
+                    <input type="time" name="jam_selesai" value="{{ old('jam_selesai', '12:00') }}" required class="fcc-input" style="padding:9px 10px;font-size:13px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
+                    @error('jam_selesai')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Kuota <span style="color:#EF4444;">*</span></label>
+                    <input type="number" name="kuota_peserta" value="{{ old('kuota_peserta', 30) }}" min="1" max="500" required class="fcc-input" style="padding:9px 10px;font-size:13px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
+                    @error('kuota_peserta')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Peserta <span style="color:#EF4444;">*</span></label>
+                    <select name="untuk_peserta" required class="fcc-input" style="padding:9px 8px;font-size:12.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;background:#FFF;">
+                        <option value="LP" {{ old('untuk_peserta') == 'LP' ? 'selected' : '' }}>Semua (L/P)</option>
+                        <option value="L" {{ old('untuk_peserta') == 'L' ? 'selected' : '' }}>Laki-laki Only</option>
+                        <option value="P" {{ old('untuk_peserta') == 'P' ? 'selected' : '' }}>Perempuan Only</option>
+                    </select>
+                    @error('untuk_peserta')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            {{-- PENGATURAN BIAYA --}}
+            <div style="margin-bottom:14px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:14px;padding:14px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <label style="font-size:11px;font-weight:900;color:#131218;margin:0;text-transform:uppercase;letter-spacing:.5px;">Pengaturan Biaya Pendaftaran</label>
+                    <button type="button" onclick="addJadwalBiayaRow()" style="font-size:11px;font-weight:800;color:#131218;background:#FFC81A;border:1px solid #131218;padding:3px 10px;border-radius:14px;cursor:pointer;">
+                        + Baris Biaya
+                    </button>
+                </div>
+                <div id="jadwal-biaya-container">
+                    <div class="biaya-row" style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;">
+                        <input type="text" name="nama_jenis_biaya[]" value="Umum" placeholder="Jenis (contoh: Umum)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
+                        <input type="number" name="nominal_biaya[]" value="0" placeholder="Nominal (Rp)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
+                        <span style="width:24px;"></span>
+                    </div>
+                </div>
+                <p style="font-size:11px;color:#64748B;margin:6px 0 0;font-weight:500;">Isi 0 untuk pendaftaran gratis.</p>
+            </div>
+
+            {{-- CHECKBOX LANGSUNG AKTIFKAN --}}
+            <div style="margin-bottom:18px;background:#FFFDF5;border:1.5px solid #FFC81A;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;">
+                <input type="checkbox" name="langsung_aktifkan" id="langsung_aktifkan_modal" value="1" style="width:18px;height:18px;accent-color:#131218;cursor:pointer;">
+                <label for="langsung_aktifkan_modal" style="font-size:12.5px;font-weight:800;color:#131218;cursor:pointer;margin:0;">
+                    Langsung Aktifkan Sebagai Kegiatan Publik
+                    <span style="display:block;font-size:11px;font-weight:500;color:#64748B;">Jadwal akan langsung tampil di halaman depan untuk pendaftar.</span>
+                </label>
+            </div>
+
+            {{-- Actions --}}
+            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:16px;">
+                <button type="button" onclick="closeJadwalModal()"
+                        style="padding:11px 22px;font-size:13px;font-weight:800;color:#64748B;background:#F1F5F9;border:1.5px solid #CBD5E1;border-radius:30px;cursor:pointer;transition:all .18s;"
+                        onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#CBD5E1';">
+                    Batal
+                </button>
+                <button type="submit"
+                        style="padding:11px 26px;font-size:13.5px;font-weight:900;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:30px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(255,200,26,0.35);transition:all .18s;"
+                        onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
+                    @include('components.icon',['name'=>'check','size'=>16]) Simpan Batch Jadwal
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
-<style>
-@keyframes modalIn { from { opacity:0; transform:scale(.95) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
-</style>
-
 <script>
-function closeConfirm() {
-    document.getElementById('fcc-confirm-modal').style.display = 'none';
+function openJadwalModal() {
+    document.getElementById('jadwal-modal').style.display = 'flex';
 }
 
-function showModal(id) {
-    const el = document.getElementById(id);
-    el.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+function closeJadwalModal() {
+    document.getElementById('jadwal-modal').style.display = 'none';
 }
 
-// Close on backdrop click
-document.getElementById('fcc-confirm-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeConfirm();
-});
+function addJadwalBiayaRow() {
+    const container = document.getElementById('jadwal-biaya-container');
+    const div = document.createElement('div');
+    div.className = 'biaya-row';
+    div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;';
+    div.innerHTML = `
+        <input type="text" name="nama_jenis_biaya[]" placeholder="contoh: Mahasiswa UMI" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
+        <input type="number" name="nominal_biaya[]" placeholder="Nominal (Rp)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
+        <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;">✕</button>
+    `;
+    container.appendChild(div);
+}
 
-// Watch overflow
-[document.getElementById('fcc-confirm-modal')].forEach(el => {
-    if(!el) return;
-    const obs = new MutationObserver(() => {
-        const visible = el.style.display !== 'none';
-        document.body.style.overflow = visible ? 'hidden' : '';
-    });
-    obs.observe(el, { attributes: true, attributeFilter: ['style'] });
-});
+function handleImagePreview(input, previewId, labelId, statusId) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        const preview = document.getElementById(previewId);
+        const label = document.getElementById(labelId);
+        const status = document.getElementById(statusId);
+        
+        if (preview) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        if (label) {
+            label.textContent = 'Ganti File Gambar (' + file.name + ')';
+        }
+        if (status) {
+            status.innerHTML = '✨ <span style="color:#10B981;font-weight:900;">Foto Baru Terpilih:</span> ' + file.name;
+        }
+    };
+    reader.readAsDataURL(file);
+}
 </script>
+
+{{-- ── EDIT PELATIHAN MODAL ────────────────────────────────────── --}}
+@include('admin.pelatihan.tambah.edit-modal')
 @endsection

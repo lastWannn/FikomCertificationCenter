@@ -304,14 +304,18 @@
         </div>
 
         {{-- Alert Container --}}
-        <div id="fcc-auth-alert" style="display:none;padding:12px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;color:#EF4444;font-size:13px;font-weight:600;margin-bottom:20px;line-height:1.45;"></div>
+        <div id="fcc-auth-alert" style="{{ $errors->any() ? 'display:block;' : 'display:none;' }}padding:12px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;color:#EF4444;font-size:13px;font-weight:600;margin-bottom:20px;line-height:1.45;">
+            @if($errors->any())
+                {!! implode('<br>', $errors->all()) !!}
+            @endif
+        </div>
 
         {{-- FORM LOGIN --}}
         <div id="fcc-login-container">
             <h2 style="color:#FFF;font-size:22px;font-weight:900;margin:0 0 6px;">Masuk</h2>
             <p style="color:rgba(255,255,255,.5);font-size:13.5px;margin:0 0 24px;">Belum punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color:#FFC81A;font-weight:700;text-decoration:none;">Daftar gratis</a></p>
 
-            <form id="fcc-login-form" onsubmit="submitAuthForm(event, '/masuk')">
+            <form id="fcc-login-form" action="{{ route('auth.login.post') }}" method="POST" onsubmit="submitAuthForm(event, '{{ route('auth.login.post') }}')">
                 @csrf
                 <div style="margin-bottom:14px;">
                     <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Email *</label>
@@ -347,7 +351,7 @@
             <h2 style="color:#FFF;font-size:22px;font-weight:900;margin:0 0 6px;">Daftar Akun</h2>
             <p style="color:rgba(255,255,255,.5);font-size:13.5px;margin:0 0 24px;">Sudah punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:#FFC81A;font-weight:700;text-decoration:none;">Masuk</a></p>
 
-            <form id="fcc-register-form" onsubmit="submitAuthForm(event, '/daftar')">
+            <form id="fcc-register-form" action="{{ route('auth.register.post') }}" method="POST" onsubmit="submitAuthForm(event, '{{ route('auth.register.post') }}')">
                 @csrf
                 <div style="margin-bottom:14px;">
                     <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Nama Lengkap *</label>
@@ -417,7 +421,7 @@
             <h2 style="color:#FFF;font-size:22px;font-weight:900;margin:0 0 6px;">Lupa Password</h2>
             <p style="color:rgba(255,255,255,.5);font-size:13.5px;margin:0 0 24px;">Kembali ke <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:#FFC81A;font-weight:700;text-decoration:none;">Masuk</a></p>
 
-            <form id="fcc-forgot-form" onsubmit="submitAuthForm(event, '/lupa-password')">
+            <form id="fcc-forgot-form" action="{{ route('auth.forgot.post') }}" method="POST" onsubmit="submitAuthForm(event, '{{ route('auth.forgot.post') }}')">
                 @csrf
                 <div style="margin-bottom:22px;">
                     <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Email Akun Anda *</label>
@@ -578,14 +582,18 @@
     const dialog = document.getElementById('fcc-auth-dialog');
     const alertBox = document.getElementById('fcc-auth-alert');
 
-    function openAuthModal(tab = 'login') {
+    function openAuthModal(tab = 'login', keepAlert = false) {
         switchAuthTab(tab);
-        alertBox.style.display = 'none';
+        if (!keepAlert) alertBox.style.display = 'none';
         modal.style.opacity = '1';
         modal.style.pointerEvents = 'auto';
         dialog.style.transform = 'scale(1)';
         document.body.style.overflow = 'hidden';
     }
+
+    @if($errors->any())
+    openAuthModal('login', true);
+    @endif
 
     function closeAuthModal() {
         modal.style.opacity = '0';
@@ -712,7 +720,9 @@
             submitBtn.innerText = originalText;
             
             let errMsg = 'Terjadi kesalahan sistem. Silakan coba lagi.';
-            if (err && err.data && err.data.errors) {
+            if (err && err.status === 429) {
+                errMsg = '⚠️ Terlalu banyak percobaan. Silakan tunggu 1 menit sebelum mencoba lagi.';
+            } else if (err && err.data && err.data.errors) {
                 errMsg = Object.values(err.data.errors).flat().join('<br>');
             } else if (err && err.data && err.data.message) {
                 errMsg = err.data.message;

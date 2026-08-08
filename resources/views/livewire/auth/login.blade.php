@@ -37,8 +37,7 @@
                        autocomplete="email"
                        placeholder="email@example.com"
                        class="fcc-input"
-                       style="{{ $errors->has('email') ? 'border-color:#EF4444;' : '' }}"
-                       onkeydown="if(event.key==='Enter')event.preventDefault();">
+                       style="{{ $errors->has('email') ? 'border-color:#EF4444;' : '' }}">
                 @error('email')
                 <p style="color:#EF4444;font-size:12px;margin:5px 0 0;display:flex;align-items:center;gap:4px;">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -59,8 +58,7 @@
                            autocomplete="current-password"
                            placeholder="••••••••"
                            class="fcc-input"
-                           style="padding-right:44px;{{ $errors->has('password') ? 'border-color:#EF4444;' : '' }}"
-                           onkeydown="if(event.key==='Enter')event.preventDefault();">
+                           style="padding-right:44px;{{ $errors->has('password') ? 'border-color:#EF4444;' : '' }}">
                     {{-- Toggle show/hide password --}}
                     <button type="button"
                             wire:click="togglePassword"

@@ -106,8 +106,7 @@
                             <polyline points="22,6 12,13 2,6"/>
                         </svg>
                         <input type="email" name="email" value="{{ old('email') }}" required
-                               placeholder="email@example.com" class="fcc-input-dark" style="padding-left:42px;width:100%;box-sizing:border-box;"
-                               onkeydown="if(event.key==='Enter')event.preventDefault();">
+                               placeholder="email@example.com" class="fcc-input-dark" style="padding-left:42px;width:100%;box-sizing:border-box;">
                     </div>
                 </div>
 
@@ -122,8 +121,7 @@
                             <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                         </svg>
                         <input type="password" name="password" id="pw-inp" required
-                               placeholder="Password" class="fcc-input-dark" style="padding-left:42px;padding-right:42px;width:100%;box-sizing:border-box;"
-                               onkeydown="if(event.key==='Enter')event.preventDefault();">
+                               placeholder="Password" class="fcc-input-dark" style="padding-left:42px;padding-right:42px;width:100%;box-sizing:border-box;">
                         <button type="button" onclick="togglePw()"
                                 style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
                                        background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;display:flex;padding:0;">

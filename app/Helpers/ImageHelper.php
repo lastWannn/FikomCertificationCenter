@@ -16,13 +16,13 @@ class ImageHelper
      * @param int|null $maxWidth Maximum width to resize if larger (default 1600px)
      * @return string|null Relative stored path (e.g. 'foto-peserta/random.webp')
      */
-    public static function compressToWebp(?UploadedFile $file, string $folder = 'uploads', int $quality = 80, ?int $maxWidth = 1600): ?string
+    public static function compressToWebp(?UploadedFile $file, string $folder = 'uploads', int $quality = 80, ?int $maxWidth = 1400): ?string
     {
         if (!$file || !$file->isValid()) {
             return null;
         }
 
-        $mime = $file->getMimeType();
+        $mime = strtolower($file->getMimeType());
         $realPath = $file->getRealPath();
 
         // Load image resource via GD extension if available
@@ -43,28 +43,31 @@ class ImageHelper
             return $file->store($folder, 'public');
         }
 
-        // Preserve alpha transparency for PNG / WebP / GIF
-        imagepalettetotruecolor($image);
-        imagealphablending($image, true);
-        imagesavealpha($image, true);
+        $origW = imagesx($image);
+        $origH = imagesy($image);
 
-        // Auto resize if width exceeds $maxWidth
-        $origWidth = imagesx($image);
-        $origHeight = imagesy($image);
+        // Direct Resize if width exceeds $maxWidth (preserving native orientation as uploaded)
+        if ($maxWidth && $origW > $maxWidth) {
+            $newW = $maxWidth;
+            $newH = (int) round(($origH / $origW) * $newW);
 
-        if ($maxWidth && $origWidth > $maxWidth) {
-            $newWidth = $maxWidth;
-            $newHeight = (int) round(($origHeight / $origWidth) * $newWidth);
-            $resized = imagecreatetruecolor($newWidth, $newHeight);
+            $resized = imagecreatetruecolor($newW, $newH);
 
-            imagealphablending($resized, false);
-            imagesavealpha($resized, true);
-            imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+            if (in_array($mime, ['image/png', 'image/webp', 'image/gif'])) {
+                imagealphablending($resized, false);
+                imagesavealpha($resized, true);
+            }
+
+            imagecopyresampled($resized, $image, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
             imagedestroy($image);
             $image = $resized;
+        } elseif (in_array($mime, ['image/png', 'image/webp', 'image/gif'])) {
+            imagepalettetotruecolor($image);
+            imagealphablending($image, true);
+            imagesavealpha($image, true);
         }
 
-        // Target path: storage/app/public/{folder}
+        // Target path & WebP Save
         $filename = Str::random(40) . '.webp';
         $relativeFolder = trim($folder, '/');
         $targetDir = storage_path("app/public/{$relativeFolder}");
@@ -75,7 +78,7 @@ class ImageHelper
 
         $fullPath = "{$targetDir}/{$filename}";
 
-        // Convert & compress to WebP
+        // Save compressed WebP directly
         imagewebp($image, $fullPath, $quality);
         imagedestroy($image);
 
