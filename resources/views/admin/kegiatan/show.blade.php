@@ -41,7 +41,11 @@
         </button>
         @include('admin.kegiatan.partials.edit-modal', ['kegiatan' => $kegiatan])
 
-        @if(!$isArsiped)
+        @if($isArsiped)
+        <span style="font-size:12px;font-weight:900;padding:8px 16px;border-radius:30px;background:#ECFDF5;color:#10B981;border:1.5px solid #10B981;display:inline-flex;align-items:center;gap:6px;">
+          ✓ Sudah Diarsipkan
+        </span>
+        @elseif($kegiatan->isPassed())
         <form action="{{ route('admin.kegiatan.arsipkan', $kegiatan) }}" method="POST" style="display:inline;">
           @csrf
           <button type="button" onclick="fccConfirmAction(this, 'Tandai Selesai & Arsipkan', 'Apakah Anda yakin ingin menandai kegiatan ini selesai dan memindahkannya ke Arsip Kegiatan?', 'Ya, Arsipkan', false)"
@@ -49,10 +53,6 @@
             @include('components.icon',['name'=>'archive','size'=>14]) Tandai Selesai / Arsipkan
           </button>
         </form>
-        @else
-        <span style="font-size:12px;font-weight:900;padding:8px 16px;border-radius:30px;background:#ECFDF5;color:#10B981;border:1.5px solid #10B981;display:inline-flex;align-items:center;gap:6px;">
-          ✓ Sudah Diarsipkan
-        </span>
         @endif
       </div>
     </div>

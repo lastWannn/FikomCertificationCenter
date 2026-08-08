@@ -14,7 +14,16 @@ class StoreArsipRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'kegiatan_id'   => 'required|exists:kegiatan,id',
+            'kegiatan_id'   => [
+                'required',
+                'exists:kegiatan,id',
+                function ($attribute, $value, $fail) {
+                    $kegiatan = \App\Models\Kegiatan::find($value);
+                    if ($kegiatan && !$kegiatan->isPassed()) {
+                        $fail('Kegiatan belum selesai dilaksanakan dan tidak dapat dimasukkan ke dalam arsip.');
+                    }
+                },
+            ],
             'judul'         => 'required|string|max:255',
             'ringkasan'     => 'nullable|string',
             'berita_acara'           => 'nullable|file|mimes:pdf,doc,docx,zip,jpeg,jpg,png|max:40960',

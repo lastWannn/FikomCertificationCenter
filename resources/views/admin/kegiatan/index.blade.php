@@ -122,6 +122,14 @@
                                         {{ $k->judul }}
                                     </a>
                                     <div style="display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap;">
+                                        @if($k->isDraf())
+                                        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#F3F4F6;color:#4B5563;border:1px solid #D1D5DB;">Draft</span>
+                                        @elseif($k->isComingSoon())
+                                        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;">Coming Soon</span>
+                                        @else
+                                        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#ECFDF5;color:#10B981;border:1px solid #6EE7B7;">Public</span>
+                                        @endif
+
                                         @if($isPassed)
                                         <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;">⚠ Lewat Tanggal</span>
                                         @endif

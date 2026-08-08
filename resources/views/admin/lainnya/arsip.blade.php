@@ -6,14 +6,9 @@
 <div style="padding:24px;">
 
     {{-- Header & Title --}}
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-        <div>
-            <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0 0 4px;">Arsip & Dokumentasi Kegiatan</h1>
-            <p style="color:#6B7280;font-size:13.5px;margin:0;">Kelola berita acara dan galeri foto dokumentasi pelaksanaan kegiatan yang telah selesai.</p>
-        </div>
-        <a href="{{ route('admin.arsip.create') }}" class="fcc-btn-gold" style="padding:9px 18px;font-size:13px;text-decoration:none;border-radius:10px;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
-            @include('components.icon',['name'=>'plus','size'=>15]) Tambah Arsip Baru
-        </a>
+    <div style="margin-bottom:20px;">
+        <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0 0 4px;">Arsip & Dokumentasi Kegiatan</h1>
+        <p style="color:#6B7280;font-size:13.5px;margin:0;">Kelola berita acara dan galeri foto dokumentasi pelaksanaan kegiatan yang telah selesai.</p>
     </div>
 
     {{-- Tabel Arsip --}}
@@ -92,7 +87,7 @@
                                 @include('components.icon',['name'=>'archive','size'=>24,'style'=>'color:#9CA3B0'])
                             </div>
                             <p style="font-size:15px;font-weight:700;color:#131218;margin:0 0 4px;">Belum Ada Arsip Kegiatan</p>
-                            <p style="font-size:12.5px;color:#9CA3B0;margin:0;">Klik tombol Tambah Arsip Baru untuk menambahkan berita acara dan foto dokumentasi.</p>
+                            <p style="font-size:12.5px;color:#9CA3B0;margin:0;">Arsip kegiatan akan secara otomatis dibuat dari kegiatan yang telah selesai dilaksanakan.</p>
                         </td>
                     </tr>
                     @endforelse

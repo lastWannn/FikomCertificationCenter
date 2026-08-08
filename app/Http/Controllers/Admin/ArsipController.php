@@ -22,7 +22,7 @@ class ArsipController extends Controller
     public function create()
     {
         return view('admin.lainnya.arsip-form', [
-            'kegiatan' => Kegiatan::doesntHave('arsip')->get()
+            'kegiatan' => Kegiatan::passed()->doesntHave('arsip')->get()
         ]);
     }
 
