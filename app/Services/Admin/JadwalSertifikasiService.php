@@ -23,6 +23,22 @@ class JadwalSertifikasiService
             collect($data)->only(['nama_kegiatan','kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'])->toArray(),
             ['biaya_setup' => $biayaSetup]
         ));
+
+        // Sync to active Kegiatan if exists
+        $ks = $jadwal->kegiatanSertifikasi;
+        if ($ks && $kegiatan = $ks->kegiatan) {
+            $kegiatan->biaya()->delete();
+            if (!empty($biayaSetup)) {
+                foreach ($biayaSetup as $b) {
+                    \App\Models\BiayaKegiatan::create([
+                        'kegiatan_id' => $kegiatan->id,
+                        'nama_jenis'  => $b['nama'],
+                        'nominal'     => $b['nominal'],
+                    ]);
+                }
+            }
+        }
+
         return $jadwal->fresh();
     }
 
@@ -54,7 +70,15 @@ class JadwalSertifikasiService
             throw new \RuntimeException('Jadwal ini sudah aktif sebagai kegiatan.');
         }
         return DB::transaction(function() use ($jadwal) {
-            $kegiatan = Kegiatan::create(['jenis_kegiatan'=>'sertifikasi','qr_token'=>Str::random(32)]);
+            $status = request('status');
+            if (!$status) {
+                $status = request()->boolean('langsung_aktifkan') ? 'public' : 'public';
+            }
+            $kegiatan = Kegiatan::create([
+                'jenis_kegiatan' => 'sertifikasi',
+                'status'         => in_array($status, ['draf','comingsoon','public']) ? $status : 'public',
+                'qr_token'       => Str::random(32),
+            ]);
             KegiatanSertifikasi::create(['kegiatan_id'=>$kegiatan->id,'jadwal_sertifikasi_id'=>$jadwal->id]);
 
             if (!empty($jadwal->biaya_setup) && is_array($jadwal->biaya_setup)) {

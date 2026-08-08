@@ -166,29 +166,14 @@
 <section style="min-height:86vh;display:flex;align-items:center;justify-content:center;padding:70px 24px;background:#F8F9FA;position:relative;overflow:hidden;box-sizing:border-box;">
     <div style="max-width:1180px;margin:0 auto;width:100%;position:relative;z-index:1;">
         
-        {{-- Split Header: Title Left & Filter Right --}}
-        <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:34px;flex-wrap:wrap;">
-            <div>
-                <span style="display:inline-block;padding:6px 16px;background:#FFC81A;color:#131218;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;border:1.5px solid #131218;margin-bottom:10px;">
-                    Jadwal Terbaru
-                </span>
-                <h2 style="color:#131218;font-size:clamp(26px,3.5vw,38px);font-weight:900;margin:0;line-height:1.2;">
-                    Kegiatan yang Akan <span style="color:#FFC81A;background:#131218;padding:2px 10px;border-radius:6px;">Datang</span>
-                </h2>
-            </div>
-            
-            {{-- Filter Tabs (Right Aligned) --}}
-            <div style="display:inline-flex;gap:6px;background:#FFFFFF;padding:5px;border-radius:14px;border:1.5px solid #E5E7EB;box-shadow:0 3px 10px rgba(0,0,0,0.04);">
-                @foreach([['all','Semua'],['pelatihan','Pelatihan'],['sertifikasi','Sertifikasi']] as [$v,$l])
-                <button data-filter="{{ $v }}"
-                    style="padding:8px 22px;border-radius:9px;border:none;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s ease;
-                           background:{{ $v==='all'?'#FFC81A':'transparent' }};
-                           color:{{ $v==='all'?'#131218':'#6B7280' }};
-                           {{ $v==='all'?'border:1.5px solid #131218;':'' }}">
-                    {{ $l }}
-                </button>
-                @endforeach
-            </div>
+        {{-- Section Header --}}
+        <div class="reveal" style="margin-bottom:34px;">
+            <span style="display:inline-block;padding:6px 16px;background:#FFC81A;color:#131218;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;border:1.5px solid #131218;margin-bottom:10px;">
+                Jadwal Terbaru
+            </span>
+            <h2 style="color:#131218;font-size:clamp(26px,3.5vw,38px);font-weight:900;margin:0;line-height:1.2;">
+                Kegiatan yang Akan <span style="color:#FFC81A;background:#131218;padding:2px 10px;border-radius:6px;">Datang</span>
+            </h2>
         </div>
 
         {{-- Cards Grid (3 Columns) --}}
@@ -223,8 +208,8 @@
                             </span>
                         </div>
                         <div style="position:absolute;top:12px;right:12px;">
-                            <span style="font-size:10.5px; font-weight:800; color:{{ $k->isFull() ? '#EF4444' : '#131218' }}; background:#FFFFFF; padding:4px 10px; border-radius:6px; border:1px solid #131218; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
-                                {{ $k->isFull() ? 'Kuota Penuh' : ($k->biaya->isNotEmpty() ? 'Berbayar' : 'Gratis') }}
+                            <span style="font-size:10.5px; font-weight:800; color:{{ $k->isComingSoon() ? '#D97706' : ($k->isFull() ? '#EF4444' : '#131218') }}; background:#FFFFFF; padding:4px 10px; border-radius:6px; border:1px solid #131218; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+                                {{ $k->isComingSoon() ? 'Segera Hadir' : ($k->isFull() ? 'Kuota Penuh' : ($k->biaya->isNotEmpty() ? 'Berbayar' : 'Gratis')) }}
                             </span>
                         </div>
                     </div>
@@ -256,7 +241,7 @@
                             </div>
                             <div style="height:5px; background:#E5E7EB; border-radius:3px; overflow:hidden;">
                                 <div style="height:5px; border-radius:3px; transition:width 0.3s;
-                                            background:{{ $k->isFull() ? '#EF4444' : '#FFC81A' }};
+                                            background:{{ $k->isComingSoon() ? '#F59E0B' : ($k->isFull() ? '#EF4444' : '#FFC81A') }};
                                             width:{{ $k->kuota>0 ? min(100, round($k->terisi/$k->kuota*100)) : 0 }}%;"></div>
                             </div>
                         </div>
@@ -268,8 +253,8 @@
                 <div style="padding:0 18px 16px;">
                     <a href="{{ route('landing.show', $k) }}"
                        style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none; padding:10.5px 14px; border-radius:10px; font-size:13px; font-weight:800; transition:all 0.2s ease; width:100%; box-sizing:border-box;
-                              {{ $k->isFull() ? 'background:#F3F4F6; border:1px solid #E5E7EB; color:#9CA3AF; cursor:not-allowed;' : 'background:#FFC81A; color:#131218; border:1.5px solid #131218; box-shadow:0 4px 12px rgba(255,200,26,0.3);' }}">
-                        {{ $k->isFull() ? 'Kuota Penuh' : 'Detail & Daftar →' }}
+                              {{ $k->isComingSoon() ? 'background:#FFFBEB; border:1.5px solid #F59E0B; color:#D97706;' : ($k->isFull() ? 'background:#F3F4F6; border:1px solid #E5E7EB; color:#9CA3AF; cursor:not-allowed;' : 'background:#FFC81A; color:#131218; border:1.5px solid #131218; box-shadow:0 4px 12px rgba(255,200,26,0.3);') }}">
+                        {{ $k->isComingSoon() ? 'Segera Hadir →' : ($k->isFull() ? 'Kuota Penuh' : 'Detail & Daftar →') }}
                     </a>
                 </div>
             </div>

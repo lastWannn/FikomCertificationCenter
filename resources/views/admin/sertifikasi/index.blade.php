@@ -129,12 +129,12 @@
                                     @include('components.icon',['name'=>'eye','size'=>15])
                                 </a>
 
-                                {{-- Edit Button --}}
-                                <a href="{{ route('admin.sertifikasi.edit', $s) }}" title="Edit Sertifikasi"
-                                   style="width:32px;height:32px;border-radius:9px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#131218;text-decoration:none;transition:all .18s;"
-                                   onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#E2E8F0';">
+                                {{-- Edit Button (Modal Trigger) --}}
+                                <button type="button" onclick="document.getElementById('edit-modal-{{ $s->id }}').style.display='flex'" title="Edit Sertifikasi"
+                                        style="width:32px;height:32px;border-radius:9px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#131218;cursor:pointer;transition:all .18s;padding:0;"
+                                        onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#E2E8F0';">
                                     @include('components.icon',['name'=>'edit','size'=>15])
-                                </a>
+                                </button>
 
                                 {{-- Hapus Button --}}
                                 <form action="{{ route('admin.sertifikasi.destroy', $s) }}" method="POST" style="margin:0;">
@@ -171,8 +171,8 @@
 </div>
 
 {{-- ── TAMBAH SERTIFIKASI MODAL (Neo-Brutalist Glassmorphism) ───────────────────────────────────── --}}
-<div id="create-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:680px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;">
+<div id="create-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this) this.style.display='none'">
+    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:680px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;" onclick="event.stopPropagation()">
         
         {{-- Close button --}}
         <button type="button" onclick="document.getElementById('create-modal').style.display='none'" aria-label="Tutup" style="
@@ -250,6 +250,8 @@
         </form>
     </div>
 </div>
+
+@include('admin.sertifikasi.edit-modal')
 @endsection
 
 @push('scripts')

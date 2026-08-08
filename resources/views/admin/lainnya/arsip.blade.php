@@ -73,10 +73,12 @@
                                 <a href="{{ route('admin.arsip.edit', $a) }}" class="fcc-btn-outline-dark" style="padding:6px 12px;font-size:12px;text-decoration:none;border-radius:8px;font-weight:700;display:inline-flex;align-items:center;gap:4px;" title="Edit Arsip & Dokumentasi">
                                     @include('components.icon',['name'=>'edit','size'=>13]) Edit
                                 </a>
-                                <form action="{{ route('admin.arsip.destroy', $a) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Arsip', 'Apakah Anda yakin ingin menghapus arsip kegiatan ini?')">
+                                <form action="{{ route('admin.arsip.destroy', $a) }}" method="POST" style="margin:0;">
                                     @csrf @method('DELETE')
-                                    <button type="submit" style="background:#FFF;border:1px solid #FEE2E2;color:#EF4444;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;" title="Hapus Arsip">
-                                        @include('components.icon',['name'=>'trash','size'=>13])
+                                    <button type="button" onclick="fccConfirmDelete(this, 'Hapus Arsip Kegiatan Permanen', 'Apakah Anda yakin ingin menghapus arsip kegiatan {{ addslashes($a->judul ?? '') }}? Seluruh data arsip, berita acara, dokumentasi foto, dan riwayat pendaftaran terkait akan dihapus secara permanen.')"
+                                            style="background:#FEF2F2;border:1.5px solid #FCA5A5;color:#EF4444;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .18s;" title="Hapus Arsip Kegiatan Permanen"
+                                            onmouseover="this.style.background='#EF4444';this.style.color='#FFFFFF';this.style.borderColor='#131218';" onmouseout="this.style.background='#FEF2F2';this.style.color='#EF4444';this.style.borderColor='#FCA5A5';">
+                                        @include('components.icon',['name'=>'trash','size'=>13]) Hapus
                                     </button>
                                 </form>
                             </div>

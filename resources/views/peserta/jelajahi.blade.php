@@ -68,7 +68,9 @@
                             </span>
                         </td>
                         <td style="padding:16px 20px;text-align:center;vertical-align:middle;">
-                            @if($sudah)
+                            @if($k->isComingSoon())
+                            <button disabled style="width:100%;padding:8px 14px;border-radius:9px;border:1.5px solid #FCD34D;background:#FEF3C7;color:#D97706;font-size:12.5px;font-weight:700;cursor:not-allowed;">Segera Hadir</button>
+                            @elseif($sudah)
                             <a href="{{ route('peserta.pendaftaran') }}" style="display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:9px;border:1.5px solid #10B981;color:#10B981;font-size:12.5px;font-weight:700;text-decoration:none;">&#10003; Terdaftar</a>
                             @elseif($k->isFull())
                             <button disabled style="width:100%;padding:8px 14px;border-radius:9px;border:1px solid #E2E4EB;background:rgba(100,100,100,.08);color:#A0A3AD;font-size:12.5px;font-weight:700;cursor:not-allowed;">Kuota Penuh</button>

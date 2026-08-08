@@ -78,7 +78,21 @@ class ArsipService
 
     public function delete(ArsipKegiatan $arsip): void
     {
+        $kegiatan = $arsip->kegiatan;
         $arsip->delete();
+
+        if ($kegiatan) {
+            foreach ($kegiatan->pendaftaran as $pendaftaran) {
+                $pendaftaran->sertifikat()?->delete();
+                $pendaftaran->nilai()->delete();
+                $pendaftaran->pembayaran()?->delete();
+                $pendaftaran->delete();
+            }
+            $kegiatan->biaya()?->delete();
+            $kegiatan->kegiatanPelatihan()?->delete();
+            $kegiatan->kegiatanSertifikasi()?->delete();
+            $kegiatan->delete();
+        }
     }
 
     public function autoArchiveCompleted(): void

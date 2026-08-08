@@ -6,6 +6,7 @@ class StoreJadwalPelatihanRequest extends FormRequest {
     public function authorize(): bool { return true; }
     public function rules(): array {
         return ['nama_kegiatan'=>'nullable|string|max:255',
+                'status'=>'nullable|in:draf,comingsoon,public',
                 'nama_jenis_biaya'=>'nullable|array',
                 'nama_jenis_biaya.*'=>'nullable|string|max:100',
                 'nominal_biaya'=>'nullable|array',

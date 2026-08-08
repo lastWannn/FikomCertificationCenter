@@ -120,6 +120,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/{jadwal}/edit',         [JadwalPelatihanController::class,'edit'])->name('edit');
         Route::put('/{jadwal}',              [JadwalPelatihanController::class,'update'])->name('update');
         Route::delete('/{jadwal}',           [JadwalPelatihanController::class,'destroy'])->name('destroy');
+        Route::post('/{jadwal}/status',      [JadwalPelatihanController::class,'updateStatus'])->name('status');
         Route::post('/{jadwal}/aktifkan',    [JadwalPelatihanController::class,'aktifkan'])->name('aktifkan');
         Route::post('/{jadwal}/nonaktifkan', [JadwalPelatihanController::class,'nonaktifkan'])->name('nonaktifkan');
     });
@@ -131,6 +132,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/{jadwal}/edit',         [JadwalSertifikasiController::class,'edit'])->name('edit');
         Route::put('/{jadwal}',              [JadwalSertifikasiController::class,'update'])->name('update');
         Route::delete('/{jadwal}',           [JadwalSertifikasiController::class,'destroy'])->name('destroy');
+        Route::post('/{jadwal}/status',      [JadwalSertifikasiController::class,'updateStatus'])->name('status');
         Route::post('/{jadwal}/aktifkan',    [JadwalSertifikasiController::class,'aktifkan'])->name('aktifkan');
         Route::post('/{jadwal}/nonaktifkan', [JadwalSertifikasiController::class,'nonaktifkan'])->name('nonaktifkan');
     });

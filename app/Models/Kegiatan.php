@@ -6,7 +6,7 @@ use App\Traits\HasHashid;
 class Kegiatan extends Model {
     use HasHashid;
     protected $table    = 'kegiatan';
-    protected $fillable = ['jenis_kegiatan','nama_latar','qr_token'];  // FIX: tambah qr_token
+    protected $fillable = ['jenis_kegiatan','nama_latar','qr_token','status'];
 
     public function kegiatanPelatihan()   { return $this->hasOne(KegiatanPelatihan::class); }
     public function kegiatanSertifikasi() { return $this->hasOne(KegiatanSertifikasi::class); }
@@ -33,6 +33,12 @@ class Kegiatan extends Model {
     public function getKuotaAttribute(): int   { return $this->jadwal?->kuota_peserta ?? 0; }
     public function isBerbayar(): bool         { return $this->biaya()->exists(); }
     public function isFull(): bool             { return $this->kuota > 0 && $this->terisi >= $this->kuota; }
+    
+    public function isDraf(): bool             { return $this->status === 'draf'; }
+    public function isComingSoon(): bool       { return $this->status === 'comingsoon'; }
+    public function isPublic(): bool           { return $this->status === 'public' || empty($this->status); }
+    public function isRegisterable(): bool     { return $this->isPublic() && !$this->isFull() && !$this->isPassed(); }
+
     public function isPassed(): bool
     {
         $jadwal = $this->jadwal;
@@ -41,11 +47,14 @@ class Kegiatan extends Model {
     }
     public function scopePelatihan($q)         { return $q->where('jenis_kegiatan','pelatihan'); }
     public function scopeSertifikasi($q)       { return $q->where('jenis_kegiatan','sertifikasi'); }
+    public function scopeVisibleToPublic($q)   { return $q->where(fn($sub) => $sub->whereIn('status', ['public', 'comingsoon'])->orWhereNull('status')); }
 
     public function scopeUpcoming($q)
     {
         $today = now()->toDateString();
-        return $q->where(function($query) use ($today) {
+        return $q->where(function($sub) {
+            $sub->whereIn('status', ['public', 'comingsoon'])->orWhereNull('status');
+        })->where(function($query) use ($today) {
             $query->whereHas('kegiatanPelatihan.jadwalPelatihan', function($j) use ($today) {
                 $j->where('tgl_pelaksanaan', '>', $today)
                   ->orWhereNull('tgl_pelaksanaan');

@@ -23,13 +23,10 @@ class JadwalSertifikasiController extends Controller
     }
     public function store(StoreJadwalSertifikasiRequest $request, Sertifikasi $sertifikasi) {
         $jadwal = $this->service->store($sertifikasi->id, $request->validated());
-        if ($request->boolean('langsung_aktifkan')) {
+        $status = $request->input('status', 'public');
+        if (in_array($status, ['public', 'comingsoon', 'draf'])) {
             $kegiatan = $this->service->aktifkan($jadwal);
-            if (!empty($jadwal->biaya_setup)) {
-                return redirect()->route('admin.kegiatan.show', $kegiatan->hashid)->with('success', 'Jadwal ditambahkan, langsung aktif, dan biaya diatur.');
-            }
-            return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
-                ->with('success', 'Jadwal ditambahkan dan langsung aktif. Silakan tentukan biaya pendaftarannya agar tidak terpublikasi sebagai kegiatan gratis.');
+            $kegiatan->update(['status' => $status]);
         }
         return redirect()->route('admin.sertifikasi.show', $sertifikasi)->with('success','Jadwal berhasil ditambahkan.');
     }
@@ -53,6 +50,20 @@ class JadwalSertifikasiController extends Controller
             return back()->with('error', $e->getMessage()); 
         }
     }
+    public function updateStatus(\Illuminate\Http\Request $request, JadwalSertifikasi $jadwal) {
+        $request->validate(['status' => 'required|in:draf,comingsoon,public']);
+        $ks = $jadwal->kegiatanSertifikasi;
+        if ($ks && $ks->kegiatan) {
+            $ks->kegiatan->update(['status' => $request->status]);
+        } else {
+            if (in_array($request->status, ['comingsoon', 'public'])) {
+                $kegiatan = $this->service->aktifkan($jadwal);
+                $kegiatan->update(['status' => $request->status]);
+            }
+        }
+        return back()->with('success', 'Status publikasi jadwal berhasil diperbarui.');
+    }
+
     public function nonaktifkan(JadwalSertifikasi $jadwal) {
         try { $this->service->nonaktifkan($jadwal); }
         catch (\RuntimeException $e) { return back()->with('error',$e->getMessage()); }

@@ -1,6 +1,6 @@
 {{-- ── EDIT MATERI SERTIFIKASI MODAL (Neo-Brutalist Glassmorphism) ────────────────────────────────────── --}}
-<div id="edit-modal" style="display:{{ $errors->has('judul_materi') && session('materi_id') ? 'flex' : 'none' }};position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:540px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);display:flex;flex-direction:column;">
+<div id="edit-modal" style="display:{{ $errors->has('judul_materi') && session('materi_id') ? 'flex' : 'none' }};position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this) this.style.display='none'">
+    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:540px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);display:flex;flex-direction:column;" onclick="event.stopPropagation()">
         
         {{-- Close Button --}}
         <button type="button" onclick="document.getElementById('edit-modal').style.display='none'" aria-label="Tutup" style="

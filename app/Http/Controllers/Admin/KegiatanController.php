@@ -24,8 +24,21 @@ class KegiatanController extends Controller
             $query->where('jenis_kegiatan', $r->jenis);
         }
 
+        $totalAktif = Kegiatan::doesntHave('arsip')->count();
+        $totalPelatihan = Kegiatan::doesntHave('arsip')->where('jenis_kegiatan', 'pelatihan')->count();
+        $totalSertifikasi = Kegiatan::doesntHave('arsip')->where('jenis_kegiatan', 'sertifikasi')->count();
+        $totalPendaftar = \App\Models\Pendaftaran::whereHas('kegiatan', function($q) {
+            $q->doesntHave('arsip');
+        })->count();
+
         $kegiatan = $query->paginate(12);
-        return view('admin.kegiatan.index', compact('kegiatan'));
+        return view('admin.kegiatan.index', compact(
+            'kegiatan',
+            'totalAktif',
+            'totalPelatihan',
+            'totalSertifikasi',
+            'totalPendaftar'
+        ));
     }
 
     public function show(Kegiatan $kegiatan)
@@ -43,9 +56,21 @@ class KegiatanController extends Controller
     public function destroy(Kegiatan $kegiatan)
     {
         try {
+            $isArchived = $kegiatan->arsip()->exists();
+            $isPassed   = $kegiatan->isPassed();
+            
             $this->service->delete($kegiatan);
+
+            if ($isArchived) {
+                $message = 'Kegiatan yang diarsip berhasil dihapus secara permanen.';
+            } elseif ($isPassed) {
+                $message = 'Kegiatan yang telah selesai berhasil dipindahkan ke Arsip Kegiatan.';
+            } else {
+                $message = 'Kegiatan berhasil dihapus.';
+            }
+
             return redirect()->route('admin.kegiatan.index')
-                ->with('success', 'Kegiatan berhasil dihapus.');
+                ->with('success', $message);
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -54,6 +79,7 @@ class KegiatanController extends Controller
     public function toggleBiaya(ToggleBiayaRequest $request, Kegiatan $kegiatan)
     {
         $this->service->toggleBiaya($kegiatan);
+        $this->syncJadwalBiayaSetup($kegiatan);
         return back()->with('success', 'Semua biaya dihapus. Kegiatan sekarang gratis.');
     }
 
@@ -76,9 +102,14 @@ class KegiatanController extends Controller
             'jam_selesai'      => 'nullable',
             'tgl_batas_daftar' => 'nullable|date',
             'kuota_peserta'    => 'required|integer|min:1',
+            'status'           => 'nullable|in:draf,comingsoon,public',
             'nama_jenis_biaya' => 'nullable|array',
             'nominal_biaya'    => 'nullable|array',
         ]);
+
+        if ($request->filled('status')) {
+            $kegiatan->update(['status' => $request->status]);
+        }
 
         $jadwal = $kegiatan->jadwal;
         if ($jadwal) {
@@ -105,8 +136,23 @@ class KegiatanController extends Controller
             }
         }
 
-        return redirect()->route('admin.kegiatan.show', $kegiatan)
+        // Sync back to Jadwal master (biaya_setup)
+        $this->syncJadwalBiayaSetup($kegiatan);
+
+        return redirect()->back()
             ->with('success', 'Data kegiatan berhasil diperbarui.');
+    }
+
+
+    private function syncJadwalBiayaSetup(Kegiatan $kegiatan): void
+    {
+        $jadwal = $kegiatan->jadwal;
+        if ($jadwal) {
+            $biayaSetup = $kegiatan->biaya()->get()->map(function ($b) {
+                return ['nama' => $b->nama_jenis, 'nominal' => (float) $b->nominal];
+            })->values()->toArray();
+            $jadwal->update(['biaya_setup' => empty($biayaSetup) ? null : $biayaSetup]);
+        }
     }
 
     public function arsipkan(Kegiatan $kegiatan)

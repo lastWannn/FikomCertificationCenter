@@ -1,6 +1,6 @@
 {{-- ── TAMBAH PELATIHAN MODAL (Neo-Brutalist Glassmorphism) ────────────────────────────────────── --}}
-<div id="create-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:620px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;">
+<div id="create-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this) this.style.display='none'">
+    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:680px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;" onclick="event.stopPropagation()">
         
         {{-- Close button --}}
         <button type="button" onclick="document.getElementById('create-modal').style.display='none'" aria-label="Tutup" style="
@@ -12,122 +12,54 @@
 
         <div style="margin-bottom:20px;border-bottom:2px solid #E5E7EB;padding-bottom:14px;">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-                <span style="background:#131218;color:#FFC81A;font-size:10.5px;font-weight:900;padding:2px 8px;border-radius:6px;text-transform:uppercase;">Master Data</span>
+                <span style="background:#131218;color:#FFC81A;font-size:10.5px;font-weight:900;padding:2px 8px;border-radius:6px;text-transform:uppercase;">MASTER DATA</span>
                 <h2 style="font-size:19px;font-weight:900;color:#131218;margin:0;">Tambah Program Pelatihan</h2>
             </div>
-            <p style="color:#64748B;font-size:12.5px;margin:0;font-weight:500;">Isi informasi detail program pelatihan baru.</p>
+            <p style="color:#64748B;font-size:12.5px;margin:0;font-weight:500;">Isi informasi program pelatihan baru.</p>
         </div>
 
         <form action="{{ route('admin.pelatihan.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
-            {{-- KODE PELATIHAN --}}
-            <div style="margin-bottom:12px;">
-                <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">KODE <span style="font-weight:500;text-transform:none;color:#9CA3B0;">Pelatihan</span></label>
-                <input type="text" name="kode" value="{{ old('kode') }}" placeholder="Contoh: 100-ITFUND1" required class="fcc-input" style="padding:8px 12px;font-size:13px;">
-                <p style="font-size:11px;color:#6B7280;margin:4px 0 0;">Catatan: Pengisian kode wajib diawali angka unik, contoh: <strong>100-ITFUND1</strong> (100 = kode unik).</p>
-                @error('kode')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
+                <div>
+                    <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Kode Pelatihan <span style="color:#EF4444;">*</span></label>
+                    <input type="text" name="kode" value="{{ old('kode') }}" placeholder="Contoh: 100-ITFUND1" required class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
+                    @error('kode')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Kategori Program <span style="color:#EF4444;">*</span></label>
+                    <select name="kategori_id" required class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;background:#FFF;">
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach($kategori as $k)
+                        <option value="{{ $k->id }}" {{ old('kategori_id')==$k->id?'selected':'' }}>{{ $k->nama_kategori }}</option>
+                        @endforeach
+                    </select>
+                    @error('kategori_id')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                </div>
             </div>
 
-            {{-- JUDUL PELATIHAN --}}
-            <div style="margin-bottom:12px;">
-                <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">JUDUL <span style="font-weight:500;text-transform:none;color:#9CA3B0;">Pelatihan</span></label>
-                <input type="text" name="judul" value="{{ old('judul') }}" placeholder="Contoh: Web Development Dasar Batch 1" required class="fcc-input" style="padding:8px 12px;font-size:13px;">
+            <div style="margin-bottom:14px;">
+                <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Judul Pelatihan <span style="color:#EF4444;">*</span></label>
+                <input type="text" name="judul" value="{{ old('judul') }}" placeholder="Judul program pelatihan" required class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
                 @error('judul')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
             </div>
 
-            {{-- ISI PELATIHAN --}}
-            <div style="margin-bottom:12px;">
-                <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">ISI <span style="font-weight:500;text-transform:none;color:#9CA3B0;">Pelatihan</span></label>
-                <textarea name="isi" rows="4" placeholder="Tuliskan deskripsi dan detail program pelatihan..." required class="fcc-input" style="resize:vertical;padding:8px 12px;font-size:13px;">{{ old('isi') }}</textarea>
+            <div style="margin-bottom:14px;">
+                <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Deskripsi Program <span style="color:#EF4444;">*</span></label>
+                <textarea name="isi" rows="4" placeholder="Deskripsi program pelatihan..." required class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;resize:vertical;">{{ old('isi') }}</textarea>
                 @error('isi')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
             </div>
 
-            <hr style="border:none;border-top:1px solid #E2E4EB;margin:16px 0;">
-
-            {{-- KATEGORI --}}
             <div style="margin-bottom:16px;">
-                <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Kategori Pelatihan</label>
-                <select name="kategori_id" required class="fcc-input" style="padding:8px 12px;font-size:13px;">
-                    <option value="">Kategori...</option>
-                    @foreach($kategori as $k)
-                    <option value="{{ $k->id }}" {{ old('kategori_id')==$k->id?'selected':'' }}>{{ $k->nama_kategori }}</option>
-                    @endforeach
-                </select>
-                @error('kategori_id')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-            </div>
-
-            <hr style="border:none;border-top:1px solid #E2E4EB;margin:16px 0;">
-
-            {{-- PERSYARATAN & GAMBAR --}}
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-                <div>
-                    <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Persyaratan Pelatihan</label>
-                    <select name="prasyarat_id" class="fcc-input" style="padding:8px 12px;font-size:13px;">
-                        <option value="">Pilih Prasyarat...</option>
-                        @foreach($pelatihanList as $p)
-                        <option value="{{ $p->id }}" {{ old('prasyarat_id')==$p->id?'selected':'' }}>{{ $p->judul }}</option>
-                        @endforeach
-                    </select>
-                    @error('prasyarat_id')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-                </div>
-                <div>
-                    <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Gambar</label>
-                    <label style="display:flex;align-items:center;gap:8px;border:1.5px dashed #E2E4EB;border-radius:10px;padding:8px 12px;cursor:pointer;transition:border-color .2s;background:#F8F9FB;height:38px;"
-                           onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E2E4EB'">
-                        @include('components.icon',['name'=>'image','size'=>16,'style'=>'color:#A0A3AD'])
-                        <span style="font-size:12px;color:#6B7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Pilih File Gambar</span>
-                        <input type="file" name="gambar" accept="image/*" style="display:none;" onchange="previewGambar(this, 'gambar-preview')">
-                    </label>
-                    @error('gambar')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-                </div>
-            </div>
-
-            <hr style="border:none;border-top:1px solid #E2E4EB;margin:16px 0;">
-
-            {{-- PENGATURAN JADWAL PERDANA --}}
-            <div style="margin-bottom:12px;">
-                <p style="font-size:12px;font-weight:800;color:#131218;margin:0 0 12px;text-transform:uppercase;letter-spacing:0.5px;">Pengaturan Jadwal Pelaksanaan Pertama</p>
-                
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-                    <div>
-                        <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Tanggal Pelaksanaan</label>
-                        <input type="date" name="tgl_pelaksanaan" value="{{ old('tgl_pelaksanaan') }}" class="fcc-input" style="padding:8px 12px;font-size:13px;width:100%;">
-                        @error('tgl_pelaksanaan')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Tanggal Batas Pendaftaran</label>
-                        <input type="date" name="tgl_batas_daftar" value="{{ old('tgl_batas_daftar') }}" class="fcc-input" style="padding:8px 12px;font-size:13px;width:100%;">
-                        @error('tgl_batas_daftar')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-                    </div>
-                </div>
-
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
-                    <div>
-                        <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Jam Mulai</label>
-                        <input type="time" name="jam_mulai" value="{{ old('jam_mulai') }}" class="fcc-input" style="padding:8px 12px;font-size:13px;width:100%;">
-                        @error('jam_mulai')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Jam Selesai</label>
-                        <input type="time" name="jam_selesai" value="{{ old('jam_selesai') }}" class="fcc-input" style="padding:8px 12px;font-size:13px;width:100%;">
-                        @error('jam_selesai')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Kuota Peserta</label>
-                        <input type="number" name="kuota_peserta" value="{{ old('kuota_peserta', 20) }}" class="fcc-input" style="padding:8px 12px;font-size:13px;width:100%;">
-                        @error('kuota_peserta')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
-                    </div>
-                </div>
-            </div>
-
-            <hr style="border:none;border-top:1px solid #E2E4EB;margin:16px 0;">
-
-            {{-- LINK DOWNLOAD MATERI --}}
-            <div style="margin-bottom:20px;">
-                <label style="font-size:11px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Link Download Materi</label>
-                <input type="text" name="link_materi" value="{{ old('link_materi') }}" placeholder="Link Download Materi" class="fcc-input" style="padding:8px 12px;font-size:13px;">
-                @error('link_materi')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
+                <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Gambar / Poster Sampul</label>
+                <label style="display:flex;align-items:center;gap:10px;border:1.5px dashed #CBD5E1;border-radius:12px;padding:12px 16px;cursor:pointer;transition:all .18s;background:#F8FAFC;"
+                       onmouseover="this.style.borderColor='#131218';this.style.background='#FFFDF5';" onmouseout="this.style.borderColor='#CBD5E1';this.style.background='#F8FAFC';">
+                    @include('components.icon',['name'=>'image','size'=>18,'style'=>'color:#131218'])
+                    <span style="font-size:13px;color:#131218;font-weight:700;">Klik untuk Upload Gambar Sampul</span>
+                    <input type="file" name="gambar" accept="image/*" style="display:none;" onchange="previewGambar(this, 'gambar-preview')">
+                </label>
+                @error('gambar')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
             </div>
 
             <div style="text-align:center;margin-bottom:14px;">
@@ -135,7 +67,7 @@
             </div>
 
             {{-- Actions --}}
-            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:16px;">
+            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:14px;">
                 <button type="button" onclick="document.getElementById('create-modal').style.display='none'"
                         style="padding:11px 22px;font-size:13px;font-weight:800;color:#64748B;background:#F1F5F9;border:1.5px solid #CBD5E1;border-radius:30px;cursor:pointer;transition:all .18s;"
                         onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#CBD5E1';">
@@ -148,6 +80,5 @@
                 </button>
             </div>
         </form>
-
     </div>
 </div>

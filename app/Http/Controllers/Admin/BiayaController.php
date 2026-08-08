@@ -32,9 +32,9 @@ class BiayaController extends Controller
 
     public function store(StoreBiayaRequest $request)
     {
-        $this->service->create($request->validated());
-        return redirect()->route('admin.biaya.index')
-            ->with('success', 'Biaya ditambahkan.');
+        $biaya = $this->service->create($request->validated());
+        $this->syncJadwalBiayaSetup($biaya->kegiatan);
+        return back()->with('success', 'Biaya berhasil ditambahkan.');
     }
 
     public function show(BiayaKegiatan $biaya)
@@ -53,13 +53,28 @@ class BiayaController extends Controller
     public function update(UpdateBiayaRequest $request, BiayaKegiatan $biaya)
     {
         $this->service->update($biaya, $request->validated());
+        $this->syncJadwalBiayaSetup($biaya->kegiatan);
         return redirect()->route('admin.biaya.index')
             ->with('success', 'Biaya diperbarui.');
     }
 
     public function destroy(BiayaKegiatan $biaya)
     {
+        $kegiatan = $biaya->kegiatan;
         $this->service->delete($biaya);
+        if ($kegiatan) {
+            $this->syncJadwalBiayaSetup($kegiatan);
+        }
         return back()->with('success', 'Biaya dihapus.');
+    }
+
+    private function syncJadwalBiayaSetup(?Kegiatan $kegiatan): void
+    {
+        if ($kegiatan && $jadwal = $kegiatan->jadwal) {
+            $biayaSetup = $kegiatan->biaya()->get()->map(function ($b) {
+                return ['nama' => $b->nama_jenis, 'nominal' => (float) $b->nominal];
+            })->values()->toArray();
+            $jadwal->update(['biaya_setup' => empty($biayaSetup) ? null : $biayaSetup]);
+        }
     }
 }

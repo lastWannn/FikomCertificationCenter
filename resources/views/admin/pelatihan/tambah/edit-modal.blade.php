@@ -5,8 +5,8 @@
   $itemsToLoop = is_iterable($pelatihan) && !($pelatihan instanceof \App\Models\Pelatihan) ? $pelatihan : [$pelatihan];
 @endphp
 @foreach($itemsToLoop as $pEdit)
-<div id="edit-modal-{{ $pEdit->id }}" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:620px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;">
+<div id="edit-modal-{{ $pEdit->id }}" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this) this.style.display='none'">
+    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:620px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;" onclick="event.stopPropagation()">
         
         {{-- Close button --}}
         <button type="button" onclick="document.getElementById('edit-modal-{{ $pEdit->id }}').style.display='none'" aria-label="Tutup" style="

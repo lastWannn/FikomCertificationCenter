@@ -22,8 +22,9 @@ class LandingController extends Controller
             ->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan',
                     'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
                     'biaya'])
+            ->orderByRaw("CASE WHEN status = 'comingsoon' THEN 1 ELSE 0 END ASC")
             ->orderBy('created_at', 'desc')
-            ->limit(3)
+            ->limit(6)
             ->get();
 
         $stats = Cache::remember('landing_stats', 600, function() {
@@ -61,7 +62,9 @@ class LandingController extends Controller
         $query  = Kegiatan::upcoming()
             ->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan',
                     'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
-                    'biaya', 'pendaftaran']);
+                    'biaya', 'pendaftaran'])
+            ->orderByRaw("CASE WHEN status = 'comingsoon' THEN 1 ELSE 0 END ASC")
+            ->orderBy('created_at', 'desc');
         if ($request->jenis && in_array($request->jenis, ['pelatihan','sertifikasi'])) {
             $query->where('jenis_kegiatan', $request->jenis);
         }

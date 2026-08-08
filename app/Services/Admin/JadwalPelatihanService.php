@@ -23,6 +23,22 @@ class JadwalPelatihanService
             collect($data)->only(['nama_kegiatan','kuota_peserta','untuk_peserta','tgl_batas_daftar','tgl_pelaksanaan','jam_mulai','jam_selesai'])->toArray(),
             ['biaya_setup' => $biayaSetup]
         ));
+
+        // Sync to active Kegiatan if exists
+        $kp = $jadwal->kegiatanPelatihan;
+        if ($kp && $kegiatan = $kp->kegiatan) {
+            $kegiatan->biaya()->delete();
+            if (!empty($biayaSetup)) {
+                foreach ($biayaSetup as $b) {
+                    \App\Models\BiayaKegiatan::create([
+                        'kegiatan_id' => $kegiatan->id,
+                        'nama_jenis'  => $b['nama'],
+                        'nominal'     => $b['nominal'],
+                    ]);
+                }
+            }
+        }
+
         return $jadwal->fresh();
     }
 
@@ -73,8 +89,13 @@ class JadwalPelatihanService
     private function buatKegiatan(JadwalPelatihan $jadwal): Kegiatan
     {
         return DB::transaction(function() use ($jadwal) {
+            $status = request('status');
+            if (!$status) {
+                $status = request()->boolean('langsung_aktifkan') ? 'public' : 'public';
+            }
             $kegiatan = Kegiatan::create([
                 'jenis_kegiatan' => 'pelatihan',
+                'status'         => in_array($status, ['draf','comingsoon','public']) ? $status : 'public',
                 'qr_token'       => Str::random(32),
             ]);
             KegiatanPelatihan::create([

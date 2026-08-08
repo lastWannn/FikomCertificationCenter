@@ -65,41 +65,33 @@
             </p>
           </td>
           <td style="padding:12px 14px;">
-            @if($hasKegiatan)
-            <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(16,185,129,.12);color:#10B981;">&#10003; Aktif</span>
-            @else
-            <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#F7F8FA;color:#9CA3B0;border:1px solid #E2E4EB;">Belum Aktif</span>
-            @endif
+            @php $st = $j->kegiatanPelatihan?->kegiatan?->status ?? 'draf'; @endphp
+            <form action="{{ route('admin.jadwal-pelatihan.status', $j) }}" method="POST" style="margin:0;">
+              @csrf
+              <select name="status" onchange="this.form.submit()" title="Ubah Status Publikasi"
+                      style="padding:5px 8px;font-size:11px;font-weight:800;border-radius:8px;border:1.5px solid #131218;cursor:pointer;outline:none;
+                             background:{{ $st === 'public' ? '#ECFDF5' : ($st === 'comingsoon' ? '#FFFDF5' : '#F8FAFC') }};
+                             color:{{ $st === 'public' ? '#059669' : ($st === 'comingsoon' ? '#D97706' : '#64748B') }};">
+                <option value="draf" {{ $st === 'draf' ? 'selected' : '' }}>Draft</option>
+                <option value="comingsoon" {{ $st === 'comingsoon' ? 'selected' : '' }}>Coming Soon</option>
+                <option value="public" {{ $st === 'public' ? 'selected' : '' }}>Publik</option>
+              </select>
+            </form>
           </td>
           <td style="padding:12px 14px;">
             <div style="display:flex;gap:8px;align-items:center;">
-              @if(!$hasKegiatan)
-              <form action="{{ route('admin.jadwal-pelatihan.aktifkan', $j) }}" method="POST">
-                @csrf
-                <button type="submit" title="Aktifkan sebagai Kegiatan"
-                    style="background:#131218;border:none;color:#FFC81A;font-size:11px;font-weight:700;
-                           padding:5px 10px;border-radius:7px;cursor:pointer;white-space:nowrap;"
-                    onclick="return fccConfirmAction(event, this, 'Aktifkan Jadwal', 'Aktifkan jadwal ini sebagai kegiatan publik?', 'Ya, Aktifkan', false)">
-                  + Aktifkan
-                </button>
-              </form>
-              <a href="{{ route('admin.jadwal-pelatihan.edit', $j) }}" style="color:#FFC81A;">
+              @if($hasKegiatan)
+              <a href="{{ route('admin.kegiatan.show', $kegiatan) }}" style="font-size:11px;color:#3B82F6;font-weight:700;text-decoration:none;white-space:nowrap;">Lihat Kegiatan</a>
+              @endif
+              <a href="{{ route('admin.jadwal-pelatihan.edit', $j) }}" style="color:#FFC81A;" title="Edit Jadwal">
                 @include('components.icon',['name'=>'edit','size'=>15])
               </a>
-              <form action="{{ route('admin.jadwal-pelatihan.destroy', $j) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Jadwal', 'Apakah Anda yakin ingin menghapus jadwal pelatihan ini?')">
+              <form action="{{ route('admin.jadwal-pelatihan.destroy', $j) }}" method="POST" style="margin:0;" onsubmit="return fccConfirmDelete(event, this, 'Hapus Jadwal', 'Apakah Anda yakin ingin menghapus jadwal pelatihan ini?')">
                 @csrf @method('DELETE')
-                <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;">
+                <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;display:flex;padding:0;" title="Hapus Jadwal">
                   @include('components.icon',['name'=>'trash','size'=>15])
                 </button>
               </form>
-              @else
-              <a href="{{ route('admin.kegiatan.show', $kegiatan) }}" style="font-size:11px;color:#3B82F6;font-weight:700;text-decoration:none;white-space:nowrap;">Lihat Kegiatan</a>
-              <form action="{{ route('admin.jadwal-pelatihan.nonaktifkan', $j) }}" method="POST">
-                @csrf
-                <button type="submit" style="background:none;border:none;cursor:pointer;color:#EF4444;font-size:11px;font-weight:700;white-space:nowrap;"
-                    onclick="return fccConfirmAction(event, this, 'Nonaktifkan Kegiatan', 'Apakah Anda yakin ingin menonaktifkan kegiatan ini?', 'Ya, Nonaktifkan', true)">Nonaktifkan</button>
-              </form>
-              @endif
             </div>
           </td>
         </tr>
