@@ -82,7 +82,31 @@ window.fccConfirmDelete = function(elem, title = 'Konfirmasi Hapus', msg = 'Apak
     return false;
 };
 
-window.fccConfirmAction = function(elem, title = 'Konfirmasi Tindakan', msg = 'Apakah Anda yakin?', btnText = 'Ya, Lanjutkan', danger = false) {
+window.fccConfirmAction = function(a, b, c, d, e, f) {
+    let evt = null;
+    let elem = a;
+    let title = 'Konfirmasi Tindakan';
+    let msg = 'Apakah Anda yakin?';
+    let btnText = 'Ya, Lanjutkan';
+    let danger = false;
+
+    // Detect if 1st parameter is an Event object
+    if (a && (a instanceof Event || (typeof a === 'object' && typeof a.preventDefault === 'function'))) {
+        evt = a;
+        try { evt.preventDefault(); } catch(err) {}
+        elem = b;
+        title = typeof c === 'string' ? c : title;
+        msg = typeof d === 'string' ? d : msg;
+        btnText = typeof e === 'string' ? e : btnText;
+        danger = typeof f === 'boolean' ? f : danger;
+    } else {
+        elem = a;
+        title = typeof b === 'string' ? b : title;
+        msg = typeof c === 'string' ? c : msg;
+        btnText = typeof d === 'string' ? d : btnText;
+        danger = typeof e === 'boolean' ? e : danger;
+    }
+
     if (!elem) return false;
     
     if (typeof window.fccConfirm === 'function') {

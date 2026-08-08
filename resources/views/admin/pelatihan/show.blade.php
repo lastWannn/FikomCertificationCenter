@@ -60,32 +60,58 @@
               </div>
               @endif
             </div>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <div style="text-align:right;">
-                @if($kp)
-                <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:rgba(16,185,129,.12);color:#10B981;">&#10003; Aktif</span>
-                <br>
-                <a href="{{ route('admin.kegiatan.show', $kp->kegiatan) }}" style="font-size:11px;color:#3B82F6;text-decoration:none;">Lihat Kegiatan</a>
-                @else
-                <form action="{{ route('admin.jadwal-pelatihan.aktifkan', $j) }}" method="POST" style="display:inline;">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
+              @if($kp)
+                {{-- TOGGLE SWITCH ON (Publik/Aktif) --}}
+                <form action="{{ route('admin.jadwal-pelatihan.nonaktifkan', $j) }}" method="POST" style="margin:0;display:inline-flex;align-items:center;">
                   @csrf
-                  <button type="submit" style="background:#131218;border:none;color:#FFC81A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;cursor:pointer;" onclick="return fccConfirmAction(event, this, 'Aktifkan Jadwal', 'Aktifkan jadwal ini sebagai kegiatan publik?', 'Ya, Aktifkan', false)">+ Aktifkan</button>
-                </form>
-                @endif
-              </div>
-              <div style="display:flex;gap:6px;">
-                <a href="{{ route('admin.jadwal-pelatihan.edit', $j) }}" title="Edit" style="color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
-                   onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#9CA3B0'">
-                  @include('components.icon',['name'=>'edit','size'=>14])
-                </a>
-                <form action="{{ route('admin.jadwal-pelatihan.destroy', $j) }}" method="POST" onsubmit="return fccConfirmDelete(event, this, 'Hapus Jadwal', 'Apakah Anda yakin ingin menghapus jadwal pelatihan ini?')">
-                  @csrf @method('DELETE')
-                  <button type="submit" style="background:none;border:none;cursor:pointer;color:#9CA3B0;display:flex;padding:4px;transition:color .18s;"
-                          onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='#9CA3B0'">
-                    @include('components.icon',['name'=>'trash','size'=>14])
+                  <button type="submit" title="Publik (Klik untuk Menonaktifkan)"
+                          onclick="return fccConfirmAction(this, 'Nonaktifkan Kegiatan', 'Apakah Anda yakin ingin menonaktifkan kegiatan ini?', 'Ya, Nonaktifkan', true)"
+                          style="display:inline-flex;align-items:center;gap:6px;background:#ECFDF5;border:1.5px solid #10B981;padding:3px 10px 3px 6px;border-radius:20px;cursor:pointer;transition:all .18s;text-decoration:none;">
+                    <span style="width:26px;height:15px;background:#10B981;border-radius:10px;display:inline-flex;align-items:center;padding:1.5px;justify-content:flex-end;transition:all .18s;">
+                      <span style="width:12px;height:12px;background:#FFFFFF;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></span>
+                    </span>
+                    <span style="font-size:11px;font-weight:900;color:#10B981;white-space:nowrap;">Publik</span>
                   </button>
                 </form>
-              </div>
+
+                {{-- Lihat Halaman Publik Icon Button --}}
+                <a href="{{ route('admin.kegiatan.show', $kp->kegiatan) }}" target="_blank" title="Lihat Halaman Publik Kegiatan"
+                   style="width:32px;height:32px;border-radius:9px;background:#EFF6FF;border:1.5px solid #93C5FD;display:flex;align-items:center;justify-content:center;color:#3B82F6;text-decoration:none;transition:all .18s;"
+                   onmouseover="this.style.background='#3B82F6';this.style.color='#FFFFFF';this.style.borderColor='#3B82F6';" onmouseout="this.style.background='#EFF6FF';this.style.color='#3B82F6';this.style.borderColor='#93C5FD';">
+                  @include('components.icon',['name'=>'eye','size'=>15])
+                </a>
+              @else
+                {{-- TOGGLE SWITCH OFF (Draft/Nonaktif) --}}
+                <form action="{{ route('admin.jadwal-pelatihan.aktifkan', $j) }}" method="POST" style="margin:0;display:inline-flex;align-items:center;">
+                  @csrf
+                  <button type="submit" title="Draft (Klik untuk Mengaktifkan ke Publik)"
+                          onclick="return fccConfirmAction(this, 'Aktifkan Jadwal', 'Aktifkan jadwal ini sebagai kegiatan publik?', 'Ya, Aktifkan', false)"
+                          style="display:inline-flex;align-items:center;gap:6px;background:#F8FAFC;border:1.5px solid #CBD5E1;padding:3px 10px 3px 6px;border-radius:20px;cursor:pointer;transition:all .18s;text-decoration:none;"
+                          onmouseover="this.style.borderColor='#131218';this.style.background='#FFFDF5';" onmouseout="this.style.borderColor='#CBD5E1';this.style.background='#F8FAFC';">
+                    <span style="width:26px;height:15px;background:#CBD5E1;border-radius:10px;display:inline-flex;align-items:center;padding:1.5px;justify-content:flex-start;transition:all .18s;">
+                      <span style="width:12px;height:12px;background:#FFFFFF;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></span>
+                    </span>
+                    <span style="font-size:11px;font-weight:800;color:#64748B;white-space:nowrap;">Draft</span>
+                  </button>
+                </form>
+              @endif
+
+              {{-- Edit Button --}}
+              <a href="{{ route('admin.jadwal-pelatihan.edit', $j) }}" title="Edit Jadwal"
+                 style="width:32px;height:32px;border-radius:9px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#131218;text-decoration:none;transition:all .18s;"
+                 onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#E2E8F0';">
+                @include('components.icon',['name'=>'edit','size'=>15])
+              </a>
+
+              {{-- Hapus Button --}}
+              <form action="{{ route('admin.jadwal-pelatihan.destroy', $j) }}" method="POST" style="margin:0;" onsubmit="return fccConfirmDelete(event, this, 'Hapus Jadwal', 'Apakah Anda yakin ingin menghapus jadwal pelatihan ini?')">
+                @csrf @method('DELETE')
+                <button type="submit" style="width:32px;height:32px;border-radius:9px;background:#FEF2F2;border:1.5px solid #FCA5A5;display:flex;align-items:center;justify-content:center;color:#EF4444;cursor:pointer;transition:all .18s;padding:0;" title="Hapus Jadwal"
+                        onmouseover="this.style.background='#EF4444';this.style.color='#FFFFFF';this.style.borderColor='#EF4444';" onmouseout="this.style.background='#FEF2F2';this.style.color='#EF4444';this.style.borderColor='#FCA5A5';">
+                  @include('components.icon',['name'=>'trash','size'=>15])
+                </button>
+              </form>
             </div>
           </div>
         </div>

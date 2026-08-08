@@ -101,8 +101,8 @@
                         </td>
 
                         {{-- Kategori --}}
-                        <td style="padding:14px 16px;vertical-align:middle;">
-                            <span style="font-size:11.5px;font-weight:800;color:#475569;background:#F1F5F9;padding:4px 12px;border-radius:20px;border:1px solid #E2E8F0;display:inline-block;">
+                        <td style="padding:14px 16px;vertical-align:middle;white-space:nowrap;">
+                            <span style="font-size:11.5px;font-weight:800;color:#475569;background:#F1F5F9;padding:4px 12px;border-radius:20px;border:1px solid #E2E8F0;display:inline-block;white-space:nowrap;">
                                 {{ $p->kategori->nama_kategori ?? 'Umum' }}
                             </span>
                         </td>

@@ -51,12 +51,8 @@ class JadwalPelatihanController extends Controller
     }
     public function aktifkan(JadwalPelatihan $jadwal) {
         try {
-            $kegiatan = $this->service->aktifkan($jadwal);
-            if (!empty($jadwal->biaya_setup)) {
-                return redirect()->route('admin.kegiatan.show', $kegiatan->hashid)->with('success', 'Kegiatan berhasil diaktifkan.');
-            }
-            return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
-                ->with('success', 'Kegiatan berhasil diaktifkan. Silakan tentukan biaya pendaftarannya agar tidak terpublikasi sebagai kegiatan gratis.');
+            $this->service->aktifkan($jadwal);
+            return back()->with('success', 'Jadwal pelatihan berhasil diaktifkan sebagai kegiatan publik.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
