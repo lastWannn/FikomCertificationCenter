@@ -1,14 +1,16 @@
 @extends('layouts.app')
+@section('async-css', true)
+@section('no-livewire', true)
 @section('content')
 
 {{-- ═══ NAVBAR ══════════════════════════════════════════════════ --}}
-<nav id="fcc-nav" style="position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;padding:0 24px;gap:16px;background:#131218;border-bottom:2px solid #1E1D26;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+<nav id="fcc-nav" role="navigation" aria-label="Navigasi utama" style="position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;padding:0 24px;gap:16px;background:#131218;border-bottom:2px solid #1E1D26;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
     <div style="max-width:1200px;margin:0 auto;width:100%;padding:0 24px;
         display:flex;align-items:center;justify-content:space-between;gap:24px;">
 
         {{-- Logo --}}
         <a href="{{ route('landing.index') }}" id="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="height:36px;width:auto;object-fit:contain;flex-shrink:0;">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" width="36" height="36" style="height:36px;width:auto;object-fit:contain;flex-shrink:0;">
             <div>
                 <p id="nav-brand" style="margin:0;font-weight:900;font-size:12.5px;color:#FFFFFF;transition:color .3s;">FIKOM Certification</p>
                 <p style="margin:0;color:#FFC81A;font-size:8px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;">Center · UMI</p>
@@ -180,7 +182,7 @@
             <div>
                 <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
                     <div style="width:48px;height:48px;border-radius:12px;background:#1E1D26;border:1.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;padding:6px;box-shadow:0 4px 14px rgba(255,200,26,0.25);">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="width:100%;height:100%;object-fit:contain;">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" width="48" height="48" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;">
                     </div>
                     <div>
                         <p style="margin:0;color:#FFFFFF;font-weight:900;font-size:15px;letter-spacing:-.3px;">FIKOM Certification Center</p>
@@ -302,14 +304,18 @@
         </div>
 
         {{-- Alert Container --}}
-        <div id="fcc-auth-alert" style="display:none;padding:12px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;color:#EF4444;font-size:13px;font-weight:600;margin-bottom:20px;line-height:1.45;"></div>
+        <div id="fcc-auth-alert" style="{{ $errors->any() ? 'display:block;' : 'display:none;' }}padding:12px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;color:#EF4444;font-size:13px;font-weight:600;margin-bottom:20px;line-height:1.45;">
+            @if($errors->any())
+                {!! implode('<br>', $errors->all()) !!}
+            @endif
+        </div>
 
         {{-- FORM LOGIN --}}
         <div id="fcc-login-container">
             <h2 style="color:#FFF;font-size:22px;font-weight:900;margin:0 0 6px;">Masuk</h2>
             <p style="color:rgba(255,255,255,.5);font-size:13.5px;margin:0 0 24px;">Belum punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color:#FFC81A;font-weight:700;text-decoration:none;">Daftar gratis</a></p>
 
-            <form id="fcc-login-form" onsubmit="submitAuthForm(event, '/masuk')">
+            <form id="fcc-login-form" action="{{ route('auth.login.post') }}" method="POST" onsubmit="submitAuthForm(event, '{{ route('auth.login.post') }}')">
                 @csrf
                 <div style="margin-bottom:14px;">
                     <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Email *</label>
@@ -345,7 +351,7 @@
             <h2 style="color:#FFF;font-size:22px;font-weight:900;margin:0 0 6px;">Daftar Akun</h2>
             <p style="color:rgba(255,255,255,.5);font-size:13.5px;margin:0 0 24px;">Sudah punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:#FFC81A;font-weight:700;text-decoration:none;">Masuk</a></p>
 
-            <form id="fcc-register-form" onsubmit="submitAuthForm(event, '/daftar')">
+            <form id="fcc-register-form" action="{{ route('auth.register.post') }}" method="POST" onsubmit="submitAuthForm(event, '{{ route('auth.register.post') }}')">
                 @csrf
                 <div style="margin-bottom:14px;">
                     <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Nama Lengkap *</label>
@@ -415,7 +421,7 @@
             <h2 style="color:#FFF;font-size:22px;font-weight:900;margin:0 0 6px;">Lupa Password</h2>
             <p style="color:rgba(255,255,255,.5);font-size:13.5px;margin:0 0 24px;">Kembali ke <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:#FFC81A;font-weight:700;text-decoration:none;">Masuk</a></p>
 
-            <form id="fcc-forgot-form" onsubmit="submitAuthForm(event, '/lupa-password')">
+            <form id="fcc-forgot-form" action="{{ route('auth.forgot.post') }}" method="POST" onsubmit="submitAuthForm(event, '{{ route('auth.forgot.post') }}')">
                 @csrf
                 <div style="margin-bottom:22px;">
                     <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Email Akun Anda *</label>
@@ -571,18 +577,23 @@
 </style>
 
 <script>
+(window.requestIdleCallback||setTimeout)(function(){
     const modal = document.getElementById('fcc-auth-modal');
     const dialog = document.getElementById('fcc-auth-dialog');
     const alertBox = document.getElementById('fcc-auth-alert');
 
-    function openAuthModal(tab = 'login') {
+    function openAuthModal(tab = 'login', keepAlert = false) {
         switchAuthTab(tab);
-        alertBox.style.display = 'none';
+        if (!keepAlert) alertBox.style.display = 'none';
         modal.style.opacity = '1';
         modal.style.pointerEvents = 'auto';
         dialog.style.transform = 'scale(1)';
         document.body.style.overflow = 'hidden';
     }
+
+    @if($errors->any())
+    openAuthModal('login', true);
+    @endif
 
     function closeAuthModal() {
         modal.style.opacity = '0';
@@ -709,7 +720,9 @@
             submitBtn.innerText = originalText;
             
             let errMsg = 'Terjadi kesalahan sistem. Silakan coba lagi.';
-            if (err && err.data && err.data.errors) {
+            if (err && err.status === 429) {
+                errMsg = '⚠️ Terlalu banyak percobaan. Silakan tunggu 1 menit sebelum mencoba lagi.';
+            } else if (err && err.data && err.data.errors) {
                 errMsg = Object.values(err.data.errors).flat().join('<br>');
             } else if (err && err.data && err.data.message) {
                 errMsg = err.data.message;
@@ -932,6 +945,74 @@
             }
         });
     }
+});
+</script>
+
+{{-- ══ Top Gold Progress Bar Indicator & Instant Prefetcher ══ --}}
+<div id="fcc-top-bar" style="position:fixed; top:0; left:0; width:0%; height:3px; background:#FFC81A; z-index:99999; transition:width 0.25s ease, opacity 0.3s ease; opacity:0; pointer-events:none; box-shadow:0 0 10px #FFC81A, 0 0 5px #FFC81A;"></div>
+
+<script>
+(window.requestIdleCallback||setTimeout)(function(){
+(function() {
+    'use strict';
+    
+    // 1. Instant Hover Prefetching
+    const prefetched = new Set();
+    function prefetchUrl(url) {
+        if (!url || prefetched.has(url)) return;
+        if (url.startsWith('#') || url.startsWith('javascript:')) return;
+        try {
+            const parsed = new URL(url, window.location.origin);
+            if (parsed.origin !== window.location.origin) return;
+            prefetched.add(url);
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = url;
+            document.head.appendChild(link);
+        } catch(e) {}
+    }
+
+    document.addEventListener('mouseover', function(e) {
+        const anchor = e.target.closest('a');
+        if (anchor && anchor.href && !anchor.target) {
+            prefetchUrl(anchor.href);
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchstart', function(e) {
+        const anchor = e.target.closest('a');
+        if (anchor && anchor.href && !anchor.target) {
+            prefetchUrl(anchor.href);
+        }
+    }, { passive: true });
+
+    // 2. Top Progress Loading Bar Trigger
+    const bar = document.getElementById('fcc-top-bar');
+    function startTopBar() {
+        if (!bar) return;
+        bar.style.opacity = '1';
+        bar.style.width = '30%';
+        setTimeout(() => { if (bar.style.opacity === '1') bar.style.width = '70%'; }, 150);
+        setTimeout(() => { if (bar.style.opacity === '1') bar.style.width = '90%'; }, 400);
+    }
+
+    document.addEventListener('click', function(e) {
+        const anchor = e.target.closest('a');
+        if (anchor && anchor.href && !anchor.target && !anchor.href.includes('#') && anchor.origin === window.location.origin) {
+            startTopBar();
+        }
+    });
+
+    window.addEventListener('pageshow', function() {
+        if (!bar) return;
+        bar.style.width = '100%';
+        setTimeout(() => {
+            bar.style.opacity = '0';
+            setTimeout(() => { bar.style.width = '0%'; }, 300);
+        }, 150);
+    });
+});
+});
 </script>
 
 @include('components.fcc-modal')

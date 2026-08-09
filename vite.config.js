@@ -29,6 +29,15 @@ export default defineConfig({
             ],
         }),
     ],
+    build: {
+        cssMinify: true,
+        minify: 'esbuild',
+        rollupOptions: {
+            output: {
+                manualChunks: undefined,
+            },
+        },
+    },
     server: {
         host: '0.0.0.0',
         hmr: { host: 'localhost' },

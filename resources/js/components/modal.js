@@ -225,14 +225,31 @@
         }
     }, true);
 
-    function fccConfirmDelete(elem, title = 'Konfirmasi Hapus', msg = 'Apakah Anda yakin ingin menghapus data ini?') {
+    function fccConfirmDelete(a, b, c, d) {
+        let evt = null;
+        let elem = a;
+        let title = 'Konfirmasi Hapus';
+        let msg = 'Apakah Anda yakin ingin menghapus data ini?';
+
+        if (a && (a instanceof Event || (typeof a === 'object' && typeof a.preventDefault === 'function'))) {
+            evt = a;
+            try { evt.preventDefault(); } catch(err) {}
+            elem = b;
+            title = typeof c === 'string' ? c : title;
+            msg = typeof d === 'string' ? d : msg;
+        } else {
+            elem = a;
+            title = typeof b === 'string' ? b : title;
+            msg = typeof c === 'string' ? c : msg;
+        }
+
         const form = elem ? (elem.tagName === 'FORM' ? elem : elem.closest('form')) : null;
         if (!form) return false;
         fccConfirm({
             title: title,
             msg: msg,
             danger: true,
-            btnText: 'Ya, Hapus',
+            btnText: 'Ya, Hapus Permanen',
             onConfirm: function() {
                 form.submit();
             }
@@ -272,5 +289,7 @@
     window.fccModalClose        = fccModalClose;
     window.fccModalConfirmClick = fccModalConfirmClick;
 
-    document.addEventListener('DOMContentLoaded', initFlash);
+    document.addEventListener('DOMContentLoaded', () => {
+        (window.requestIdleCallback || setTimeout)(initFlash);
+    });
 })();

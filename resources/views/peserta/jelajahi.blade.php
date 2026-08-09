@@ -2,85 +2,154 @@
 @section('title','Jelajahi Kegiatan')
 @section('page-title','Jelajahi Kegiatan')
 @section('page-content')
-<div style="padding:24px;">
-    {{-- Search + Filter --}}
-    <form method="GET" action="{{ route('peserta.jelajahi') }}" style="display:flex;gap:10px;margin-bottom:22px;align-items:center;flex-wrap:wrap;">
-        <div style="flex:1;min-width:200px;position:relative;">
-            <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#A0A3AD;pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari kegiatan..." class="fcc-input" style="padding-left:36px;"
-                   onkeydown="if(event.key==='Enter')this.form.submit()">
+<div style="padding:24px 28px;background:#F6F8FB;min-height:100vh;font-family:'Inter',sans-serif;position:relative;">
+
+    {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
+    <style>
+      @keyframes skeletonShimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      .fcc-skeleton-box {
+        background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+        background-size: 200% 100%;
+        animation: skeletonShimmer 1.4s infinite ease-in-out;
+        border-radius: 12px;
+      }
+      #jelajahi-skeleton-overlay {
+        transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+    </style>
+
+    <div id="jelajahi-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px 28px;box-sizing:border-box;pointer-events:none;">
+      {{-- Header Skeleton --}}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+        <div style="width:40%;">
+          <div class="fcc-skeleton-box" style="width:140px;height:18px;margin-bottom:8px;border-radius:20px;"></div>
+          <div class="fcc-skeleton-box" style="width:280px;height:24px;margin-bottom:6px;"></div>
+          <div class="fcc-skeleton-box" style="width:220px;height:12px;"></div>
         </div>
-        <div style="display:inline-flex;gap:4px;background:#F7F8FA;padding:4px;border-radius:10px;border:1px solid #E2E4EB;">
-            @foreach([['semua','Semua'],['pelatihan','Pelatihan'],['sertifikasi','Sertifikasi']] as [$v,$l])
-            <button type="submit" name="jenis" value="{{ $v }}"
-                style="padding:6px 14px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;
-                       background:{{ (request('jenis')===$v || (!request('jenis')&&$v==='semua')) ? 'linear-gradient(135deg,#FFC81A,#FFD84D)' : 'transparent' }};
-                       color:{{ (request('jenis')===$v || (!request('jenis')&&$v==='semua')) ? '#111' : '#6B7280' }};">
-                {{ $l }}
-            </button>
-            @endforeach
+      </div>
+      {{-- Search Bar Skeleton --}}
+      <div style="padding:14px 18px;margin-bottom:22px;border-radius:16px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;gap:12px;align-items:center;">
+        <div class="fcc-skeleton-box" style="flex:1;height:38px;border-radius:10px;"></div>
+        <div class="fcc-skeleton-box" style="width:200px;height:38px;border-radius:10px;"></div>
+      </div>
+      {{-- Table Skeleton --}}
+      <div style="padding:28px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+        <div class="fcc-skeleton-box" style="width:100%;height:44px;border-radius:10px;"></div>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        setTimeout(function() {
+          var sk = document.getElementById('jelajahi-skeleton-overlay');
+          if (sk) {
+            sk.style.opacity = '0';
+            sk.style.visibility = 'hidden';
+            setTimeout(function() { sk.style.display = 'none'; }, 350);
+          }
+        }, 400);
+      })();
+    </script>
+
+    {{-- Header & Action Bar --}}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
+        <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Katalog &amp; Pendaftaran</span>
+                <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0;letter-spacing:-0.02em;">Jelajahi Kegiatan</h1>
+            </div>
+            <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">Daftarkan diri Anda pada program pelatihan dan sertifikasi kompetensi terbaru dari FCC UMI.</p>
         </div>
-    </form>
-    {{-- Desktop Table View & Mobile Cards --}}
-    <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:14px;">
+    </div>
+
+    {{-- Search + Filter Card --}}
+    <div class="fcc-card" style="padding:14px 18px;margin-bottom:22px;border-radius:16px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);">
+        <form method="GET" action="{{ route('peserta.jelajahi') }}" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+            <div style="flex:1;min-width:220px;position:relative;">
+                <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748B;pointer-events:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari judul kegiatan atau program kompetensi..." class="fcc-input" style="padding-left:40px;height:42px;font-size:13px;border:1.5px solid #CBD5E1;border-radius:10px;background:#FFF;"
+                       onkeydown="if(event.key==='Enter')this.form.submit()">
+            </div>
+            <div style="display:inline-flex;gap:6px;background:#F8FAFC;padding:4px;border-radius:12px;border:1.5px solid #E2E8F0;">
+                @foreach([['semua','Semua Program'],['pelatihan','Pelatihan'],['sertifikasi','Sertifikasi']] as [$v,$l])
+                <button type="submit" name="jenis" value="{{ $v }}"
+                    style="padding:8px 16px;border-radius:9px;border:{{ (request('jenis')===$v || (!request('jenis')&&$v==='semua')) ? '1px solid #131218' : 'none' }};font-size:12.5px;font-weight:900;cursor:pointer;transition:all .18s;
+                           background:{{ (request('jenis')===$v || (!request('jenis')&&$v==='semua')) ? '#FFC81A' : 'transparent' }};
+                           color:{{ (request('jenis')===$v || (!request('jenis')&&$v==='semua')) ? '#131218' : '#64748B' }};">
+                    {{ $l }}
+                </button>
+                @endforeach
+            </div>
+        </form>
+    </div>
+
+    {{-- Main Neo-Brutalist Table Card --}}
+    <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
         <div style="overflow-x:auto;">
             <table style="width:100%;border-collapse:collapse;text-align:left;">
                 <thead>
-                    <tr style="background:#F8F9FB;border-bottom:2px solid #E2E4EB;">
-                        <th style="padding:14px 20px;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;letter-spacing:.7px;">Kegiatan</th>
-                        <th style="padding:14px 14px;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;text-align:center;">Jenis</th>
-                        <th style="padding:14px 14px;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;">Jadwal Pelaksanaan</th>
-                        <th style="padding:14px 14px;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;text-align:center;">Kuota</th>
-                        <th style="padding:14px 20px;font-size:11px;font-weight:800;color:#6B7280;text-transform:uppercase;text-align:center;width:170px;">Aksi</th>
+                    <tr style="background:#131218;color:#FFFFFF;">
+                        <th style="padding:14px 20px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#FFC81A;">Kegiatan</th>
+                        <th style="padding:14px 14px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#FFFFFF;text-align:center;">Jenis</th>
+                        <th style="padding:14px 14px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#FFFFFF;">Jadwal Pelaksanaan</th>
+                        <th style="padding:14px 14px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#FFFFFF;text-align:center;">Kuota</th>
+                        <th style="padding:14px 20px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#FFFFFF;text-align:center;width:170px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($kegiatan as $k)
                     @php $sudah=in_array($k->id,$sudahDaftar); $isPel=$k->jenis_kegiatan==='pelatihan'; @endphp
-                    <tr style="border-top:1px solid #F0F1F3;transition:background .2s;" onmouseover="this.style.background='#FAFBFD'" onmouseout="this.style.background='transparent'">
+                    <tr style="border-bottom:1px solid #F1F5F9;transition:background .18s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='transparent'">
                         <td style="padding:16px 20px;">
                             <div style="display:flex;align-items:center;gap:14px;">
-                                <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#131218,#1A1920);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>20,'style'=>'color:#FFC81A'])
+                                <div style="width:44px;height:44px;border-radius:12px;background:{{ $isPel?'#FFFDF5':'#EEF2FF' }};border:1.5px solid {{ $isPel?'#FFC81A':'#6366F1' }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>20,'style'=>"color:".($isPel?'#131218':'#6366F1')])
                                 </div>
                                 <div>
-                                    <p style="font-size:14px;font-weight:800;color:#0F0F14;margin:0 0 2px;line-height:1.35;">{{ $k->judul }}</p>
-                                    <p style="font-size:11.5px;color:#9CA3B0;margin:0;">
-                                        Status Biaya: <span style="color:#10B981;font-weight:700;">{{ $k->biaya->isNotEmpty() ? 'Berbayar' : 'Gratis' }}</span>
+                                    <p style="font-size:14px;font-weight:900;color:#131218;margin:0 0 3px;line-height:1.35;">{{ $k->judul }}</p>
+                                    <p style="font-size:11.5px;color:#64748B;margin:0;font-weight:600;">
+                                        Biaya: <span style="color:{{ $k->biaya->isNotEmpty() ? '#059669' : '#64748B' }};font-weight:800;">{{ $k->biaya->isNotEmpty() ? ('Rp '.number_format($k->biaya->min('nominal'),0,',','.')) : 'Gratis' }}</span>
                                     </p>
                                 </div>
                             </div>
                         </td>
                         <td style="padding:16px 14px;text-align:center;vertical-align:middle;">
-                            <span style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px;background:{{ $isPel?'rgba(255,200,26,.15)':'rgba(139,92,246,.12)' }};color:{{ $isPel?'#B38F00':'#7C3AED' }};text-transform:uppercase;">
+                            <span style="font-size:10.5px;font-weight:900;padding:4px 10px;border-radius:6px;background:{{ $isPel?'#FFC81A':'#3B82F6' }};color:{{ $isPel?'#131218':'#FFFFFF' }};border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">
                                 {{ ucfirst($k->jenis_kegiatan) }}
                             </span>
                         </td>
-                        <td style="padding:16px 14px;vertical-align:middle;font-size:13px;color:#4B5563;font-weight:600;">
+                        <td style="padding:16px 14px;vertical-align:middle;font-size:13px;color:#334155;font-weight:700;">
                             <div style="display:flex;align-items:center;gap:6px;">
-                                @include('components.icon',['name'=>'calendar','size'=>14,'style'=>'color:#9CA3B0'])
+                                @include('components.icon',['name'=>'calendar','size'=>15,'style'=>'color:#64748B'])
                                 {{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Jadwal Menyusul' }}
                             </div>
                         </td>
-                        <td style="padding:16px 14px;text-align:center;vertical-align:middle;font-size:13px;color:#374151;font-weight:700;">
-                            <span style="background:#F3F4F6;padding:4px 10px;border-radius:8px;font-size:12px;">
+                        <td style="padding:16px 14px;text-align:center;vertical-align:middle;font-size:13px;color:#131218;font-weight:800;">
+                            <span style="background:#F1F5F9;border:1px solid #CBD5E1;padding:4px 12px;border-radius:20px;font-size:12px;">
                                 {{ $k->terisi }} / {{ $k->kuota }}
                             </span>
                         </td>
                         <td style="padding:16px 20px;text-align:center;vertical-align:middle;">
-                            @if($sudah)
-                            <a href="{{ route('peserta.pendaftaran') }}" style="display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:9px;border:1.5px solid #10B981;color:#10B981;font-size:12.5px;font-weight:700;text-decoration:none;">&#10003; Terdaftar</a>
+                            @if($k->isComingSoon())
+                            <button disabled style="width:100%;padding:8px 14px;border-radius:10px;border:1.5px solid #FCD34D;background:#FEF3C7;color:#D97706;font-size:12.5px;font-weight:800;cursor:not-allowed;">Segera Hadir</button>
+                            @elseif($sudah)
+                            <a href="{{ route('peserta.pendaftaran') }}" style="display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:10px;border:1.5px solid #10B981;background:#ECFDF5;color:#059669;font-size:12.5px;font-weight:900;text-decoration:none;">&#10003; Terdaftar</a>
                             @elseif($k->isFull())
-                            <button disabled style="width:100%;padding:8px 14px;border-radius:9px;border:1px solid #E2E4EB;background:rgba(100,100,100,.08);color:#A0A3AD;font-size:12.5px;font-weight:700;cursor:not-allowed;">Kuota Penuh</button>
+                            <button disabled style="width:100%;padding:8px 14px;border-radius:10px;border:1.5px solid #CBD5E1;background:#F1F5F9;color:#94A3B8;font-size:12.5px;font-weight:800;cursor:not-allowed;">Kuota Penuh</button>
                             @else
                             <button onclick="showDaftarModal('{{ $k->hashid }}', '{{ addslashes($k->judul) }}', {{ $k->biaya->toJson() }})"
-                                class="fcc-btn-gold" style="width:100%;justify-content:center;padding:8px 14px;font-size:12.5px;">Daftar</button>
+                                class="fcc-btn-gold" style="width:100%;justify-content:center;padding:8px 14px;font-size:12.5px;font-weight:900;border-radius:10px;">Daftar &rarr;</button>
                             @endif
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" style="padding:48px;text-align:center;color:#A0A3AD;font-size:14px;">Tidak ada kegiatan ditemukan.</td>
+                        <td colspan="5" style="padding:48px;text-align:center;color:#94A3B8;font-size:14px;font-weight:600;">Tidak ada kegiatan ditemukan.</td>
                     </tr>
                     @endforelse
                 </tbody>

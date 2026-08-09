@@ -9,6 +9,7 @@ use App\Models\ArsipKegiatan;
 use App\Models\KontenHalaman;
 use App\Models\Kontak;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class LandingController extends Controller
 {
@@ -21,22 +22,25 @@ class LandingController extends Controller
             ->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan',
                     'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
                     'biaya'])
+            ->orderByRaw("CASE WHEN status = 'comingsoon' THEN 1 ELSE 0 END ASC")
             ->orderBy('created_at', 'desc')
-            ->limit(3)
+            ->limit(6)
             ->get();
 
-        $stats = [
-            'pelatihan'   => \App\Models\Pelatihan::count(),
-            'sertifikasi' => \App\Models\Sertifikasi::count(),
-            'peserta'     => \App\Models\Peserta::count(),
-            'mitra'       => Mitra::count(),
-        ];
+        $stats = Cache::remember('landing_stats', 600, function() {
+            return [
+                'pelatihan'   => \App\Models\Pelatihan::count(),
+                'sertifikasi' => \App\Models\Sertifikasi::count(),
+                'peserta'     => \App\Models\Peserta::count(),
+                'mitra'       => Mitra::count(),
+            ];
+        });
 
-        $mitras    = Mitra::orderBy('urutan', 'asc')->get();
-        $arsips    = ArsipKegiatan::with('kegiatan')->orderBy('created_at','desc')->limit(5)->get();
-        $konten    = KontenHalaman::all()->keyBy('jenis');
-        $faqs      = Informasi::faq()->latest()->get();
-        $infos     = Informasi::info()->aktif()->latest()->limit(3)->get();
+        $mitras     = Mitra::orderBy('urutan', 'asc')->get();
+        $arsips     = ArsipKegiatan::with('kegiatan')->orderBy('created_at','desc')->limit(5)->get();
+        $konten     = KontenHalaman::all()->keyBy('jenis');
+        $faqs       = Informasi::faq()->latest()->get();
+        $infos      = Informasi::info()->aktif()->latest()->limit(3)->get();
         $testimonis = \App\Models\Testimoni::latest()->get();
 
         return view('landing.index', compact(
@@ -58,7 +62,9 @@ class LandingController extends Controller
         $query  = Kegiatan::upcoming()
             ->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan',
                     'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
-                    'biaya', 'pendaftaran']);
+                    'biaya', 'pendaftaran'])
+            ->orderByRaw("CASE WHEN status = 'comingsoon' THEN 1 ELSE 0 END ASC")
+            ->orderBy('created_at', 'desc');
         if ($request->jenis && in_array($request->jenis, ['pelatihan','sertifikasi'])) {
             $query->where('jenis_kegiatan', $request->jenis);
         }

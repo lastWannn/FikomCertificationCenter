@@ -13,13 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Pengecualian CSRF untuk rute Autentikasi Publik (mencegah error CSRF mismatch / 419)
-        $middleware->validateCsrfTokens(except: [
-            'daftar',
-            'masuk',
-            'lupa-password',
-            'daftar/*',
-            'lupa-password/*',
+        // Global web middleware (security headers)
+        $middleware->web(append: [
+            \App\Http\Middleware\SecurityHeaders::class,
         ]);
 
         // Alias middleware

@@ -23,13 +23,10 @@ class JadwalPelatihanController extends Controller
     }
     public function store(StoreJadwalPelatihanRequest $request, Pelatihan $pelatihan) {
         $jadwal = $this->service->store($pelatihan->id, $request->validated());
-        if ($request->boolean('langsung_aktifkan')) {
+        $status = $request->input('status', 'public');
+        if (in_array($status, ['public', 'comingsoon', 'draf'])) {
             $kegiatan = $this->service->aktifkan($jadwal);
-            if (!empty($jadwal->biaya_setup)) {
-                return redirect()->route('admin.kegiatan.show', $kegiatan->hashid)->with('success', 'Jadwal ditambahkan, langsung aktif, dan biaya diatur.');
-            }
-            return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
-                ->with('success', 'Jadwal ditambahkan dan langsung aktif. Silakan tentukan biaya pendaftarannya agar tidak terpublikasi sebagai kegiatan gratis.');
+            $kegiatan->update(['status' => $status]);
         }
         return redirect()->route('admin.pelatihan.show', $pelatihan)
             ->with('success','Jadwal pelatihan berhasil ditambahkan.');
@@ -51,16 +48,26 @@ class JadwalPelatihanController extends Controller
     }
     public function aktifkan(JadwalPelatihan $jadwal) {
         try {
-            $kegiatan = $this->service->aktifkan($jadwal);
-            if (!empty($jadwal->biaya_setup)) {
-                return redirect()->route('admin.kegiatan.show', $kegiatan->hashid)->with('success', 'Kegiatan berhasil diaktifkan.');
-            }
-            return redirect()->route('admin.biaya.create', ['kegiatan_id' => $kegiatan->hashid])
-                ->with('success', 'Kegiatan berhasil diaktifkan. Silakan tentukan biaya pendaftarannya agar tidak terpublikasi sebagai kegiatan gratis.');
+            $this->service->aktifkan($jadwal);
+            return back()->with('success', 'Jadwal pelatihan berhasil diaktifkan sebagai kegiatan publik.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
     }
+    public function updateStatus(\Illuminate\Http\Request $request, JadwalPelatihan $jadwal) {
+        $request->validate(['status' => 'required|in:draf,comingsoon,public']);
+        $kp = $jadwal->kegiatanPelatihan;
+        if ($kp && $kp->kegiatan) {
+            $kp->kegiatan->update(['status' => $request->status]);
+        } else {
+            if (in_array($request->status, ['comingsoon', 'public'])) {
+                $kegiatan = $this->service->aktifkan($jadwal);
+                $kegiatan->update(['status' => $request->status]);
+            }
+        }
+        return back()->with('success', 'Status publikasi jadwal berhasil diperbarui.');
+    }
+
     public function nonaktifkan(JadwalPelatihan $jadwal) {
         try {
             $this->service->nonaktifkan($jadwal);

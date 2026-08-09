@@ -22,7 +22,7 @@ class ArsipController extends Controller
     public function create()
     {
         return view('admin.lainnya.arsip-form', [
-            'kegiatan' => Kegiatan::doesntHave('arsip')->get()
+            'kegiatan' => Kegiatan::passed()->doesntHave('arsip')->get()
         ]);
     }
 
@@ -56,5 +56,23 @@ class ArsipController extends Controller
     {
         $this->service->delete($arsip);
         return back()->with('success', 'Arsip dihapus.');
+    }
+
+    public function uploadFoto(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'foto' => 'required|file|mimes:jpeg,jpg,png,webp,heic,heif|max:40960',
+        ]);
+
+        $path = \App\Helpers\ImageHelper::compressToWebp($request->file('foto'), 'arsip-dokumentasi');
+        if ($path) {
+            return response()->json([
+                'success' => true,
+                'path'    => $path,
+                'url'     => asset('storage/' . $path),
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gagal mengompresi foto.'], 422);
     }
 }

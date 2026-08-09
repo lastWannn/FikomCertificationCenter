@@ -69,13 +69,13 @@ Route::get('/api/search',    [LandingController::class,'search'])->name('landing
 /* ── AUTH ────────────────────────────────────────────────────── */
 Route::middleware('guest.fcc')->group(function () {
     Route::get('/masuk',          LivewireLogin::class)->name('auth.login');     // Livewire
-    Route::post('/masuk',         [LoginController::class,'login'])->name('auth.login.post');
+    Route::post('/masuk',         [LoginController::class,'login'])->middleware('throttle:10,1')->name('auth.login.post');
     Route::get('/daftar',         [RegisterController::class,'showRegister'])->name('auth.register');
-    Route::post('/daftar',        [RegisterController::class,'register'])->name('auth.register.post');
-    Route::post('/daftar/verify', [RegisterController::class,'verifyOtp'])->name('auth.register.verify');
+    Route::post('/daftar',        [RegisterController::class,'register'])->middleware('throttle:10,1')->name('auth.register.post');
+    Route::post('/daftar/verify', [RegisterController::class,'verifyOtp'])->middleware('throttle:10,1')->name('auth.register.verify');
     Route::get('/lupa-password',  [LoginController::class,'showForgot'])->name('auth.forgot');
-    Route::post('/lupa-password', [LoginController::class,'sendReset'])->name('auth.forgot.post');
-    Route::post('/lupa-password/verify', [LoginController::class,'verifyResetOtp'])->name('auth.forgot.verify');
+    Route::post('/lupa-password', [LoginController::class,'sendReset'])->middleware('throttle:10,1')->name('auth.forgot.post');
+    Route::post('/lupa-password/verify', [LoginController::class,'verifyResetOtp'])->middleware('throttle:10,1')->name('auth.forgot.verify');
 });
 Route::post('/keluar', [LoginController::class,'logout'])->name('auth.logout');
 
@@ -91,8 +91,10 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     Route::prefix('api')->name('api.')->group(function() {
         Route::get('chart/pendapatan', [ChartController::class,'pendapatan'])->name('chart.pendapatan');
         Route::get('chart/pendaftaran',[ChartController::class,'pendaftaran'])->name('chart.pendaftaran');
-        Route::get('chart/kegiatan',   [ChartController::class,'kegiatan'])->name('chart.kegiatan');
-        Route::get('chart/stats',      [ChartController::class,'stats'])->name('chart.stats');
+        Route::get('chart/kegiatan',         [ChartController::class,'kegiatan'])->name('chart.kegiatan');
+        Route::get('chart/status-pendaftar', [ChartController::class,'statusPendaftar'])->name('chart.status-pendaftar');
+        Route::get('chart/stats',            [ChartController::class,'stats'])->name('chart.stats');
+        Route::get('calendar',               [ChartController::class,'calendarData'])->name('calendar');
     });
 
     /* PROGRAM */
@@ -118,6 +120,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/{jadwal}/edit',         [JadwalPelatihanController::class,'edit'])->name('edit');
         Route::put('/{jadwal}',              [JadwalPelatihanController::class,'update'])->name('update');
         Route::delete('/{jadwal}',           [JadwalPelatihanController::class,'destroy'])->name('destroy');
+        Route::post('/{jadwal}/status',      [JadwalPelatihanController::class,'updateStatus'])->name('status');
         Route::post('/{jadwal}/aktifkan',    [JadwalPelatihanController::class,'aktifkan'])->name('aktifkan');
         Route::post('/{jadwal}/nonaktifkan', [JadwalPelatihanController::class,'nonaktifkan'])->name('nonaktifkan');
     });
@@ -129,6 +132,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/{jadwal}/edit',         [JadwalSertifikasiController::class,'edit'])->name('edit');
         Route::put('/{jadwal}',              [JadwalSertifikasiController::class,'update'])->name('update');
         Route::delete('/{jadwal}',           [JadwalSertifikasiController::class,'destroy'])->name('destroy');
+        Route::post('/{jadwal}/status',      [JadwalSertifikasiController::class,'updateStatus'])->name('status');
         Route::post('/{jadwal}/aktifkan',    [JadwalSertifikasiController::class,'aktifkan'])->name('aktifkan');
         Route::post('/{jadwal}/nonaktifkan', [JadwalSertifikasiController::class,'nonaktifkan'])->name('nonaktifkan');
     });
@@ -163,6 +167,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::post('/{kegiatan}/arsipkan',    [AdminKegiatan::class,'arsipkan'])->name('arsipkan');
     });
     Route::resource('biaya', BiayaController::class);
+    Route::post('arsip/upload-foto', [AdminArsip::class, 'uploadFoto'])->name('arsip.upload-foto');
     Route::resource('arsip', AdminArsip::class);
 
     /* QR PRESENSI */

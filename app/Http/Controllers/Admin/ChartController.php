@@ -92,4 +92,71 @@ class ChartController extends Controller
             'menunggu_verifikasi'      => Pembayaran::where('status_pembayaran','menunggu_verifikasi')->count(),
         ]);
     }
+
+    /** Status Pendaftar & Transaksi */
+    public function statusPendaftar()
+    {
+        $terverifikasi = Pembayaran::where('status_pembayaran', 'terverifikasi')->count();
+        $menunggu     = Pembayaran::whereIn('status_pembayaran', ['menunggu_verifikasi', 'menunggu_pembayaran'])->count();
+        $ditolak      = Pembayaran::where('status_pembayaran', 'ditolak')->count();
+        $kadaluarsa   = Pembayaran::where('status_pembayaran', 'kadaluarsa')->count();
+
+        return response()->json([
+            'labels'   => ['Terverifikasi', 'Menunggu', 'Ditolak', 'Kadaluarsa'],
+            'datasets' => [[
+                'data'            => [$terverifikasi, $menunggu, $ditolak, $kadaluarsa],
+                'backgroundColor' => ['#10B981', '#F59E0B', '#EF4444', '#94A3B8'],
+                'borderWidth'     => 0,
+                'hoverOffset'     => 6,
+            ]],
+        ]);
+    }
+
+    /** AJAX Calendar Data for dynamic month switching */
+    public function calendarData(Request $r)
+    {
+        try {
+            $calendarDate = $r->month ? \Carbon\Carbon::parse($r->month . '-01') : now();
+        } catch (\Exception $e) {
+            $calendarDate = now();
+        }
+
+        $today = now();
+        $prevMonth = $calendarDate->copy()->subMonth()->format('Y-m');
+        $nextMonth = $calendarDate->copy()->addMonth()->format('Y-m');
+        $startOfMonth = $calendarDate->copy()->startOfMonth();
+        $endOfMonth   = $calendarDate->copy()->endOfMonth();
+
+        $pelatihanDates = \App\Models\JadwalPelatihan::whereBetween('tgl_pelaksanaan', [$startOfMonth, $endOfMonth])
+            ->get(['nama_kegiatan', 'tgl_pelaksanaan']);
+
+        $sertifikasiDates = \App\Models\JadwalSertifikasi::whereBetween('tgl_pelaksanaan', [$startOfMonth, $endOfMonth])
+            ->get(['nama_kegiatan', 'tgl_pelaksanaan']);
+
+        $tanggalKegiatanMap = [];
+        foreach ($pelatihanDates as $jp) {
+            if ($jp->tgl_pelaksanaan) {
+                $dayNum = (int) $jp->tgl_pelaksanaan->format('j');
+                $tanggalKegiatanMap[$dayNum][] = $jp->nama_kegiatan ?: 'Pelatihan';
+            }
+        }
+        foreach ($sertifikasiDates as $js) {
+            if ($js->tgl_pelaksanaan) {
+                $dayNum = (int) $js->tgl_pelaksanaan->format('j');
+                $tanggalKegiatanMap[$dayNum][] = $js->nama_kegiatan ?: 'Sertifikasi';
+            }
+        }
+
+        return response()->json([
+            'month_label'           => $calendarDate->translatedFormat('F Y'),
+            'month_key'             => $calendarDate->format('Y-m'),
+            'prev_month'            => $prevMonth,
+            'next_month'            => $nextMonth,
+            'days_in_month'         => $calendarDate->daysInMonth,
+            'start_day_of_week'     => $startOfMonth->dayOfWeek,
+            'is_current_real_month' => $calendarDate->format('Y-m') === $today->format('Y-m'),
+            'today_day'             => $today->day,
+            'kegiatan_map'          => $tanggalKegiatanMap,
+        ]);
+    }
 }

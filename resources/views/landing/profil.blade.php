@@ -49,7 +49,7 @@
                             <span style="color: #D97706; background:#FEF3C7; padding:2px 10px; border-radius:6px;">Kompeten &amp; Berdaya Saing</span>
                         </h3>
                         <p style="color: #334155; font-size: 14.5px; line-height: 1.8; margin: 0 0 14px; font-weight: 500;">
-                            {{ $konten['tentang_kami']?->isi ?? 'FIKOM Certification Center (FCC) adalah unit pelaksana di bawah Fakultas Ilmu Komputer Universitas Muslim Indonesia.' }}
+                            {{ (is_array($konten['tentang_kami'] ?? null) ? ($konten['tentang_kami']['isi'] ?? null) : ($konten['tentang_kami']->isi ?? null)) ?? 'FIKOM Certification Center (FCC) adalah unit pelaksana di bawah Fakultas Ilmu Komputer Universitas Muslim Indonesia.' }}
                         </p>
                         <p style="color: #475569; font-size: 14.5px; line-height: 1.8; margin: 0 0 28px; font-weight: 500;">
                             FCC berdiri untuk menjawab kebutuhan industri akan tenaga kerja yang kompeten, bersertifikat, dan siap menghadapi tantangan ekonomi digital global dengan membekali mahasiswa dan masyarakat umum melalui program sertifikasi terstandarisasi.

@@ -44,37 +44,83 @@ class LaporanController extends Controller
             'avg_transaksi'       => $avgTransaksi,
         ];
 
-        // 1. Data Grafik Monthly Pendapatan & Pendaftaran (12 Bulan)
-        $pendapatanBulanan = array_fill(1, 12, 0);
-        $pendaftaranBulanan = array_fill(1, 12, 0);
+        // 1. Data Grafik (Bulanan jika Semua Bulan, Harian jika Bulan dipilih)
+        if ($bulan) {
+            $daysInMonth = \Carbon\Carbon::createFromDate($tahun, (int)$bulan, 1)->daysInMonth;
+            $chartLabels = array_map(fn($d) => "Tgl $d", range(1, $daysInMonth));
+            
+            $pendapatanDataMap  = array_fill(1, $daysInMonth, 0);
+            $pendaftaranDataMap = array_fill(1, $daysInMonth, 0);
 
-        $rawPendapatan = Pembayaran::selectRaw('MONTH(created_at) as bulan, SUM(jumlah_bayar) as total')
-            ->where('status_pembayaran', 'terverifikasi')
-            ->whereYear('created_at', $tahun)
-            ->when($jenisKegiatan, function($q) use ($jenisKegiatan) {
-                $q->whereHas('pendaftaran.kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan));
-            })
-            ->groupBy('bulan')
-            ->get();
+            $rawPendapatan = Pembayaran::selectRaw('DAY(created_at) as tgl, SUM(jumlah_bayar) as total')
+                ->where('status_pembayaran', 'terverifikasi')
+                ->whereYear('created_at', $tahun)
+                ->whereMonth('created_at', $bulan)
+                ->when($jenisKegiatan, function($q) use ($jenisKegiatan) {
+                    $q->whereHas('pendaftaran.kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan));
+                })
+                ->groupBy('tgl')
+                ->get();
 
-        foreach ($rawPendapatan as $item) {
-            $pendapatanBulanan[$item->bulan] = (int) $item->total;
-        }
+            foreach ($rawPendapatan as $item) {
+                $pendapatanDataMap[(int)$item->tgl] = (int) $item->total;
+            }
 
-        $rawPendaftaran = Pendaftaran::selectRaw('MONTH(created_at) as bulan, COUNT(id) as total')
-            ->whereYear('created_at', $tahun)
-            ->when($jenisKegiatan, fn($q) => $q->whereHas('kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan)))
-            ->groupBy('bulan')
-            ->get();
+            $rawPendaftaran = Pendaftaran::selectRaw('DAY(created_at) as tgl, COUNT(id) as total')
+                ->whereYear('created_at', $tahun)
+                ->whereMonth('created_at', $bulan)
+                ->when($jenisKegiatan, fn($q) => $q->whereHas('kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan)))
+                ->groupBy('tgl')
+                ->get();
 
-        foreach ($rawPendaftaran as $item) {
-            $pendaftaranBulanan[$item->bulan] = (int) $item->total;
+            foreach ($rawPendaftaran as $item) {
+                $pendaftaranDataMap[(int)$item->tgl] = (int) $item->total;
+            }
+
+            $pendapatanChartData  = array_values($pendapatanDataMap);
+            $pendaftaranChartData = array_values($pendaftaranDataMap);
+            $namaBulan            = \Carbon\Carbon::createFromDate($tahun, (int)$bulan, 1)->translatedFormat('F');
+            $chartTitle           = "Grafik Tren Harian — Bulan $namaBulan $tahun";
+        } else {
+            $chartLabels = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+            $pendapatanDataMap  = array_fill(1, 12, 0);
+            $pendaftaranDataMap = array_fill(1, 12, 0);
+
+            $rawPendapatan = Pembayaran::selectRaw('MONTH(created_at) as bulan, SUM(jumlah_bayar) as total')
+                ->where('status_pembayaran', 'terverifikasi')
+                ->whereYear('created_at', $tahun)
+                ->when($jenisKegiatan, function($q) use ($jenisKegiatan) {
+                    $q->whereHas('pendaftaran.kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan));
+                })
+                ->groupBy('bulan')
+                ->get();
+
+            foreach ($rawPendapatan as $item) {
+                $pendapatanDataMap[(int)$item->bulan] = (int) $item->total;
+            }
+
+            $rawPendaftaran = Pendaftaran::selectRaw('MONTH(created_at) as bulan, COUNT(id) as total')
+                ->whereYear('created_at', $tahun)
+                ->when($jenisKegiatan, fn($q) => $q->whereHas('kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan)))
+                ->groupBy('bulan')
+                ->get();
+
+            foreach ($rawPendaftaran as $item) {
+                $pendaftaranDataMap[(int)$item->bulan] = (int) $item->total;
+            }
+
+            $pendapatanChartData  = array_values($pendapatanDataMap);
+            $pendaftaranChartData = array_values($pendaftaranDataMap);
+            $chartTitle           = "Grafik Tren Bulanan — Tahun $tahun";
         }
 
         // 2. Data Grafik Distribution Status Pembayaran
         $statusPembayaranCounts = Pembayaran::selectRaw('status_pembayaran, COUNT(id) as total')
             ->whereYear('created_at', $tahun)
             ->when($bulan, fn($q) => $q->whereMonth('created_at', $bulan))
+            ->when($jenisKegiatan, function($q) use ($jenisKegiatan) {
+                $q->whereHas('pendaftaran.kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan));
+            })
             ->groupBy('status_pembayaran')
             ->pluck('total', 'status_pembayaran')
             ->toArray();
@@ -83,6 +129,7 @@ class LaporanController extends Controller
         $jenisCounts = Kegiatan::join('pendaftaran', 'kegiatan.id', '=', 'pendaftaran.kegiatan_id')
             ->whereYear('pendaftaran.created_at', $tahun)
             ->when($bulan, fn($q) => $q->whereMonth('pendaftaran.created_at', $bulan))
+            ->when($jenisKegiatan, fn($q) => $q->where('kegiatan.jenis_kegiatan', $jenisKegiatan))
             ->selectRaw('kegiatan.jenis_kegiatan, COUNT(pendaftaran.id) as total')
             ->groupBy('kegiatan.jenis_kegiatan')
             ->pluck('total', 'jenis_kegiatan')
@@ -108,8 +155,54 @@ class LaporanController extends Controller
             ->when($bulan, fn($q) => $q->whereMonth('created_at', $bulan))
             ->when($jenisKegiatan, fn($q) => $q->whereHas('kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan)))
             ->latest()
-            ->limit(15)
+            ->limit(10)
             ->get();
+
+        // 6. Option 1: Sertifikat Diterbitkan & Rate
+        $totalSertifikat = \App\Models\Sertifikat::whereYear('created_at', $tahun)
+            ->when($bulan, fn($q) => $q->whereMonth('created_at', $bulan))
+            ->when($jenisKegiatan, function($q) use ($jenisKegiatan) {
+                $q->whereHas('pendaftaran.kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan));
+            })
+            ->count();
+        $rateSertifikat = $totalTerverifikasi > 0 ? round(($totalSertifikat / $totalTerverifikasi) * 100, 1) : 0;
+
+        // 7. Option 2: Demografi Peserta (Asal Instansi)
+        $pesertaQuery = Peserta::whereHas('pendaftaran', function($q) use ($tahun, $bulan, $jenisKegiatan) {
+            $q->whereYear('created_at', $tahun)
+              ->when($bulan, fn($b) => $b->whereMonth('created_at', $bulan))
+              ->when($jenisKegiatan, fn($j) => $j->whereHas('kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan)));
+        });
+
+        $rawInstansi = (clone $pesertaQuery)
+            ->selectRaw('COALESCE(NULLIF(instansi, ""), "Masyarakat Umum") as nama_instansi, COUNT(id) as total')
+            ->groupBy('nama_instansi')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        $demografiInstansi = [
+            'fikom'      => (clone $pesertaQuery)->where(fn($q) => $q->where('instansi', 'LIKE', '%FIKOM%')->orWhere('instansi', 'LIKE', '%Ilmu Komputer%'))->count(),
+            'umi'        => (clone $pesertaQuery)->where('instansi', 'LIKE', '%UMI%')->where('instansi', 'NOT LIKE', '%FIKOM%')->where('instansi', 'NOT LIKE', '%Ilmu Komputer%')->count(),
+            'eksternal'  => (clone $pesertaQuery)->where(fn($q) => $q->whereNotNull('instansi')->where('instansi', '!=', ''))->where('instansi', 'NOT LIKE', '%UMI%')->count(),
+            'umum'       => (clone $pesertaQuery)->where(fn($q) => $q->whereNull('instansi')->orWhere('instansi', ''))->count(),
+        ];
+
+        // 8. Option 4: Efisiensi Kuota & Keterisian Kelas
+        $kegiatansForQuota = Kegiatan::with(['kegiatanPelatihan.jadwalPelatihan', 'kegiatanSertifikasi.jadwalSertifikasi'])
+            ->when($jenisKegiatan, fn($q) => $q->where('jenis_kegiatan', $jenisKegiatan))
+            ->get();
+
+        $totalKuota  = $kegiatansForQuota->sum(fn($k) => $k->kuota);
+        $totalTerisi = $kegiatansForQuota->sum(fn($k) => $k->terisi);
+        $rateKuota   = $totalKuota > 0 ? round(($totalTerisi / $totalKuota) * 100, 1) : 0;
+
+        $summary['total_sertifikat']  = $totalSertifikat;
+        $summary['rate_sertifikat']   = $rateSertifikat;
+        $summary['total_kuota']       = $totalKuota;
+        $summary['total_terisi']      = $totalTerisi;
+        $summary['rate_kuota']        = $rateKuota;
+        $summary['demografi']         = $demografiInstansi;
 
         $availableYears = range(date('Y'), date('Y')-3);
 
@@ -119,12 +212,15 @@ class LaporanController extends Controller
             'bulan',
             'jenisKegiatan',
             'availableYears',
-            'pendapatanBulanan',
-            'pendaftaranBulanan',
+            'chartLabels',
+            'pendapatanChartData',
+            'pendaftaranChartData',
+            'chartTitle',
             'statusPembayaranCounts',
             'jenisCounts',
             'perKegiatan',
-            'transaksiTerbaru'
+            'transaksiTerbaru',
+            'rawInstansi'
         ));
     }
 

@@ -20,16 +20,6 @@
                     <span style="font-size:10.5px; font-weight:900; padding:4px 12px; border-radius:100px; text-transform:uppercase; letter-spacing:1px; background:#FFC81A; color:#131218;">
                         {{ ucfirst($kegiatan->jenis_kegiatan) }}
                     </span>
-
-                    @if($kegiatan->isFull())
-                        <span style="font-size:10.5px; font-weight:900; padding:4px 12px; border-radius:100px; background:rgba(239,68,68,0.15); color:#EF4444; border:1px solid rgba(239,68,68,0.3); text-transform:uppercase;">
-                            Kuota Penuh
-                        </span>
-                    @else
-                        <span style="font-size:10.5px; font-weight:900; padding:4px 12px; border-radius:100px; background:rgba(16,185,129,0.15); color:#10B981; border:1px solid rgba(16,185,129,0.3); text-transform:uppercase;">
-                            Pendaftaran Dibuka
-                        </span>
-                    @endif
                 </div>
             </div>
 
@@ -70,23 +60,32 @@
                                     @include('components.icon',['name'=>'calendar','size'=>12,'style'=>'color:#FFC81A']) Pelaksanaan
                                 </p>
                                 <p style="color:#FFFFFF; font-size:13.5px; font-weight:800; margin:0;">
-                                    {{ $kegiatan->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}
+                                    {{ $kegiatan->jadwal?->tgl_pelaksanaan?->translatedFormat('d M Y') ?? 'Jadwal Menyusul' }}
+                                </p>
+                                <p style="color:rgba(255,255,255,0.6); font-size:11px; margin:2px 0 0; font-weight:600;">
+                                    Jam {{ $kegiatan->jadwal?->jam_mulai ? substr($kegiatan->jadwal->jam_mulai,0,5) : '08:00' }} – {{ $kegiatan->jadwal?->jam_selesai ? substr($kegiatan->jadwal->jam_selesai,0,5) : '12:00' }} WITA
                                 </p>
                             </div>
                             <div style="background:#131218; border:1px solid rgba(255,200,26,0.2); border-radius:12px; padding:12px 16px;">
                                 <p style="color:#FFC81A; font-size:10px; font-weight:900; margin:0 0 4px; text-transform:uppercase; display:flex; align-items:center; gap:4px;">
-                                    @include('components.icon',['name'=>'clock','size'=>12,'style'=>'color:#FFC81A']) Batas Daftar
+                                    @include('components.icon',['name'=>'clock','size'=>12,'style'=>'color:#FFC81A']) Batas Pendaftaran
                                 </p>
                                 <p style="color:#FFFFFF; font-size:13.5px; font-weight:800; margin:0;">
-                                    {{ $kegiatan->jadwal?->tgl_batas_daftar?->format('d M Y') ?? '-' }}
+                                    {{ $kegiatan->jadwal?->tgl_batas_daftar?->translatedFormat('d M Y') ?? '—' }}
+                                </p>
+                                <p style="color:rgba(255,255,255,0.6); font-size:11px; margin:2px 0 0; font-weight:600;">
+                                    Pendaftaran Ditutup 23:59 WITA
                                 </p>
                             </div>
                             <div style="background:#131218; border:1px solid rgba(255,200,26,0.2); border-radius:12px; padding:12px 16px;">
                                 <p style="color:#FFC81A; font-size:10px; font-weight:900; margin:0 0 4px; text-transform:uppercase; display:flex; align-items:center; gap:4px;">
-                                    @include('components.icon',['name'=>'users','size'=>12,'style'=>'color:#FFC81A']) Kuota
+                                    @include('components.icon',['name'=>'users','size'=>12,'style'=>'color:#FFC81A']) Sisa Kuota Peserta
                                 </p>
                                 <p style="color:#FFFFFF; font-size:13.5px; font-weight:800; margin:0;">
-                                    {{ $kegiatan->terisi }} / {{ $kegiatan->kuota }} Peserta
+                                    {{ max(0, $kegiatan->kuota - $kegiatan->terisi) }} Kursi Tersedia
+                                </p>
+                                <p style="color:rgba(255,255,255,0.6); font-size:11px; margin:2px 0 0; font-weight:600;">
+                                    Kapasitas Maksimal {{ $kegiatan->kuota }} Peserta
                                 </p>
                             </div>
                         </div>
@@ -115,7 +114,11 @@
                         </div>
 
                         <div style="flex-grow:1; max-width:240px;">
-                            @if($sudahDaftar)
+                            @if($kegiatan->isComingSoon())
+                                <button type="button" disabled style="padding:13px 24px; font-size:13.5px; font-weight:900; width:100%; justify-content:center; border-radius:30px; background:#FFFDF5; border:1.5px solid #FFC81A; color:#D97706; cursor:not-allowed;">
+                                    Segera Hadir
+                                </button>
+                            @elseif($sudahDaftar)
                                 <a href="{{ route('peserta.pendaftaran') }}" style="display:flex; text-align:center; padding:12px 20px; border-radius:30px; font-size:13.5px; font-weight:900; justify-content:center; text-decoration:none; color:#10B981; border:2px solid #10B981; background:rgba(16,185,129,0.15);">
                                     ✓ Sudah Terdaftar
                                 </a>

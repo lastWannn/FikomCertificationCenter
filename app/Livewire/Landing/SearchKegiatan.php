@@ -80,7 +80,10 @@ class SearchKegiatan extends Component
             });
         }
 
-        $kegiatan = $query->paginate(9);
+        $kegiatan = $query
+            ->orderByRaw("CASE WHEN status = 'comingsoon' THEN 1 ELSE 0 END ASC")
+            ->latest()
+            ->paginate(9);
         $kategoris = Kategori::orderBy('nama_kategori')->get();
 
         return view('livewire.landing.search-kegiatan', [

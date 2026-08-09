@@ -24,10 +24,10 @@
 </div>
 
 <style>
-.fcc-pagination-dark nav { display: flex; align-items: center; justify-content: center; }
-.fcc-pagination-dark nav svg { width: 18px; height: 18px; }
-.fcc-pagination-dark nav a, .fcc-pagination-dark nav span.relative { background: #1E1D26 !important; border: 1.5px solid rgba(255,200,26,0.25) !important; color: #FFF !important; margin: 0 4px; border-radius: 8px !important; box-shadow: none !important; }
-.fcc-pagination-dark nav span[aria-current="page"] span { background: #FFC81A !important; color: #131218 !important; border-color: #FFC81A !important; font-weight: 900 !important; }
-.fcc-pagination-dark nav a:hover { background: #FFC81A !important; color: #131218 !important; border-color: #FFC81A !important; }
+.fcc-pagination-light nav { display: flex; align-items: center; justify-content: center; }
+.fcc-pagination-light nav svg { width: 18px; height: 18px; }
+.fcc-pagination-light nav a, .fcc-pagination-light nav span.relative { background: #FFFFFF !important; border: 1.5px solid #CBD5E1 !important; color: #131218 !important; margin: 0 4px; border-radius: 8px !important; box-shadow: none !important; font-weight: 700 !important; }
+.fcc-pagination-light nav span[aria-current="page"] span { background: #FFC81A !important; color: #131218 !important; border-color: #131218 !important; font-weight: 900 !important; }
+.fcc-pagination-light nav a:hover { background: #FFC81A !important; color: #131218 !important; border-color: #131218 !important; }
 </style>
 @endsection

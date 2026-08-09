@@ -1,7 +1,60 @@
 @extends('layouts.admin')
 @section('title','Tambah Pelatihan')
 @section('page-content')
-<div style="padding:24px;">
+<div style="padding:24px;position:relative;">
+
+    {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
+    <style>
+      @keyframes skeletonShimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      .fcc-skeleton-box {
+        background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+        background-size: 200% 100%;
+        animation: skeletonShimmer 1.4s infinite ease-in-out;
+        border-radius: 12px;
+      }
+      #form-pelatihan-skeleton-overlay {
+        transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+    </style>
+
+    <div id="form-pelatihan-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px;box-sizing:border-box;pointer-events:none;">
+      {{-- Header Skeleton --}}
+      <div style="margin-bottom:20px;">
+        <div class="fcc-skeleton-box" style="width:80px;height:14px;margin-bottom:10px;"></div>
+        <div class="fcc-skeleton-box" style="width:240px;height:24px;margin-bottom:6px;"></div>
+        <div class="fcc-skeleton-box" style="width:180px;height:12px;"></div>
+      </div>
+      {{-- Form 2-Column Grid Skeleton --}}
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+        <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div class="fcc-skeleton-box" style="width:140px;height:18px;margin-bottom:18px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:40px;margin-bottom:14px;border-radius:8px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:40px;margin-bottom:14px;border-radius:8px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:120px;border-radius:8px;"></div>
+        </div>
+        <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div class="fcc-skeleton-box" style="width:120px;height:18px;margin-bottom:18px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:40px;margin-bottom:14px;border-radius:8px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:40px;border-radius:8px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        setTimeout(function() {
+          var sk = document.getElementById('form-pelatihan-skeleton-overlay');
+          if (sk) {
+            sk.style.opacity = '0';
+            sk.style.visibility = 'hidden';
+            setTimeout(function() { sk.style.display = 'none'; }, 350);
+          }
+        }, 400);
+      })();
+    </script>
     <div style="margin-bottom:20px;">
         <a href="{{ route('admin.pelatihan.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#6B7280;font-size:13px;text-decoration:none;margin-bottom:10px;">
             @include('components.icon',['name'=>'chevron-left','size'=>14]) Kembali
