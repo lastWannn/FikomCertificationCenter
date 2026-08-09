@@ -3,7 +3,7 @@
 @section('page-title','Detail Kegiatan')
 
 @section('page-content')
-<div style="padding:24px;max-width:1200px;margin:0 auto;width:100%;">
+<div style="padding:24px;">
   @php
     $isPel = $kegiatan->jenis_kegiatan === 'pelatihan';
     $detail = $kegiatan->detail;

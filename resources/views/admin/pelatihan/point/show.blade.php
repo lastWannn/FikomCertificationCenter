@@ -2,7 +2,7 @@
 
 @section('page-title', 'Point Peserta — ' . ($jadwal->pelatihan->judul ?? 'Detail'))
 @section('page-content')
-<div style="padding:24px;max-width:1200px;margin:0 auto;width:100%;">
+<div style="padding:24px;">
 
     {{-- HEADER --}}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">

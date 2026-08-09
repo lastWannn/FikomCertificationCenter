@@ -2,7 +2,7 @@
 @section('title','Jadwal Pelatihan')
 @section('page-title','Jadwal Pelatihan')
 @section('page-content')
-<div style="padding:20px 24px;">
+<div style="padding:24px;">
 
   {{-- Filter --}}
   <form method="GET" style="display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap;">

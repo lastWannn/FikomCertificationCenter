@@ -24,17 +24,24 @@ class MitraController extends Controller
     {
         $request->validate([
             'nama_mitra' => 'required|string|max:255',
-            'inisial' => 'required|string|max:10',
+            'inisial' => 'nullable|string|max:10',
             'warna' => 'nullable|string|max:20',
-            'urutan' => 'nullable|integer|unique:mitra,urutan',
+            'urutan' => 'nullable|integer',
             'deskripsi' => 'nullable|string',
             'link_website' => 'nullable|url',
             'logo' => 'nullable|image|max:2048'
-        ], [
-            'urutan.unique' => 'Nomor urutan ini sudah dipakai oleh mitra lain. Silakan pilih urutan lain.'
         ]);
 
         $data = $request->except('logo');
+
+        if (empty($data['inisial'])) {
+            $words = explode(' ', trim($request->nama_mitra));
+            $inisial = '';
+            foreach ($words as $w) {
+                if (!empty($w)) $inisial .= mb_substr($w, 0, 1);
+            }
+            $data['inisial'] = strtoupper(substr($inisial ?: $request->nama_mitra, 0, 10));
+        }
 
         if ($request->hasFile('logo')) {
             $data['logo'] = \App\Helpers\ImageHelper::compressToWebp($request->file('logo'), 'mitra');
@@ -54,17 +61,24 @@ class MitraController extends Controller
     {
         $request->validate([
             'nama_mitra' => 'required|string|max:255',
-            'inisial' => 'required|string|max:10',
+            'inisial' => 'nullable|string|max:10',
             'warna' => 'nullable|string|max:20',
-            'urutan' => 'nullable|integer|unique:mitra,urutan,' . $mitra->id,
+            'urutan' => 'nullable|integer',
             'deskripsi' => 'nullable|string',
             'link_website' => 'nullable|url',
             'logo' => 'nullable|image|max:2048'
-        ], [
-            'urutan.unique' => 'Nomor urutan ini sudah dipakai oleh mitra lain. Silakan pilih urutan lain.'
         ]);
 
         $data = $request->except('logo');
+
+        if (empty($data['inisial'])) {
+            $words = explode(' ', trim($request->nama_mitra));
+            $inisial = '';
+            foreach ($words as $w) {
+                if (!empty($w)) $inisial .= mb_substr($w, 0, 1);
+            }
+            $data['inisial'] = strtoupper(substr($inisial ?: $request->nama_mitra, 0, 10));
+        }
 
         if ($request->hasFile('logo')) {
             if ($mitra->logo) {

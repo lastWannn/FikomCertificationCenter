@@ -2,7 +2,7 @@
 @section('title','Jadwal Sertifikasi')
 @section('page-title','Jadwal Sertifikasi')
 @section('page-content')
-<div style="padding:20px 24px;">
+<div style="padding:24px;">
   <form method="GET" style="display:flex;gap:10px;align-items:center;margin-bottom:18px;">
     <select name="sertifikasi_id" class="fcc-input" style="width:auto;min-width:220px;" onchange="this.form.submit()">
       <option value="">— Semua Program Sertifikasi —</option>
