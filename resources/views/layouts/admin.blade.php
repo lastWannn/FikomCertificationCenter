@@ -43,7 +43,7 @@
           [
               'label' => 'PROGRAM',
               'items' => [
-                  ['route'=>'admin.dashboard',           'icon'=>'layout-dashboard', 'label'=>'Dashboard'],
+                  ['route'=>'admin.dashboard',           'icon'=>'layout-dashboard', 'label'=>'Dashboard', 'no_wire'=>true],
                   [
                       'route'    => 'admin.pelatihan.index',
                       'icon'     => 'book-open',
@@ -97,7 +97,7 @@
           [
               'label' => 'LAPORAN',
               'items' => [
-                  ['route'=>'admin.laporan.index',       'icon'=>'trending-up',      'label'=>'Laporan & Statistik'],
+                  ['route'=>'admin.laporan.index',       'icon'=>'trending-up',      'label'=>'Laporan & Statistik', 'no_wire'=>true],
               ],
           ],
           [
@@ -118,6 +118,7 @@
         @foreach($group['items'] as $item)
           @php
             $isActive = sbActive(explode('.index',$item['route'])[0]);
+            $isNoWire = ($item['no_wire'] ?? false) || in_array($item['route'] ?? '', ['admin.dashboard', 'admin.laporan.index']);
           @endphp
 
           @if(!empty($item['children']))
@@ -130,7 +131,7 @@
               });
             @endphp
             <div class="sb-dropdown">
-              <a wire:navigate href="{{ isset($item['route']) ? route($item['route']) : 'javascript:void(0)' }}" 
+              <a {{ $isNoWire ? '' : 'wire:navigate' }} href="{{ isset($item['route']) ? route($item['route']) : 'javascript:void(0)' }}" 
                  class="sidebar-link {{ $isGroupActive ? 'active' : '' }}"
                  style="text-decoration:none;display:flex;justify-content:space-between;align-items:center;">
                 <div style="display:flex;align-items:center;gap:.75rem;">
@@ -158,8 +159,9 @@
                     }
                     
                     $childHref = isset($child['route']) ? route($child['route']) : $child['url'];
+                    $childNoWire = ($child['no_wire'] ?? false) || (isset($child['route']) && in_array($child['route'], ['admin.dashboard', 'admin.laporan.index']));
                   @endphp
-                  <a wire:navigate href="{{ $childHref }}"
+                  <a {{ $childNoWire ? '' : 'wire:navigate' }} href="{{ $childHref }}"
                      class="sidebar-link {{ $childActive ? 'active' : '' }}"
                      style="padding:6px 12px 6px 0;margin:2px 0;min-height:30px;font-weight:{{ $childActive ? '600' : '400' }};display:flex;align-items:center;gap:10px;border-radius:0 6px 6px 0;">
                     <span style="width:16px;height:1px;background:{{ $childActive ? '#FFC81A' : 'rgba(255,255,255,.15)' }};display:inline-block;flex-shrink:0;"></span>
@@ -169,7 +171,7 @@
               </div>
             </div>
           @else
-            <a wire:navigate href="{{ route($item['route']) }}"
+            <a {{ $isNoWire ? '' : 'wire:navigate' }} href="{{ route($item['route']) }}"
                class="sidebar-link {{ $isActive ? 'active' : '' }}"
                style="text-decoration:none;">
               @include('components.icon',['name'=>$item['icon'],'size'=>17,'class'=>'sb-icon'])

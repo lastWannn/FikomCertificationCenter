@@ -2,7 +2,52 @@
 @section('title','Jadwal Pelatihan')
 @section('page-title','Jadwal Pelatihan')
 @section('page-content')
-<div style="padding:24px;">
+<div style="padding:24px;position:relative;">
+
+  {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
+  <style>
+    @keyframes skeletonShimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .fcc-skeleton-box {
+      background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.4s infinite ease-in-out;
+      border-radius: 12px;
+    }
+    #jadwal-skeleton-overlay {
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+  </style>
+
+  <div id="jadwal-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px;box-sizing:border-box;pointer-events:none;">
+    {{-- Filter Skeleton --}}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <div class="fcc-skeleton-box" style="width:240px;height:38px;border-radius:10px;"></div>
+      <div class="fcc-skeleton-box" style="width:140px;height:38px;border-radius:30px;"></div>
+    </div>
+    {{-- Table Skeleton --}}
+    <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.02);">
+      <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+      <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+      <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+      <div class="fcc-skeleton-box" style="width:100%;height:44px;border-radius:10px;"></div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      setTimeout(function() {
+        var sk = document.getElementById('jadwal-skeleton-overlay');
+        if (sk) {
+          sk.style.opacity = '0';
+          sk.style.visibility = 'hidden';
+          setTimeout(function() { sk.style.display = 'none'; }, 350);
+        }
+      }, 400);
+    })();
+  </script>
 
   {{-- Filter --}}
   <form method="GET" style="display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap;">

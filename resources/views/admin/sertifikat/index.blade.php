@@ -3,7 +3,65 @@
 @section('page-title','Manajemen Sertifikat')
 
 @section('page-content')
-<div style="padding:24px;">
+<div style="padding:24px;position:relative;">
+
+    {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
+    <style>
+      @keyframes skeletonShimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      .fcc-skeleton-box {
+        background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+        background-size: 200% 100%;
+        animation: skeletonShimmer 1.4s infinite ease-in-out;
+        border-radius: 12px;
+      }
+      #sertifikat-skeleton-overlay {
+        transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+    </style>
+
+    <div id="sertifikat-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px;box-sizing:border-box;pointer-events:none;">
+      {{-- Header Skeleton --}}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+        <div style="width:40%;">
+          <div class="fcc-skeleton-box" style="width:140px;height:18px;margin-bottom:8px;border-radius:20px;"></div>
+          <div class="fcc-skeleton-box" style="width:260px;height:24px;margin-bottom:6px;"></div>
+          <div class="fcc-skeleton-box" style="width:220px;height:12px;"></div>
+        </div>
+      </div>
+      {{-- Top 2 Cards Skeleton --}}
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:20px;margin-bottom:24px;">
+        <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div class="fcc-skeleton-box" style="width:60%;height:20px;margin-bottom:16px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:50px;border-radius:10px;"></div>
+        </div>
+        <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div class="fcc-skeleton-box" style="width:60%;height:20px;margin-bottom:16px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:50px;border-radius:10px;"></div>
+        </div>
+      </div>
+      {{-- Table Skeleton --}}
+      <div style="padding:28px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+        <div class="fcc-skeleton-box" style="width:100%;height:44px;border-radius:10px;"></div>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        setTimeout(function() {
+          var sk = document.getElementById('sertifikat-skeleton-overlay');
+          if (sk) {
+            sk.style.opacity = '0';
+            sk.style.visibility = 'hidden';
+            setTimeout(function() { sk.style.display = 'none'; }, 350);
+          }
+        }, 400);
+      })();
+    </script>
 
     {{-- Header & Action Bar --}}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
