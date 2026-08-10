@@ -21,25 +21,25 @@
       </div>
     </div>
 
-    {{-- Card 2: Status Aktif --}}
+    {{-- Card 2: Terverifikasi --}}
     <div wire:click="$set('status', 'aktif')" class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
       <div style="width:44px;height:44px;border-radius:12px;background:#ECFDF5;border:1.5px solid #10B981;display:flex;align-items:center;justify-content:center;color:#10B981;box-shadow:0 4px 10px rgba(16,185,129,0.2);flex-shrink:0;">
         @include('components.icon',['name'=>'check-circle','size'=>20])
       </div>
       <div>
-        <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Status Aktif</p>
-        <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ number_format($stats['aktif']) }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Akun</span></p>
+        <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Terverifikasi</p>
+        <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ number_format($stats['terverifikasi']) }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Akun</span></p>
       </div>
     </div>
 
-    {{-- Card 3: Status Nonaktif --}}
-    <div wire:click="$set('status', 'nonaktif')" class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+    {{-- Card 3: Belum Verifikasi --}}
+    <div wire:click="$set('status', '')" class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
       <div style="width:44px;height:44px;border-radius:12px;background:#FEF3C7;border:1.5px solid #F59E0B;display:flex;align-items:center;justify-content:center;color:#D97706;box-shadow:0 4px 10px rgba(245,158,11,0.25);flex-shrink:0;">
         @include('components.icon',['name'=>'x-circle','size'=>20])
       </div>
       <div>
-        <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Status Nonaktif</p>
-        <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ number_format($stats['nonaktif']) }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Akun</span></p>
+        <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Belum Verifikasi OTP</p>
+        <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ number_format($stats['belum_verifikasi']) }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Akun</span></p>
       </div>
     </div>
   </div>
@@ -89,7 +89,7 @@
           <tr style="background:#131218;color:#FFFFFF;">
             <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">Peserta &amp; Instansi</th>
             <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">No. WhatsApp</th>
-            <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:120px;">Status</th>
+            <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:140px;">Status</th>
             <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:110px;">Kegiatan</th>
             <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:140px;">Terdaftar</th>
             <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;width:220px;">Aksi Akun</th>
@@ -98,10 +98,13 @@
         <tbody>
           @forelse($peserta as $p)
           @php 
-            $sc = match($p->status_akun ?? 'aktif') {
-              'aktif' => ['#059669', '#ECFDF5', '#A7F3D0', 'Aktif'],
-              default => ['#D97706', '#FEF3C7', '#FCD34D', 'Nonaktif']
-            }; 
+            if (is_null($p->email_verified_at)) {
+              $sc = ['#D97706', '#FEF3C7', '#FCD34D', 'Belum Verifikasi (OTP)'];
+            } else if (($p->status_akun ?? 'aktif') === 'aktif') {
+              $sc = ['#059669', '#ECFDF5', '#A7F3D0', 'Aktif'];
+            } else {
+              $sc = ['#DC2626', '#FEF2F2', '#FCA5A5', 'Nonaktif'];
+            }
           @endphp
           <tr style="border-top:1px solid #F1F5F9;transition:background .15s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''">
             

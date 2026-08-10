@@ -23,20 +23,26 @@ class UniqueEmailAcrossRoles implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $checks = [
-            'admins'    => fn () => Admin::where('email', $value),
-            'peserta'   => fn () => Peserta::where('email', $value),
-        ];
+        // 1. Cek Admin
+        $adminQ = Admin::where('email', $value);
+        if ($this->exceptTable === 'admins' && $this->exceptId) {
+            $adminQ->where('id', '!=', $this->exceptId);
+        }
+        if ($adminQ->exists()) {
+            $fail('Email sudah terdaftar sebagai akun Admin.');
+            return;
+        }
 
-        foreach ($checks as $table => $query) {
-            $q = $query();
-            if ($table === $this->exceptTable && $this->exceptId) {
-                $q->where('id', '!=', $this->exceptId);
-            }
-            if ($q->exists()) {
-                $fail('Email sudah digunakan oleh akun lain.');
-                return;
-            }
+        // 2. Cek Peserta (hanya akun AKTIF dan TERVERIFIKASI yang memblokir pendaftaran baru)
+        $pesertaQ = Peserta::whereNull('deleted_at')
+            ->where('email', $value)
+            ->whereNotNull('email_verified_at');
+        if ($this->exceptTable === 'peserta' && $this->exceptId) {
+            $pesertaQ->where('id', '!=', $this->exceptId);
+        }
+        if ($pesertaQ->exists()) {
+            $fail('Email ini sudah terdaftar dan terverifikasi. Silakan masuk ke akun Anda.');
+            return;
         }
     }
 }

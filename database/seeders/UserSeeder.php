@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // 1. Admin (Super Admin)
-        Admin::firstOrCreate(
+        Admin::updateOrCreate(
             ['email' => 'admin@fcc.com'],
             [
                 'nama'     => 'Super Admin FCC',

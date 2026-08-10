@@ -93,9 +93,9 @@ class PesertaManager extends Component
         $pesertaList = $query->paginate(15);
 
         $stats = [
-            'total'    => Peserta::count(),
-            'aktif'    => Peserta::where('status_akun', 'aktif')->count(),
-            'nonaktif' => Peserta::where('status_akun', 'nonaktif')->count(),
+            'total'            => Peserta::count(),
+            'terverifikasi'    => Peserta::whereNotNull('email_verified_at')->where('status_akun', 'aktif')->count(),
+            'belum_verifikasi' => Peserta::whereNull('email_verified_at')->count(),
         ];
 
         return view('livewire.admin.peserta-manager', [

@@ -140,7 +140,14 @@
         </div>
     </div>
 
-    {{-- ── SUCCESS / ERROR ALERTS ────────────────────────────── --}}
+    {{-- ── SUCCESS / ERROR / INFO ALERTS ────────────────────────────── --}}
+    @if(session('info'))
+    <div style="background:#FFFBEB;border:2px solid #F59E0B;border-radius:14px;padding:14px 20px;margin-bottom:22px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 14px rgba(245,158,11,0.15);">
+        @include('components.icon',['name'=>'info','size'=>20,'style'=>'color:#D97706;flex-shrink:0'])
+        <p style="margin:0;font-size:13.5px;font-weight:800;color:#92400E;">{{ session('info') }}</p>
+    </div>
+    @endif
+
     @if(session('success'))
     <div style="background:#ECFDF5;border:2px solid #10B981;border-radius:14px;padding:14px 20px;margin-bottom:22px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 14px rgba(16,185,129,0.12);">
         @include('components.icon',['name'=>'check','size'=>20,'style'=>'color:#059669;flex-shrink:0'])
