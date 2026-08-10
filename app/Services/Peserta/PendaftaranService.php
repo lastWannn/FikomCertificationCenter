@@ -49,10 +49,8 @@ class PendaftaranService
 
         $pendaftaran->load(['peserta', 'kegiatan', 'biaya', 'pembayaran']);
 
-        // Kirim email konfirmasi & invoice PDF secara background setelah response terkirim ke user (instant loading)
-        dispatch(function () use ($pendaftaran) {
-            $this->kirimEmailKonfirmasi($pendaftaran);
-        })->afterResponse();
+        // Kirim email pendaftaran & invoice PDF di background OS process (0 ms latency untuk peserta)
+        \App\Helpers\AsyncMail::dispatch('pendaftaran', $pendaftaran->id);
 
         return $pendaftaran;
     }

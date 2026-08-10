@@ -28,11 +28,10 @@ class UserManagementService
     {
         $newPass = Str::random(10);
         $peserta->update(['password' => Hash::make($newPass)]);
-        try {
-            Mail::to($peserta->email)->send(new ResetPassword($peserta->nama, $newPass));
-        } catch (\Exception $e) {
-            Log::warning('Email reset password gagal: '.$e->getMessage());
-        }
+        
+        // Dispatch email reset password di background OS process (0 ms latency untuk admin)
+        \App\Helpers\AsyncMail::dispatch('reset_pass', $peserta->id, $newPass);
+        
         return $newPass;
     }
 }

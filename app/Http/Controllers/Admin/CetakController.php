@@ -31,7 +31,7 @@ class CetakController extends Controller
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
             $safeKode = str_replace(['/', '\\'], '-', $pembayaran->kode_pembayaran);
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.invoice-pdf', compact('pembayaran','rekening'))
-                ->setPaper('a5');
+                ->setPaper('a4');
             return $pdf->stream("invoice-{$safeKode}.pdf");
         }
         return view('admin.cetak.invoice-pdf', compact('pembayaran','rekening'));

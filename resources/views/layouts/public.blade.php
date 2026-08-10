@@ -83,9 +83,37 @@
 </nav>
 
 @php
-    $tickerInfos = \App\Models\Informasi::info()->aktif()->latest()->get();
+    $dbInfos = \App\Models\Informasi::info()->aktif()->latest()->get();
+    $kegiatanList = \App\Models\Kegiatan::upcoming()
+        ->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan', 'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi'])
+        ->latest()
+        ->take(6)
+        ->get();
+
+    $tickerItems = [];
+
+    foreach ($kegiatanList as $k) {
+        $tgl = $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Jadwal Menyusul';
+        $jenis = strtoupper($k->jenis_kegiatan);
+        $statusText = $k->isComingSoon() ? 'SEGERA HADIR' : ($k->isFull() ? 'KUOTA PENUH' : 'DIBUKA (' . ($k->kuota - $k->terisi) . ' Kuota Sisa)');
+        $tickerItems[] = [
+            'text'   => $k->judul . ' — Pelaksanaan: ' . $tgl,
+            'badge'  => $jenis,
+            'status' => $statusText,
+            'url'    => route('landing.show', $k)
+        ];
+    }
+
+    foreach ($dbInfos as $info) {
+        $tickerItems[] = [
+            'text'   => $info->judul,
+            'badge'  => 'INFO',
+            'status' => 'PENGUMUMAN',
+            'url'    => route('landing.index')
+        ];
+    }
 @endphp
-@if($tickerInfos->isNotEmpty())
+@if(!empty($tickerItems))
 {{-- Override padding top secara dinamis ketika ticker aktif --}}
 <style>
     /* Untuk halaman umum */
@@ -106,7 +134,7 @@
             <span class="fcc-bell-wrap" style="position:relative;display:flex;align-items:center;justify-content:center;">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             </span>
-            <span style="color:#131218;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;">Info</span>
+            <span style="color:#131218;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;">KEGIATAN &amp; INFO</span>
         </div>
 
         {{-- Marquee wrapper dengan fade edges --}}
@@ -117,11 +145,19 @@
             <div style="position:absolute;right:0;top:0;bottom:0;width:48px;background:linear-gradient(270deg,#131218,transparent);z-index:2;pointer-events:none;"></div>
 
             <div class="fcc-ticker-track">
-                @foreach($tickerInfos as $info)
-                <span style="display:inline-flex;align-items:center;gap:10px;padding:0 28px;white-space:nowrap;">
-                    <span style="width:1px;height:12px;background:rgba(255,200,26,.35);flex-shrink:0;"></span>
-                    <span style="color:rgba(255,255,255,.88);font-size:12px;font-weight:500;letter-spacing:.3px;">{{ $info->judul }}</span>
-                </span>
+                @foreach(array_merge($tickerItems, $tickerItems) as $item)
+                <a href="{{ $item['url'] }}" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px;padding:0 24px;white-space:nowrap;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                    <span style="background:#FFC81A;color:#131218;font-size:9.5px;font-weight:900;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px;">
+                        {{ $item['badge'] }}
+                    </span>
+                    <span style="color:rgba(255,255,255,.92);font-size:12.5px;font-weight:700;letter-spacing:.3px;">
+                        {{ $item['text'] }}
+                    </span>
+                    <span style="background:rgba(255,200,26,0.15);color:#FFC81A;font-size:10px;font-weight:800;padding:2px 8px;border-radius:4px;border:1px solid rgba(255,200,26,0.35);">
+                        {{ $item['status'] }}
+                    </span>
+                    <span style="width:1px;height:12px;background:rgba(255,200,26,.35);flex-shrink:0;margin-left:8px;"></span>
+                </a>
                 @endforeach
             </div>
         </div>
@@ -136,16 +172,15 @@
 /* Ticker scroll */
 .fcc-ticker-track {
     display: inline-flex;
-    animation: fcc-ticker-scroll 20s linear infinite;
+    animation: fcc-ticker-scroll 45s linear infinite;
     will-change: transform;
-    padding-left: 85vw;
     flex-shrink: 0;
     white-space: nowrap;
 }
 .fcc-ticker-track:hover { animation-play-state: paused; }
 @keyframes fcc-ticker-scroll {
     from { transform: translateX(0); }
-    to   { transform: translateX(-100%); }
+    to   { transform: translateX(-50%); }
 }
 /* Bell pulse */
 .fcc-bell-pulse {

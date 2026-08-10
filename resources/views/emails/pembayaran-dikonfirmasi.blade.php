@@ -1,80 +1,147 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #F3F4F6; color: #1F2937; font-size: 14px; line-height: 1.6; }
-  .wrap { max-width: 580px; margin: 30px auto; background: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #E5E7EB; }
-  .header { background: #131218; padding: 32px 36px; text-align: center; }
-  .logo-title { color: #FFFFFF; font-size: 20px; font-weight: 800; letter-spacing: 0.5px; }
-  .logo-sub { color: #FFC81A; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; font-weight: 700; }
-  .body { padding: 36px; }
-  .greeting { font-size: 22px; font-weight: 800; color: #111827; margin-bottom: 12px; }
-  .text { color: #4B5563; font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
-  
-  .banner-success { background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 14px 18px; color: #059669; font-weight: 700; font-size: 14px; margin-bottom: 24px; text-align: center; }
-  
-  .email-table { width: 100%; border-collapse: collapse; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; margin: 20px 0; overflow: hidden; }
-  .email-table td { padding: 12px 18px; font-size: 13px; border-bottom: 1px solid #E5E7EB; }
-  .email-table tr:last-child td { border-bottom: none; }
-  .lbl { color: #6B7280; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; width: 40%; vertical-align: middle; }
-  .val { color: #111827; font-weight: 700; text-align: right; width: 60%; vertical-align: middle; }
-  
-  .btn { display: inline-block; background: #FFC81A; color: #131218; font-weight: 800; font-size: 14px; padding: 14px 32px; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 14px rgba(255,200,26,0.35); margin-top: 12px; text-align: center; }
-  .footer { background: #F9FAFB; border-top: 1px solid #E5E7EB; padding: 24px 36px; text-align: center; color: #9CA3B0; font-size: 12px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembayaran Terverifikasi</title>
 </head>
-<body>
-<div class="wrap">
-  <div class="header">
-    <div class="logo-title">FIKOM CERTIFICATION CENTER</div>
-    <div class="logo-sub">Universitas Muslim Indonesia</div>
-  </div>
-  
-  <div class="body">
-    <h2 class="greeting">Pembayaran Terverifikasi! ✅</h2>
-    <p class="text">Halo, <strong>{{ $pembayaran->pendaftaran->peserta->nama }}</strong>!</p>
-    <p class="text">Pembayaran kamu telah diverifikasi oleh tim FCC. Selamat, kamu resmi terdaftar sebagai peserta!</p>
+<body style="margin: 0; padding: 0; background-color: #F8FAFC; font-family: 'Segoe UI', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
 
-    <div class="banner-success">✓ Status: TERDAFTAR — Kamu siap mengikuti kegiatan</div>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #F8FAFC; padding: 30px 15px;">
+    <tr>
+      <td align="center">
+        
+        {{-- Main Container Card --}}
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+          
+          {{-- Header --}}
+          <tr>
+            <td style="background-color: #131218; padding: 24px 32px; border-bottom: 3px solid #FFC81A;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="48" style="vertical-align: middle;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #FFC81A; text-align: center; line-height: 40px;">
+                      <span style="font-size: 20px; font-weight: 900; color: #131218;">F</span>
+                    </div>
+                  </td>
+                  <td style="vertical-align: middle; padding-left: 12px;">
+                    <div style="font-size: 16px; font-weight: 800; color: #FFFFFF; letter-spacing: 0.3px;">FIKOM CERTIFICATION CENTER</div>
+                    <div style="font-size: 10px; font-weight: 700; color: #FFC81A; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px;">UNIVERSITAS MUSLIM INDONESIA</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-    <table class="email-table">
-      <tr>
-        <td class="lbl">Kegiatan</td>
-        <td class="val">{{ $pembayaran->pendaftaran->kegiatan->judul }}</td>
-      </tr>
-      <tr>
-        <td class="lbl">Tanggal Pelaksanaan</td>
-        <td class="val">{{ $pembayaran->pendaftaran->kegiatan->jadwal?->tgl_pelaksanaan?->format('d F Y') ?? 'TBA' }}</td>
-      </tr>
-      <tr>
-        <td class="lbl">Waktu</td>
-        <td class="val">{{ $pembayaran->pendaftaran->kegiatan->jadwal?->jam_mulai }} – {{ $pembayaran->pendaftaran->kegiatan->jadwal?->jam_selesai }} WITA</td>
-      </tr>
-      <tr>
-        <td class="lbl">Jumlah Bayar</td>
-        <td class="val" style="color:#059669;font-size:15px;">{{ $pembayaran->jumlah_bayar_format }}</td>
-      </tr>
-      @if($pembayaran->no_kwitansi)
-      <tr>
-        <td class="lbl">No. Kwitansi</td>
-        <td class="val">{{ $pembayaran->no_kwitansi }}</td>
-      </tr>
-      @endif
-    </table>
+          {{-- Body Content --}}
+          <tr>
+            <td style="padding: 32px;">
+              
+              {{-- Status Banner --}}
+              <div style="background-color: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 14px 18px; margin-bottom: 24px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="24" style="vertical-align: middle; color: #047857; font-size: 16px; font-weight: 900;">✓</td>
+                    <td style="vertical-align: middle; font-size: 13.5px; font-weight: 700; color: #047857;">
+                      Status: TERDAFTAR &mdash; Pembayaran Berhasil Terverifikasi
+                    </td>
+                  </tr>
+                </table>
+              </div>
 
-    <p class="text">Jangan lupa untuk hadir tepat waktu. Tunjukkan QR Code kehadiran kamu saat check-in di lokasi.</p>
-    <div style="text-align: center; margin-top: 20px;">
-      <a href="{{ config('app.url') }}/peserta/pendaftaran" class="btn">Lihat Detail Kegiatan &rarr;</a>
-    </div>
-  </div>
+              <h2 style="margin: 0 0 12px; font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
+                Pembayaran Anda Telah Terverifikasi!
+              </h2>
 
-  <div class="footer">
-    <p>&copy; {{ date('Y') }} FIKOM Certification Center &bull; Universitas Muslim Indonesia Makassar</p>
-    <p style="margin-top: 6px; font-size: 11px;">Email ini dikirimkan secara otomatis oleh sistem FCC UMI.</p>
-  </div>
-</div>
+              <p style="margin: 0 0 16px; font-size: 14.5px; color: #334155; line-height: 1.6;">
+                Halo <strong>{{ $pembayaran->pendaftaran->peserta->nama }}</strong>,
+              </p>
+
+              <p style="margin: 0 0 24px; font-size: 14.5px; color: #475569; line-height: 1.6;">
+                Pembayaran Anda telah resmi diverifikasi oleh Tim Pengelola FCC. Anda kini resmi terdaftar sebagai peserta aktif dalam kegiatan ini. Bukti pembayaran resmi terlampir pada email ini.
+              </p>
+
+              {{-- Table Details Card --}}
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; margin-bottom: 24px;">
+                <tr>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;" width="38%">
+                    <span style="font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Kegiatan</span>
+                  </td>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;" width="62%">
+                    <span style="font-size: 13.5px; font-weight: 700; color: #0F172A;">{{ $pembayaran->pendaftaran->kegiatan->judul }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+                    <span style="font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Tgl Pelaksanaan</span>
+                  </td>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+                    <span style="font-size: 13.5px; font-weight: 700; color: #0F172A;">{{ $pembayaran->pendaftaran->kegiatan->jadwal?->tgl_pelaksanaan?->format('d F Y') ?? 'TBA' }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+                    <span style="font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Waktu</span>
+                  </td>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+                    <span style="font-size: 13.5px; font-weight: 700; color: #0F172A;">{{ $pembayaran->pendaftaran->kegiatan->jadwal?->jam_mulai }} &ndash; {{ $pembayaran->pendaftaran->kegiatan->jadwal?->jam_selesai }} WITA</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+                    <span style="font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Jumlah Bayar</span>
+                  </td>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+                    <span style="font-size: 14px; font-weight: 800; color: #047857;">{{ $pembayaran->jumlah_bayar_format }}</span>
+                  </td>
+                </tr>
+                @if($pembayaran->no_kwitansi)
+                <tr>
+                  <td style="padding: 14px 18px;">
+                    <span style="font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">No. Kwitansi</span>
+                  </td>
+                  <td style="padding: 14px 18px;">
+                    <span style="font-size: 13.5px; font-weight: 800; color: #0F172A; font-family: monospace;">{{ $pembayaran->no_kwitansi }}</span>
+                  </td>
+                </tr>
+                @endif
+              </table>
+
+              <p style="margin: 0 0 24px; font-size: 13.5px; color: #64748B; line-height: 1.6;">
+                Harap hadir tepat waktu saat sesi kegiatan berlangsung dan tunjukkan QR Code presensi yang ada pada portal peserta saat <em>check-in</em>.
+              </p>
+
+              {{-- CTA Button --}}
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" style="padding-top: 8px;">
+                    <a href="{{ config('app.url') }}/peserta/pendaftaran" target="_blank" style="display: inline-block; background-color: #131218; color: #FFC81A; font-size: 14px; font-weight: 800; text-decoration: none; padding: 14px 32px; border-radius: 10px; border: 1px solid #131218;">
+                      Lihat Detail & QR Presensi &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          {{-- Footer --}}
+          <tr>
+            <td style="background-color: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 20px 32px; text-align: center;">
+              <div style="font-size: 12px; font-weight: 600; color: #64748B; margin-bottom: 4px;">
+                &copy; {{ date('Y') }} FIKOM Certification Center &mdash; Universitas Muslim Indonesia
+              </div>
+              <div style="font-size: 11px; color: #94A3B8;">
+                Pesan ini dikirim secara otomatis. Harap tidak membalas email ini.
+              </div>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>

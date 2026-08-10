@@ -8,6 +8,7 @@ use App\Models\Mitra;
 use App\Models\ArsipKegiatan;
 use App\Models\KontenHalaman;
 use App\Models\Kontak;
+use App\Models\PesanMasuk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -115,11 +116,21 @@ class LandingController extends Controller
     {
         $request->validate([
             'nama'  => 'required|string|max:150',
-            'email' => 'required|email',
+            'email' => 'required|email|max:150',
             'pesan' => 'required|string',
         ]);
-        // Simpan atau kirim email — implementasi sesuai kebutuhan
-        return back()->with('success','Pesan berhasil dikirim! Kami akan segera menghubungi Anda.');
+
+        $pesanMasuk = PesanMasuk::create([
+            'nama'   => $request->nama,
+            'email'  => $request->email,
+            'pesan'  => $request->pesan,
+            'status' => 'belum_dibaca',
+        ]);
+
+        // Kirim email notifikasi ke admin di background OS process (0 ms latency untuk pengunjung)
+        \App\Helpers\AsyncMail::dispatch('kontak', $pesanMasuk->id);
+
+        return back()->with('success', 'Pesan Anda telah berhasil dikirim! Tim kami akan segera menindaklanjuti.');
     }
 
     public function arsipShow(ArsipKegiatan $arsip)

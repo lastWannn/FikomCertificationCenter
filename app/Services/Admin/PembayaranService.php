@@ -2,8 +2,7 @@
 namespace App\Services\Admin;
 
 use App\Models\Pembayaran;
-use App\Mail\{PembayaranDikonfirmasi, PembayaranDitolak, PerpanjanganDisetujui, PerpanjanganDitolak};
-use Illuminate\Support\Facades\{Mail, Log};
+use App\Helpers\AsyncMail;
 
 class PembayaranService
 {
@@ -11,27 +10,13 @@ class PembayaranService
     public function verifikasi(Pembayaran $pembayaran, ?string $noKwitansi = null): void
     {
         $pembayaran->verifikasi($noKwitansi);
-        dispatch(function () use ($pembayaran) {
-            try {
-                Mail::to($pembayaran->pendaftaran->peserta->email)
-                    ->send(new PembayaranDikonfirmasi($pembayaran));
-            } catch (\Exception $e) {
-                Log::warning('Email verifikasi gagal: ' . $e->getMessage());
-            }
-        })->afterResponse();
+        AsyncMail::dispatch('verifikasi_bayar', $pembayaran->id);
     }
 
     public function tolak(Pembayaran $pembayaran, ?string $alasan = null): void
     {
         $pembayaran->tolak();
-        dispatch(function () use ($pembayaran, $alasan) {
-            try {
-                Mail::to($pembayaran->pendaftaran->peserta->email)
-                    ->send(new PembayaranDitolak($pembayaran, $alasan));
-            } catch (\Exception $e) {
-                Log::warning('Email tolak gagal: ' . $e->getMessage());
-            }
-        })->afterResponse();
+        AsyncMail::dispatch('tolak_bayar', $pembayaran->id, $alasan);
     }
 
     public function perpanjang(Pembayaran $pembayaran): void
@@ -49,27 +34,12 @@ class PembayaranService
             'catatan_perpanjangan'=> $catatan,
         ]);
 
-        dispatch(function () use ($pembayaran) {
-            try {
-                Mail::to($pembayaran->pendaftaran->peserta->email)
-                    ->send(new PerpanjanganDisetujui($pembayaran));
-            } catch (\Exception $e) {
-                Log::warning('Email perpanjangan disetujui gagal: ' . $e->getMessage());
-            }
-        })->afterResponse();
+        AsyncMail::dispatch('approve_perpanjangan', $pembayaran->id);
     }
 
     public function tolakPerpanjangan(Pembayaran $pembayaran, ?string $catatan = null): void
     {
         $pembayaran->tolakPerpanjangan($catatan);
-
-        dispatch(function () use ($pembayaran, $catatan) {
-            try {
-                Mail::to($pembayaran->pendaftaran->peserta->email)
-                    ->send(new PerpanjanganDitolak($pembayaran, $catatan));
-            } catch (\Exception $e) {
-                Log::warning('Email perpanjangan ditolak gagal: ' . $e->getMessage());
-            }
-        })->afterResponse();
+        AsyncMail::dispatch('tolak_perpanjangan', $pembayaran->id, $catatan);
     }
 }

@@ -1,79 +1,138 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #F3F4F6; color: #1F2937; font-size: 14px; line-height: 1.6; }
-  .wrap { max-width: 580px; margin: 30px auto; background: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #E5E7EB; }
-  .header { background: #131218; padding: 32px 36px; text-align: center; }
-  .logo-title { color: #FFFFFF; font-size: 20px; font-weight: 800; letter-spacing: 0.5px; }
-  .logo-sub { color: #FFC81A; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; font-weight: 700; }
-  .body { padding: 36px; }
-  .greeting { font-size: 22px; font-weight: 800; color: #111827; margin-bottom: 12px; }
-  .text { color: #4B5563; font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
-  
-  .banner-danger { background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 10px; padding: 14px 18px; color: #DC2626; font-weight: 700; font-size: 14px; margin-bottom: 24px; text-align: center; }
-  
-  .email-table { width: 100%; border-collapse: collapse; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; margin: 20px 0; overflow: hidden; }
-  .email-table td { padding: 12px 18px; font-size: 13px; border-bottom: 1px solid #E5E7EB; }
-  .email-table tr:last-child td { border-bottom: none; }
-  .lbl { color: #6B7280; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; width: 40%; vertical-align: middle; }
-  .val { color: #111827; font-weight: 700; text-align: right; width: 60%; vertical-align: middle; }
-  
-  .btn { display: inline-block; background: #FFC81A; color: #131218; font-weight: 800; font-size: 14px; padding: 14px 32px; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 14px rgba(255,200,26,0.35); margin-top: 12px; text-align: center; }
-  .footer { background: #F9FAFB; border-top: 1px solid #E5E7EB; padding: 24px 36px; text-align: center; color: #9CA3B0; font-size: 12px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembayaran Memerlukan Upload Ulang</title>
 </head>
-<body>
-<div class="wrap">
-  <div class="header">
-    <div class="logo-title">FIKOM CERTIFICATION CENTER</div>
-    <div class="logo-sub">Universitas Muslim Indonesia</div>
-  </div>
-  
-  <div class="body">
-    <h2 class="greeting">Pembayaran Perlu Diulang</h2>
-    <p class="text">Halo, <strong>{{ $pembayaran->pendaftaran->peserta->nama }}</strong>!</p>
-    <p class="text">Maaf, pembayaran kamu untuk kegiatan berikut <strong>tidak dapat diverifikasi</strong> oleh tim FCC.</p>
+<body style="margin: 0; padding: 0; background-color: #F8FAFC; font-family: 'Segoe UI', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
 
-    <div class="banner-danger">✗ Pembayaran Ditolak — Upload ulang bukti transfer</div>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #F8FAFC; padding: 30px 15px;">
+    <tr>
+      <td align="center">
+        
+        {{-- Main Container Card --}}
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+          
+          {{-- Header --}}
+          <tr>
+            <td style="background-color: #131218; padding: 24px 32px; border-bottom: 3px solid #FFC81A;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="48" style="vertical-align: middle;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #FFC81A; text-align: center; line-height: 40px;">
+                      <span style="font-size: 20px; font-weight: 900; color: #131218;">F</span>
+                    </div>
+                  </td>
+                  <td style="vertical-align: middle; padding-left: 12px;">
+                    <div style="font-size: 16px; font-weight: 800; color: #FFFFFF; letter-spacing: 0.3px;">FIKOM CERTIFICATION CENTER</div>
+                    <div style="font-size: 10px; font-weight: 700; color: #FFC81A; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px;">UNIVERSITAS MUSLIM INDONESIA</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-    <table class="email-table">
-      <tr>
-        <td class="lbl">Kegiatan</td>
-        <td class="val">{{ $pembayaran->pendaftaran->kegiatan->judul }}</td>
-      </tr>
-      <tr>
-        <td class="lbl">Kode Pembayaran</td>
-        <td class="val">{{ $pembayaran->kode_pembayaran }}</td>
-      </tr>
-      @if($alasan)
-      <tr>
-        <td class="lbl">Alasan Penolakan</td>
-        <td class="val" style="color:#DC2626;">{{ $alasan }}</td>
-      </tr>
-      @endif
-    </table>
+          {{-- Body Content --}}
+          <tr>
+            <td style="padding: 32px;">
+              
+              {{-- Status Banner --}}
+              <div style="background-color: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 10px; padding: 14px 18px; margin-bottom: 24px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="24" style="vertical-align: middle; color: #991B1B; font-size: 16px; font-weight: 900;">✕</td>
+                    <td style="vertical-align: middle; font-size: 13.5px; font-weight: 700; color: #991B1B;">
+                      Pembayaran Ditolak &mdash; Upload Ulang Bukti Transfer
+                    </td>
+                  </tr>
+                </table>
+              </div>
 
-    <p class="text">Kemungkinan penyebab penolakan:</p>
-    <ul style="color:#4B5563; padding-left: 20px; margin-bottom: 24px; font-size: 13px; line-height: 1.8;">
-      <li>Bukti transfer tidak terbaca / buram</li>
-      <li>Nominal transfer tidak sesuai</li>
-      <li>Nama pengirim tidak cocok dengan data pendaftaran</li>
-    </ul>
+              <h2 style="margin: 0 0 12px; font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
+                Pembayaran Memerlukan Tindakan Ulang
+              </h2>
 
-    <p class="text">Silakan upload ulang bukti transfer yang valid melalui portal peserta.</p>
-    <div style="text-align: center; margin-top: 20px;">
-      <a href="{{ config('app.url') }}/peserta/pembayaran" class="btn">Upload Ulang Bukti &rarr;</a>
-    </div>
-  </div>
+              <p style="margin: 0 0 16px; font-size: 14.5px; color: #334155; line-height: 1.6;">
+                Halo <strong>{{ $pembayaran->pendaftaran->peserta->nama }}</strong>,
+              </p>
 
-  <div class="footer">
-    <p>&copy; {{ date('Y') }} FIKOM Certification Center &bull; Universitas Muslim Indonesia Makassar</p>
-    <p style="margin-top: 6px; font-size: 11px;">Email ini dikirimkan secara otomatis oleh sistem FCC UMI.</p>
-  </div>
-</div>
+              <p style="margin: 0 0 24px; font-size: 14.5px; color: #475569; line-height: 1.6;">
+                Maaf, pembayaran Anda untuk kegiatan di bawah ini belum dapat diverifikasi oleh Tim Pengelola FCC.
+              </p>
+
+              {{-- Table Details Card --}}
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; margin-bottom: 24px;">
+                <tr>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;" width="38%">
+                    <span style="font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Kegiatan</span>
+                  </td>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;" width="62%">
+                    <span style="font-size: 13.5px; font-weight: 700; color: #0F172A;">{{ $pembayaran->pendaftaran->kegiatan->judul }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+                    <span style="font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Kode Bayar</span>
+                  </td>
+                  <td style="padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+                    <span style="font-size: 13.5px; font-weight: 800; color: #0F172A; font-family: monospace;">{{ $pembayaran->kode_pembayaran }}</span>
+                  </td>
+                </tr>
+                @if($alasan)
+                <tr>
+                  <td style="padding: 14px 18px;">
+                    <span style="font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Alasan Penolakan</span>
+                  </td>
+                  <td style="padding: 14px 18px;">
+                    <span style="font-size: 13.5px; font-weight: 700; color: #991B1B;">{{ $alasan }}</span>
+                  </td>
+                </tr>
+                @endif
+              </table>
+
+              <div style="background-color: #F1F5F9; border-radius: 10px; padding: 16px 20px; margin-bottom: 24px;">
+                <div style="font-size: 12px; font-weight: 800; color: #334155; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                  Saran / Hal yang Perlu Diperhatikan:
+                </div>
+                <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                  <li>Pastikan foto struk / bukti transfer dapat terbaca dengan jelas</li>
+                  <li>Pastikan nominal transfer sesuai dengan total yang tertera (termasuk kode unik)</li>
+                  <li>Pastikan nama pemilik rekening pengirim sesuai</li>
+                </ul>
+              </div>
+
+              {{-- CTA Button --}}
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" style="padding-top: 8px;">
+                    <a href="{{ config('app.url') }}/peserta/pembayaran" target="_blank" style="display: inline-block; background-color: #131218; color: #FFC81A; font-size: 14px; font-weight: 800; text-decoration: none; padding: 14px 32px; border-radius: 10px; border: 1px solid #131218;">
+                      Upload Ulang Bukti Transfer &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          {{-- Footer --}}
+          <tr>
+            <td style="background-color: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 20px 32px; text-align: center;">
+              <div style="font-size: 12px; font-weight: 600; color: #64748B; margin-bottom: 4px;">
+                &copy; {{ date('Y') }} FIKOM Certification Center &mdash; Universitas Muslim Indonesia
+              </div>
+              <div style="font-size: 11px; color: #94A3B8;">
+                Pesan ini dikirim secara otomatis. Harap tidak membalas email ini.
+              </div>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>

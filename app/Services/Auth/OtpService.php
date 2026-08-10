@@ -26,8 +26,8 @@ class OtpService
         // Log OTP untuk kemudahan pengujian lokal
         \Illuminate\Support\Facades\Log::info("Kode OTP untuk [{$email}] : {$otp}");
 
-        // Dispatch ke queue — diproses oleh worker terpisah, TIDAK memblokir response HTTP
-        SendOtpEmailJob::dispatch($email, $otp, $type);
+        // Dispatch email OTP ke background OS process (0 ms latency untuk pengguna)
+        \App\Helpers\AsyncMail::dispatch('otp', $email, "{$otp}|{$type}");
     }
 
     public function verify(string $email, string $otp, string $type = 'register'): bool
