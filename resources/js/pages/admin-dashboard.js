@@ -5,7 +5,9 @@
 (function () {
     'use strict';
 
-    let chartCombo;
+    let chartCombo = null;
+    let chartJenis = null;
+    let chartStatusPendaftar = null;
 
     async function loadCharts() {
         const { api = {} } = window.PAGE_DATA || {};
@@ -31,6 +33,7 @@
             }
             if (chartCombo) {
                 try { chartCombo.destroy(); } catch (_) {}
+                chartCombo = null;
             }
 
             const labels = rPend.labels || rDaft.labels || ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
@@ -135,7 +138,14 @@
 
         try {
             const rJenis = await fetch(`${BASE}/chart/kegiatan`).then(r => r.json());
-            if (chartJenis) chartJenis.destroy();
+            if (typeof Chart !== 'undefined') {
+                const existing = Chart.getChart(canvasJenis);
+                if (existing) existing.destroy();
+            }
+            if (chartJenis) {
+                try { chartJenis.destroy(); } catch (_) {}
+                chartJenis = null;
+            }
 
             if (rJenis.datasets && rJenis.datasets[0]) {
                 rJenis.datasets[0].backgroundColor = ['#6366F1', '#EC4899'];
@@ -168,8 +178,6 @@
         } catch (_) {}
     }
 
-    let chartStatusPendaftar;
-
     async function loadStatusPendaftar() {
         const { api = {} } = window.PAGE_DATA || {};
         const BASE = api.base || '/admin/api';
@@ -184,6 +192,7 @@
             }
             if (chartStatusPendaftar) {
                 try { chartStatusPendaftar.destroy(); } catch (_) {}
+                chartStatusPendaftar = null;
             }
 
             chartStatusPendaftar = new Chart(canvasStatus, {
@@ -259,22 +268,36 @@
         initTimer = setTimeout(async () => {
             await ensureChartJsLoaded();
 
-            loadCharts();
-            loadPie();
-            loadStatusPendaftar();
-            updateStats();
+            await Promise.all([
+                loadCharts(),
+                loadPie(),
+                loadStatusPendaftar(),
+                updateStats()
+            ]);
 
             document.getElementById('chart-year')?.removeEventListener('change', loadCharts);
             document.getElementById('chart-year')?.addEventListener('change', loadCharts);
             document.getElementById('chart-metric')?.removeEventListener('change', loadCharts);
             document.getElementById('chart-metric')?.addEventListener('change', loadCharts);
-        }, 60);
+
+            // Resize trigger after skeleton overlay fades out
+            setTimeout(() => {
+                if (chartCombo) try { chartCombo.resize(); } catch(_) {}
+                if (chartStatusPendaftar) try { chartStatusPendaftar.resize(); } catch(_) {}
+                if (chartJenis) try { chartJenis.resize(); } catch(_) {}
+            }, 480);
+        }, 50);
     }
 
     window.loadCharts = loadCharts;
     window.initDashboard = initDashboard;
 
-    document.addEventListener('DOMContentLoaded', initDashboard);
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        initDashboard();
+    } else {
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    }
+    window.addEventListener('load', initDashboard);
     document.addEventListener('livewire:navigated', initDashboard);
     document.addEventListener('livewire:load', initDashboard);
     window.addEventListener('popstate', initDashboard);

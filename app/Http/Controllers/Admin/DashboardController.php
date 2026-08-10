@@ -17,11 +17,16 @@ class DashboardController extends Controller
             'pendapatan'  => Pembayaran::where('status_pembayaran','terverifikasi')->sum('jumlah_bayar'),
         ];
 
-        $kegiatanTerbaru = Kegiatan::with([
-            'kegiatanPelatihan.jadwalPelatihan.pelatihan',
-            'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
-            'pendaftaran',
-        ])->orderBy('created_at','desc')->limit(5)->get();
+        $kegiatanTerbaru = Kegiatan::upcoming()
+            ->with([
+                'kegiatanPelatihan.jadwalPelatihan.pelatihan',
+                'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
+                'pendaftaran',
+                'biaya'
+            ])
+            ->latest()
+            ->limit(5)
+            ->get();
 
         $pembayaranMenunggu = Pembayaran::with(['pendaftaran.peserta','pendaftaran.kegiatan'])
             ->where('status_pembayaran','menunggu_verifikasi')
@@ -42,23 +47,27 @@ class DashboardController extends Controller
         $startOfMonth = $calendarDate->copy()->startOfMonth();
         $endOfMonth   = $calendarDate->copy()->endOfMonth();
 
-        $pelatihanDates = \App\Models\JadwalPelatihan::whereBetween('tgl_pelaksanaan', [$startOfMonth, $endOfMonth])
-            ->get(['nama_kegiatan', 'tgl_pelaksanaan']);
+        $pelatihanDates = \App\Models\JadwalPelatihan::with(['pelatihan', 'kegiatanPelatihan.kegiatan'])
+            ->whereBetween('tgl_pelaksanaan', [$startOfMonth, $endOfMonth])
+            ->get();
 
-        $sertifikasiDates = \App\Models\JadwalSertifikasi::whereBetween('tgl_pelaksanaan', [$startOfMonth, $endOfMonth])
-            ->get(['nama_kegiatan', 'tgl_pelaksanaan']);
+        $sertifikasiDates = \App\Models\JadwalSertifikasi::with(['sertifikasi', 'kegiatanSertifikasi.kegiatan'])
+            ->whereBetween('tgl_pelaksanaan', [$startOfMonth, $endOfMonth])
+            ->get();
 
         $tanggalKegiatanMap = [];
         foreach ($pelatihanDates as $jp) {
             if ($jp->tgl_pelaksanaan) {
                 $dayNum = (int) $jp->tgl_pelaksanaan->format('j');
-                $tanggalKegiatanMap[$dayNum][] = $jp->nama_kegiatan ?: 'Pelatihan';
+                $nama = $jp->kegiatanPelatihan?->kegiatan?->judul ?? ($jp->nama_kegiatan ?: ($jp->pelatihan?->nama_pelatihan ?: 'Pelatihan'));
+                $tanggalKegiatanMap[$dayNum][] = $nama;
             }
         }
         foreach ($sertifikasiDates as $js) {
             if ($js->tgl_pelaksanaan) {
                 $dayNum = (int) $js->tgl_pelaksanaan->format('j');
-                $tanggalKegiatanMap[$dayNum][] = $js->nama_kegiatan ?: 'Sertifikasi';
+                $nama = $js->kegiatanSertifikasi?->kegiatan?->judul ?? ($js->nama_kegiatan ?: ($js->sertifikasi?->nama_sertifikasi ?: 'Sertifikasi'));
+                $tanggalKegiatanMap[$dayNum][] = $nama;
             }
         }
 

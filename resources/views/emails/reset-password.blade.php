@@ -1,66 +1,111 @@
 <!DOCTYPE html>
 <html lang="id">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI',Arial,sans-serif;background:#F7F8FA;color:#131218;font-size:15px;line-height:1.7}
-  .wrap{max-width:600px;margin:40px auto;background:#FFF;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)}
-  .header{background:#131218;padding:32px 40px;text-align:center}
-  .logo-box{display:inline-flex;align-items:center;gap:12px;margin-bottom:6px}
-  .logo-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#FFC81A,#FFD84D);display:flex;align-items:center;justify-content:center}
-  .logo-text{color:#FFF;font-size:18px;font-weight:900;text-align:left}
-  .logo-sub{color:#FFC81A;font-size:9px;letter-spacing:2px;text-transform:uppercase}
-  .body{padding:36px 40px}
-  .greeting{font-size:22px;font-weight:900;color:#131218;margin-bottom:8px}
-  .text{color:#5A6275;margin-bottom:16px}
-  .card{background:#F7F8FA;border:1px solid #E2E4EB;border-radius:10px;padding:18px 20px;margin:20px 0}
-  .card-row{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #E2E4EB}
-  .card-row:first-child{border-top:none}
-  .lbl{color:#9CA3B0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-  .val{color:#131218;font-size:14px;font-weight:700}
-  .btn{display:inline-block;background:linear-gradient(135deg,#FFC81A,#FFD84D);color:#131218;font-weight:800;font-size:14px;padding:12px 28px;border-radius:10px;text-decoration:none;box-shadow:0 4px 14px rgba(255,200,26,.3);margin-top:8px}
-  .footer{background:#F7F8FA;border-top:1px solid #E2E4EB;padding:20px 40px;text-align:center;color:#9CA3B0;font-size:12px}
-  .highlight{color:#FFC81A;font-weight:800}
-  .success-banner{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:10px;padding:14px 18px;color:#059669;font-weight:700;font-size:14px;margin-bottom:20px}
-  .danger-banner{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:14px 18px;color:#DC2626;font-weight:700;font-size:14px;margin-bottom:20px}
-  .warning-banner{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:14px 18px;color:#D97706;font-weight:700;font-size:14px;margin-bottom:20px}
-</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password Akun</title>
 </head>
-<body>
-<div class="wrap">
-  <div class="header">
-    <div class="logo-box">
-      <div class="logo-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5" stroke-linecap="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-      </div>
-      <div class="logo-text">
-        <div>FIKOM Certification</div>
-        <div class="logo-sub">Center &middot; UMI</div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="body">
-    <p class="greeting">Reset Password Akun</p>
-    <p class="text">Halo, <strong>{{ $nama }}</strong>!</p>
-    <p class="text">Admin FCC telah melakukan reset password untuk akun kamu. Berikut password baru kamu:</p>
+<body style="margin: 0; padding: 0; background-color: #F8FAFC; font-family: 'Segoe UI', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
 
-    <div class="card" style="text-align:center;">
-      <p style="font-size:28px;font-weight:900;color:#FFC81A;letter-spacing:4px;font-family:monospace;">{{ $passwordBaru }}</p>
-      <p style="color:#9CA3B0;font-size:12px;margin-top:8px;">Password sementara — segera ubah setelah login</p>
-    </div>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #F8FAFC; padding: 30px 15px;">
+    <tr>
+      <td align="center">
+        
+        {{-- Main Container Card --}}
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+          
+          {{-- Header --}}
+          <tr>
+            <td style="background-color: #131218; padding: 24px 32px; border-bottom: 3px solid #FFC81A;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="48" style="vertical-align: middle;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #FFC81A; text-align: center; line-height: 40px;">
+                      <span style="font-size: 20px; font-weight: 900; color: #131218;">F</span>
+                    </div>
+                  </td>
+                  <td style="vertical-align: middle; padding-left: 12px;">
+                    <div style="font-size: 16px; font-weight: 800; color: #FFFFFF; letter-spacing: 0.3px;">FIKOM CERTIFICATION CENTER</div>
+                    <div style="font-size: 10px; font-weight: 700; color: #FFC81A; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px;">UNIVERSITAS MUSLIM INDONESIA</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-    <div class="warning-banner">⚠ Segera ubah password ini melalui menu Profil setelah login.</div>
+          {{-- Body Content --}}
+          <tr>
+            <td style="padding: 32px;">
+              
+              {{-- Status Banner --}}
+              <div style="background-color: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px; padding: 14px 18px; margin-bottom: 24px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="24" style="vertical-align: middle; color: #B45309; font-size: 16px; font-weight: 900;">🔑</td>
+                    <td style="vertical-align: middle; font-size: 13.5px; font-weight: 700; color: #B45309;">
+                      Pemberitahuan Reset Kata Sandi Akun
+                    </td>
+                  </tr>
+                </table>
+              </div>
 
-    <a href="{{ config('app.url') }}/masuk" class="btn">Login Sekarang &rarr;</a>
-  </div>
+              <h2 style="margin: 0 0 12px; font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
+                Reset Password Berhasil
+              </h2>
 
-  <div class="footer">
-    <p>&copy; {{ date('Y') }} FIKOM Certification Center &mdash; Universitas Muslim Indonesia Makassar</p>
-    <p style="margin-top:6px">Email ini dikirim otomatis. Harap tidak membalas email ini.</p>
-  </div>
-</div>
+              <p style="margin: 0 0 16px; font-size: 14.5px; color: #334155; line-height: 1.6;">
+                Halo <strong>{{ $nama }}</strong>,
+              </p>
+
+              <p style="margin: 0 0 24px; font-size: 14.5px; color: #475569; line-height: 1.6;">
+                Admin FCC telah melakukan reset password untuk akun Anda. Berikut adalah password sementara baru Anda:
+              </p>
+
+              {{-- Password Display Box --}}
+              <div style="background-color: #131218; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
+                <div style="font-size: 11px; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">
+                  Password Sementara Anda
+                </div>
+                <div style="font-size: 26px; font-weight: 900; color: #FFC81A; font-family: monospace; letter-spacing: 4px;">
+                  {{ $passwordBaru }}
+                </div>
+              </div>
+
+              <p style="margin: 0 0 24px; font-size: 13.5px; color: #64748B; line-height: 1.6;">
+                Demi keamanan akun Anda, harap segera mengganti password ini setelah berhasil masuk melalui menu <strong>Pengaturan Profil</strong>.
+              </p>
+
+              {{-- CTA Button --}}
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" style="padding-top: 8px;">
+                    <a href="{{ config('app.url') }}/masuk" target="_blank" style="display: inline-block; background-color: #131218; color: #FFC81A; font-size: 14px; font-weight: 800; text-decoration: none; padding: 14px 32px; border-radius: 10px; border: 1px solid #131218;">
+                      Masuk ke Akun Anda &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          {{-- Footer --}}
+          <tr>
+            <td style="background-color: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 20px 32px; text-align: center;">
+              <div style="font-size: 12px; font-weight: 600; color: #64748B; margin-bottom: 4px;">
+                &copy; {{ date('Y') }} FIKOM Certification Center &mdash; Universitas Muslim Indonesia
+              </div>
+              <div style="font-size: 11px; color: #94A3B8;">
+                Pesan ini dikirim secara otomatis. Harap tidak membalas email ini.
+              </div>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>

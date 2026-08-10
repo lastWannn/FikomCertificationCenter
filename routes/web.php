@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\{
     QrController              as AdminQr,
     MitraController,
     KontakController,
+    PesanController           as AdminPesan,
     TestimoniController,
 };
 
@@ -179,6 +180,10 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     });
 
     /* TRANSAKSI */
+    Route::get('pesan',                               [AdminPesan::class,'index'])->name('pesan.index');
+    Route::get('pesan/{pesan}',                       [AdminPesan::class,'show'])->name('pesan.show');
+    Route::post('pesan/{pesan}/read',                 [AdminPesan::class,'markAsRead'])->name('pesan.read');
+    Route::delete('pesan/{pesan}',                    [AdminPesan::class,'destroy'])->name('pesan.destroy');
     Route::get('pembayaran',                          [PembayaranController::class,'index'])->name('pembayaran.index');
     Route::get('pembayaran/{pembayaran}',             [PembayaranController::class,'show'])->name('pembayaran.show');
     Route::post('pembayaran/{pembayaran}/verifikasi', [PembayaranController::class,'verifikasi'])->name('pembayaran.verifikasi');

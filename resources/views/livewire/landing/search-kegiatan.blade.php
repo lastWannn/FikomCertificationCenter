@@ -51,13 +51,13 @@
             Memuat Data...
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:24px;">
+        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:24px;">
             @forelse($kegiatan as $k)
             @php
                 $isPel = $k->jenis_kegiatan === 'pelatihan';
                 $posterUrl = $k->detail?->gambar_url;
             @endphp
-            <div style="border-radius:18px; border:2px solid #E5E7EB; background:#FFFFFF; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.28s ease; box-shadow:0 4px 16px rgba(0,0,0,0.04);"
+            <div style="flex:1 1 310px; max-width:370px; width:100%; border-radius:18px; border:2px solid #E5E7EB; background:#FFFFFF; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.28s ease; box-shadow:0 4px 16px rgba(0,0,0,0.04);"
                  onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='#FFC81A'; this.style.boxShadow='0 16px 32px rgba(0,0,0,0.08)';"
                  onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='#E5E7EB'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.04)';">
 

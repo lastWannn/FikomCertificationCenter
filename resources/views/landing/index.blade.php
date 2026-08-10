@@ -176,15 +176,20 @@
             </h2>
         </div>
 
-        {{-- Cards Grid (3 Columns) --}}
-        <div id="kegiatan-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px;">
-            @forelse($kegiatanTerbaru->take(3) as $k)
+        @php
+            $kegiatanList = $kegiatanTerbaru->take(3);
+            $kCount = $kegiatanList->count();
+        @endphp
+
+        {{-- Cards Grid (Balanced Centered Layout) --}}
+        <div id="kegiatan-grid" style="display:flex; flex-wrap:wrap; justify-content:center; gap:24px; max-width:{{ $kCount == 1 ? '480px' : ($kCount == 2 ? '860px' : '100%') }}; margin:0 auto;">
+            @forelse($kegiatanList as $k)
             @php
                 $isPel       = $k->jenis_kegiatan === 'pelatihan';
                 $posterUrl   = $k->detail?->gambar_url;
             @endphp
             <div class="kegiatan-card" data-jenis="{{ $k->jenis_kegiatan }}"
-                 style="border-radius:18px; border:2px solid #E5E7EB; background:#FFFFFF; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.28s ease; box-shadow:0 4px 16px rgba(0,0,0,0.04);"
+                 style="flex:1 1 310px; max-width:{{ $kCount == 1 ? '480px' : ($kCount == 2 ? '410px' : '370px') }}; width:100%; border-radius:18px; border:2px solid #E5E7EB; background:#FFFFFF; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.28s ease; box-shadow:0 4px 16px rgba(0,0,0,0.04);"
                  onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='#FFC81A'; this.style.boxShadow='0 16px 32px rgba(0,0,0,0.08)';"
                  onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='#E5E7EB'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.04)';">
 
@@ -366,78 +371,7 @@
     </div>
 </section>
 
-{{-- ══════════════════════════════════════════════════════════════
-     TATA CARA PENDAFTARAN — Clean White Section
-  ══════════════════════════════════════════════════════════════════ --}}
-<section style="padding:90px 24px;background:#FFFFFF; position:relative; overflow:hidden; border-bottom:1px solid #E5E7EB;">
-    <div style="max-width:1100px;margin:0 auto;position:relative;z-index:1;">
-        <div class="reveal" style="text-align:center;margin-bottom:54px;">
-            <span style="display:inline-block;padding:6px 16px;background:#131218;color:#FFC81A;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;margin-bottom:12px;">
-                Mudah &amp; Cepat
-            </span>
-            <h2 style="color:#131218;font-size:clamp(26px,4vw,40px);font-weight:900;margin:0 0 12px;">
-                Tata Cara <span style="color:#FFC81A;background:#131218;padding:2px 10px;border-radius:6px;">Pendaftaran</span>
-            </h2>
-            <p style="color:#4B5563;font-size:15px;margin:0 auto;max-width:440px;">
-                Selesaikan proses pendaftaran Anda dalam 4 langkah mudah.
-            </p>
-        </div>
 
-        {{-- Steps Grid --}}
-        <div style="position:relative;margin-bottom:44px;">
-            {{-- Connector line --}}
-            <div style="position:absolute;top:35px;left:12.5%;right:12.5%;height:3px;background:#E5E7EB;border-radius:2px;"></div>
-            {{-- Progress fill line --}}
-            <div style="position:absolute;top:35px;left:12.5%;right:12.5%;height:3px;z-index:1;">
-                <div id="step-fill-pend" style="position:absolute;top:0;left:0;height:100%;width:0%;background:#FFC81A;border-radius:2px;transition:width .5s ease;"></div>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;z-index:1;">
-                @foreach([
-                    ['search','Pilih Kegiatan','Jelajahi program pelatihan atau sertifikasi, cek jadwal, harga, dan kuota tersedia.'],
-                    ['user-plus','Daftar & Isi Data','Buat akun peserta, isi data diri lengkap, pilih jenis biaya, dan konfirmasi pendaftaran.'],
-                    ['credit-card','Bayar & Upload','Aktifkan kode unik, transfer ke rekening FCC, lalu upload bukti transfer di portal.'],
-                    ['check','Ikuti Kegiatan','Setelah Admin memverifikasi, kamu resmi terdaftar dan siap mengikuti kegiatan.'],
-                ] as $si=>[$ic,$t,$d])
-                <div id="step-wrapper-{{ $si }}" class="reveal" style="text-align:center;cursor:pointer;padding:6px;transition-delay:{{ $si*100 }}ms;" onclick="setStepInline({{ $si }})" onmouseenter="clearInterval(stepTimer); setStepInline({{ $si }})" onmouseleave="startTimer()">
-                    <div id="step-box-{{ $si }}" style="width:68px;height:68px;border-radius:18px;margin:0 auto 16px;position:relative;transition:all .3s ease;
-                        background:{{ $si===0 ? '#FFC81A' : '#F3F4F6' }};
-                        border:{{ $si===0 ? '2px solid #131218' : '2px solid #E5E7EB' }};
-                        box-shadow:{{ $si===0 ? '0 6px 18px rgba(0,0,0,0.12)' : 'none' }};
-                        display:flex;align-items:center;justify-content:center;">
-                        @include('components.icon',['name'=>$ic,'size'=>24,'style'=>"color:".($si===0?'#131218':'#6B7280').";transition:color .3s;"])
-                        <div class="step-num-badge" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;
-                            background:{{ $si===0 ? '#131218' : '#E5E7EB' }};
-                            display:flex;align-items:center;justify-content:center;transition:all .3s;">
-                            <span style="font-size:11px;font-weight:900;color:{{ $si===0?'#FFC81A':'#6B7280' }};transition:color .3s;">{{ $si+1 }}</span>
-                        </div>
-                    </div>
-                    <p id="step-title-{{ $si }}" style="color:{{ $si===0?'#131218':'#4B5563' }};font-size:14.5px;font-weight:{{ $si===0?'800':'600' }};margin:0 0 8px;transition:all .3s;">{{ $t }}</p>
-                    <p style="color:#6B7280;font-size:12.5px;line-height:1.65;margin:0;">{{ $d }}</p>
-                </div>
-                @endforeach
-            </div>
-        </div>
-
-        {{-- Progress Dots --}}
-        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:36px;" id="step-dots">
-            @for($i=0;$i<4;$i++)
-            <div onclick="setStepInline({{ $i }})" style="width:{{ $i===0?'22':'8' }}px;height:8px;border-radius:4px;cursor:pointer;transition:all .3s;background:{{ $i===0?'#FFC81A':'#E5E7EB' }};"></div>
-            @endfor
-        </div>
-
-        <div style="text-align:center;">
-            <span class="btn-magnetic">
-                <a href="{{ route('auth.register') }}" style="padding:14px 32px;font-size:15px;font-weight:800;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:30px;text-decoration:none;display:inline-flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(255,200,26,0.35);">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/>
-                        <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
-                    </svg>
-                    Mulai Pendaftaran Sekarang
-                </a>
-            </span>
-        </div>
-    </div>
-</section>
 
 {{-- ══════════════════════════════════════════════════════════════
      MITRA STRATEGIS — Clean Official Partners Showcase
@@ -772,64 +706,5 @@ window.PAGE_DATA = {!! json_encode([
 
 {{-- ── EXTERNAL JS: dimuat setelah page-data ─────────────────────── --}}
 @push('scripts')
-<script>
-    const STEP_COUNT = 4;
-    let curStep = 0, stepTimer;
-
-    function setStepInline(s) {
-        curStep = s;
-        for (let i = 0; i < STEP_COUNT; i++) {
-            const wrapper = document.getElementById(`step-wrapper-${i}`);
-            if (!wrapper) continue;
-            
-            const box   = document.getElementById(`step-box-${i}`);
-            const ic    = box ? box.querySelector('svg') : null;
-            const num   = wrapper.querySelector('.step-num-badge');
-            const numText = num ? num.querySelector('span') : null;
-            const title = document.getElementById(`step-title-${i}`);
-            
-            const isActive = i === s;
-            const isPast   = i < s;
-
-            if (box) {
-                box.style.background = isActive ? '#FFC81A' : (isPast ? '#131218' : '#F3F4F6');
-                box.style.border = isActive ? '2px solid #131218' : (isPast ? '2px solid #FFC81A' : '2px solid #E5E7EB');
-                box.style.boxShadow = isActive ? '0 6px 18px rgba(0,0,0,0.12)' : 'none';
-            }
-            if (ic) ic.style.color = isActive ? '#131218' : (isPast ? '#FFC81A' : '#6B7280');
-            
-            if (num) {
-                num.style.background = i <= s ? '#131218' : '#E5E7EB';
-            }
-            if (numText) {
-                numText.style.color = i <= s ? '#FFC81A' : '#6B7280';
-            }
-            if (title) {
-                title.style.color = isActive ? '#131218' : '#4B5563';
-            }
-        }
-
-        const fill = document.getElementById('step-fill-pend');
-        if (fill) fill.style.width = ['0%', '33.33%', '66.66%', '100%'][s];
-
-        document.querySelectorAll('#step-dots div').forEach((d, i) => {
-            d.style.width      = i === s ? '22px' : '8px';
-            d.style.background = i === s ? '#FFC81A' : '#E5E7EB';
-        });
-    }
-
-    function startTimer() {
-        stepTimer = setInterval(() => setStepInline((curStep + 1) % STEP_COUNT), 2400);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        setStepInline(0);
-        startTimer();
-    });
-    document.addEventListener('livewire:navigated', () => {
-        setStepInline(0);
-        startTimer();
-    });
-</script>
 @vite('resources/js/pages/landing-index.js')
 @endpush

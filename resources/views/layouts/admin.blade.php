@@ -104,6 +104,7 @@
               'label' => 'KONTEN',
               'items' => [
                   ['route'=>'admin.informasi.index',     'icon'=>'info',             'label'=>'Informasi & FAQ'],
+                  ['route'=>'admin.pesan.index',         'icon'=>'mail',             'label'=>'Pesan Masuk'],
                   ['route'=>'admin.mitra.index',         'icon'=>'users',            'label'=>'Mitra / Partner'],
                   ['route'=>'admin.testimoni.index',     'icon'=>'message-square',   'label'=>'Kata Mereka'],
                   ['route'=>'admin.rekening.index',      'icon'=>'wallet',           'label'=>'No. Rekening'],
