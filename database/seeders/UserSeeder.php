@@ -15,11 +15,12 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Admin
+        // 1. Admin (Super Admin)
         Admin::firstOrCreate(
             ['email' => 'admin@fcc.com'],
             [
-                'nama' => 'Admin FCC',
+                'nama'     => 'Super Admin FCC',
+                'role'     => 'super_admin',
                 'password' => Hash::make('password')
             ]
         );
