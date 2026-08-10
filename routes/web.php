@@ -4,10 +4,10 @@ use App\Http\Controllers\Admin\PointPesertaController;
 use App\Http\Controllers\Admin\PointPesertaSertifikasiController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Livewire\Auth\Login as LivewireLogin;
 use App\Livewire\Auth\Register as LivewireRegister;
-
-use App\Http\Controllers\Auth\RegisterController;
 
 // Admin
 use App\Http\Controllers\Admin\{
@@ -69,11 +69,17 @@ Route::get('/api/search',    [LandingController::class,'search'])->name('landing
 
 /* ── AUTH ────────────────────────────────────────────────────── */
 Route::middleware('guest.fcc')->group(function () {
-    Route::get('/masuk',          LivewireLogin::class)->name('auth.login');     // Livewire
+    Route::get('/masuk',          [LoginController::class,'showLogin'])->name('auth.login');
     Route::post('/masuk',         [LoginController::class,'login'])->middleware('throttle:10,1')->name('auth.login.post');
+
     Route::get('/daftar',         [RegisterController::class,'showRegister'])->name('auth.register');
     Route::post('/daftar',        [RegisterController::class,'register'])->middleware('throttle:10,1')->name('auth.register.post');
     Route::post('/daftar/verify', [RegisterController::class,'verifyOtp'])->middleware('throttle:10,1')->name('auth.register.verify');
+
+    // Google OAuth Routes
+    Route::get('/auth/google',          [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+
     Route::get('/lupa-password',  [LoginController::class,'showForgot'])->name('auth.forgot');
     Route::post('/lupa-password', [LoginController::class,'sendReset'])->middleware('throttle:10,1')->name('auth.forgot.post');
     Route::post('/lupa-password/verify', [LoginController::class,'verifyResetOtp'])->middleware('throttle:10,1')->name('auth.forgot.verify');

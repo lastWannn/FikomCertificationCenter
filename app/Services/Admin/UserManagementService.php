@@ -21,7 +21,7 @@ class UserManagementService
         if ($peserta->pendaftaran()->whereIn('status_pendaftaran',['terdaftar'])->count()) {
             throw new \RuntimeException('Peserta masih memiliki pendaftaran aktif. Selesaikan atau batalkan pendaftaran terlebih dahulu sebelum menghapus akun.');
         }
-        $peserta->delete();
+        $peserta->forceDelete();
     }
 
     public function resetPassword(Peserta $peserta): string

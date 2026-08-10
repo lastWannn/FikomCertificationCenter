@@ -28,15 +28,12 @@
         if (biaya$) {
             if (biayaList && biayaList.length > 0) {
                 const options = biayaList.map((b, idx) => `
-                    <label style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:${idx === 0 ? '#FFFDF5' : '#F7F8FA'};border:2px solid ${idx === 0 ? '#FFC81A' : '#E2E4EB'};border-radius:12px;padding:12px 16px;margin-bottom:10px;cursor:pointer;transition:all 0.18s ease;"
+                    <label style="display:flex;align-items:center;gap:12px;background:${idx === 0 ? '#FFFDF5' : '#F7F8FA'};border:2px solid ${idx === 0 ? '#FFC81A' : '#E2E4EB'};border-radius:12px;padding:12px 16px;margin-bottom:10px;cursor:pointer;transition:all 0.18s ease;"
                            onclick="highlightBiayaOption(this)">
                         <div style="display:flex;align-items:center;gap:10px;">
                             <input type="radio" name="biaya_kegiatan_id" value="${b.id}" ${idx === 0 ? 'checked' : ''} style="accent-color:#FFC81A;width:17px;height:17px;cursor:pointer;" required>
                             <span style="font-size:13.5px;font-weight:800;color:#0F0F14;">${b.nama_jenis}</span>
                         </div>
-                        <span style="font-size:13.5px;font-weight:900;color:#131218;background:#FFC81A;padding:3px 10px;border-radius:6px;">
-                            ${b.nominal > 0 ? 'Rp ' + Number(b.nominal).toLocaleString('id-ID') : 'Gratis'}
-                        </span>
                     </label>
                 `).join('');
 

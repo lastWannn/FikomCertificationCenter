@@ -3,6 +3,71 @@
 @section('no-livewire', true)
 @section('content')
 
+<script>
+window.switchAuthTab = function(tab) {
+    const ab = document.getElementById('fcc-auth-alert');
+    if (ab) ab.style.display = 'none';
+
+    const loginC = document.getElementById('fcc-login-container');
+    const regC = document.getElementById('fcc-register-container');
+    const forgC = document.getElementById('fcc-forgot-container');
+
+    if (loginC) loginC.style.display = 'none';
+    if (regC) regC.style.display = 'none';
+    if (forgC) forgC.style.display = 'none';
+
+    if (tab === 'login') {
+        if (loginC) loginC.style.display = 'block';
+    } else if (tab === 'forgot') {
+        if (forgC) forgC.style.display = 'block';
+    } else {
+        if (regC) regC.style.display = 'block';
+    }
+};
+
+window.openAuthModal = function(tab = 'login', keepAlert = false) {
+    if (window.switchAuthTab) window.switchAuthTab(tab);
+    const ab = document.getElementById('fcc-auth-alert');
+    if (!keepAlert && ab) ab.style.display = 'none';
+    const m = document.getElementById('fcc-auth-modal');
+    const d = document.getElementById('fcc-auth-dialog');
+    if (m) {
+        m.style.display = 'flex';
+        m.style.opacity = '1';
+        m.style.visibility = 'visible';
+        m.style.pointerEvents = 'auto';
+    }
+    if (d) d.style.transform = 'scale(1)';
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeAuthModal = function() {
+    const m = document.getElementById('fcc-auth-modal');
+    const d = document.getElementById('fcc-auth-dialog');
+    if (m) {
+        m.style.opacity = '0';
+        m.style.pointerEvents = 'none';
+        setTimeout(() => {
+            if (m && m.style.opacity === '0') {
+                m.style.display = 'none';
+            }
+        }, 300);
+    }
+    if (d) d.style.transform = 'scale(0.92)';
+    document.body.style.overflow = '';
+};
+
+window.openTnCModal = function() {
+    const tnc = document.getElementById('tncModal');
+    if (tnc) tnc.style.display = 'flex';
+};
+
+window.closeTnCModal = function() {
+    const tnc = document.getElementById('tncModal');
+    if (tnc) tnc.style.display = 'none';
+};
+</script>
+
 {{-- ═══ NAVBAR ══════════════════════════════════════════════════ --}}
 <nav id="fcc-nav" role="navigation" aria-label="Navigasi utama" style="position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;padding:0 24px;gap:16px;background:#131218;border-bottom:2px solid #1E1D26;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
     <div style="max-width:1200px;margin:0 auto;width:100%;padding:0 24px;
@@ -322,7 +387,7 @@
 </footer>
 
 {{-- ═══ MODAL LOGIN & REGISTER ════════════════════════════════════ --}}
-<div id="fcc-auth-modal" style="position:fixed;inset:0;background:rgba(14,13,20,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);">
+<div id="fcc-auth-modal" style="position:fixed;inset:0;background:rgba(14,13,20,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);">
     <div id="fcc-auth-dialog" style="width:100%;max-width:440px;background:#131218;border:1.5px solid rgba(255,200,26,.15);border-radius:20px;padding:36px;box-sizing:border-box;position:relative;transform:scale(0.92);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 24px 64px rgba(0,0,0,.6), 0 0 40px rgba(255,200,26,.03);">
         {{-- Close Button --}}
         <button id="fcc-auth-close" onclick="closeAuthModal()" style="position:absolute;top:20px;right:20px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;padding:6px;transition:color .2s;border-radius:50%;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.color='#FFF';this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.color='rgba(255,255,255,.4)';this.style.background='none'">
@@ -474,8 +539,11 @@
 </div>
 
 {{-- MODAL OTP --}}
-<div id="otpModal" style="display:none;position:fixed;inset:0;background:rgba(14,13,20,.8);backdrop-filter:blur(5px);z-index:99999;align-items:center;justify-content:center;padding:20px;">
-    <div style="background:#131218;width:100%;max-width:400px;border-radius:24px;padding:40px;box-shadow:0 24px 64px rgba(0,0,0,.4);border:1px solid rgba(255,200,26,.2);text-align:center;position:relative;">
+<div id="otpModal" style="display:none;position:fixed;inset:0;background:rgba(14,13,20,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:99999;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#131218;width:100%;max-width:400px;border-radius:24px;padding:40px;box-shadow:0 24px 64px rgba(0,0,0,.6);border:1.5px solid rgba(255,200,26,.2);text-align:center;position:relative;">
+        <button type="button" onclick="closeOtpModal()" style="position:absolute;top:20px;right:20px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;padding:6px;border-radius:50%;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.color='#FFF';this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.color='rgba(255,255,255,.4)';this.style.background='none'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
         <div style="width:64px;height:64px;border-radius:18px;background:rgba(255,200,26,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         </div>
@@ -497,7 +565,7 @@
             <input type="hidden" name="otp" id="finalOtp">
             <div id="otpError" style="color:#EF4444;font-size:12px;margin-bottom:16px;display:none;font-weight:600;"></div>
             
-            <button id="btnVerify" type="submit" class="fcc-btn-gold" style="width:100%;justify-content:center;padding:12px;font-size:14px;border-radius:10px;">
+            <button id="btnVerify" type="submit" class="fcc-btn-gold" style="width:100%;justify-content:center;padding:12px;font-size:14px;border-radius:10px;font-weight:800;">
                 Verifikasi & Masuk
             </button>
         </form>
@@ -612,97 +680,146 @@
 </style>
 
 <script>
-(window.requestIdleCallback||setTimeout)(function(){
+(function() {
     const modal = document.getElementById('fcc-auth-modal');
     const dialog = document.getElementById('fcc-auth-dialog');
     const alertBox = document.getElementById('fcc-auth-alert');
 
-    function openAuthModal(tab = 'login', keepAlert = false) {
-        switchAuthTab(tab);
-        if (!keepAlert) alertBox.style.display = 'none';
-        modal.style.opacity = '1';
-        modal.style.pointerEvents = 'auto';
-        dialog.style.transform = 'scale(1)';
+    window.openAuthModal = function(tab = 'login', keepAlert = false) {
+        window.switchAuthTab(tab);
+        const ab = document.getElementById('fcc-auth-alert');
+        if (!keepAlert && ab) ab.style.display = 'none';
+        const m = document.getElementById('fcc-auth-modal');
+        const d = document.getElementById('fcc-auth-dialog');
+        if (m) {
+            m.style.opacity = '1';
+            m.style.pointerEvents = 'auto';
+        }
+        if (d) d.style.transform = 'scale(1)';
         document.body.style.overflow = 'hidden';
-    }
+    };
 
-    @if($errors->any())
-    openAuthModal('login', true);
-    @endif
-
-    function closeAuthModal() {
-        modal.style.opacity = '0';
-        modal.style.pointerEvents = 'none';
-        dialog.style.transform = 'scale(0.92)';
+    window.closeAuthModal = function() {
+        const m = document.getElementById('fcc-auth-modal');
+        const d = document.getElementById('fcc-auth-dialog');
+        if (m) {
+            m.style.opacity = '0';
+            m.style.pointerEvents = 'none';
+            m.style.display = 'none';
+        }
+        if (d) d.style.transform = 'scale(0.92)';
         document.body.style.overflow = '';
+    };
+
+    function onDOMReady(fn) {
+        if (document.readyState !== 'loading') {
+            fn();
+        } else {
+            document.addEventListener('DOMContentLoaded', fn);
+        }
     }
 
-    function openTnCModal() {
-        document.getElementById('tncModal').style.display = 'flex';
-    }
-    function closeTnCModal() {
-        document.getElementById('tncModal').style.display = 'none';
-    }
+    window.openOtpModal = function(email) {
+        window.closeAuthModal();
+        const disp = document.getElementById('otpEmailDisplay');
+        const inp = document.getElementById('otpEmailInput');
+        const m = document.getElementById('otpModal');
+        if (disp) disp.innerText = email || '';
+        if (inp) inp.value = email || '';
+        if (m) {
+            m.style.setProperty('display', 'flex', 'important');
+            m.style.setProperty('opacity', '1', 'important');
+            m.style.setProperty('visibility', 'visible', 'important');
+            m.style.setProperty('pointer-events', 'auto', 'important');
+            m.style.setProperty('z-index', '999999', 'important');
+        }
+        document.body.style.overflow = 'hidden';
+        setTimeout(function() {
+            const boxes = document.querySelectorAll('.otp-box-pub');
+            if (boxes.length) {
+                boxes.forEach(b => b.value = '');
+                boxes[0].focus();
+            }
+        }, 100);
+    };
 
-    function switchAuthTab(tab) {
-        alertBox.style.display = 'none';
-        document.getElementById('fcc-login-container').style.display = 'none';
-        document.getElementById('fcc-register-container').style.display = 'none';
-        document.getElementById('fcc-forgot-container').style.display = 'none';
+    window.closeOtpModal = function() {
+        const m = document.getElementById('otpModal');
+        if (m) {
+            m.style.setProperty('display', 'none', 'important');
+        }
+        document.body.style.overflow = '';
+    };
+
+    window.openTnCModal = function() {
+        const tnc = document.getElementById('tncModal');
+        if (tnc) tnc.style.display = 'flex';
+    };
+
+    window.closeTnCModal = function() {
+        const tnc = document.getElementById('tncModal');
+        if (tnc) tnc.style.display = 'none';
+    };
+
+    window.switchAuthTab = function(tab) {
+        const ab = document.getElementById('fcc-auth-alert');
+        if (ab) ab.style.display = 'none';
+
+        const loginC = document.getElementById('fcc-login-container');
+        const regC = document.getElementById('fcc-register-container');
+        const forgC = document.getElementById('fcc-forgot-container');
+
+        if (loginC) loginC.style.display = 'none';
+        if (regC) regC.style.display = 'none';
+        if (forgC) forgC.style.display = 'none';
 
         if (tab === 'login') {
-            document.getElementById('fcc-login-container').style.display = 'block';
+            if (loginC) loginC.style.display = 'block';
         } else if (tab === 'forgot') {
-            document.getElementById('fcc-forgot-container').style.display = 'block';
+            if (forgC) forgC.style.display = 'block';
         } else {
-            document.getElementById('fcc-register-container').style.display = 'block';
+            if (regC) regC.style.display = 'block';
         }
-    }
+    };
 
-    // Intercept clicks on links that match /masuk or /daftar
-    document.addEventListener('click', function(e) {
-        const link = e.target.closest('a');
-        if (link && link.href) {
-            try {
-                const url = new URL(link.href);
-                if (url.origin === window.location.origin) {
-                    if (url.pathname === '/masuk') {
-                        e.preventDefault();
-                        openAuthModal('login');
-                    } else if (url.pathname === '/daftar') {
-                        e.preventDefault();
-                        openAuthModal('register');
-                    }
-                }
-            } catch (err) {}
+    @if(session('require_otp'))
+    onDOMReady(function() {
+        const email = "{{ session('email') }}";
+        if (email) {
+            window.openOtpModal(email);
         }
     });
-
-    // Close modal on clicking backdrop
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeAuthModal();
-        }
+    @elseif(session('open_auth_modal'))
+    onDOMReady(function() {
+        window.openAuthModal("{{ session('open_auth_modal') }}");
     });
+    @endif
+
+    @if($errors->any())
+    onDOMReady(function() {
+        window.openAuthModal('login', true);
+    });
+    @endif
+
+
 
     // Submit Auth Form via AJAX
-    function submitAuthForm(e, url) {
+    window.submitAuthForm = function(e, url) {
         e.preventDefault();
-        console.log('[FCC DEBUG] submitAuthForm called, url:', url);
-        alertBox.style.display = 'none';
+        const ab = document.getElementById('fcc-auth-alert');
+        if (ab) ab.style.display = 'none';
         
         const form = e.target;
         const formData = new FormData(form);
         const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerText;
+        const originalText = submitBtn ? submitBtn.innerText : '';
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || form.querySelector('input[name="_token"]')?.value;
         
-        console.log('[FCC DEBUG] CSRF token found:', csrfToken ? 'YES' : 'NO');
-        
-        submitBtn.disabled = true;
-        submitBtn.innerText = 'Memproses...';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Memproses...';
+        }
 
-        console.log('[FCC DEBUG] Starting fetch to:', url);
         fetch(url, {
             method: 'POST',
             body: formData,
@@ -713,46 +830,48 @@
             }
         })
         .then(async response => {
-            console.log('[FCC DEBUG] Response received! Status:', response.status, 'OK:', response.ok);
             let data = {};
             try {
                 data = await response.json();
-                console.log('[FCC DEBUG] JSON parsed:', JSON.stringify(data));
-            } catch(e) {
-                console.error('[FCC DEBUG] JSON parse failed:', e);
-            }
+            } catch(e) {}
             if (!response.ok) {
                 throw { status: response.status, data: data };
             }
             return data;
         })
         .then(data => {
-            console.log('[FCC DEBUG] Success handler, data:', JSON.stringify(data));
             if (data.require_otp) {
-                submitBtn.disabled = false;
-                submitBtn.innerText = originalText;
-                closeAuthModal();
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalText;
+                }
                 
-                // Cek apakah ini form lupa password
                 if (url.includes('/lupa-password')) {
-                    document.getElementById('otpResetEmailDisplay').innerText = data.email;
-                    document.getElementById('otpResetEmailInput').value = data.email;
-                    document.getElementById('otpResetModal').style.display = 'flex';
-                    document.querySelector('.otp-box-reset').focus();
+                    const disp = document.getElementById('otpResetEmailDisplay');
+                    const inp = document.getElementById('otpResetEmailInput');
+                    const m = document.getElementById('otpResetModal');
+                    if (disp) disp.innerText = data.email;
+                    if (inp) inp.value = data.email;
+                    if (m) m.style.display = 'flex';
+                    const box = document.querySelector('.otp-box-reset');
+                    if (box) box.focus();
                 } else {
-                    document.getElementById('otpEmailDisplay').innerText = data.email;
-                    document.getElementById('otpEmailInput').value = data.email;
-                    document.getElementById('otpModal').style.display = 'flex';
-                    document.querySelector('.otp-box-pub').focus();
+                    window.openOtpModal(data.email);
                 }
             } else if (data.success) {
                 window.location.href = data.redirect || '/';
             }
         })
         .catch(err => {
-            console.error('[FCC DEBUG] CATCH error:', err);
-            submitBtn.disabled = false;
-            submitBtn.innerText = originalText;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalText;
+            }
+
+            if (err && err.data && err.data.require_otp) {
+                window.openOtpModal(err.data.email);
+                return;
+            }
             
             let errMsg = 'Terjadi kesalahan sistem. Silakan coba lagi.';
             if (err && err.status === 429) {
@@ -765,10 +884,13 @@
                 errMsg = err.message;
             }
             
-            alertBox.innerHTML = errMsg;
-            alertBox.style.display = 'block';
+            if (ab) {
+                ab.innerHTML = errMsg;
+                ab.style.display = 'block';
+            }
         });
-    }
+    };
+})();
 
     // Dynamic Premium File Alert Modal
     window.fccShowFileAlert = function(title, message) {

@@ -36,6 +36,18 @@ class LoginController extends Controller
             return redirect()->route($redirect)
                 ->with('success', 'Selamat datang, '.$result['user']->nama.'!');
         } catch (ValidationException $e) {
+            $peserta = \App\Models\Peserta::where('email', $request->email)->first();
+            if ($peserta && is_null($peserta->email_verified_at)) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success'     => false,
+                        'require_otp' => true,
+                        'email'       => $peserta->email,
+                        'message'     => 'Akun Anda belum memverifikasi OTP. Kode OTP 4-digit baru telah dikirimkan ke email Anda.'
+                    ]);
+                }
+            }
+
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,

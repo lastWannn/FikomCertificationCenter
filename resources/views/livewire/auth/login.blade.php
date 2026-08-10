@@ -123,7 +123,6 @@
         <p style="text-align:center;font-size:14px;color:#6B7280;margin:0;">
             Belum punya akun?
             <a href="{{ route('auth.register') }}"
-               wire:navigate
                style="color:#FFC81A;font-weight:700;text-decoration:none;">
                 Daftar Sekarang
             </a>
