@@ -25,8 +25,8 @@ class AppServiceProvider extends ServiceProvider
         Paginator::defaultView('vendor.pagination.custom');
         Paginator::defaultSimpleView('vendor.pagination.simple-custom');
 
-        // Paksa HTTPS di production
-        if (app()->environment('production')) {
+        // Paksa HTTPS di production atau saat menggunakan Tunnel/Reverse Proxy HTTPS
+        if (app()->environment('production') || request()->header('x-forwarded-proto') === 'https' || str_contains((string) config('services.google.redirect'), 'https://')) {
             URL::forceScheme('https');
         }
 
