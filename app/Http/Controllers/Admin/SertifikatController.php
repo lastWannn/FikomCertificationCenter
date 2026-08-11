@@ -10,14 +10,32 @@ class SertifikatController extends Controller
 {
     public function __construct(private SertifikatService $service) {}
 
-    public function index() {
-        $kegiatanPassed = Kegiatan::passed()->get();
-        if ($kegiatanPassed->isEmpty()) {
-            $kegiatanPassed = Kegiatan::whereHas('pendaftaran', fn($q) => $q->where('status_pendaftaran', 'terdaftar'))->get();
+    public function index(Request $r) {
+        $kegiatanList = Kegiatan::latest()->get();
+        if ($kegiatanList->isEmpty()) {
+            $kegiatanList = Kegiatan::whereHas('pendaftaran', fn($q) => $q->where('status_pendaftaran', 'terdaftar'))->get();
         }
+        $kegiatanUnique = $kegiatanList->unique(fn($k) => trim($k->judul))->values();
+
+        $query = Sertifikat::with(['pendaftaran.peserta','pendaftaran.kegiatan'])->latest();
+
+        if ($r->filled('q')) {
+            $qStr = '%' . trim($r->q) . '%';
+            $query->where(function($sub) use ($qStr) {
+                $sub->where('nomor_sertifikat', 'like', $qStr)
+                    ->orWhereHas('pendaftaran.peserta', fn($p) => $p->where('nama', 'like', $qStr)->orWhere('email', 'like', $qStr));
+            });
+        }
+
+        if ($r->filled('filter_kegiatan')) {
+            $query->whereHas('pendaftaran', fn($p) => $p->where('kegiatan_id', $r->filter_kegiatan));
+        }
+
+        $sertifikat = $query->paginate(10)->withQueryString();
+
         return view('admin.sertifikat.index', [
-            'sertifikat' => Sertifikat::with(['pendaftaran.peserta','pendaftaran.kegiatan'])->latest()->paginate(15),
-            'kegiatan'   => $kegiatanPassed,
+            'sertifikat' => $sertifikat,
+            'kegiatan'   => $kegiatanUnique,
         ]);
     }
     public function peserta(Kegiatan $kegiatan) {
@@ -28,7 +46,7 @@ class SertifikatController extends Controller
     public function uploadLatar(Request $r) {
         $r->validate(['kegiatan_id'=>'required','latar'=>'required|image|max:5120']);
         $this->service->uploadLatar($r->kegiatan_id, $r->file('latar'));
-        return back()->with('success','Template latar berhasil diunggah.');
+        return back()->with('success','Template latar berhasil diunggah.')->with('uploaded_kegiatan_id', (int)$r->kegiatan_id);
     }
     public function terbitkan(Request $r, Pendaftaran $pendaftaran) {
         $r->validate(['tgl_terbit'=>'required|date']);

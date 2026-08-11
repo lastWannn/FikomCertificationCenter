@@ -23,8 +23,18 @@ class GoogleController extends Controller
 
     public function handleGoogleCallback()
     {
+        // Jika pengguna membatalkan login di halaman Google
+        if (request()->has('error') || ! request()->has('code')) {
+            return redirect()->route('auth.login')
+                ->withErrors(['email' => 'Proses masuk dengan akun Google telah dibatalkan.']);
+        }
+
         try {
-            $googleUser = Socialite::driver('google')->user();
+            try {
+                $googleUser = Socialite::driver('google')->stateless()->user();
+            } catch (\Exception $statelessEx) {
+                $googleUser = Socialite::driver('google')->user();
+            }
             
             // Cari peserta berdasarkan email (termasuk akun soft deleted)
             $peserta = Peserta::withTrashed()->where('email', $googleUser->getEmail())->first();
