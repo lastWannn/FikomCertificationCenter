@@ -86,6 +86,43 @@
         </form>
     </div>
 
+    {{-- Background Status Banner --}}
+    @if($kegiatan->has_latar)
+    <div style="background:#ECFDF5;border:1.5px solid #10B981;border-radius:16px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 2px 10px rgba(16,185,129,0.08);">
+        <div style="display:flex;align-items:center;gap:14px;">
+            <div style="position:relative;width:68px;height:46px;border-radius:8px;overflow:hidden;border:1.5px solid #059669;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+                <img src="{{ $kegiatan->latar_url }}" alt="Preview Latar" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <div>
+                <span style="font-size:10px;font-weight:900;color:#047857;background:#D1FAE5;padding:2px 8px;border-radius:12px;border:1px solid #10B981;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:2px;">
+                    ✅ Template Latar Ready
+                </span>
+                <p style="margin:0;font-size:13px;font-weight:800;color:#064E3B;">Template latar sertifikat kegiatan ini sudah terupload &amp; siap diterbitkan.</p>
+            </div>
+        </div>
+        <a href="{{ route('admin.sertifikat.index') }}" style="font-size:12px;font-weight:800;color:#047857;background:#FFFFFF;border:1.5px solid #10B981;padding:6px 14px;border-radius:10px;text-decoration:none;transition:all .15s;" onmouseover="this.style.background='#10B981';this.style.color='#FFF';" onmouseout="this.style.background='#FFF';this.style.color='#047857';">
+            Ganti Template Latar &rarr;
+        </a>
+    </div>
+    @else
+    <div style="background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:16px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 2px 10px rgba(245,158,11,0.08);">
+        <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:42px;height:42px;border-radius:12px;background:#FEF3C7;border:1.5px solid #F59E0B;display:flex;align-items:center;justify-content:center;color:#D97706;flex-shrink:0;">
+                @include('components.icon',['name'=>'alert-triangle','size'=>20])
+            </div>
+            <div>
+                <span style="font-size:10px;font-weight:900;color:#B45309;background:#FEF3C7;padding:2px 8px;border-radius:12px;border:1px solid #F59E0B;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:2px;">
+                    ⚠️ Perhatian: Belum Ada Latar
+                </span>
+                <p style="margin:0;font-size:13px;font-weight:800;color:#78350F;">Kegiatan ini belum memiliki template latar sertifikat!</p>
+            </div>
+        </div>
+        <a href="{{ route('admin.sertifikat.index') }}" style="font-size:12.5px;font-weight:900;color:#131218;background:#FFC81A;border:1.5px solid #131218;padding:8px 16px;border-radius:10px;text-decoration:none;box-shadow:0 3px 10px rgba(0,0,0,0.08);display:inline-flex;align-items:center;gap:6px;transition:all .15s;" onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">
+            @include('components.icon',['name'=>'upload','size'=>14]) Upload Latar Sekarang &rarr;
+        </a>
+    </div>
+    @endif
+
     {{-- Main Neo-Brutalist Table Card --}}
     <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);position:relative;">
         <div style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
