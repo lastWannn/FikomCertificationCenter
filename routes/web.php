@@ -61,6 +61,9 @@ Route::get('/kegiatan/{kegiatan}', [LandingController::class,'show'])->name('lan
 Route::get('/pendaftaran',   [LandingController::class,'pendaftaran'])->name('landing.pendaftaran');
 Route::get('/arsip',         [LandingController::class,'arsip'])->name('landing.arsip');
 Route::get('/arsip/{arsip}', [LandingController::class,'arsipShow'])->name('landing.arsip.show');
+Route::get('/arsip/{arsip}/pdf', [LandingController::class,'arsipPdf'])->name('landing.arsip.pdf');
+Route::get('/arsip/{arsip}/download-pdf', [LandingController::class,'downloadDomPdf'])->name('landing.arsip.download-pdf');
+Route::get('/arsip/{arsip}/unduh-lampiran', [LandingController::class,'downloadBeritaAcara'])->name('landing.arsip.download');
 Route::get('/hubungi-kami',  [LandingController::class,'kontak'])->name('landing.kontak');
 Route::post('/hubungi-kami', [LandingController::class,'kontakPost'])->name('landing.kontak.post');
 

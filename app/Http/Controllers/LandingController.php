@@ -136,7 +136,55 @@ class LandingController extends Controller
     public function arsipShow(ArsipKegiatan $arsip)
     {
         $arsip->load('kegiatan');
-        return view('landing.arsip-show', compact('arsip'));
+
+        $beritaAcaraPath = preg_replace('/^storage\//', '', $arsip->berita_acara ?? '');
+        $beritaAcaraFile = $beritaAcaraPath !== ''
+            ? storage_path('app/public/' . $beritaAcaraPath)
+            : null;
+        $beritaAcaraUrl = ($beritaAcaraFile && file_exists($beritaAcaraFile))
+            ? asset('storage/' . $beritaAcaraPath)
+            : null;
+
+        return view('landing.arsip-show', compact('arsip', 'beritaAcaraFile', 'beritaAcaraUrl'));
+    }
+
+    public function arsipPdf(ArsipKegiatan $arsip)
+    {
+        if (!empty($arsip->berita_acara)) {
+            $cleanPath = preg_replace('/^storage\//', '', $arsip->berita_acara);
+            $filePath  = storage_path('app/public/' . $cleanPath);
+
+            if (file_exists($filePath)) {
+                return response()->file($filePath, [
+                    'Content-Type' => mime_content_type($filePath) ?: 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="Berita-Acara-' . \Illuminate\Support\Str::slug($arsip->judul ?: 'Kegiatan') . '.pdf"',
+                ]);
+            }
+        }
+
+        abort(404, 'File berita acara belum tersedia.');
+    }
+
+    public function downloadDomPdf(ArsipKegiatan $arsip, \App\Services\Admin\ArsipService $arsipService)
+    {
+        return $this->downloadBeritaAcara($arsip, $arsipService);
+    }
+
+    public function downloadBeritaAcara(ArsipKegiatan $arsip, \App\Services\Admin\ArsipService $arsipService)
+    {
+        session_write_close();
+
+        $cleanPath = preg_replace('/^storage\//', '', $arsip->berita_acara ?? '');
+        $filePath  = storage_path('app/public/' . $cleanPath);
+
+        if (empty($cleanPath) || !file_exists($filePath)) {
+            abort(404, 'File berita acara belum tersedia.');
+        }
+
+        $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+        $filename = 'Berita-Acara-' . \Illuminate\Support\Str::slug($arsip->judul ?: 'Kegiatan') . '.' . $ext;
+
+        return response()->download($filePath, $filename);
     }
 
     public function sendReset(\Illuminate\Http\Request $r) 

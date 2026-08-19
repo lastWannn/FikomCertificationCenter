@@ -212,7 +212,7 @@
     @endif
 
     {{-- Berita acara --}}
-    @if($arsip->berita_acara)
+    @if(!empty($beritaAcaraFile) && file_exists($beritaAcaraFile))
     <div style="background:rgba(255,255,255,.03);border:1.5px solid rgba(255,200,26,.3);border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:14px;margin-bottom:28px;">
       <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,200,26,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2"><path d="M14 2H6a2 2 0 0 1-2 2v16a2 2 0 0 1 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -221,10 +221,16 @@
         <p style="font-size:14px;font-weight:800;color:#FFF;margin:0 0 3px;">Berita Acara Kegiatan</p>
         <p style="font-size:12px;color:rgba(255,255,255,.5);margin:0;">Dokumen resmi pelaksanaan kegiatan</p>
       </div>
-      <a href="{{ asset('storage/'.$arsip->berita_acara) }}" target="_blank" class="fcc-btn-gold btn-shine" style="padding:9px 18px;font-size:13px;text-decoration:none;border-radius:10px;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Unduh PDF
-      </a>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <a href="{{ route('landing.arsip.pdf', $arsip, false) }}" target="_blank" class="fcc-btn-gold btn-shine" style="padding:9px 18px;font-size:13px;text-decoration:none;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Lihat &amp; Cetak PDF
+        </a>
+        <a href="{{ $beritaAcaraUrl }}" class="fcc-btn-gold" style="padding:9px 18px;font-size:13px;border:none;cursor:pointer;border-radius:10px;display:inline-flex;align-items:center;gap:6px;background:#FFC81A;color:#131218;font-weight:900;box-shadow:0 4px 12px rgba(255,200,26,0.35);text-decoration:none;" download>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Unduh PDF</span>
+        </a>
+      </div>
     </div>
     @endif
 

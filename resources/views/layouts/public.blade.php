@@ -349,20 +349,47 @@ window.closeTnCModal = function() {
                     Hubungi Kami
                 </span>
 
+                @php
+                    $fKontak = \App\Models\Kontak::aktif();
+                    $fAlamat = $fKontak->alamat ?? 'Jl. Urip Sumoharjo No.225, Makassar 90232';
+                    $fTelp   = $fKontak->telepon ?? '(0411) 455 855';
+                    $fEmail  = $fKontak->email ?? 'fcc@fikom.umi.ac.id';
+                    $fWaUrl  = $fKontak?->wa_url ?? 'https://wa.me/6281234567890';
+                    $fMailUrl= $fKontak?->mailto_url ?? 'mailto:fcc@fikom.umi.ac.id';
+                @endphp
+
                 @foreach([
-                    ['M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0','Alamat','Jl. Urip Sumoharjo No.225, Makassar 90232'],
-                    ['M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z','Telepon','(0411) 455 855'],
-                    ['M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6','Email','fcc@fikom.umi.ac.id'],
-                ] as [$path,$label,$val])
-                <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;background:#1E1D26;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,200,26,0.15);">
-                    <div style="width:30px;height:30px;border-radius:8px;background:#FFC81A;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#131218;margin-top:1px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $path }}"/></svg>
+                    ['M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0','Alamat', $fAlamat, null, false],
+                    ['M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z','Telepon & WhatsApp', $fTelp, $fWaUrl, true],
+                    ['M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6','Email Resmi', $fEmail, $fMailUrl, false],
+                ] as [$path,$label,$val,$url,$isNewTab])
+                @if($url)
+                    <a href="{{ $url }}" {{ $isNewTab ? 'target="_blank" rel="noopener noreferrer"' : '' }} 
+                       style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;background:#1E1D26;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,200,26,0.2);text-decoration:none;transition:all 0.2s ease;"
+                       onmouseover="this.style.borderColor='#FFC81A'; this.style.transform='translateY(-2px)';"
+                       onmouseout="this.style.borderColor='rgba(255,200,26,0.2)'; this.style.transform='none';">
+                        <div style="width:30px;height:30px;border-radius:8px;background:#FFC81A;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#131218;margin-top:1px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $path }}"/></svg>
+                        </div>
+                        <div>
+                            <p style="color:#FFC81A;font-size:9.5px;font-weight:900;margin:0 0 2px;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:4px;">
+                                {{ $label }}
+                                @if($isNewTab) <span style="font-size:9px;color:#25D366;">(WA) &nearr;</span> @else <span style="font-size:9px;color:#0284C7;">&nearr;</span> @endif
+                            </p>
+                            <p style="color:#FFFFFF;font-size:12.5px;font-weight:600;margin:0;line-height:1.4;">{{ $val }}</p>
+                        </div>
+                    </a>
+                @else
+                    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;background:#1E1D26;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,200,26,0.15);">
+                        <div style="width:30px;height:30px;border-radius:8px;background:#FFC81A;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#131218;margin-top:1px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $path }}"/></svg>
+                        </div>
+                        <div>
+                            <p style="color:#FFC81A;font-size:9.5px;font-weight:900;margin:0 0 2px;text-transform:uppercase;letter-spacing:1px;">{{ $label }}</p>
+                            <p style="color:#FFFFFF;font-size:12.5px;font-weight:600;margin:0;line-height:1.4;">{{ $val }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p style="color:#FFC81A;font-size:9.5px;font-weight:900;margin:0 0 2px;text-transform:uppercase;letter-spacing:1px;">{{ $label }}</p>
-                        <p style="color:#FFFFFF;font-size:12.5px;font-weight:600;margin:0;line-height:1.4;">{{ $val }}</p>
-                    </div>
-                </div>
+                @endif
                 @endforeach
             </div>
         </div>
@@ -1131,14 +1158,14 @@ window.closeTnCModal = function() {
 
     document.addEventListener('mouseover', function(e) {
         const anchor = e.target.closest('a');
-        if (anchor && anchor.href && !anchor.target) {
+        if (anchor && anchor.href && !anchor.target && !anchor.hasAttribute('download') && !anchor.href.includes('/download') && !anchor.href.includes('/unduh')) {
             prefetchUrl(anchor.href);
         }
     }, { passive: true });
 
     document.addEventListener('touchstart', function(e) {
         const anchor = e.target.closest('a');
-        if (anchor && anchor.href && !anchor.target) {
+        if (anchor && anchor.href && !anchor.target && !anchor.hasAttribute('download') && !anchor.href.includes('/download') && !anchor.href.includes('/unduh')) {
             prefetchUrl(anchor.href);
         }
     }, { passive: true });
@@ -1155,7 +1182,7 @@ window.closeTnCModal = function() {
 
     document.addEventListener('click', function(e) {
         const anchor = e.target.closest('a');
-        if (anchor && anchor.href && !anchor.target && !anchor.href.includes('#') && anchor.origin === window.location.origin) {
+        if (anchor && anchor.href && !anchor.target && !anchor.href.includes('#') && !anchor.hasAttribute('download') && !anchor.href.includes('/download') && !anchor.href.includes('/unduh') && anchor.origin === window.location.origin) {
             startTopBar();
         }
     });
