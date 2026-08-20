@@ -108,7 +108,10 @@
             <span style="color:#64748B;font-size:11px;">(Lewat {{ $pk->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Tgl' }})</span>
             <div style="display:flex;gap:6px;">
               <a href="{{ $editUrl }}" style="color:#131218;font-size:11px;font-weight:800;text-decoration:none;background:#FFC81A;padding:3px 9px;border-radius:6px;border:1px solid #131218;">Perpanjang</a>
-              <a href="{{ route('admin.arsip.create', ['kegiatan_id' => $pk->id]) }}" style="color:#FFFFFF;font-size:11px;font-weight:800;text-decoration:none;background:#131218;padding:3px 9px;border-radius:6px;">Arsipkan</a>
+              <form action="{{ route('admin.kegiatan.arsipkan', $pk) }}" method="POST" style="margin:0;display:inline;">
+                @csrf
+                <button type="button" onclick="fccConfirmAction(this, 'Tandai Selesai & Arsipkan', 'Apakah Anda yakin ingin menandai kegiatan {{ addslashes($pk->judul) }} selesai dan memindahkannya ke Arsip Kegiatan?', 'Ya, Arsipkan', false)" style="color:#FFFFFF;font-size:11px;font-weight:800;background:#131218;padding:3px 9px;border-radius:6px;border:none;cursor:pointer;">Arsipkan</button>
+              </form>
             </div>
           </div>
           @endforeach

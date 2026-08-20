@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Arsip\{StoreArsipRequest, UpdateArsipRequest};
+use App\Http\Requests\Admin\Arsip\UpdateArsipRequest;
 use App\Models\{ArsipKegiatan, Kegiatan};
 use App\Services\Admin\ArsipService;
 
@@ -17,20 +17,6 @@ class ArsipController extends Controller
         return view('admin.lainnya.arsip', [
             'arsip' => ArsipKegiatan::with('kegiatan')->paginate(10)
         ]);
-    }
-
-    public function create()
-    {
-        return view('admin.lainnya.arsip-form', [
-            'kegiatan' => Kegiatan::doesntHave('arsip')->get()
-        ]);
-    }
-
-    public function store(StoreArsipRequest $request)
-    {
-        $this->service->create($request->validated());
-        return redirect()->route('admin.arsip.index')
-            ->with('success', 'Arsip dibuat.');
     }
 
     public function show(ArsipKegiatan $arsip)

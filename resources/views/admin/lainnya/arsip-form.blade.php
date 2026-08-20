@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', isset($arsip) ? 'Edit Arsip Kegiatan' : 'Tambah Arsip Kegiatan')
+@section('title', 'Edit Arsip Kegiatan')
 @section('page-content')
 <div style="padding:24px;max-width:760px;margin:0 auto;width:100%;">
     
@@ -8,7 +8,7 @@
         <a href="{{ route('admin.arsip.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#6B7280;font-size:13px;text-decoration:none;margin-bottom:10px;font-weight:600;" onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#6B7280'">
             @include('components.icon',['name'=>'chevron-left','size'=>14]) Kembali ke Daftar Arsip
         </a>
-        <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0 0 4px;">{{ isset($arsip) ? 'Edit' : 'Tambah' }} Arsip Kegiatan</h1>
+        <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0 0 4px;">Edit Arsip Kegiatan</h1>
         <p style="color:#6B7280;font-size:13.5px;margin:0;">Lengkapi berita acara, ringkasan, dan dokumentasi foto-foto kegiatan.</p>
     </div>
 
@@ -28,21 +28,9 @@
         </div>
         @endif
 
-        <form action="{{ isset($arsip) ? route('admin.arsip.update', $arsip) : route('admin.arsip.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.arsip.update', $arsip) }}" method="POST" enctype="multipart/form-data">
             @csrf 
-            @if(isset($arsip)) @method('PUT') @endif
-
-            @if(!isset($arsip))
-            <div style="margin-bottom:18px;">
-                <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Pilih Kegiatan *</label>
-                <select name="kegiatan_id" required class="fcc-input" style="font-size:13.5px;height:40px;">
-                    <option value="">-- Pilih Kegiatan Selesai --</option>
-                    @foreach($kegiatan as $k)
-                    <option value="{{ $k->id }}">{{ $k->judul }}</option>
-                    @endforeach
-                </select>
-            </div>
-            @endif
+            @method('PUT')
 
             <div style="margin-bottom:18px;">
                 <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px;">Judul Arsip *</label>
@@ -120,7 +108,7 @@
                     Batal
                 </a>
                 <button type="submit" id="btn-submit-arsip" class="fcc-btn-gold" style="padding:10px 28px;font-size:13px;border-radius:10px;font-weight:800;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
-                    @include('components.icon',['name'=>'check','size'=>15]) {{ isset($arsip) ? 'Simpan Perubahan' : 'Simpan Arsip' }}
+                    @include('components.icon',['name'=>'check','size'=>15]) Simpan Perubahan
                 </button>
             </div>
 
