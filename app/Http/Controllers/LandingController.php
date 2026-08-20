@@ -42,7 +42,7 @@ class LandingController extends Controller
         $konten     = KontenHalaman::all()->keyBy('jenis');
         $faqs       = Informasi::faq()->latest()->get();
         $infos      = Informasi::info()->aktif()->latest()->limit(3)->get();
-        $testimonis = \App\Models\Testimoni::latest()->get();
+        $testimonis = \App\Models\Testimoni::dipublikasikan()->latest()->get();
 
         return view('landing.index', compact(
             'kegiatanTerbaru', 'stats', 'mitras', 'arsips', 'konten', 'faqs', 'infos', 'testimonis'
@@ -116,7 +116,7 @@ class LandingController extends Controller
     {
         $request->validate([
             'nama'  => 'required|string|max:150',
-            'email' => 'required|email|max:150',
+            'email' => ['required', 'string', 'max:150', new \App\Rules\ValidEmailAddress()],
             'pesan' => 'required|string',
         ]);
 

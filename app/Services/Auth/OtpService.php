@@ -8,7 +8,7 @@ use Illuminate\Validation\ValidationException;
 
 class OtpService
 {
-    public function generateAndSend(string $email, string $type = 'register'): void
+    public function generateAndSend(string $email, string $type = 'register'): string
     {
         // Delete previous OTPs for this email and type
         OtpCode::where('email', $email)->where('type', $type)->delete();
@@ -28,6 +28,8 @@ class OtpService
 
         // Dispatch email OTP ke background OS process (0 ms latency untuk pengguna)
         \App\Helpers\AsyncMail::dispatch('otp', $email, "{$otp}|{$type}");
+
+        return $otp;
     }
 
     public function verify(string $email, string $otp, string $type = 'register'): bool

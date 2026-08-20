@@ -502,6 +502,83 @@ if (typeof window.initCountdown === 'function') {
 @push('scripts')
 @vite('resources/js/pages/peserta-pembayaran.js')
 <script>
+function compressAndPreviewImage(file, inputElement) {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        if (typeof window.fccToast === 'function') {
+            fccToast('Hanya file gambar yang diizinkan (JPG, PNG, WebP)', 'error');
+        } else {
+            alert('Hanya file gambar yang diizinkan (JPG, PNG, WebP)');
+        }
+        if (inputElement) inputElement.value = '';
+        return;
+    }
+
+    const area = document.getElementById('upload-area');
+    if (area) {
+        area.style.borderColor = '#10B981';
+        area.style.background = 'rgba(16,185,129,.04)';
+    }
+
+    // Load FileReader & Canvas Compression
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            // Resize image if max dimension > 1600px
+            const maxDim = 1600;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxDim || height > maxDim) {
+                if (width > height) {
+                    height = Math.round((height * maxDim) / width);
+                    width = maxDim;
+                } else {
+                    width = Math.round((width * maxDim) / height);
+                    height = maxDim;
+                }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(function(blob) {
+                if (!blob) return;
+
+                // Create compressed File object (< 500KB)
+                const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                });
+
+                // Update inputElement.files using DataTransfer
+                if (inputElement) {
+                    const dt = new DataTransfer();
+                    dt.items.add(compressedFile);
+                    inputElement.files = dt.files;
+                }
+
+                // Show Preview Image
+                const previewImg = document.getElementById('preview-img');
+                const placeholder = document.getElementById('upload-placeholder');
+                if (previewImg) {
+                    previewImg.src = canvas.toDataURL('image/jpeg', 0.85);
+                    previewImg.style.display = 'block';
+                }
+                if (placeholder) placeholder.style.display = 'none';
+
+            }, 'image/jpeg', 0.85);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
 function validateBuktiTransfer(e) {
     const inp = document.getElementById('bukti-input');
     if (!inp || !inp.files || inp.files.length === 0) {
@@ -531,33 +608,25 @@ function validateBuktiTransfer(e) {
         }
         return false;
     }
+
+    const file = inp.files[0];
+    if (file && file.size > 5 * 1024 * 1024) {
+        if (e && e.preventDefault) e.preventDefault();
+        if (typeof window.fccToast === 'function') {
+            window.fccToast('Ukuran foto bukti transfer terlalu besar (maksimal 5MB). Harap pilih foto lain yang lebih kecil.', 'error');
+        } else {
+            alert('Ukuran foto bukti transfer terlalu besar (maksimal 5MB). Harap pilih foto lain yang lebih kecil.');
+        }
+        return false;
+    }
+
     return true;
 }
 
 function previewImage(input) {
-    const file = input.files[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-        if (typeof window.fccToast === 'function') {
-            fccToast('Hanya file gambar yang diizinkan (JPG, PNG, WebP)', 'error');
-        } else {
-            alert('Hanya file gambar yang diizinkan (JPG, PNG, WebP)');
-        }
-        input.value = '';
-        return;
+    if (input && input.files && input.files[0]) {
+        compressAndPreviewImage(input.files[0], input);
     }
-    const area = document.getElementById('upload-area');
-    if (area) {
-        area.style.borderColor = '#10B981';
-        area.style.background = 'rgba(16,185,129,.04)';
-    }
-    const reader = new FileReader();
-    reader.onload = e => {
-        document.getElementById('preview-img').src = e.target.result;
-        document.getElementById('preview-img').style.display = 'block';
-        document.getElementById('upload-placeholder').style.display = 'none';
-    };
-    reader.readAsDataURL(file);
 }
 
 function handleDrop(e) {
@@ -565,10 +634,7 @@ function handleDrop(e) {
     const file = e.dataTransfer.files[0];
     if (!file) return;
     const inp = document.getElementById('bukti-input');
-    const dt  = new DataTransfer();
-    dt.items.add(file);
-    inp.files = dt.files;
-    previewImage(inp);
+    compressAndPreviewImage(file, inp);
 }
 </script>
 @endpush

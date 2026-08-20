@@ -58,6 +58,14 @@
                     </select>
                 </div>
                 <div>
+                    <label style="display:block;font-size:11px;font-weight:800;color:#64748B;margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;">Status Publikasi *</label>
+                    <select name="status" id="f-status" required class="fcc-input" style="width:100%;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:10px 14px;color:#131218;font-size:13.5px;font-weight:700;outline:none;box-sizing:border-box;cursor:pointer;">
+                        <option value="dipublikasikan">✓ Dipublikasikan (Tampil di Landing)</option>
+                        <option value="pending">⌛ Pending (Sembunyikan)</option>
+                        <option value="ditolak">✕ Ditolak</option>
+                    </select>
+                </div>
+                <div>
                     <label style="display:block;font-size:11px;font-weight:800;color:#64748B;margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;">Kata (Ulasan) *</label>
                     <textarea name="kata" id="f-kata" required rows="4" placeholder="Tulis testimoni/ulasan..." class="fcc-input" style="width:100%;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:10px 14px;color:#131218;font-size:13.5px;font-weight:600;outline:none;box-sizing:border-box;resize:vertical;"></textarea>
                 </div>
@@ -123,16 +131,30 @@ input[type="file"]::file-selector-button { cursor: pointer; }
     </div>
 
     {{-- Testimonial Cards Grid --}}
-    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:20px;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(310px, 1fr));gap:20px;">
         @forelse($testimonis as $t)
         <div class="testimoni-card-admin">
             <div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:8px;">
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <span style="font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:20px;
+                                     {{ $t->status==='dipublikasikan' ? 'background:#ECFDF5;color:#059669;border:1px solid #10B981;' : 'background:#FFFDF5;color:#D97706;border:1px solid #F59E0B;' }}">
+                            {{ $t->status==='dipublikasikan' ? '✓ Dipublikasikan' : '⌛ Pending / Sembunyi' }}
+                        </span>
+                        @if($t->peserta_id)
+                        <span style="font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:20px;background:#EEF2FF;color:#4F46E5;border:1px solid #6366F1;">
+                            Peserta Terdaftar
+                        </span>
+                        @endif
+                    </div>
+                </div>
+
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
                     <div style="width:46px;height:46px;border-radius:50%;background:#131218;border:2px solid #FFC81A;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
                         @if($t->foto)
                             <img src="{{ asset('storage/'.$t->foto) }}" alt="Foto" style="width:100%;height:100%;object-fit:cover;">
                         @else
-                            @include('components.icon',['name'=>'user','size'=>20,'style'=>'color:#FFC81A'])
+                            <span style="color:#FFC81A;font-weight:900;font-size:16px;">{{ Str::upper(Str::substr($t->nama, 0, 1)) }}</span>
                         @endif
                     </div>
                     <div>
@@ -154,14 +176,22 @@ input[type="file"]::file-selector-button { cursor: pointer; }
             </div>
             
             {{-- Actions --}}
-            <div style="display:flex;gap:8px;">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <form action="{{ route('admin.testimoni.toggle-status', $t->id) }}" method="POST" style="margin:0;flex:1;">
+                    @csrf
+                    <button type="submit"
+                            style="width:100%;padding:8px 0;border-radius:10px;border:1.5px solid #131218;background:{{ $t->status==='dipublikasikan' ? '#FFF' : '#FFC81A' }};color:#131218;font-size:11.5px;font-weight:800;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:4px;">
+                        @include('components.icon',['name'=>$t->status==='dipublikasikan'?'eye-off':'eye','size'=>13])
+                        {{ $t->status==='dipublikasikan' ? 'Sembunyikan' : 'Tayangkan' }}
+                    </button>
+                </form>
                 <button type="button" onclick="openEditTestimoniModal({{ json_encode($t) }}, '{{ $t->foto ? asset('storage/'.$t->foto) : '' }}')"
-                        style="flex:1;padding:8px 0;border-radius:10px;border:1.5px solid #131218;background:#FFFFFF;color:#131218;font-size:12px;font-weight:800;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:5px;"
+                        style="padding:8px 14px;border-radius:10px;border:1.5px solid #131218;background:#FFFFFF;color:#131218;font-size:12px;font-weight:800;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:4px;"
                         onmouseover="this.style.background='#FFC81A';" onmouseout="this.style.background='#FFFFFF';">
                     @include('components.icon',['name'=>'edit','size'=>13]) Edit
                 </button>
                 <button type="button" onclick="confirmTestimoniDelete('{{ route('admin.testimoni.destroy', $t) }}', {{ json_encode($t->nama) }})"
-                        style="padding:8px 14px;border-radius:10px;border:1px solid #FCA5A5;background:#FEF2F2;color:#EF4444;font-size:12px;cursor:pointer;transition:all .18s;display:flex;align-items:center;"
+                        style="padding:8px 12px;border-radius:10px;border:1px solid #FCA5A5;background:#FEF2F2;color:#EF4444;font-size:12px;cursor:pointer;transition:all .18s;display:flex;align-items:center;"
                         onmouseover="this.style.background='#EF4444';this.style.color='#FFF';" onmouseout="this.style.background='#FEF2F2';this.style.color='#EF4444';">
                     @include('components.icon',['name'=>'trash','size'=>13])
                 </button>
@@ -196,6 +226,7 @@ function openTestimoniModal() {
     document.getElementById('f-nama').value = '';
     document.getElementById('f-keterangan').value = '';
     document.getElementById('f-rating').value = '5';
+    document.getElementById('f-status').value = 'dipublikasikan';
     document.getElementById('f-kata').value = '';
     document.getElementById('f-foto').value = '';
     document.getElementById('f-foto-preview').style.display = 'none';
@@ -210,6 +241,7 @@ function openEditTestimoniModal(testimoni, fotoAssetUrl) {
     document.getElementById('f-nama').value = testimoni.nama || '';
     document.getElementById('f-keterangan').value = testimoni.keterangan || '';
     document.getElementById('f-rating').value = testimoni.rating || '5';
+    document.getElementById('f-status').value = testimoni.status || 'dipublikasikan';
     document.getElementById('f-kata').value = testimoni.kata || '';
     document.getElementById('f-foto').value = '';
     

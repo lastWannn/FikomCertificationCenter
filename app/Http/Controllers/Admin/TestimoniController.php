@@ -22,10 +22,12 @@ class TestimoniController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'keterangan' => 'required|string|max:255',
             'kata' => 'required|string',
-            'foto' => 'nullable|image|max:2048'
+            'foto' => 'nullable|image|max:2048',
+            'status' => 'nullable|in:dipublikasikan,pending,ditolak',
         ]);
 
         $data = $request->except('foto');
+        $data['status'] = $request->input('status', 'dipublikasikan');
 
         if ($request->hasFile('foto')) {
             $data['foto'] = \App\Helpers\ImageHelper::compressToWebp($request->file('foto'), 'testimoni');
@@ -43,7 +45,8 @@ class TestimoniController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'keterangan' => 'required|string|max:255',
             'kata' => 'required|string',
-            'foto' => 'nullable|image|max:2048'
+            'foto' => 'nullable|image|max:2048',
+            'status' => 'nullable|in:dipublikasikan,pending,ditolak',
         ]);
 
         $data = $request->except('foto');
@@ -58,6 +61,18 @@ class TestimoniController extends Controller
         $testimoni->update($data);
 
         return redirect()->route('admin.testimoni.index')->with('success', 'Testimoni berhasil diperbarui');
+    }
+
+    public function toggleStatus(Testimoni $testimoni)
+    {
+        $newStatus = $testimoni->status === 'dipublikasikan' ? 'pending' : 'dipublikasikan';
+        $testimoni->update(['status' => $newStatus]);
+
+        $msg = $newStatus === 'dipublikasikan' 
+            ? 'Testimoni telah dipublikasikan ke Landing Page.' 
+            : 'Testimoni telah disembunyikan (Pending).';
+
+        return redirect()->route('admin.testimoni.index')->with('success', $msg);
     }
 
     public function destroy(Testimoni $testimoni)

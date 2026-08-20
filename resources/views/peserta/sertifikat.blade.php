@@ -67,6 +67,23 @@
         </div>
     </div>
 
+    @if(!($hasTestimoni ?? true) && $sertifikat->isNotEmpty())
+    <div style="margin-bottom:24px;padding:16px 20px;background:#FFFBEB;border:2px solid #F59E0B;border-radius:18px;color:#B45309;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 6px 18px rgba(245,158,11,0.18);">
+        <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:40px;height:40px;border-radius:12px;background:#FEF3C7;border:1.5px solid #F59E0B;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+                <p style="margin:0;font-size:14px;font-weight:900;color:#92400E;">Wajib Mengisi Testimoni</p>
+                <p style="margin:2px 0 0;font-size:12.5px;color:#B45309;font-weight:600;">Silakan isi testimoni pengalaman Anda terlebih dahulu untuk membuka akses pengunduhan sertifikat.</p>
+            </div>
+        </div>
+        <a href="{{ route('peserta.testimoni') }}" style="padding:9px 18px;font-size:12.5px;font-weight:900;background:#131218;color:#FFC81A;border-radius:20px;text-decoration:none;border:1.5px solid #131218;box-shadow:0 4px 12px rgba(19,18,24,0.15);">
+            Isi Testimoni Sekarang &rarr;
+        </a>
+    </div>
+    @endif
+
     @if($sertifikat->isEmpty())
     <div class="fcc-card" style="text-align:center;padding:64px;background:#FFFFFF;border-radius:20px;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
         <div style="width:64px;height:64px;border-radius:20px;background:#FFFDF5;border:1.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 16px rgba(255,200,26,0.3);">
@@ -96,9 +113,15 @@
             </div>
             <div>
                 @if($s->file_sertifikat)
-                <a href="{{ route('peserta.sertifikat.download', $s) }}" class="fcc-btn-gold" style="padding:10px 18px;font-size:13px;text-decoration:none;justify-content:center;width:100%;border-radius:12px;font-weight:900;box-shadow:0 4px 12px rgba(255,200,26,0.3);">
-                    @include('components.icon',['name'=>'download','size'=>15]) Unduh Sertifikat (PDF) &rarr;
-                </a>
+                    @if($hasTestimoni ?? true)
+                    <a href="{{ route('peserta.sertifikat.download', $s) }}" class="fcc-btn-gold" style="padding:10px 18px;font-size:13px;text-decoration:none;justify-content:center;width:100%;border-radius:12px;font-weight:900;box-shadow:0 4px 12px rgba(255,200,26,0.3);">
+                        @include('components.icon',['name'=>'download','size'=>15]) Unduh Sertifikat (PDF) &rarr;
+                    </a>
+                    @else
+                    <a href="{{ route('peserta.testimoni') }}" style="display:inline-flex;align-items:center;gap:6px;padding:10px 18px;font-size:12.5px;text-decoration:none;justify-content:center;width:100%;border-radius:12px;font-weight:900;background:#FFFBEB;color:#D97706;border:1.5px solid #F59E0B;box-shadow:0 4px 12px rgba(245,158,11,0.2);">
+                        🔒 Isi Testimoni untuk Unduh &rarr;
+                    </a>
+                    @endif
                 @else
                 <span style="display:block;padding:10px;border-radius:10px;background:#F1F5F9;border:1px solid #CBD5E1;color:#94A3B8;font-size:12.5px;font-weight:800;">File Sertifikat Belum Tersedia</span>
                 @endif

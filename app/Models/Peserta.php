@@ -12,8 +12,8 @@ class Peserta extends Authenticatable
 
     protected $table    = 'peserta';
     protected $fillable = [
-        'nama','alamat','email','kelamin','instansi','no_hp','password',
-        'status_akun','email_verified_at','remember_token', // FIX: tambah kolom phase 3
+        'nama','alamat','email','pending_email','kelamin','instansi','no_hp','password',
+        'status_akun','email_verified_at','remember_token',
     ];
     protected $hidden = ['password','remember_token'];
     protected $casts  = [

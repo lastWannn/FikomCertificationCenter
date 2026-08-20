@@ -345,20 +345,6 @@
       <td class="text-center text-bold">1</td>
       <td class="text-right text-bold">Rp {{ number_format($pembayaran->pendaftaran->biaya?->nominal ?? $pembayaran->jumlah_bayar, 0, ',', '.') }}</td>
     </tr>
-    @if($pembayaran->kode_unik)
-    <tr>
-      <td class="text-center text-bold">2</td>
-      <td>
-        <div class="text-bold" style="color: #D97706;">Kode Unik Verifikasi Sistem</div>
-        <div style="font-size: 8pt; color: #64748B; margin-top: 3px;">
-          3 Digit unik untuk otomatisasi verifikasi transfer
-        </div>
-      </td>
-      <td class="text-right text-bold" style="color: #D97706;">Rp {{ number_format($pembayaran->kode_unik, 0, ',', '.') }}</td>
-      <td class="text-center text-bold">1</td>
-      <td class="text-right text-bold" style="color: #D97706;">Rp {{ number_format($pembayaran->kode_unik, 0, ',', '.') }}</td>
-    </tr>
-    @endif
   </tbody>
 </table>
 

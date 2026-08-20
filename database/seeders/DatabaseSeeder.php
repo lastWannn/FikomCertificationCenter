@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder {
             MasterDataSeeder::class,
             KegiatanSeeder::class,
             SiapTerbitSertifikatSeeder::class,
+            TestimoniSeeder::class,
         ]);
 
         $this->command->info('Seeder Modular OK! Admin: admin@fcc.com / password');

@@ -46,13 +46,12 @@ class AdminManagementController extends Controller
 
         $validated = $request->validate([
             'nama'     => ['required', 'string', 'max:150'],
-            'email'    => ['required', 'email', 'max:150', 'unique:admins,email'],
+            'email'    => ['required', 'string', 'max:150', new \App\Rules\ValidEmailAddress(), 'unique:admins,email'],
             'password' => ['required', 'string', 'min:6'],
             'role'     => ['required', Rule::in(['super_admin', 'admin'])],
         ], [
             'nama.required'     => 'Nama admin wajib diisi.',
             'email.required'    => 'Email wajib diisi.',
-            'email.email'       => 'Format email tidak valid.',
             'email.unique'      => 'Email sudah terdaftar.',
             'password.required' => 'Password wajib diisi.',
             'password.min'      => 'Password minimal 6 karakter.',
@@ -76,7 +75,7 @@ class AdminManagementController extends Controller
 
         $validated = $request->validate([
             'nama'     => ['required', 'string', 'max:150'],
-            'email'    => ['required', 'email', 'max:150', Rule::unique('admins', 'email')->ignore($admin->id)],
+            'email'    => ['required', 'string', 'max:150', new \App\Rules\ValidEmailAddress(), Rule::unique('admins', 'email')->ignore($admin->id)],
             'password' => ['nullable', 'string', 'min:6'],
             'role'     => ['required', Rule::in(['super_admin', 'admin'])],
         ], [

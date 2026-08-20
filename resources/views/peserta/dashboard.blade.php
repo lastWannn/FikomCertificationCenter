@@ -84,6 +84,9 @@
         <a href="{{ route('peserta.jelajahi') }}" class="fcc-btn-gold" style="padding:10px 22px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border-radius:30px;font-weight:900;box-shadow:0 6px 18px rgba(255,200,26,0.35);">
           @include('components.icon',['name'=>'compass','size'=>16]) Jelajahi Kegiatan
         </a>
+        <a href="{{ route('peserta.testimoni') }}" style="padding:10px 20px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border-radius:30px;font-weight:800;background:#FFC81A;color:#131218;border:1.5px solid #FFC81A;transition:all .18s;box-shadow:0 4px 14px rgba(255,200,26,0.25);">
+          @include('components.icon',['name'=>'message-square','size'=>16,'style'=>'color:#131218']) Beri Testimoni
+        </a>
         <a href="{{ route('peserta.sertifikat') }}" style="padding:10px 20px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border-radius:30px;font-weight:800;background:#24232C;color:#FFF;border:1.5px solid #363442;transition:all .18s;" onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#363442'">
           @include('components.icon',['name'=>'award','size'=>16,'style'=>'color:#FFC81A']) Sertifikat Saya
         </a>
