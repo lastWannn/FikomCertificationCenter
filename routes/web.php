@@ -4,10 +4,10 @@ use App\Http\Controllers\Admin\PointPesertaController;
 use App\Http\Controllers\Admin\PointPesertaSertifikasiController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Livewire\Auth\Login as LivewireLogin;
 use App\Livewire\Auth\Register as LivewireRegister;
-
-use App\Http\Controllers\Auth\RegisterController;
 
 // Admin
 use App\Http\Controllers\Admin\{
@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\{
     QrController              as AdminQr,
     MitraController,
     KontakController,
+    PesanController           as AdminPesan,
     TestimoniController,
 };
 
@@ -50,6 +51,7 @@ use App\Http\Controllers\Peserta\{
     SertifikatController    as PesertaSertifikat,
     ProfileController       as PesertaProfile,
     QrController            as PesertaQr,
+    TestimoniController     as PesertaTestimoni,
 };
 
 /* ── LANDING ─────────────────────────────────────────────────── */
@@ -60,6 +62,9 @@ Route::get('/kegiatan/{kegiatan}', [LandingController::class,'show'])->name('lan
 Route::get('/pendaftaran',   [LandingController::class,'pendaftaran'])->name('landing.pendaftaran');
 Route::get('/arsip',         [LandingController::class,'arsip'])->name('landing.arsip');
 Route::get('/arsip/{arsip}', [LandingController::class,'arsipShow'])->name('landing.arsip.show');
+Route::get('/arsip/{arsip}/pdf', [LandingController::class,'arsipPdf'])->name('landing.arsip.pdf');
+Route::get('/arsip/{arsip}/download-pdf', [LandingController::class,'downloadDomPdf'])->name('landing.arsip.download-pdf');
+Route::get('/arsip/{arsip}/unduh-lampiran', [LandingController::class,'downloadBeritaAcara'])->name('landing.arsip.download');
 Route::get('/hubungi-kami',  [LandingController::class,'kontak'])->name('landing.kontak');
 Route::post('/hubungi-kami', [LandingController::class,'kontakPost'])->name('landing.kontak.post');
 
@@ -68,11 +73,17 @@ Route::get('/api/search',    [LandingController::class,'search'])->name('landing
 
 /* ── AUTH ────────────────────────────────────────────────────── */
 Route::middleware('guest.fcc')->group(function () {
-    Route::get('/masuk',          LivewireLogin::class)->name('auth.login');     // Livewire
+    Route::get('/masuk',          [LoginController::class,'showLogin'])->name('auth.login');
     Route::post('/masuk',         [LoginController::class,'login'])->middleware('throttle:10,1')->name('auth.login.post');
+
     Route::get('/daftar',         [RegisterController::class,'showRegister'])->name('auth.register');
     Route::post('/daftar',        [RegisterController::class,'register'])->middleware('throttle:10,1')->name('auth.register.post');
     Route::post('/daftar/verify', [RegisterController::class,'verifyOtp'])->middleware('throttle:10,1')->name('auth.register.verify');
+
+    // Google OAuth Routes
+    Route::get('/auth/google',          [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+
     Route::get('/lupa-password',  [LoginController::class,'showForgot'])->name('auth.forgot');
     Route::post('/lupa-password', [LoginController::class,'sendReset'])->middleware('throttle:10,1')->name('auth.forgot.post');
     Route::post('/lupa-password/verify', [LoginController::class,'verifyResetOtp'])->middleware('throttle:10,1')->name('auth.forgot.verify');
@@ -179,6 +190,10 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     });
 
     /* TRANSAKSI */
+    Route::get('pesan',                               [AdminPesan::class,'index'])->name('pesan.index');
+    Route::get('pesan/{pesan}',                       [AdminPesan::class,'show'])->name('pesan.show');
+    Route::post('pesan/{pesan}/read',                 [AdminPesan::class,'markAsRead'])->name('pesan.read');
+    Route::delete('pesan/{pesan}',                    [AdminPesan::class,'destroy'])->name('pesan.destroy');
     Route::get('pembayaran',                          [PembayaranController::class,'index'])->name('pembayaran.index');
     Route::get('pembayaran/{pembayaran}',             [PembayaranController::class,'show'])->name('pembayaran.show');
     Route::post('pembayaran/{pembayaran}/verifikasi', [PembayaranController::class,'verifikasi'])->name('pembayaran.verifikasi');
@@ -244,6 +259,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     Route::resource('informasi', InformasiController::class);
     Route::resource('mitra', MitraController::class);
     Route::resource('testimoni', TestimoniController::class)->except(['create', 'show', 'edit']);
+    Route::post('testimoni/{testimoni}/toggle-status', [TestimoniController::class, 'toggleStatus'])->name('testimoni.toggle-status');
     Route::get('kontak', [KontakController::class, 'edit'])->name('kontak.edit');
     Route::put('kontak', [KontakController::class, 'update'])->name('kontak.update');
     Route::resource('rekening',  RekeningController::class);
@@ -263,6 +279,9 @@ Route::middleware('auth.peserta')->prefix('peserta')->name('peserta.')->group(fu
     Route::get('/',                  [PesertaDashboard::class,'index'])->name('dashboard');
     Route::get('/profil',            [PesertaProfile::class,'edit'])->name('profile');
     Route::put('/profil',            [PesertaProfile::class,'update'])->name('profile.update');
+    Route::post('/profil/verify-email-otp', [PesertaProfile::class,'verifyEmailOtp'])->name('profile.verify-email-otp');
+    Route::post('/profil/resend-email-otp', [PesertaProfile::class,'resendEmailOtp'])->name('profile.resend-email-otp');
+    Route::post('/profil/cancel-email-change', [PesertaProfile::class,'cancelEmailChange'])->name('profile.cancel-email-change');
     Route::get('/jelajahi',          [JelajahiController::class,'index'])->name('jelajahi');
     Route::post('/daftar/{kegiatan}',[PendaftaranController::class,'store'])->name('kegiatan.daftar');
     Route::get('/pendaftaran',       [PendaftaranController::class,'index'])->name('pendaftaran');
@@ -279,6 +298,11 @@ Route::middleware('auth.peserta')->prefix('peserta')->name('peserta.')->group(fu
     // QR Peserta
     Route::get('/qr/{pendaftaran}',      [PesertaQr::class,'show'])->name('qr.show');
     Route::get('/qr/{pendaftaran}/cetak',[PesertaQr::class,'cetak'])->name('qr.cetak');
+    // Testimoni Peserta
+    Route::get('/testimoni',             [PesertaTestimoni::class,'index'])->name('testimoni');
+    Route::post('/testimoni',            [PesertaTestimoni::class,'store'])->name('testimoni.store');
+    Route::put('/testimoni/{testimoni}', [PesertaTestimoni::class,'update'])->name('testimoni.update');
+    Route::delete('/testimoni/{testimoni}', [PesertaTestimoni::class,'destroy'])->name('testimoni.destroy');
     // API Chart
     Route::get('/api/chart/aktivitas', [PesertaDashboard::class,'chartAktivitas'])->name('api.chart.aktivitas');
 });

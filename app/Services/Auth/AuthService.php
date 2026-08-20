@@ -35,6 +35,20 @@ class AuthService
                 ]);
             }
 
+            // Wajibkan verifikasi OTP email untuk peserta
+            if (is_null($peserta->email_verified_at)) {
+                Auth::guard('peserta')->logout();
+                
+                // Kirim ulang kode OTP 4 digit
+                try {
+                    app(\App\Services\Auth\OtpService::class)->generateAndSend($peserta->email, 'register');
+                } catch (\Throwable $t) {}
+
+                throw ValidationException::withMessages([
+                    'email' => ['Akun Anda belum memverifikasi kode OTP 4-digit. Kode OTP baru telah dikirimkan ke ' . $peserta->email . '. Silakan periksa email Anda.'],
+                ]);
+            }
+
             return ['guard' => 'peserta', 'user' => $peserta];
         }
 

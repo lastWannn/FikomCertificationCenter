@@ -225,13 +225,16 @@
         }
     }, true);
 
+    const isEvt = (x) => !!(x && (x instanceof Event || (typeof x.preventDefault === 'function' && !x.tagName && !x.nodeType)));
+    const isEl  = (x) => !!(x && (x.nodeType === 1 || x.tagName || x.form !== undefined || x.closest));
+
     function fccConfirmDelete(a, b, c, d) {
         let evt = null;
-        let elem = a;
+        let elem = null;
         let title = 'Konfirmasi Hapus';
         let msg = 'Apakah Anda yakin ingin menghapus data ini?';
 
-        if (a && (a instanceof Event || (typeof a === 'object' && typeof a.preventDefault === 'function'))) {
+        if (isEvt(a)) {
             evt = a;
             try { evt.preventDefault(); } catch(err) {}
             elem = b;
@@ -243,31 +246,58 @@
             msg = typeof c === 'string' ? c : msg;
         }
 
-        const form = elem ? (elem.tagName === 'FORM' ? elem : elem.closest('form')) : null;
+        elem = isEl(elem) ? elem : (isEl(a) ? a : null);
+        const form = elem ? (elem.tagName === 'FORM' ? elem : (elem.form || elem.closest('form'))) : null;
         if (!form) return false;
+
         fccConfirm({
             title: title,
             msg: msg,
             danger: true,
             btnText: 'Ya, Hapus Permanen',
             onConfirm: function() {
-                form.submit();
+                HTMLFormElement.prototype.submit.call(form);
             }
         });
         return false;
     }
 
-    function fccConfirmAction(elem, title = 'Konfirmasi Tindakan', msg = 'Apakah Anda yakin?', btnText = 'Ya, Lanjutkan', danger = false) {
+    function fccConfirmAction(a, b, c, d, e, f) {
+        let evt = null;
+        let elem = null;
+        let title = 'Konfirmasi Tindakan';
+        let msg = 'Apakah Anda yakin?';
+        let btnText = 'Ya, Lanjutkan';
+        let danger = false;
+
+        if (isEvt(a)) {
+            evt = a;
+            try { evt.preventDefault(); } catch(err) {}
+            elem = b;
+            title = typeof c === 'string' ? c : title;
+            msg = typeof d === 'string' ? d : msg;
+            btnText = typeof e === 'string' ? e : btnText;
+            danger = typeof f === 'boolean' ? f : danger;
+        } else {
+            elem = a;
+            title = typeof b === 'string' ? b : title;
+            msg = typeof c === 'string' ? c : msg;
+            btnText = typeof d === 'string' ? d : btnText;
+            danger = typeof e === 'boolean' ? e : danger;
+        }
+
+        elem = isEl(elem) ? elem : (isEl(a) ? a : null);
         if (!elem) return false;
+
         fccConfirm({
             title: title,
             msg: msg,
             danger: danger,
             btnText: btnText,
             onConfirm: function() {
-                if (elem.form || elem.tagName === 'FORM') {
-                    const form = elem.tagName === 'FORM' ? elem : elem.form;
-                    form.submit();
+                const form = elem.tagName === 'FORM' ? elem : (elem.form || elem.closest('form'));
+                if (form) {
+                    HTMLFormElement.prototype.submit.call(form);
                 } else if (elem.tagName === 'A' && elem.href) {
                     window.location.href = elem.href;
                 }

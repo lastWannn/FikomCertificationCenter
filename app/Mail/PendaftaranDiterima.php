@@ -36,7 +36,7 @@ class PendaftaranDiterima extends Mailable
             $rekening = Rekening::where('is_active', true)->first();
 
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.invoice-pdf', compact('pembayaran', 'rekening'))
-                ->setPaper('a5');
+                ->setPaper('a4');
 
             $attachments[] = Attachment::fromData(
                 fn () => $pdf->output(),

@@ -8,6 +8,7 @@ use App\Models\Mitra;
 use App\Models\ArsipKegiatan;
 use App\Models\KontenHalaman;
 use App\Models\Kontak;
+use App\Models\PesanMasuk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -41,7 +42,7 @@ class LandingController extends Controller
         $konten     = KontenHalaman::all()->keyBy('jenis');
         $faqs       = Informasi::faq()->latest()->get();
         $infos      = Informasi::info()->aktif()->latest()->limit(3)->get();
-        $testimonis = \App\Models\Testimoni::latest()->get();
+        $testimonis = \App\Models\Testimoni::dipublikasikan()->latest()->get();
 
         return view('landing.index', compact(
             'kegiatanTerbaru', 'stats', 'mitras', 'arsips', 'konten', 'faqs', 'infos', 'testimonis'
@@ -115,17 +116,75 @@ class LandingController extends Controller
     {
         $request->validate([
             'nama'  => 'required|string|max:150',
-            'email' => 'required|email',
+            'email' => ['required', 'string', 'max:150', new \App\Rules\ValidEmailAddress()],
             'pesan' => 'required|string',
         ]);
-        // Simpan atau kirim email — implementasi sesuai kebutuhan
-        return back()->with('success','Pesan berhasil dikirim! Kami akan segera menghubungi Anda.');
+
+        $pesanMasuk = PesanMasuk::create([
+            'nama'   => $request->nama,
+            'email'  => $request->email,
+            'pesan'  => $request->pesan,
+            'status' => 'belum_dibaca',
+        ]);
+
+        // Kirim email notifikasi ke admin di background OS process (0 ms latency untuk pengunjung)
+        \App\Helpers\AsyncMail::dispatch('kontak', $pesanMasuk->id);
+
+        return back()->with('success', 'Pesan Anda telah berhasil dikirim! Tim kami akan segera menindaklanjuti.');
     }
 
     public function arsipShow(ArsipKegiatan $arsip)
     {
         $arsip->load('kegiatan');
-        return view('landing.arsip-show', compact('arsip'));
+
+        $beritaAcaraPath = preg_replace('/^storage\//', '', $arsip->berita_acara ?? '');
+        $beritaAcaraFile = $beritaAcaraPath !== ''
+            ? storage_path('app/public/' . $beritaAcaraPath)
+            : null;
+        $beritaAcaraUrl = ($beritaAcaraFile && file_exists($beritaAcaraFile))
+            ? asset('storage/' . $beritaAcaraPath)
+            : null;
+
+        return view('landing.arsip-show', compact('arsip', 'beritaAcaraFile', 'beritaAcaraUrl'));
+    }
+
+    public function arsipPdf(ArsipKegiatan $arsip)
+    {
+        if (!empty($arsip->berita_acara)) {
+            $cleanPath = preg_replace('/^storage\//', '', $arsip->berita_acara);
+            $filePath  = storage_path('app/public/' . $cleanPath);
+
+            if (file_exists($filePath)) {
+                return response()->file($filePath, [
+                    'Content-Type' => mime_content_type($filePath) ?: 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="Berita-Acara-' . \Illuminate\Support\Str::slug($arsip->judul ?: 'Kegiatan') . '.pdf"',
+                ]);
+            }
+        }
+
+        abort(404, 'File berita acara belum tersedia.');
+    }
+
+    public function downloadDomPdf(ArsipKegiatan $arsip, \App\Services\Admin\ArsipService $arsipService)
+    {
+        return $this->downloadBeritaAcara($arsip, $arsipService);
+    }
+
+    public function downloadBeritaAcara(ArsipKegiatan $arsip, \App\Services\Admin\ArsipService $arsipService)
+    {
+        session_write_close();
+
+        $cleanPath = preg_replace('/^storage\//', '', $arsip->berita_acara ?? '');
+        $filePath  = storage_path('app/public/' . $cleanPath);
+
+        if (empty($cleanPath) || !file_exists($filePath)) {
+            abort(404, 'File berita acara belum tersedia.');
+        }
+
+        $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+        $filename = 'Berita-Acara-' . \Illuminate\Support\Str::slug($arsip->judul ?: 'Kegiatan') . '.' . $ext;
+
+        return response()->download($filePath, $filename);
     }
 
     public function sendReset(\Illuminate\Http\Request $r) 

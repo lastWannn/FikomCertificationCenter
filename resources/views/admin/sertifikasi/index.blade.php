@@ -2,7 +2,67 @@
 @section('title', 'Program Sertifikasi')
 
 @section('page-content')
-<div style="padding:24px;max-width:1200px;margin:0 auto;width:100%;">
+<div style="padding:24px;position:relative;">
+
+    {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
+    <style>
+      @keyframes skeletonShimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      .fcc-skeleton-box {
+        background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+        background-size: 200% 100%;
+        animation: skeletonShimmer 1.4s infinite ease-in-out;
+        border-radius: 12px;
+      }
+      #sertifikasi-skeleton-overlay {
+        transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+    </style>
+
+    <div id="sertifikasi-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px;box-sizing:border-box;pointer-events:none;">
+      {{-- Header Skeleton --}}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+        <div style="width:40%;">
+          <div class="fcc-skeleton-box" style="width:110px;height:18px;margin-bottom:8px;border-radius:20px;"></div>
+          <div class="fcc-skeleton-box" style="width:260px;height:24px;margin-bottom:6px;"></div>
+          <div class="fcc-skeleton-box" style="width:200px;height:12px;"></div>
+        </div>
+        <div class="fcc-skeleton-box" style="width:180px;height:40px;border-radius:30px;"></div>
+      </div>
+      {{-- 2 Stat Cards Skeleton --}}
+      <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:16px;margin-bottom:24px;">
+        @for($sc=0;$sc<2;$sc++)
+        <div style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;gap:14px;">
+          <div class="fcc-skeleton-box" style="width:44px;height:44px;border-radius:12px;flex-shrink:0;"></div>
+          <div style="flex:1;">
+            <div class="fcc-skeleton-box" style="width:65%;height:12px;margin-bottom:6px;"></div>
+            <div class="fcc-skeleton-box" style="width:40%;height:20px;"></div>
+          </div>
+        </div>
+        @endfor
+      </div>
+      {{-- Table Skeleton --}}
+      <div style="padding:28px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+        <div class="fcc-skeleton-box" style="width:100%;height:44px;border-radius:10px;"></div>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        setTimeout(function() {
+          var sk = document.getElementById('sertifikasi-skeleton-overlay');
+          if (sk) {
+            sk.style.opacity = '0';
+            sk.style.visibility = 'hidden';
+            setTimeout(function() { sk.style.display = 'none'; }, 350);
+          }
+        }, 400);
+      })();
+    </script>
 
     {{-- Header & Action Bar --}}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
@@ -64,11 +124,11 @@
             <table style="width:100%;border-collapse:collapse;">
                 <thead>
                     <tr style="background:#131218;color:#FFFFFF;">
-                        <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;width:110px;">Kode</th>
+                        <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">Kode</th>
                         <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Program Sertifikasi</th>
-                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:180px;">Kategori</th>
-                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:220px;">Status Modul &amp; Jadwal</th>
-                        <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;width:140px;">Aksi</th>
+                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Kategori</th>
+                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Status Modul &amp; Jadwal</th>
+                        <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>

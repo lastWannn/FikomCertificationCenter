@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\HashidService;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
@@ -20,8 +21,12 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Paksa HTTPS di production
-        if (app()->environment('production')) {
+        // Custom Neo-Brutalist Pagination Views
+        Paginator::defaultView('vendor.pagination.custom');
+        Paginator::defaultSimpleView('vendor.pagination.simple-custom');
+
+        // Paksa HTTPS di production atau saat menggunakan Tunnel/Reverse Proxy HTTPS
+        if (app()->environment('production') || request()->isSecure() || request()->header('x-forwarded-proto') === 'https' || str_contains((string) config('services.google.redirect'), 'https://')) {
             URL::forceScheme('https');
         }
 

@@ -19,25 +19,51 @@ class RegisterController extends Controller
             
             $this->otpService->generateAndSend($peserta->email, 'register');
 
-            return response()->json([
-                'success'     => true,
-                'require_otp' => true,
-                'email'       => $peserta->email,
-                'message'     => 'Kode OTP 4 digit telah dikirim ke email Anda.'
-            ]);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success'     => true,
+                    'require_otp' => true,
+                    'email'       => $peserta->email,
+                    'message'     => 'Kode OTP 4 digit telah dikirim ke email Anda.'
+                ]);
+            }
+
+            return redirect()->route('auth.register')
+                ->with('require_otp', true)
+                ->with('email', $peserta->email)
+                ->with('success', 'Kode OTP 4 digit telah dikirim ke email Anda.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors'  => $e->errors()
+                ], 422);
+            }
+            return redirect()->back()
+                ->withInput()
+                ->withErrors($e->errors());
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Register Exception: ' . $e->getMessage());
 
-            return response()->json([
-                'success' => false,
-                'errors'  => ['system' => ['Gagal pendaftaran: ' . $e->getMessage()]]
-            ], 422);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors'  => ['system' => ['Gagal pendaftaran: ' . $e->getMessage()]]
+                ], 422);
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['system' => 'Gagal pendaftaran: ' . $e->getMessage()]);
         }
     }
 
     public function verifyOtp(\Illuminate\Http\Request $request)
     {
-        $request->validate(['email' => 'required|email', 'otp' => 'required|digits:4']);
+        $request->validate([
+            'email' => ['required', 'string', new \App\Rules\ValidEmailAddress()],
+            'otp'   => 'required|digits:4'
+        ]);
         
         // Verifikasi OTP
         $this->otpService->verify($request->email, $request->otp, 'register');

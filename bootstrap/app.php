@@ -13,6 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Trust semua proxy (Cloudflare, Cloudflare Tunnel, Nginx, Load Balancer)
+        // Ini memastikan Laravel dapat mendeteksi header X-Forwarded-Proto: https
+        $middleware->trustProxies(at: '*');
+
         // Global web middleware (security headers)
         $middleware->web(append: [
             \App\Http\Middleware\SecurityHeaders::class,

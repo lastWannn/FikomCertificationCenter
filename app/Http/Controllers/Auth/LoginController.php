@@ -36,6 +36,18 @@ class LoginController extends Controller
             return redirect()->route($redirect)
                 ->with('success', 'Selamat datang, '.$result['user']->nama.'!');
         } catch (ValidationException $e) {
+            $peserta = \App\Models\Peserta::where('email', $request->email)->first();
+            if ($peserta && is_null($peserta->email_verified_at)) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success'     => false,
+                        'require_otp' => true,
+                        'email'       => $peserta->email,
+                        'message'     => 'Akun Anda belum memverifikasi OTP. Kode OTP 4-digit baru telah dikirimkan ke email Anda.'
+                    ]);
+                }
+            }
+
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -48,7 +60,11 @@ class LoginController extends Controller
 
     public function sendReset(Request $request)
     {
-        $request->validate(['email' => 'required|email'],['email.required'=>'Email wajib diisi.','email.email'=>'Format email tidak valid.']);
+        $request->validate([
+            'email' => ['required', 'string', new \App\Rules\ValidEmailAddress()]
+        ], [
+            'email.required' => 'Email wajib diisi.'
+        ]);
         $exists = \App\Models\Peserta::where('email',$request->email)->exists()
                || \App\Models\Admin::where('email',$request->email)->exists();
         if (!$exists) {
@@ -74,8 +90,8 @@ class LoginController extends Controller
     public function verifyResetOtp(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'otp' => 'required|digits:4',
+            'email'    => ['required', 'string', new \App\Rules\ValidEmailAddress()],
+            'otp'      => 'required|digits:4',
             'password' => 'required|min:8|confirmed'
         ]);
 

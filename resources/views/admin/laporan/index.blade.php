@@ -50,7 +50,98 @@
 @endpush
 
 @section('page-content')
-<div class="laporan-container">
+<div class="laporan-container" style="position:relative;">
+
+  {{-- ═══ LAPORAN SKELETON LOADING OVERLAY ═════════════════════════ --}}
+  <style>
+    @keyframes skeletonShimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .fcc-skeleton-box {
+      background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.4s infinite ease-in-out;
+      border-radius: 12px;
+    }
+    #laporan-skeleton-overlay {
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+  </style>
+
+  <div id="laporan-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px 28px;box-sizing:border-box;pointer-events:none;">
+    {{-- Filter Bar Skeleton --}}
+    <div style="padding:18px 22px;margin-bottom:24px;border-radius:18px;background:#131218;display:flex;align-items:center;gap:12px;justify-content:space-between;">
+      <div style="display:flex;gap:12px;align-items:center;width:60%;">
+        <div class="fcc-skeleton-box" style="width:120px;height:34px;background:#24232C;"></div>
+        <div class="fcc-skeleton-box" style="width:100px;height:34px;background:#24232C;"></div>
+        <div class="fcc-skeleton-box" style="width:140px;height:34px;background:#24232C;"></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div class="fcc-skeleton-box" style="width:100px;height:34px;background:#24232C;border-radius:30px;"></div>
+        <div class="fcc-skeleton-box" style="width:120px;height:34px;background:#24232C;border-radius:30px;"></div>
+      </div>
+    </div>
+
+    {{-- 4 Stat Cards Skeleton --}}
+    <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:18px;margin-bottom:24px;">
+      @for($s=0;$s<4;$s++)
+      <div style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+          <div class="fcc-skeleton-box" style="width:60%;height:12px;"></div>
+          <div class="fcc-skeleton-box" style="width:48px;height:48px;border-radius:14px;"></div>
+        </div>
+        <div class="fcc-skeleton-box" style="width:80%;height:26px;margin-bottom:6px;"></div>
+        <div class="fcc-skeleton-box" style="width:40%;height:10px;"></div>
+      </div>
+      @endfor
+    </div>
+
+    {{-- 2 Columns Structured Skeleton --}}
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;">
+      {{-- Left Side --}}
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
+            <div class="fcc-skeleton-box" style="width:40%;height:18px;"></div>
+            <div class="fcc-skeleton-box" style="width:120px;height:30px;border-radius:10px;"></div>
+          </div>
+          <div class="fcc-skeleton-box" style="width:100%;height:220px;border-radius:14px;"></div>
+        </div>
+        <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div class="fcc-skeleton-box" style="width:30%;height:16px;margin-bottom:16px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:40px;margin-bottom:10px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:40px;"></div>
+        </div>
+      </div>
+
+      {{-- Right Side --}}
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <div style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div class="fcc-skeleton-box" style="width:50%;height:16px;margin-bottom:16px;"></div>
+          <div class="fcc-skeleton-box" style="width:130px;height:130px;border-radius:50%;margin:0 auto 16px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:30px;border-radius:8px;"></div>
+        </div>
+        <div style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div class="fcc-skeleton-box" style="width:60%;height:16px;margin-bottom:16px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:80px;border-radius:8px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      setTimeout(function() {
+        var sk = document.getElementById('laporan-skeleton-overlay');
+        if (sk) {
+          sk.style.opacity = '0';
+          sk.style.visibility = 'hidden';
+          setTimeout(function() { sk.style.display = 'none'; }, 350);
+        }
+      }, 450);
+    })();
+  </script>
 
   {{-- Print Header (Only visible on print) --}}
   <div class="print-header">

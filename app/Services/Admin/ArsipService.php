@@ -34,7 +34,28 @@ class ArsipService
         $data['dokumentasi'] = array_values(array_filter($docs));
 
         unset($data['_token'], $data['_method'], $data['uploaded_dokumentasi']);
-        return ArsipKegiatan::create($data);
+        $arsip = ArsipKegiatan::create($data);
+        if (empty($arsip->berita_acara)) {
+            $this->generatePdfFile($arsip);
+        }
+        return $arsip;
+    }
+
+    public function generatePdfFile(ArsipKegiatan $arsip): string
+    {
+        $arsip->load(['kegiatan.kegiatanPelatihan.jadwalPelatihan.pelatihan', 'kegiatan.kegiatanSertifikasi.jadwalSertifikasi.sertifikasi']);
+        $fileName = 'arsip/berita_acara_' . $arsip->hashid . '.pdf';
+
+        if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.berita-acara-pdf', compact('arsip'))
+                ->setPaper('a4', 'portrait');
+            \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $pdf->output());
+            if (empty($arsip->berita_acara)) {
+                $arsip->update(['berita_acara' => $fileName]);
+            }
+        }
+
+        return $fileName;
     }
 
     public function update(ArsipKegiatan $arsip, array $data): ArsipKegiatan
@@ -73,6 +94,13 @@ class ArsipService
 
         unset($data['_token'], $data['_method'], $data['delete_dokumentasi'], $data['uploaded_dokumentasi']);
         $arsip->update($data);
+        
+        // Re-generate PDF file jika belum ada file fisik
+        $cleanPath = preg_replace('/^storage\//', '', $arsip->berita_acara ?? '');
+        if (empty($cleanPath) || !file_exists(storage_path('app/public/' . $cleanPath))) {
+            $this->generatePdfFile($arsip);
+        }
+
         return $arsip->fresh();
     }
 
@@ -99,11 +127,12 @@ class ArsipService
     {
         $kegiatans = \App\Models\Kegiatan::passed()->doesntHave('arsip')->get();
         foreach ($kegiatans as $k) {
-            ArsipKegiatan::create([
+            $arsip = ArsipKegiatan::create([
                 'kegiatan_id' => $k->id,
                 'judul'       => $k->judul,
                 'ringkasan'   => 'Kegiatan ' . $k->judul . ' telah selesai dilaksanakan.',
             ]);
+            $this->generatePdfFile($arsip);
         }
     }
 }

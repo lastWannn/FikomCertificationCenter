@@ -25,6 +25,18 @@ class Kegiatan extends Model {
         return $this->kegiatanSertifikasi?->jadwalSertifikasi;
     }
     public function getJudulAttribute(): string { return $this->jadwal?->nama_kegiatan ?? $this->detail?->judul ?? '-'; }
+    public function getLatarUrlAttribute(): ?string {
+        if (empty($this->nama_latar)) return null;
+        if (str_starts_with($this->nama_latar, 'http://') || str_starts_with($this->nama_latar, 'https://')) {
+            return $this->nama_latar;
+        }
+        return asset('storage/' . $this->nama_latar);
+    }
+    public function getHasLatarAttribute(): bool {
+        if (empty($this->nama_latar)) return false;
+        return file_exists(public_path('storage/' . $this->nama_latar))
+            || file_exists(storage_path('app/public/' . $this->nama_latar));
+    }
     public function getTerisiAttribute(): int {
         return $this->pendaftaran()
             ->whereIn('status_pendaftaran',['menunggu_pembayaran','menunggu_verifikasi','terdaftar'])

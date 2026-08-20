@@ -11,15 +11,28 @@ class CetakController extends Controller
     public function sertifikat(Sertifikat $sertifikat)
     {
         $sertifikat->load(['pendaftaran.peserta','pendaftaran.kegiatan']);
+        $bgSrc = null;
+        if (!empty($sertifikat->gambar_latar)) {
+            $realPath = public_path('storage/' . $sertifikat->gambar_latar);
+            if (!file_exists($realPath)) {
+                $realPath = storage_path('app/public/' . $sertifikat->gambar_latar);
+            }
+            if (file_exists($realPath) && is_file($realPath)) {
+                $type = pathinfo($realPath, PATHINFO_EXTENSION);
+                $data = file_get_contents($realPath);
+                $bgSrc = 'data:image/' . ($type === 'svg' ? 'svg+xml' : $type) . ';base64,' . base64_encode($data);
+            }
+        }
 
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
             $safeNomor = str_replace(['/', '\\'], '-', $sertifikat->nomor_sertifikat);
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.sertifikat-pdf', compact('sertifikat'))
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.sertifikat-pdf', compact('sertifikat', 'bgSrc'))
                 ->setPaper('a4','landscape');
+
             return $pdf->stream("sertifikat-{$safeNomor}.pdf");
         }
         // Fallback: tampilkan sebagai HTML untuk di-print
-        return view('admin.cetak.sertifikat-pdf', compact('sertifikat'));
+        return view('admin.cetak.sertifikat-pdf', compact('sertifikat', 'bgSrc'));
     }
 
     /** Invoice PDF — tagihan sebelum bayar */
@@ -31,7 +44,7 @@ class CetakController extends Controller
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
             $safeKode = str_replace(['/', '\\'], '-', $pembayaran->kode_pembayaran);
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.invoice-pdf', compact('pembayaran','rekening'))
-                ->setPaper('a5');
+                ->setPaper('a4');
             return $pdf->stream("invoice-{$safeKode}.pdf");
         }
         return view('admin.cetak.invoice-pdf', compact('pembayaran','rekening'));

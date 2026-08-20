@@ -89,7 +89,7 @@ class PembayaranController extends Controller
 
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.invoice-pdf', compact('pembayaran', 'rekening'))
-                ->setPaper('a5');
+                ->setPaper('a4');
             return $pdf->download("invoice-{$pembayaran->kode_pembayaran}.pdf");
         }
         return view('admin.cetak.invoice-pdf', compact('pembayaran', 'rekening'));

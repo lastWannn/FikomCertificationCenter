@@ -20,15 +20,18 @@ class KegiatanController extends Controller
             'pendaftaran',
         ])->orderBy('created_at','desc');
 
+        // Hanya kegiatan aktif (public & comingsoon), draf tidak pernah tampil di kegiatan aktif
+        $query->visibleToPublic();
+
         if ($r->jenis && in_array($r->jenis,['pelatihan','sertifikasi'])) {
             $query->where('jenis_kegiatan', $r->jenis);
         }
 
-        $totalAktif = Kegiatan::doesntHave('arsip')->count();
-        $totalPelatihan = Kegiatan::doesntHave('arsip')->where('jenis_kegiatan', 'pelatihan')->count();
-        $totalSertifikasi = Kegiatan::doesntHave('arsip')->where('jenis_kegiatan', 'sertifikasi')->count();
+        $totalAktif = Kegiatan::visibleToPublic()->doesntHave('arsip')->count();
+        $totalPelatihan = Kegiatan::visibleToPublic()->doesntHave('arsip')->where('jenis_kegiatan', 'pelatihan')->count();
+        $totalSertifikasi = Kegiatan::visibleToPublic()->doesntHave('arsip')->where('jenis_kegiatan', 'sertifikasi')->count();
         $totalPendaftar = \App\Models\Pendaftaran::whereHas('kegiatan', function($q) {
-            $q->doesntHave('arsip');
+            $q->visibleToPublic()->doesntHave('arsip');
         })->count();
 
         $kegiatan = $query->paginate(12);
@@ -157,6 +160,10 @@ class KegiatanController extends Controller
 
     public function arsipkan(Kegiatan $kegiatan)
     {
+        if (!$kegiatan->isPassed()) {
+            return back()->with('error', 'Kegiatan belum selesai dilaksanakan dan tidak dapat dipindahkan ke Arsip Kegiatan.');
+        }
+
         if (!$kegiatan->arsip) {
             \App\Models\ArsipKegiatan::create([
                 'kegiatan_id' => $kegiatan->id,

@@ -123,30 +123,42 @@
                             </div>
 
                             {{-- Telepon / WA --}}
-                            <div style="display:flex; gap:14px; align-items:flex-start;">
-                                <div style="width:42px; height:42px; border-radius:12px; background:#FFC81A; border:1.5px solid #131218; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#131218; box-shadow:0 4px 10px rgba(255,200,26,0.25);">
-                                    @include('components.icon',['name'=>'phone','size'=>18,'style'=>'color:#131218'])
+                            <a href="{{ $kontak?->wa_url ?? 'https://wa.me/6281234567890' }}" target="_blank" rel="noopener noreferrer" 
+                               style="display:flex; gap:14px; align-items:flex-start; text-decoration:none; color:inherit; transition:transform 0.2s;"
+                               onmouseover="this.querySelector('.fcc-tel-title').style.color='#25D366'; this.querySelector('.fcc-tel-num').style.color='#25D366'; this.querySelector('.fcc-tel-num').style.textDecoration='underline';"
+                               onmouseout="this.querySelector('.fcc-tel-title').style.color='#D97706'; this.querySelector('.fcc-tel-num').style.color='#0F172A'; this.querySelector('.fcc-tel-num').style.textDecoration='none';">
+                                <div style="width:42px; height:42px; border-radius:12px; background:#25D366; border:1.5px solid #131218; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#FFFFFF; box-shadow:0 4px 10px rgba(37,211,102,0.35);">
+                                    @include('components.icon',['name'=>'phone','size'=>18,'style'=>'color:#FFFFFF'])
                                 </div>
                                 <div>
-                                    <p style="margin:0 0 2px; color:#D97706; font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:0.8px;">Telepon &amp; WhatsApp</p>
-                                    <p style="margin:0; color:#0F172A; font-size:14px; font-weight:700;">
+                                    <p class="fcc-tel-title" style="margin:0 0 2px; color:#D97706; font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:0.8px; transition:color 0.2s; display:flex; align-items:center; gap:6px;">
+                                        Telepon &amp; WhatsApp 
+                                        <span style="font-size:9.5px; background:#25D366; color:#FFF; padding:2px 6px; border-radius:4px; font-weight:800; text-transform:none;">Chat WhatsApp &nearr;</span>
+                                    </p>
+                                    <p class="fcc-tel-num" style="margin:0; color:#0F172A; font-size:14px; font-weight:700; transition:color 0.2s;">
                                         {{ $kontak->telepon ?? '(0411) 455 855 / WhatsApp: +62 812-3456-7890' }}
                                     </p>
                                 </div>
-                            </div>
+                            </a>
 
                             {{-- Email --}}
-                            <div style="display:flex; gap:14px; align-items:flex-start;">
-                                <div style="width:42px; height:42px; border-radius:12px; background:#FFC81A; border:1.5px solid #131218; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#131218; box-shadow:0 4px 10px rgba(255,200,26,0.25);">
-                                    @include('components.icon',['name'=>'mail','size'=>18,'style'=>'color:#131218'])
+                            <a href="{{ $kontak?->mailto_url ?? 'mailto:fcc@fikom.umi.ac.id' }}" 
+                               style="display:flex; gap:14px; align-items:flex-start; text-decoration:none; color:inherit; transition:transform 0.2s;"
+                               onmouseover="this.querySelector('.fcc-mail-title').style.color='#0284C7'; this.querySelector('.fcc-mail-val').style.color='#0284C7'; this.querySelector('.fcc-mail-val').style.textDecoration='underline';"
+                               onmouseout="this.querySelector('.fcc-mail-title').style.color='#D97706'; this.querySelector('.fcc-mail-val').style.color='#0F172A'; this.querySelector('.fcc-mail-val').style.textDecoration='none';">
+                                <div style="width:42px; height:42px; border-radius:12px; background:#0284C7; border:1.5px solid #131218; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#FFFFFF; box-shadow:0 4px 10px rgba(2,132,199,0.35);">
+                                    @include('components.icon',['name'=>'mail','size'=>18,'style'=>'color:#FFFFFF'])
                                 </div>
                                 <div>
-                                    <p style="margin:0 0 2px; color:#D97706; font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:0.8px;">Email Resmi</p>
-                                    <p style="margin:0; color:#0F172A; font-size:14px; font-weight:700;">
+                                    <p class="fcc-mail-title" style="margin:0 0 2px; color:#D97706; font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:0.8px; transition:color 0.2s; display:flex; align-items:center; gap:6px;">
+                                        Email Resmi
+                                        <span style="font-size:9.5px; background:#0284C7; color:#FFF; padding:2px 6px; border-radius:4px; font-weight:800; text-transform:none;">Kirim Email &nearr;</span>
+                                    </p>
+                                    <p class="fcc-mail-val" style="margin:0; color:#0F172A; font-size:14px; font-weight:700; transition:color 0.2s;">
                                         {{ $kontak->email ?? 'fcc@fikom.umi.ac.id' }}
                                     </p>
                                 </div>
-                            </div>
+                            </a>
 
                             {{-- Jam Operasional --}}
                             <div style="display:flex; gap:14px; align-items:flex-start;">

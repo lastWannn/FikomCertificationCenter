@@ -4,33 +4,35 @@
 @section('page-content')
 
 {{-- ══ Custom Confirm Delete Modal ════════════════════════════════ --}}
-<div id="fcc-confirm-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
-    <div style="background:#1C1B22;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px;max-width:420px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,0.5);text-align:center;animation:modalIn .25s ease;">
-        <div style="width:56px;height:56px;border-radius:16px;background:rgba(239,68,68,.15);border:1.5px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+<div id="fcc-confirm-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(19,18,24,0.65);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+    <div style="background:#FFFFFF;border:2.5px solid #131218;border-radius:24px;padding:32px;max-width:420px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,0.35);text-align:center;animation:modalIn .25s ease;">
+        <div style="width:56px;height:56px;border-radius:16px;background:#FEF2F2;border:1.5px solid #FCA5A5;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;color:#EF4444;">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
         </div>
-        <h3 id="confirm-title" style="color:#FFF;font-size:18px;font-weight:900;margin:0 0 8px;">Hapus Informasi?</h3>
-        <p id="confirm-msg" style="color:rgba(255,255,255,.55);font-size:14px;margin:0 0 28px;line-height:1.6;"></p>
+        <h3 id="confirm-title" style="color:#131218;font-size:18px;font-weight:900;margin:0 0 8px;">Hapus Informasi?</h3>
+        <p id="confirm-msg" style="color:#64748B;font-size:13.5px;margin:0 0 28px;line-height:1.6;font-weight:500;"></p>
         <div style="display:flex;gap:12px;justify-content:center;">
-            <button onclick="closeConfirm()" style="padding:11px 28px;border-radius:12px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'">Batal</button>
+            <button onclick="closeConfirm()" style="padding:11px 24px;border-radius:12px;border:1.5px solid #131218;background:#FFFFFF;color:#131218;font-size:13.5px;font-weight:800;cursor:pointer;transition:all .2s;">Batal</button>
             <form id="confirm-delete-form" method="POST" style="margin:0;">
                 @csrf @method('DELETE')
-                <button type="submit" style="padding:11px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#EF4444,#DC2626);color:#FFF;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(239,68,68,.3);">Ya, Hapus</button>
+                <button type="submit" style="padding:11px 24px;border-radius:12px;border:1px solid #131218;background:#DC2626;color:#FFF;font-size:13.5px;font-weight:800;cursor:pointer;box-shadow:0 4px 15px rgba(220,38,38,.3);">Ya, Hapus</button>
             </form>
         </div>
     </div>
 </div>
 
 {{-- ══ Form Modal (Tambah / Edit) ════════════════════════════════ --}}
-<div id="info-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 0;">
-    <div style="background:#1C1B22;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px;max-width:640px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.5);animation:modalIn .25s ease;margin:auto;position:relative;">
+<div id="info-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,.65);backdrop-filter:blur(6px);align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 0;">
+    <div style="background:#FFFFFF;border:2.5px solid #131218;border-radius:24px;padding:32px;max-width:640px;width:90%;box-shadow:0 24px 64px rgba(0,0,0,.35);animation:modalIn .25s ease;margin:auto;position:relative;">
         {{-- Header --}}
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;border-bottom:2px solid #E5E7EB;padding-bottom:16px;">
             <div>
-                <h2 id="info-modal-title" style="color:#FFF;font-size:18px;font-weight:900;margin:0 0 4px;">Tambah Informasi / FAQ</h2>
-                <p style="color:rgba(255,255,255,.4);font-size:13px;margin:0;">Isi form di bawah untuk menambahkan data baru.</p>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                    <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Konten &amp; FAQ</span>
+                </div>
+                <h2 id="info-modal-title" style="color:#131218;font-size:19px;font-weight:900;margin:0;">Tambah Informasi / FAQ</h2>
             </div>
-            <button onclick="closeInfoModal()" style="width:36px;height:36px;border-radius:10px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'">&times;</button>
+            <button onclick="closeInfoModal()" style="width:36px;height:36px;border-radius:10px;border:1.5px solid #131218;background:#FFFFFF;color:#131218;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;" onmouseover="this.style.background='#FFC81A';" onmouseout="this.style.background='#FFFFFF';">&times;</button>
         </div>
 
         <form id="info-form" method="POST" style="margin:0;">
@@ -39,14 +41,14 @@
 
             {{-- Jenis --}}
             <div style="margin-bottom:20px;">
-                <label style="display:block;font-size:11px;font-weight:800;color:rgba(255,255,255,.45);margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px;">Jenis *</label>
+                <label style="display:block;font-size:11px;font-weight:800;color:#64748B;margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px;">Pilih Jenis Konten *</label>
                 <div style="display:flex;gap:10px;">
                     @foreach(['info' => '📢 Informasi / Pengumuman', 'faq' => '❓ FAQ'] as $v => $l)
-                    <label style="flex:1;display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px 16px;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;transition:border-color .2s;color:rgba(255,255,255,.7);font-size:14px;"
+                    <label style="flex:1;display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px 16px;border:1.5px solid #CBD5E1;border-radius:12px;transition:all .2s;color:#131218;font-size:13.5px;font-weight:800;"
                            id="jenis-label-{{ $v }}"
-                           onmouseover="this.style.borderColor='rgba(255,200,26,.4)'" 
+                           onmouseover="this.style.borderColor='#FFC81A'" 
                            onmouseout="syncJenisStyle()">
-                        <input type="radio" name="jenis" id="modal-jenis-{{ $v }}" value="{{ $v }}" style="accent-color:#FFC81A;" onchange="onJenisChange()">
+                        <input type="radio" name="jenis" id="modal-jenis-{{ $v }}" value="{{ $v }}" style="accent-color:#131218;" onchange="onJenisChange()">
                         {{ $l }}
                     </label>
                     @endforeach
@@ -55,37 +57,37 @@
 
             {{-- Judul / Pengumuman --}}
             <div style="margin-bottom:16px;">
-                <label id="judul-label-m" style="display:block;font-size:11px;font-weight:800;color:rgba(255,255,255,.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;">Isi Pengumuman *</label>
-                <input type="text" name="judul" id="modal-judul" required placeholder="Tulis teks pengumuman..." style="width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;color:#FFF;font-size:14px;outline:none;transition:border-color .2s;box-sizing:border-box;" onfocus="this.style.borderColor='#FFC81A'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+                <label id="judul-label-m" style="display:block;font-size:11px;font-weight:800;color:#64748B;margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;">Isi Pengumuman *</label>
+                <input type="text" name="judul" id="modal-judul" required placeholder="Tulis teks pengumuman..." class="fcc-input" style="width:100%;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:10px 14px;color:#131218;font-size:13.5px;font-weight:600;outline:none;box-sizing:border-box;">
             </div>
 
             {{-- Isi / Jawaban (hanya FAQ) --}}
             <div id="isi-section-modal" style="margin-bottom:16px;display:none;">
-                <label style="display:block;font-size:11px;font-weight:800;color:rgba(255,255,255,.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;">Jawaban / Penjelasan *</label>
-                <textarea name="isi" id="modal-isi" rows="5" placeholder="Tulis jawaban untuk pertanyaan FAQ ini..." style="width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;color:#FFF;font-size:14px;outline:none;resize:vertical;box-sizing:border-box;" onfocus="this.style.borderColor='#FFC81A'" onblur="this.style.borderColor='rgba(255,255,255,.1)'"></textarea>
+                <label style="display:block;font-size:11px;font-weight:800;color:#64748B;margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;">Jawaban / Penjelasan *</label>
+                <textarea name="isi" id="modal-isi" rows="5" placeholder="Tulis jawaban untuk pertanyaan FAQ ini..." class="fcc-input" style="width:100%;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:10px 14px;color:#131218;font-size:13.5px;font-weight:600;outline:none;resize:vertical;box-sizing:border-box;"></textarea>
             </div>
 
             {{-- Waktu Tayang (hanya Informasi) --}}
-            <div id="tayang-section-modal" style="margin-bottom:20px;background:rgba(255,200,26,.05);border:1.5px solid rgba(255,200,26,.12);border-radius:12px;padding:16px;">
-                <p style="font-size:11px;font-weight:800;color:rgba(255,200,26,.8);margin:0 0 12px;text-transform:uppercase;letter-spacing:.7px;">⏰ Waktu Tayang Pengumuman</p>
+            <div id="tayang-section-modal" style="margin-bottom:20px;background:#FFFDF5;border:1.5px solid #FFC81A;border-radius:14px;padding:16px;">
+                <p style="font-size:11.5px;font-weight:900;color:#131218;margin:0 0 12px;text-transform:uppercase;letter-spacing:.7px;">⏰ Waktu Tayang Pengumuman</p>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     <div>
-                        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:5px;">Mulai Tayang</label>
-                        <input type="datetime-local" name="tayang_mulai" id="modal-mulai" style="width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 10px;color:#FFF;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#FFC81A'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
-                        <p style="font-size:10px;color:rgba(255,255,255,.3);margin:4px 0 0;">Kosong = langsung aktif</p>
+                        <label style="display:block;font-size:11px;font-weight:800;color:#64748B;margin-bottom:5px;">Mulai Tayang</label>
+                        <input type="datetime-local" name="tayang_mulai" id="modal-mulai" class="fcc-input" style="width:100%;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;padding:8px 10px;color:#131218;font-size:13px;font-weight:600;box-sizing:border-box;">
+                        <p style="font-size:10.5px;color:#94A3B8;margin:4px 0 0;font-weight:500;">Kosong = langsung aktif</p>
                     </div>
                     <div>
-                        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:5px;">Selesai Tayang</label>
-                        <input type="datetime-local" name="tayang_selesai" id="modal-selesai" style="width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 10px;color:#FFF;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#FFC81A'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
-                        <p style="font-size:10px;color:rgba(255,255,255,.3);margin:4px 0 0;">Kosong = tidak ada batas</p>
+                        <label style="display:block;font-size:11px;font-weight:800;color:#64748B;margin-bottom:5px;">Selesai Tayang</label>
+                        <input type="datetime-local" name="tayang_selesai" id="modal-selesai" class="fcc-input" style="width:100%;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;padding:8px 10px;color:#131218;font-size:13px;font-weight:600;box-sizing:border-box;">
+                        <p style="font-size:10.5px;color:#94A3B8;margin:4px 0 0;font-weight:500;">Kosong = tidak ada batas</p>
                     </div>
                 </div>
             </div>
 
             {{-- Actions --}}
-            <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:flex-end;gap:12px;">
-                <button type="button" onclick="closeInfoModal()" style="padding:11px 24px;border-radius:12px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:14px;font-weight:700;cursor:pointer;">Batal</button>
-                <button type="submit" class="fcc-btn-gold" style="padding:11px 28px;font-size:14px;">Simpan</button>
+            <div style="border-top:1.5px solid #E2E4EB;padding-top:20px;display:flex;justify-content:flex-end;gap:12px;">
+                <button type="button" onclick="closeInfoModal()" style="padding:10px 18px;font-size:13px;font-weight:800;background:#FFFFFF;color:#131218;border:1.5px solid #131218;border-radius:10px;cursor:pointer;">Batal</button>
+                <button type="submit" style="padding:10px 22px;font-size:13px;font-weight:800;background:#131218;color:#FFC81A;border:1.5px solid #131218;border-radius:10px;cursor:pointer;transition:all .18s;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">Simpan Data</button>
             </div>
         </form>
     </div>
@@ -94,73 +96,92 @@
 {{-- ══ Styles ════════════════════════════════════════════════════ --}}
 <style>
 @keyframes modalIn { from { opacity:0;transform:scale(.95) translateY(10px); } to { opacity:1;transform:scale(1) translateY(0); } }
-.info-row { background:#FFF; border:1.5px solid #E8EAF0; border-radius:14px; padding:20px 22px; transition:all .18s; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
-.info-row:hover { border-color:#FFC81A; box-shadow:0 4px 18px rgba(255,200,26,.1); }
-.jenis-badge-info  { background:rgba(16,185,129,.1); color:#10B981; border:1px solid rgba(16,185,129,.2); }
-.jenis-badge-faq   { background:rgba(59,130,246,.1); color:#3B82F6; border:1px solid rgba(59,130,246,.2); }
-.status-badge-aktif  { background:rgba(16,185,129,.1); color:#10B981; border:1px solid rgba(16,185,129,.2); }
-.status-badge-nonaktif { background:rgba(156,163,175,.1); color:#9CA3AF; border:1px solid rgba(156,163,175,.2); }
+.info-row { background:#FFFFFF; border:2px solid #E5E7EB; border-radius:18px; padding:20px 24px; transition:all .18s; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; box-shadow:0 4px 16px rgba(0,0,0,0.03); }
+.info-row:hover { border-color:#131218; transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.06); }
 </style>
 
 {{-- ══ Main Content ════════════════════════════════════════════ --}}
 <div style="padding:24px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+
+    {{-- Header & Action Bar --}}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
         <div>
-            <h1 style="font-size:21px;font-weight:900;color:#0F0F14;margin:0 0 3px;">Informasi & FAQ</h1>
-            <p style="color:#6B7280;font-size:13px;margin:0;">Kelola teks pengumuman berjalan dan FAQ yang tampil di Landing Page.</p>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Konten &amp; Pusat Bantuan</span>
+                <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0;letter-spacing:-0.02em;">Informasi &amp; FAQ</h1>
+            </div>
+            <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">Kelola teks pengumuman berjalan dan FAQ yang tampil di Landing Page.</p>
         </div>
-        <div style="display:flex;gap:10px;align-items:center;">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
             <form method="GET" style="display:flex;gap:6px;margin:0;">
-                <select name="jenis" class="fcc-input" style="width:auto;border-radius:10px;" onchange="this.form.submit()">
-                    <option value="">Semua</option>
+                <select name="jenis" class="fcc-input" style="width:auto;font-size:12.5px;height:38px;padding:0 12px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;font-weight:700;cursor:pointer;" onchange="this.form.submit()">
+                    <option value="">Semua Jenis Konten</option>
                     <option value="info" {{ request('jenis')==='info'?'selected':'' }}>📢 Informasi</option>
                     <option value="faq" {{ request('jenis')==='faq'?'selected':'' }}>❓ FAQ</option>
                 </select>
             </form>
-            <button onclick="openAddModal()" class="fcc-btn-gold" style="padding:9px 20px;font-size:14px;border:none;cursor:pointer;">
-                @include('components.icon',['name'=>'plus','size'=>15]) Tambah
+
+            <button onclick="openAddModal()"
+                    style="padding:10px 18px;font-size:13px;font-weight:800;background:#131218;color:#FFC81A;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 12px rgba(0,0,0,0.1);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .18s;"
+                    onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">
+                @include('components.icon',['name'=>'plus','size'=>15]) Tambah Informasi / FAQ
             </button>
         </div>
     </div>
 
-    <div style="display:flex;flex-direction:column;gap:10px;">
+    {{-- Content List Rows --}}
+    <div style="display:flex;flex-direction:column;gap:14px;">
         @forelse($informasi as $i)
         <div class="info-row">
             <div style="flex:1;min-width:0;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
-                    <span class="jenis-badge-{{ $i->jenis }}" style="font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;">{{ $i->jenis === 'info' ? '📢 INFORMASI' : '❓ FAQ' }}</span>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
                     @if($i->jenis === 'info')
+                        <span style="font-size:11px;font-weight:900;padding:4px 12px;border-radius:12px;background:#FFFDF5;color:#B38F00;border:1px solid #FFC81A;display:inline-block;">
+                            📢 INFORMASI
+                        </span>
                         @php $isAktif = (!$i->tayang_mulai || $i->tayang_mulai <= now()) && (!$i->tayang_selesai || $i->tayang_selesai >= now()); @endphp
-                        <span class="status-badge-{{ $isAktif ? 'aktif' : 'nonaktif' }}" style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;">
+                        <span style="font-size:11px;font-weight:800;padding:4px 12px;border-radius:12px;background:{{ $isAktif ? '#ECFDF5' : '#F1F5F9' }};color:{{ $isAktif ? '#059669' : '#64748B' }};border:1px solid {{ $isAktif ? '#A7F3D0' : '#CBD5E1' }};">
                             {{ $isAktif ? '✓ Aktif Tayang' : '— Tidak Aktif' }}
                         </span>
+                    @else
+                        <span style="font-size:11px;font-weight:900;padding:4px 12px;border-radius:12px;background:#EEF2FF;color:#4F46E5;border:1px solid #818CF8;display:inline-block;">
+                            ❓ FAQ
+                        </span>
                     @endif
-                    <span style="font-size:11px;color:#A0A3AD;">{{ $i->created_at->format('d M Y') }}</span>
+
+                    <span style="font-size:11.5px;color:#94A3B8;font-weight:600;">📅 {{ $i->created_at->format('d M Y') }}</span>
                 </div>
-                <h3 style="font-size:15px;font-weight:800;color:#0F0F14;margin:0 0 4px;">{{ $i->judul }}</h3>
+
+                <h3 style="font-size:16px;font-weight:900;color:#131218;margin:0 0 6px;">{{ $i->judul }}</h3>
+                
                 @if($i->jenis === 'faq' && $i->isi)
-                <p style="color:#6B7280;font-size:13px;line-height:1.6;margin:0;">{{ Str::limit(strip_tags($i->isi), 100) }}</p>
+                <p style="color:#64748B;font-size:13.5px;line-height:1.6;margin:0;font-weight:500;">{{ Str::limit(strip_tags($i->isi), 140) }}</p>
                 @elseif($i->jenis === 'info' && $i->tayang_mulai)
-                <p style="color:#9CA3AF;font-size:12px;margin:0;">Tayang: {{ $i->tayang_mulai->format('d M Y H:i') }} — {{ $i->tayang_selesai ? $i->tayang_selesai->format('d M Y H:i') : 'Selamanya' }}</p>
+                <p style="color:#94A3B8;font-size:12px;margin:0;font-weight:600;">⏰ Jadwal Tayang: {{ $i->tayang_mulai->format('d M Y H:i') }} — {{ $i->tayang_selesai ? $i->tayang_selesai->format('d M Y H:i') : 'Selamanya' }}</p>
                 @endif
             </div>
+
+            {{-- Action Buttons --}}
             <div style="display:flex;gap:6px;flex-shrink:0;align-items:center;">
                 <button onclick="openEditInfoModal({{ json_encode(['id'=>$i->id,'judul'=>$i->judul,'jenis'=>$i->jenis,'isi'=>$i->isi,'tayang_mulai'=>$i->tayang_mulai?->format('Y-m-d\TH:i'),'tayang_selesai'=>$i->tayang_selesai?->format('Y-m-d\TH:i')]) }})"
-                    style="width:34px;height:34px;border-radius:10px;border:1.5px solid #E2E4EB;background:#F7F8FA;color:#9CA3AF;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;"
-                    onmouseover="this.style.borderColor='#FFC81A';this.style.color='#131218'" onmouseout="this.style.borderColor='#E2E4EB';this.style.color='#9CA3AF'" title="Edit">
-                    @include('components.icon',['name'=>'edit','size'=>15])
+                        style="padding:6px 12px;font-size:12px;font-weight:800;background:#FFFFFF;color:#131218;border-radius:8px;border:1.5px solid #131218;cursor:pointer;transition:all .18s;"
+                        onmouseover="this.style.background='#FFC81A';" onmouseout="this.style.background='#FFFFFF';" title="Edit Data">
+                    Edit
                 </button>
                 <button onclick="confirmInfoDelete('{{ route('admin.informasi.destroy', $i) }}', '{{ addslashes($i->judul) }}')"
-                    style="width:34px;height:34px;border-radius:10px;border:1.5px solid rgba(239,68,68,.2);background:rgba(239,68,68,.05);color:#EF4444;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;"
-                    onmouseover="this.style.background='rgba(239,68,68,.12)'" onmouseout="this.style.background='rgba(239,68,68,.05)'" title="Hapus">
-                    @include('components.icon',['name'=>'trash','size'=>15])
+                        style="padding:6px 10px;border-radius:8px;border:1px solid #FCA5A5;background:#FEF2F2;color:#EF4444;font-size:12px;cursor:pointer;transition:all .18s;"
+                        onmouseover="this.style.background='#EF4444';this.style.color='#FFF';" onmouseout="this.style.background='#FEF2F2';this.style.color='#EF4444';" title="Hapus">
+                    @include('components.icon',['name'=>'trash','size'=>13])
                 </button>
             </div>
         </div>
         @empty
-        <div class="fcc-card" style="padding:56px;text-align:center;color:#A0A3AD;">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5" style="margin:0 auto 12px;display:block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Belum ada data informasi atau FAQ.
+        <div class="fcc-card" style="padding:56px;text-align:center;color:#94A3B8;border-radius:20px;border:2px solid #E5E7EB;background:#FFFFFF;">
+            <div style="width:52px;height:52px;border-radius:16px;background:#F7F8FA;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                @include('components.icon',['name'=>'info','size'=>24,'style'=>'color:#9CA3B0'])
+            </div>
+            <p style="font-size:15px;font-weight:800;color:#131218;margin:0 0 4px;">Belum Ada Data Informasi atau FAQ</p>
+            <p style="font-size:12.5px;color:#64748B;margin:0;">Klik tombol "Tambah Informasi / FAQ" untuk membuat pengumuman pertama.</p>
         </div>
         @endforelse
     </div>
@@ -227,9 +248,9 @@ function syncJenisStyle() {
         const lbl = document.getElementById('jenis-label-' + v);
         if (!lbl) return;
         const active = (v === 'faq') === isFaq;
-        lbl.style.borderColor = active ? '#FFC81A' : 'rgba(255,255,255,.1)';
-        lbl.style.background = active ? 'rgba(255,200,26,.05)' : 'transparent';
-        lbl.style.color = active ? '#FFC81A' : 'rgba(255,255,255,.7)';
+        lbl.style.borderColor = active ? '#131218' : '#CBD5E1';
+        lbl.style.background = active ? '#FFFDF5' : '#FFF';
+        lbl.style.color = '#131218';
     });
 }
 
@@ -266,3 +287,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 @endsection
+

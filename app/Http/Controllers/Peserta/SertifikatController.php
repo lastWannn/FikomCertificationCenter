@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Peserta;
 
 use App\Http\Controllers\Controller;
 use App\Models\Sertifikat;
+use App\Models\Testimoni;
 use Illuminate\Support\Facades\Auth;
 
 class SertifikatController extends Controller
@@ -17,20 +18,25 @@ class SertifikatController extends Controller
         ->with('pendaftaran.kegiatan')
         ->get();
 
-        return view('peserta.sertifikat', compact('sertifikat'));
+        $hasTestimoni = Testimoni::where('peserta_id', $peserta->id)->exists();
+
+        return view('peserta.sertifikat', compact('sertifikat', 'hasTestimoni'));
     }
 
-    /**
-     * FIX FUNGSIONAL: Method download() sebelumnya:
-     *   1. Parameter `Sertifikat $sertifikat` diinjeksi via model binding
-     *   2. Lalu langsung di-overwrite dengan query yang pakai `$id` — variabel tidak terdefinisi
-     * Diperbaiki: gunakan model yang sudah diinjeksi, tambah cek kepemilikan.
-     */
     public function download(Sertifikat $sertifikat)
     {
+        $pesertaId = Auth::guard('peserta')->id();
+
         // Pastikan sertifikat milik peserta yang sedang login
-        if ($sertifikat->pendaftaran->peserta_id !== Auth::guard('peserta')->id()) {
+        if ($sertifikat->pendaftaran->peserta_id !== $pesertaId) {
             abort(403, 'Akses ditolak.');
+        }
+
+        // Syarat Wajib Testimoni untuk Download Sertifikat
+        $hasTestimoni = Testimoni::where('peserta_id', $pesertaId)->exists();
+        if (!$hasTestimoni) {
+            return redirect()->route('peserta.testimoni')
+                ->with('warning', 'Silakan tulis testimoni pengalaman Anda terlebih dahulu untuk membuka akses pengunduhan sertifikat kompetensi.');
         }
 
         if (!$sertifikat->file_sertifikat) {
@@ -46,15 +52,20 @@ class SertifikatController extends Controller
         return response()->download($filePath);
     }
 
-    /**
-     * FIX FUNGSIONAL: Route preview/{sertifikat} sudah ada tapi method belum ada.
-     * Tanpa method ini, akses URL tersebut menyebabkan BadMethodCallException.
-     */
     public function preview(Sertifikat $sertifikat)
     {
+        $pesertaId = Auth::guard('peserta')->id();
+
         // Pastikan sertifikat milik peserta yang sedang login
-        if ($sertifikat->pendaftaran->peserta_id !== Auth::guard('peserta')->id()) {
+        if ($sertifikat->pendaftaran->peserta_id !== $pesertaId) {
             abort(403, 'Akses ditolak.');
+        }
+
+        // Syarat Wajib Testimoni untuk Preview Sertifikat
+        $hasTestimoni = Testimoni::where('peserta_id', $pesertaId)->exists();
+        if (!$hasTestimoni) {
+            return redirect()->route('peserta.testimoni')
+                ->with('warning', 'Silakan tulis testimoni pengalaman Anda terlebih dahulu untuk melihat pratinjau sertifikat kompetensi.');
         }
 
         $sertifikat->load('pendaftaran.kegiatan', 'pendaftaran.peserta');

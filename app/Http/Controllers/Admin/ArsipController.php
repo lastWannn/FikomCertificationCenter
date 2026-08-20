@@ -19,6 +19,20 @@ class ArsipController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return view('admin.lainnya.arsip-form', [
+            'kegiatan' => Kegiatan::passed()->doesntHave('arsip')->get()
+        ]);
+    }
+
+    public function store(StoreArsipRequest $request)
+    {
+        $this->service->create($request->validated());
+        return redirect()->route('admin.arsip.index')
+            ->with('success', 'Arsip dibuat.');
+    }
+
     public function show(ArsipKegiatan $arsip)
     {
         return view('admin.lainnya.arsip-form', compact('arsip'));

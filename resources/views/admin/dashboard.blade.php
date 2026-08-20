@@ -27,7 +27,92 @@
 @endpush
 
 @section('page-content')
-<div style="padding:24px 28px;background:#F6F8FB;min-height:100vh;font-family:'Inter',sans-serif;">
+<div style="padding:24px 28px;background:#F6F8FB;min-height:100vh;font-family:'Inter',sans-serif;position:relative;">
+
+  {{-- ═══ DASHBOARD SKELETON LOADING OVERLAY ════════════════════════ --}}
+  <style>
+    @keyframes skeletonShimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .fcc-skeleton-box {
+      background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.4s infinite ease-in-out;
+      border-radius: 12px;
+    }
+    #dashboard-skeleton-overlay {
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+  </style>
+
+  <div id="dashboard-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px 28px;box-sizing:border-box;pointer-events:none;">
+    {{-- 4 Stat Cards Skeleton --}}
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px;">
+      @for($s=0;$s<4;$s++)
+      <div style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(0,0,0,0.02);">
+        <div class="fcc-skeleton-box" style="width:52px;height:52px;border-radius:14px;flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div class="fcc-skeleton-box" style="width:60%;height:12px;margin-bottom:8px;"></div>
+          <div class="fcc-skeleton-box" style="width:85%;height:24px;margin-bottom:6px;"></div>
+          <div class="fcc-skeleton-box" style="width:40%;height:10px;"></div>
+        </div>
+      </div>
+      @endfor
+    </div>
+
+    {{-- 2 Columns Skeleton --}}
+    <div style="display:grid;grid-template-columns:1fr 330px;gap:24px;align-items:start;">
+      {{-- Left Side --}}
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <div style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;gap:16px;">
+          <div class="fcc-skeleton-box" style="width:46px;height:46px;border-radius:14px;flex-shrink:0;"></div>
+          <div style="flex:1;">
+            <div class="fcc-skeleton-box" style="width:50%;height:14px;margin-bottom:8px;"></div>
+            <div class="fcc-skeleton-box" style="width:80%;height:11px;"></div>
+          </div>
+          <div class="fcc-skeleton-box" style="width:130px;height:36px;border-radius:30px;"></div>
+        </div>
+
+        <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <div style="width:45%;">
+              <div class="fcc-skeleton-box" style="width:80%;height:16px;margin-bottom:8px;"></div>
+              <div class="fcc-skeleton-box" style="width:100%;height:11px;"></div>
+            </div>
+            <div class="fcc-skeleton-box" style="width:140px;height:32px;border-radius:10px;"></div>
+          </div>
+          <div class="fcc-skeleton-box" style="width:100%;height:220px;border-radius:14px;"></div>
+        </div>
+      </div>
+
+      {{-- Right Side --}}
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <div style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div class="fcc-skeleton-box" style="width:100%;height:28px;margin-bottom:16px;border-radius:8px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:180px;border-radius:12px;"></div>
+        </div>
+        <div style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+          <div class="fcc-skeleton-box" style="width:60%;height:16px;margin-bottom:16px;"></div>
+          <div class="fcc-skeleton-box" style="width:120px;height:120px;border-radius:50%;margin:0 auto 14px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:24px;border-radius:6px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      setTimeout(function() {
+        var sk = document.getElementById('dashboard-skeleton-overlay');
+        if (sk) {
+          sk.style.opacity = '0';
+          sk.style.visibility = 'hidden';
+          setTimeout(function() { sk.style.display = 'none'; }, 350);
+        }
+      }, 450);
+    })();
+  </script>
 
 
 
@@ -108,9 +193,9 @@
             <span style="color:#64748B;font-size:11px;">(Lewat {{ $pk->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Tgl' }})</span>
             <div style="display:flex;gap:6px;">
               <a href="{{ $editUrl }}" style="color:#131218;font-size:11px;font-weight:800;text-decoration:none;background:#FFC81A;padding:3px 9px;border-radius:6px;border:1px solid #131218;">Perpanjang</a>
-              <form action="{{ route('admin.kegiatan.arsipkan', $pk) }}" method="POST" style="margin:0;display:inline;">
+              <form action="{{ route('admin.kegiatan.arsipkan', $pk) }}" method="POST" style="margin:0;">
                 @csrf
-                <button type="button" onclick="fccConfirmAction(this, 'Tandai Selesai & Arsipkan', 'Apakah Anda yakin ingin menandai kegiatan {{ addslashes($pk->judul) }} selesai dan memindahkannya ke Arsip Kegiatan?', 'Ya, Arsipkan', false)" style="color:#FFFFFF;font-size:11px;font-weight:800;background:#131218;padding:3px 9px;border-radius:6px;border:none;cursor:pointer;">Arsipkan</button>
+                <button type="submit" style="color:#FFFFFF;font-size:11px;font-weight:800;background:#131218;padding:3px 9px;border-radius:6px;border:none;cursor:pointer;">Arsipkan</button>
               </form>
             </div>
           </div>
