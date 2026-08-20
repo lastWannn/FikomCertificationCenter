@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', isset($arsip) ? 'Edit Arsip Kegiatan' : 'Tambah Arsip Kegiatan')
+@section('title', 'Edit Arsip Kegiatan')
 @section('page-content')
 <div style="padding:24px;max-width:760px;margin:0 auto;width:100%;">
     
@@ -33,7 +33,7 @@
         </div>
         @endif
 
-        <form action="{{ isset($arsip) ? route('admin.arsip.update', $arsip) : route('admin.arsip.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.arsip.update', $arsip) }}" method="POST" enctype="multipart/form-data">
             @csrf 
             @if(isset($arsip)) @method('PUT') @endif
 

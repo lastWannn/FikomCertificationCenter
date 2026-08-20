@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Arsip\{StoreArsipRequest, UpdateArsipRequest};
+use App\Http\Requests\Admin\Arsip\UpdateArsipRequest;
 use App\Models\{ArsipKegiatan, Kegiatan};
 use App\Services\Admin\ArsipService;
 

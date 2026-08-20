@@ -179,7 +179,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     });
     Route::resource('biaya', BiayaController::class);
     Route::post('arsip/upload-foto', [AdminArsip::class, 'uploadFoto'])->name('arsip.upload-foto');
-    Route::resource('arsip', AdminArsip::class);
+    Route::resource('arsip', AdminArsip::class)->except(['create', 'store']);
 
     /* QR PRESENSI */
     Route::prefix('qr')->name('qr.')->group(function() {
