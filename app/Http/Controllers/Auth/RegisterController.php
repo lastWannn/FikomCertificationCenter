@@ -60,7 +60,10 @@ class RegisterController extends Controller
 
     public function verifyOtp(\Illuminate\Http\Request $request)
     {
-        $request->validate(['email' => 'required|email', 'otp' => 'required|digits:4']);
+        $request->validate([
+            'email' => ['required', 'string', new \App\Rules\ValidEmailAddress()],
+            'otp'   => 'required|digits:4'
+        ]);
         
         // Verifikasi OTP
         $this->otpService->verify($request->email, $request->otp, 'register');

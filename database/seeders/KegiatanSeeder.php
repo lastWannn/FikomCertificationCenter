@@ -38,8 +38,11 @@ class KegiatanSeeder extends Seeder
                 ]
             );
 
+            $latarFile = file_exists(storage_path('app/public/latar-sertifikat/temp_bg.jpg')) ? 'latar-sertifikat/temp_bg.jpg' : null;
+
             $kegiatan1 = Kegiatan::firstOrCreate(
-                ['jenis_kegiatan' => 'pelatihan', 'nama_latar' => 'Batch 1 - Web Dev Dasar']
+                ['jenis_kegiatan' => 'pelatihan', 'id' => 1],
+                ['nama_latar' => $latarFile]
             );
             
             KegiatanPelatihan::firstOrCreate([
@@ -68,7 +71,8 @@ class KegiatanSeeder extends Seeder
             );
 
             $kegiatan2 = Kegiatan::firstOrCreate(
-                ['jenis_kegiatan' => 'pelatihan', 'nama_latar' => 'Workshop Git & GitHub 2026']
+                ['jenis_kegiatan' => 'pelatihan', 'id' => 2],
+                ['nama_latar' => $latarFile]
             );
             
             KegiatanPelatihan::firstOrCreate([
@@ -94,7 +98,8 @@ class KegiatanSeeder extends Seeder
             );
 
             $kegiatan3 = Kegiatan::firstOrCreate(
-                ['jenis_kegiatan' => 'sertifikasi', 'nama_latar' => 'Sertifikasi MTCNA 2026']
+                ['jenis_kegiatan' => 'sertifikasi', 'id' => 3],
+                ['nama_latar' => $latarFile]
             );
 
             KegiatanSertifikasi::firstOrCreate([

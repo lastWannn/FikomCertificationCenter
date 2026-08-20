@@ -552,7 +552,7 @@
                             <a href="{{ route('admin.cetak.sertifikat', $s) }}" target="_blank"
                                style="padding:6px 14px;font-size:12px;font-weight:800;background:#131218;color:#FFC81A;border-radius:8px;border:1px solid #131218;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .18s;"
                                onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">
-                                @include('components.icon',['name'=>'printer','size'=>13]) Cetak PDF
+                                @include('components.icon',['name'=>'printer','size'=>13]) Lihat PDF
                             </a>
                             @endif
                         </td>

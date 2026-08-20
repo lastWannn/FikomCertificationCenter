@@ -35,6 +35,7 @@
                 ['route'=>'peserta.pendaftaran',  'icon'=>'clipboard-list',   'label'=>'Pendaftaran Saya'],
                 ['route'=>'peserta.pembayaran',   'icon'=>'credit-card',      'label'=>'Pembayaran'],
                 ['route'=>'peserta.sertifikat',   'icon'=>'file-text',        'label'=>'Sertifikat Saya'],
+                ['route'=>'peserta.testimoni',    'icon'=>'message-square',   'label'=>'Beri Testimoni'],
             ];
             $unpaidCount = auth('peserta')->check()
                 ? \App\Models\Pembayaran::whereHas('pendaftaran', function($q) {
@@ -110,6 +111,7 @@
     </div>
 </div>
 @include('components.fcc-modal')
+@stack('modals')
 @endsection
 
 @push('scripts')

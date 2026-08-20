@@ -60,7 +60,11 @@ class LoginController extends Controller
 
     public function sendReset(Request $request)
     {
-        $request->validate(['email' => 'required|email'],['email.required'=>'Email wajib diisi.','email.email'=>'Format email tidak valid.']);
+        $request->validate([
+            'email' => ['required', 'string', new \App\Rules\ValidEmailAddress()]
+        ], [
+            'email.required' => 'Email wajib diisi.'
+        ]);
         $exists = \App\Models\Peserta::where('email',$request->email)->exists()
                || \App\Models\Admin::where('email',$request->email)->exists();
         if (!$exists) {
@@ -86,8 +90,8 @@ class LoginController extends Controller
     public function verifyResetOtp(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'otp' => 'required|digits:4',
+            'email'    => ['required', 'string', new \App\Rules\ValidEmailAddress()],
+            'otp'      => 'required|digits:4',
             'password' => 'required|min:8|confirmed'
         ]);
 

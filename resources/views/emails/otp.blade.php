@@ -44,6 +44,13 @@
                 <p style="margin: 0 0 24px; font-size: 14.5px; color: #475569; line-height: 1.6;">
                   Gunakan kode OTP 4-digit di bawah ini untuk menyelesaikan proses pendaftaran akun peserta Anda:
                 </p>
+              @elseif($type === 'change_email')
+                <h2 style="margin: 0 0 12px; font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
+                  Konfirmasi Alamat Email Baru
+                </h2>
+                <p style="margin: 0 0 24px; font-size: 14.5px; color: #475569; line-height: 1.6;">
+                  Gunakan kode OTP 4-digit di bawah ini untuk mengonfirmasi dan mengaktifkan alamat email baru akun Anda:
+                </p>
               @else
                 <h2 style="margin: 0 0 12px; font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
                   Konfirmasi Reset Password

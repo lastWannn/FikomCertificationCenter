@@ -140,6 +140,32 @@
         </div>
     </div>
 
+    {{-- ── PENDING EMAIL OTP ALERT ───────────────────────────────────── --}}
+    @if(!empty($peserta->pending_email))
+    <div style="background:#FFFBEB;border:2px solid #F59E0B;border-radius:18px;padding:18px 22px;margin-bottom:24px;box-shadow:0 6px 18px rgba(245,158,11,0.18);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:42px;height:42px;border-radius:12px;background:#FEF3C7;border:1.5px solid #F59E0B;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+                <p style="margin:0;font-size:14.5px;font-weight:900;color:#92400E;">Pergantian Email Menunggu Verifikasi OTP</p>
+                <p style="margin:3px 0 0;font-size:13px;color:#B45309;font-weight:600;">Kode OTP 4-digit telah dikirim ke <strong>{{ $peserta->pending_email }}</strong>. Masukkan OTP untuk mengaktifkan email baru ini.</p>
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <button type="button" onclick="openOtpEmailModal()" style="padding:9px 18px;font-size:12.5px;font-weight:900;background:#131218;color:#FFC81A;border-radius:24px;border:1.5px solid #131218;cursor:pointer;box-shadow:0 4px 12px rgba(19,18,24,0.15);">
+                🔑 Masukkan OTP &rarr;
+            </button>
+            <form action="{{ route('peserta.profile.cancel-email-change') }}" method="POST" style="margin:0;">
+                @csrf
+                <button type="submit" onclick="return confirm('Batalkan pergantian email?')" style="padding:8px 14px;font-size:12px;font-weight:800;background:#FFFFFF;color:#DC2626;border-radius:24px;border:1.5px solid #FCA5A5;cursor:pointer;">
+                    Batal
+                </button>
+            </form>
+        </div>
+    </div>
+    @endif
+
     {{-- ── SUCCESS / ERROR / INFO ALERTS ────────────────────────────── --}}
     @if(session('info'))
     <div style="background:#FFFBEB;border:2px solid #F59E0B;border-radius:14px;padding:14px 20px;margin-bottom:22px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 14px rgba(245,158,11,0.15);">
@@ -326,14 +352,234 @@
           </div>
         </div>
       </div>
+    {{-- ═══ MODAL KHUSUS VERIFIKASI OTP EMAIL BARU ════════════════ --}}
+    @php
+        $activeOtpHint = $otpHint ?? session('otp_hint');
+    @endphp
+    <div id="email-otp-modal" class="no-print" style="display:{{ (session('require_otp_change_email') || $errors->has('otp') || !empty($peserta->pending_email)) ? 'flex' : 'none' }};position:fixed;inset:0;z-index:999999;background:rgba(19,18,24,.8);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;box-sizing:border-box;pointer-events:auto;">
+      <div style="background:#FFFFFF;border-radius:24px;border:2.5px solid #131218;max-width:480px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,0.4);overflow:hidden;position:relative;animation:modalPop 0.25s ease-out;z-index:1000000;">
+        
+        {{-- Modal Header Dark & Yellow --}}
+        <div style="background:#131218;padding:22px 26px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #FFC81A;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="background:#FFC81A;color:#131218;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">Verifikasi Keamanan</span>
+            <span style="color:#FFFFFF;font-size:14.5px;font-weight:900;">Verifikasi Email Baru</span>
+          </div>
+          <button type="button" onclick="closeOtpEmailModal()" style="background:rgba(255,255,255,0.15);border:none;color:#FFFFFF;width:32px;height:32px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">&times;</button>
+        </div>
+
+        {{-- Modal Body --}}
+        <div style="padding:28px 30px;text-align:center;">
+          <div style="width:58px;height:58px;border-radius:20px;background:#131218;border:2px solid #FFC81A;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 20px rgba(255,200,26,0.3);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+
+          <h3 style="font-size:18px;font-weight:900;color:#131218;margin:0 0 6px;">Masukkan Kode OTP 4 Digit</h3>
+          <p style="font-size:13px;color:#64748B;margin:0 0 14px;font-weight:500;line-height:1.5;">
+            Kode OTP verifikasi 4-digit telah dikirimkan ke:
+          </p>
+
+          {{-- Target Email Badge --}}
+          <div style="background:#F1F5F9;border:1.5px solid #CBD5E1;border-radius:30px;padding:8px 18px;display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;">
+            <span style="width:9px;height:9px;border-radius:50%;background:#10B981;"></span>
+            <strong id="target-pending-email" style="font-size:13.5px;color:#131218;font-family:monospace;">{{ $peserta->pending_email ?? session('pending_email', '-') }}</strong>
+          </div>
+
+          {{-- Dev OTP Hint Badge --}}
+          <div id="otp-dev-hint-badge" style="display:{{ $activeOtpHint ? 'block' : 'none' }};margin:0 auto 18px;background:#FEF3C7;border:1.5px solid #F59E0B;color:#92400E;padding:8px 16px;border-radius:14px;font-size:12.5px;font-weight:800;max-width:360px;">
+            🔑 Mode Testing Dev: Kode OTP Anda = <strong id="dev-otp-code" style="font-family:monospace;font-size:15px;color:#131218;letter-spacing:2px;">{{ $activeOtpHint }}</strong>
+          </div>
+
+          {{-- 4 Digit OTP Box Inputs --}}
+          <div style="display:flex;justify-content:center;gap:12px;margin-bottom:20px;" id="otp-digit-container">
+            <input type="text" maxlength="1" id="otp-digit-1" class="otp-box-input" autocomplete="off" inputmode="numeric" style="width:56px;height:62px;border-radius:14px;border:2.5px solid #CBD5E1;text-align:center;font-size:28px;font-weight:900;color:#131218;background:#FFFFFF;font-family:monospace;transition:all .18s;cursor:text;position:relative;z-index:1000000;" onfocus="this.style.borderColor='#131218';this.select();" onblur="this.style.borderColor='#CBD5E1';">
+            <input type="text" maxlength="1" id="otp-digit-2" class="otp-box-input" autocomplete="off" inputmode="numeric" style="width:56px;height:62px;border-radius:14px;border:2.5px solid #CBD5E1;text-align:center;font-size:28px;font-weight:900;color:#131218;background:#FFFFFF;font-family:monospace;transition:all .18s;cursor:text;position:relative;z-index:1000000;" onfocus="this.style.borderColor='#131218';this.select();" onblur="this.style.borderColor='#CBD5E1';">
+            <input type="text" maxlength="1" id="otp-digit-3" class="otp-box-input" autocomplete="off" inputmode="numeric" style="width:56px;height:62px;border-radius:14px;border:2.5px solid #CBD5E1;text-align:center;font-size:28px;font-weight:900;color:#131218;background:#FFFFFF;font-family:monospace;transition:all .18s;cursor:text;position:relative;z-index:1000000;" onfocus="this.style.borderColor='#131218';this.select();" onblur="this.style.borderColor='#CBD5E1';">
+            <input type="text" maxlength="1" id="otp-digit-4" class="otp-box-input" autocomplete="off" inputmode="numeric" style="width:56px;height:62px;border-radius:14px;border:2.5px solid #CBD5E1;text-align:center;font-size:28px;font-weight:900;color:#131218;background:#FFFFFF;font-family:monospace;transition:all .18s;cursor:text;position:relative;z-index:1000000;" onfocus="this.style.borderColor='#131218';this.select();" onblur="this.style.borderColor='#CBD5E1';">
+          </div>
+
+          {{-- Error Container --}}
+          <div id="otp-error-msg" style="display:none;background:#FEF2F2;border:1.5px solid #FCA5A5;border-radius:10px;padding:10px 14px;font-size:12.5px;color:#DC2626;font-weight:700;margin-bottom:18px;"></div>
+
+          {{-- Action Submit Button --}}
+          <button type="button" id="btn-verify-otp" onclick="submitEmailOtpAjax()" class="fcc-btn-gold" style="width:100%;padding:13px;font-size:14px;border-radius:14px;font-weight:900;justify-content:center;box-shadow:0 6px 18px rgba(255,200,26,0.35);margin-bottom:18px;cursor:pointer;">
+            Verifikasi &amp; Simpan Email Baru &rarr;
+          </button>
+
+          {{-- Resend & Cancel Footer Row --}}
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:16px;border-top:1px solid #E2E8F0;font-size:12.5px;">
+            <div>
+              <span id="otp-timer-label" style="color:#64748B;font-weight:600;">Kirim ulang dalam <strong id="otp-timer-count" style="color:#131218;font-family:monospace;">01:00</strong></span>
+              <button type="button" id="btn-resend-otp" onclick="resendEmailOtpAjax()" style="display:none;background:none;border:none;color:#D97706;font-weight:900;cursor:pointer;padding:0;text-decoration:underline;">
+                🔄 Kirim Ulang Kode OTP
+              </button>
+            </div>
+            <button type="button" onclick="cancelEmailChangeAjax()" style="background:none;border:none;color:#EF4444;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;">
+              Batal Pergantian
+            </button>
+          </div>
+
+        </div>
+      </div>
     </div>
 
 </div>
 
 @endsection
 
+@push('modals')
+{{-- ═══ POPUP MODAL UBAH KATA SANDI ══════════════════════════ --}}
+<div id="password-modal" onclick="if(event.target===this)closePasswordModal()" style="display:{{ $errors->has('password') ? 'flex' : 'none' }};position:fixed;inset:0;z-index:999999;background:rgba(19,18,24,.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <div style="background:#FFFFFF;border-radius:24px;border:2px solid #E5E7EB;max-width:520px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,0.25);overflow:hidden;position:relative;">
+    {{-- Modal Header --}}
+    <div style="background:#131218;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #FFC81A;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="background:#FFC81A;color:#131218;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">Keamanan Akun</span>
+        <span style="color:#FFFFFF;font-size:14px;font-weight:900;">Ubah Kata Sandi</span>
+      </div>
+      <button type="button" onclick="closePasswordModal()" style="background:rgba(255,255,255,0.1);border:none;color:#FFFFFF;width:32px;height:32px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;">&times;</button>
+    </div>
+
+    {{-- Modal Body --}}
+    <div style="padding:26px 28px;">
+      <p style="font-size:13px;color:#64748B;margin:0 0 20px;font-weight:500;">Masukkan kata sandi baru Anda di bawah ini untuk memperbarui keamanan akun Anda.</p>
+
+      <form action="{{ route('peserta.profile.update') }}" method="POST">
+        @csrf @method('PUT')
+        <input type="hidden" name="nama" value="{{ $peserta->nama }}">
+        <input type="hidden" name="email" value="{{ $peserta->email }}">
+        <input type="hidden" name="no_hp" value="{{ $peserta->no_hp }}">
+
+        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
+          <div>
+            <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
+              Kata Sandi Baru *
+            </label>
+            <input type="password" name="password" required placeholder="Minimal 8 karakter" class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;">
+          </div>
+
+          <div>
+            <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
+              Konfirmasi Kata Sandi Baru *
+            </label>
+            <input type="password" name="password_confirmation" required placeholder="Ulangi kata sandi baru" class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;">
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;justify-content:flex-end;">
+          <button type="button" onclick="closePasswordModal()" style="padding:10px 18px;border-radius:12px;border:1.5px solid #CBD5E1;background:#F1F5F9;color:#131218;font-size:13px;font-weight:800;cursor:pointer;">
+            Batal
+          </button>
+          <button type="submit" class="fcc-btn-gold" style="padding:10px 22px;border-radius:12px;font-size:13px;font-weight:900;box-shadow:0 4px 12px rgba(255,200,26,0.3);">
+            Simpan Kata Sandi &rarr;
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{{-- ═══ MODAL KHUSUS VERIFIKASI OTP EMAIL BARU (IDENTIK AUTH REGISTER) ════════════════ --}}
+@php
+    $activeOtpHint = $otpHint ?? session('otp_hint');
+@endphp
+<div id="email-otp-modal" class="no-print" style="display:{{ (session('require_otp_change_email') || $errors->has('otp') || !empty($peserta->pending_email)) ? 'flex' : 'none' }};position:fixed;inset:0;background:rgba(14,13,20,0.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:999999;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <div style="background:#131218;width:100%;max-width:420px;border-radius:24px;padding:36px 32px;box-shadow:0 24px 64px rgba(0,0,0,0.7);border:1.5px solid rgba(255,200,26,0.25);text-align:center;position:relative;">
+
+    {{-- Mail Icon Box --}}
+    <div style="width:64px;height:64px;border-radius:20px;background:rgba(255,200,26,0.12);border:1.5px solid rgba(255,200,26,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </div>
+
+    <h3 style="color:#FFFFFF;font-size:22px;font-weight:900;margin:0 0 8px;letter-spacing:-0.5px;">Verifikasi Email Baru</h3>
+    <p style="color:rgba(255,255,255,0.65);font-size:13.5px;line-height:1.5;margin:0 0 20px;">
+      Kami telah mengirimkan 4 digit kode OTP ke <br>
+      <strong id="target-pending-email" style="color:#FFC81A;font-weight:800;word-break:break-all;">{{ $peserta->pending_email ?? session('pending_email', '-') }}</strong>
+    </p>
+
+    {{-- 4 Separate Individual Digit Boxes (.otp-box) --}}
+    <form action="{{ route('peserta.profile.verify-email-otp') }}" method="POST">
+      @csrf
+      <input type="hidden" name="otp" id="otp-hidden-field">
+
+      <div style="display:flex;gap:12px;justify-content:center;margin-bottom:22px;">
+        <input type="text" maxlength="1" id="otp-1" class="profile-otp-box" autocomplete="off" inputmode="numeric" required autofocus style="width:48px;height:52px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;text-align:center;font-size:22px;font-weight:900;color:#FFFFFF;transition:all 0.2s ease;outline:none;" onfocus="this.style.borderColor='#FFC81A';this.style.background='rgba(255,200,26,0.08)';this.style.boxShadow='0 0 0 3px rgba(255,200,26,0.2)';this.select();" onblur="this.style.borderColor='rgba(255,255,255,0.15)';this.style.background='rgba(255,255,255,0.05)';this.style.boxShadow='none';">
+        <input type="text" maxlength="1" id="otp-2" class="profile-otp-box" autocomplete="off" inputmode="numeric" required style="width:48px;height:52px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;text-align:center;font-size:22px;font-weight:900;color:#FFFFFF;transition:all 0.2s ease;outline:none;" onfocus="this.style.borderColor='#FFC81A';this.style.background='rgba(255,200,26,0.08)';this.style.boxShadow='0 0 0 3px rgba(255,200,26,0.2)';this.select();" onblur="this.style.borderColor='rgba(255,255,255,0.15)';this.style.background='rgba(255,255,255,0.05)';this.style.boxShadow='none';">
+        <input type="text" maxlength="1" id="otp-3" class="profile-otp-box" autocomplete="off" inputmode="numeric" required style="width:48px;height:52px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;text-align:center;font-size:22px;font-weight:900;color:#FFFFFF;transition:all 0.2s ease;outline:none;" onfocus="this.style.borderColor='#FFC81A';this.style.background='rgba(255,200,26,0.08)';this.style.boxShadow='0 0 0 3px rgba(255,200,26,0.2)';this.select();" onblur="this.style.borderColor='rgba(255,255,255,0.15)';this.style.background='rgba(255,255,255,0.05)';this.style.boxShadow='none';">
+        <input type="text" maxlength="1" id="otp-4" class="profile-otp-box" autocomplete="off" inputmode="numeric" required style="width:48px;height:52px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;text-align:center;font-size:22px;font-weight:900;color:#FFFFFF;transition:all 0.2s ease;outline:none;" onfocus="this.style.borderColor='#FFC81A';this.style.background='rgba(255,200,26,0.08)';this.style.boxShadow='0 0 0 3px rgba(255,200,26,0.2)';this.select();" onblur="this.style.borderColor='rgba(255,255,255,0.15)';this.style.background='rgba(255,255,255,0.05)';this.style.boxShadow='none';">
+      </div>
+
+      @if($errors->has('otp'))
+      <div style="color:#EF4444;font-size:13px;margin-bottom:18px;font-weight:700;">
+        {{ $errors->first('otp') }}
+      </div>
+      @endif
+
+      <button type="submit" style="width:100%;justify-content:center;background:#FFC81A;color:#131218;font-weight:800;font-size:13.5px;padding:12px 22px;border-radius:100px;border:none;cursor:pointer;box-shadow:0 6px 16px rgba(255,200,26,0.25);transition:all .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        Verifikasi &amp; Simpan Email Baru
+      </button>
+    </form>
+
+    {{-- Resend & Cancel Footer --}}
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;padding-top:16px;border-top:1px dashed rgba(255,255,255,0.15);font-size:12px;">
+      <div>
+        <span id="resend-timer-wrapper" style="color:rgba(255,255,255,0.6);font-weight:600;">
+          Kirim ulang dalam <strong id="resend-countdown" style="color:#FFC81A;font-family:monospace;font-size:13px;">01:00</strong>
+        </span>
+        <form action="{{ route('peserta.profile.resend-email-otp') }}" method="POST" id="resend-otp-form" style="margin:0;display:none;">
+          @csrf
+          <button type="submit" style="background:none;border:none;color:#FFC81A;font-weight:800;cursor:pointer;padding:0;text-decoration:underline;">
+            🔄 Kirim Ulang Kode OTP
+          </button>
+        </form>
+      </div>
+
+      <form action="{{ route('peserta.profile.cancel-email-change') }}" method="POST" style="margin:0;">
+        @csrf
+        <button type="submit" onclick="return confirm('Membatalkan pergantian email?')" style="background:none;border:none;color:rgba(255,255,255,0.5);font-weight:700;cursor:pointer;padding:0;text-decoration:underline;" onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">
+          Batal Pergantian
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+@endpush
+
 @push('scripts')
 <script>
+let resendTimerInterval = null;
+
+function startResendCountdown(seconds = 60) {
+    if (resendTimerInterval) clearInterval(resendTimerInterval);
+
+    const wrapper = document.getElementById('resend-timer-wrapper');
+    const countEl = document.getElementById('resend-countdown');
+    const formEl = document.getElementById('resend-otp-form');
+
+    if (wrapper) wrapper.style.display = 'inline';
+    if (formEl) formEl.style.display = 'none';
+
+    let rem = seconds;
+    const updateDisplay = () => {
+        const m = String(Math.floor(rem / 60)).padStart(2, '0');
+        const s = String(rem % 60).padStart(2, '0');
+        if (countEl) countEl.innerText = `${m}:${s}`;
+    };
+
+    updateDisplay();
+    resendTimerInterval = setInterval(() => {
+        rem--;
+        if (rem <= 0) {
+            clearInterval(resendTimerInterval);
+            if (wrapper) wrapper.style.display = 'none';
+            if (formEl) formEl.style.display = 'inline';
+        } else {
+            updateDisplay();
+        }
+    }, 1000);
+}
+
 function openPasswordModal() {
     var modal = document.getElementById('password-modal');
     if (modal) modal.style.display = 'flex';
@@ -350,6 +596,36 @@ function closePasswordModal() {
     }
 }
 
+function openOtpEmailModal(email = null, hint = null) {
+    var modal = document.getElementById('email-otp-modal');
+    if (email) {
+        var badge = document.getElementById('target-pending-email');
+        if (badge) badge.innerText = email;
+    }
+    if (hint) {
+        var hintBadge = document.getElementById('otp-dev-hint-badge');
+        var hintCode = document.getElementById('dev-otp-code');
+        if (hintBadge && hintCode) {
+            hintCode.innerText = hint;
+            hintBadge.style.display = 'block';
+        }
+    }
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+    const firstBox = document.getElementById('otp-1');
+    if (firstBox) setTimeout(() => { firstBox.focus(); firstBox.select(); }, 150);
+
+    startResendCountdown(60);
+}
+
+function closeOtpEmailModal() {
+    var modal = document.getElementById('email-otp-modal');
+    if (modal) {
+        modal.style.setProperty('display', 'none', 'important');
+    }
+}
+
 function previewFoto(input) {
     const file = input.files[0];
     if (!file) return;
@@ -363,5 +639,88 @@ function previewFoto(input) {
     };
     reader.readAsDataURL(file);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const boxes = [
+        document.getElementById('otp-1'),
+        document.getElementById('otp-2'),
+        document.getElementById('otp-3'),
+        document.getElementById('otp-4')
+    ];
+    const hiddenField = document.getElementById('otp-hidden-field');
+
+    function syncOtp() {
+        const val = boxes.map(b => b ? b.value : '').join('');
+        if (hiddenField) hiddenField.value = val;
+    }
+
+    boxes.forEach((box, idx) => {
+        if (!box) return;
+
+        box.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length === 1 && idx < 3) {
+                boxes[idx + 1].focus();
+                boxes[idx + 1].select();
+            }
+            syncOtp();
+        });
+
+        box.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace') {
+                if (!this.value && idx > 0) {
+                    boxes[idx - 1].focus();
+                    boxes[idx - 1].select();
+                }
+            } else if (e.key === 'ArrowLeft' && idx > 0) {
+                boxes[idx - 1].focus();
+            } else if (e.key === 'ArrowRight' && idx < 3) {
+                boxes[idx + 1].focus();
+            }
+        });
+
+        box.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+            if (text.length >= 4) {
+                [0, 1, 2, 3].forEach(i => {
+                    if (boxes[i]) boxes[i].value = text[i] || '';
+                });
+                if (boxes[3]) boxes[3].focus();
+                syncOtp();
+            }
+        });
+    });
+
+    const otpForm = document.querySelector('#email-otp-modal form');
+    if (otpForm) {
+        otpForm.addEventListener('submit', function(e) {
+            syncOtp();
+            if (!hiddenField.value || hiddenField.value.length < 4) {
+                e.preventDefault();
+                alert('Harap isi 4 digit kode OTP secara lengkap.');
+                if (boxes[0]) boxes[0].focus();
+            }
+        });
+    }
+
+    @if(session('require_otp_change_email') || !empty($peserta->pending_email))
+        openOtpEmailModal("{{ $peserta->pending_email ?? session('pending_email') }}", "{{ $activeOtpHint }}");
+    @endif
+});
+</script>
+@endpushceholder = document.getElementById('avatar-placeholder');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    @if(session('require_otp_change_email') || !empty($peserta->pending_email))
+        openOtpEmailModal("{{ $peserta->pending_email ?? session('pending_email') }}", "{{ $activeOtpHint }}");
+    @endif
+});
 </script>
 @endpush
