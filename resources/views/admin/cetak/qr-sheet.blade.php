@@ -27,7 +27,7 @@
   <h1>QR Code Presensi</h1>
   <p>{{ $kegiatan->judul }} &mdash; {{ $kegiatan->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}</p>
 </div>
-<button onclick="window.print()" style="position:fixed;top:10px;right:10px;padding:8px 18px;background:#131218;color:#FFC81A;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;z-index:999;">&#128438; Cetak</button>
+<button onclick="window.print()" style="position:fixed;top:10px;right:10px;padding:8px 18px;background:#131218;color:#FFC81A;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;z-index:999;display:inline-flex;align-items:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Cetak</button>
 <div class="grid">
   @foreach($pendaftaran as $pd)
   <div class="card">
