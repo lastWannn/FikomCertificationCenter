@@ -22,18 +22,16 @@
     font-family: 'Inter', 'Helvetica', 'Arial', sans-serif;
     font-size: 10pt;
     color: #0F172A;
-    background: #0F172A;
+    background: #FFFFFF;
     line-height: 1.6;
-    padding-top: 74px;
-    padding-bottom: 40px;
+    margin: 0;
+    padding: 0;
   }
   .paper-container {
     max-width: 800px;
     margin: 0 auto;
     background: #FFFFFF;
-    padding: 45px 55px;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
-    border-radius: 12px;
+    padding: 20px;
     position: relative;
   }
   table {
@@ -137,44 +135,6 @@
 </style>
 </head>
 <body>
-
-  {{-- TOOLBAR NAVIGATION --}}
-  <div class="no-print" style="position:fixed; top:0; left:0; right:0; background:#131218; padding:12px 24px; display:flex; justify-content:space-between; align-items:center; z-index:9999; border-bottom:1.5px solid rgba(255,200,26,0.3); font-family:'Inter',sans-serif;">
-    <a href="{{ route('landing.arsip.show', $arsip, false) }}" style="color:#FFFFFF; text-decoration:none; font-size:13px; font-weight:700; background:rgba(255,255,255,0.08); padding:8px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); display:inline-flex; align-items:center; gap:6px;">
-      &larr; Kembali ke Detail Arsip
-    </a>
-
-    <div style="display:flex; align-items:center; gap:10px;">
-      {{-- Tombol Utama: Unduh PDF via iframe --}}
-      <button type="button" id="btn-unduh-pdf-toolbar" onclick="unduhPdfToolbar()"
-         style="color:#131218; font-size:13px; font-weight:900; background:#FFC81A; border:1.5px solid #131218; padding:8px 18px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(255,200,26,0.35); cursor:pointer; transition:all 0.2s;"
-         onmouseover="this.style.background='#FFFFFF';"
-         onmouseout="this.style.background='#FFC81A';">
-        <span id="btn-unduh-toolbar-text">📥 Unduh File PDF</span>
-      </button>
-
-      <button onclick="window.print()" style="color:#FFFFFF; text-decoration:none; font-size:13px; font-weight:700; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); padding:8px 16px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
-        🖨️ Cetak
-      </button>
-    </div>
-  </div>
-
-  <iframe id="download-frame-toolbar" style="display:none;"></iframe>
-  <script>
-  function unduhPdfToolbar() {
-    var btn = document.getElementById('btn-unduh-pdf-toolbar');
-    var txt = document.getElementById('btn-unduh-toolbar-text');
-    btn.disabled = true;
-    btn.style.opacity = '0.7';
-    txt.innerText = 'Mengunduh...';
-    document.getElementById('download-frame-toolbar').src = '{{ route("landing.arsip.download", $arsip, false) }}';
-    setTimeout(function() {
-      txt.innerText = '📥 Unduh File PDF';
-      btn.disabled = false;
-      btn.style.opacity = '1';
-    }, 3000);
-  }
-  </script>
 
   {{-- PAPER CONTAINER --}}
   <div class="paper-container">
