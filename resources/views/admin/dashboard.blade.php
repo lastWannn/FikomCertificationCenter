@@ -256,7 +256,7 @@
           </thead>
           <tbody>
             @forelse($kegiatanTerbaru as $k)
-            <tr style="border-top:1px solid #F1F5F9;transition:background .15s;" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background=''">
+            <tr style="border-top:1px solid #F1F5F9;transition:background .15s;cursor:pointer;" onclick="if(!event.target.closest('button, a, select, input, form')) window.location.href='{{ route('admin.kegiatan.show', $k) }}'" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background=''">
               <td style="padding:14px 18px;">
                 <p style="margin:0 0 4px;font-size:13.5px;font-weight:800;color:#131218;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $k->judul }}</p>
                 <span style="font-size:10px;font-weight:900;padding:3px 9px;border-radius:6px;text-transform:uppercase;letter-spacing:0.5px;background:{{ $k->jenis_kegiatan==='pelatihan'?'#FFC81A':'#131218' }};color:{{ $k->jenis_kegiatan==='pelatihan'?'#131218':'#FFC81A' }};border:1px solid #131218;">{{ ucfirst($k->jenis_kegiatan) }}</span>

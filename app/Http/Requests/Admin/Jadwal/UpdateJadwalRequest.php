@@ -12,7 +12,7 @@ class UpdateJadwalRequest extends FormRequest {
                 'nominal_biaya.*'=>'nullable|numeric|min:0',
                 'kuota_peserta'=>'required|integer|min:1|max:500','untuk_peserta'=>'required|in:L,P,LP',
                 'tgl_batas_daftar'=>'required|date|before_or_equal:tgl_pelaksanaan',
-                'tgl_pelaksanaan'=>'required|date',
+                'tgl_pelaksanaan'=>'required|date|after_or_equal:tgl_batas_daftar',
                 'jam_mulai'=>'required','jam_selesai'=>'required|after:jam_mulai'];
     }
 
@@ -23,6 +23,7 @@ class UpdateJadwalRequest extends FormRequest {
             'tgl_batas_daftar.before_or_equal' => 'Tanggal batas pendaftaran harus sebelum atau sama dengan tanggal pelaksanaan.',
             'tgl_pelaksanaan.required'         => 'Tanggal pelaksanaan wajib diisi.',
             'tgl_pelaksanaan.date'             => 'Tanggal pelaksanaan harus berupa tanggal yang valid.',
+            'tgl_pelaksanaan.after_or_equal'   => 'Tanggal pelaksanaan tidak boleh sebelum tanggal batas pendaftaran.',
             'kuota_peserta.required'           => 'Kuota peserta wajib diisi.',
             'kuota_peserta.integer'            => 'Kuota peserta harus berupa angka.',
             'kuota_peserta.min'                => 'Kuota peserta minimal 1 orang.',

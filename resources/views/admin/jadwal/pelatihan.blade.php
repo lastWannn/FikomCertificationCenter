@@ -79,7 +79,7 @@
           $hasKegiatan = $j->kegiatanPelatihan !== null;
           $kegiatan    = $j->kegiatanPelatihan?->kegiatan;
         @endphp
-        <tr style="border-top:1px solid #F0F1F5;" class="tbl-row">
+        <tr style="border-top:1px solid #F0F1F5;cursor:pointer;" class="tbl-row" onclick="if(!event.target.closest('button, a, select, input, form')) window.location.href='{{ $hasKegiatan ? route('admin.kegiatan.show', $kegiatan) : route('admin.pelatihan.show', $j->pelatihan) }}'">
           <td style="padding:12px 14px;">
             <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">
               {{ Str::limit($j->pelatihan->judul,35) }}
