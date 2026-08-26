@@ -70,7 +70,7 @@
       <tbody>
         @forelse($jadwal as $j)
         @php $hasK = $j->kegiatanSertifikasi !== null; $k = $j->kegiatanSertifikasi?->kegiatan; @endphp
-        <tr style="border-top:1px solid #F0F1F5;" class="tbl-row">
+        <tr style="border-top:1px solid #F0F1F5;cursor:pointer;" class="tbl-row" onclick="if(!event.target.closest('button, a, select, input, form')) window.location.href='{{ $hasK ? route('admin.kegiatan.show', $k) : route('admin.sertifikasi.show', $j->sertifikasi) }}'">
           <td style="padding:12px 14px;">
             <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">
                 {{ Str::limit($j->sertifikasi->judul,35) }}

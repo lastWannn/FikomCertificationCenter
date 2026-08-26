@@ -1,243 +1,278 @@
 @extends('layouts.public')
 @section('title', $arsip->judul ?? 'Arsip Kegiatan')
 @section('page-content')
-<div class="page-content-wrap" style="padding-top:68px; background:linear-gradient(180deg, #131218 0%, #0e0d14 120px, #0e0d14 100%); min-height:100vh;">
-  
-  {{-- Header --}}
-  <div style="background:#131218;padding:52px 24px 40px;position:relative;overflow:hidden;">
-    <div style="position:absolute;inset:0;opacity:.04;background-image:linear-gradient(rgba(255,200,26,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,200,26,1) 1px,transparent 1px);background-size:64px 64px;"></div>
-    <div style="max-width:880px;margin:0 auto;position:relative;z-index:1;">
-      <a href="{{ route('landing.arsip') }}" style="display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.5);font-size:13px;text-decoration:none;margin-bottom:16px;transition:color .18s;"
-         onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='rgba(255,255,255,.5)'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-        Arsip Kegiatan
-      </a>
-      <div style="display:inline-block;background:rgba(255,200,26,.14);border:1px solid rgba(255,200,26,.28);border-radius:100px;padding:4px 14px;margin-bottom:14px;">
-        <span style="color:#FFC81A;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">{{ ucfirst($arsip->kegiatan?->jenis_kegiatan ?? 'kegiatan') }}</span>
-      </div>
-      <h1 class="fcc-gold-text" style="font-size:clamp(22px,4vw,38px);font-weight:900;margin:0 0 10px;line-height:1.15;">
-        {{ $arsip->judul ?? $arsip->kegiatan?->judul ?? 'Arsip Kegiatan' }}
-      </h1>
-      <p style="color:rgba(255,255,255,.5);font-size:13px;margin:0;">
-        {{ $arsip->created_at->format('d M Y') }} &bull; {{ $arsip->kegiatan?->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? '' }}
-      </p>
-    </div>
-  </div>
+<div style="padding-top:84px; background:#131218; min-height: calc(100vh - 84px);">
 
-  {{-- Konten --}}
-  <div style="max-width:880px;margin:0 auto;padding:44px 24px;">
-    
-    @if($arsip->ringkasan)
-    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:22px 24px;margin-bottom:28px;">
-      <p style="color:rgba(255,255,255,.7);font-size:15px;line-height:1.88;margin:0;font-weight:500;">{{ $arsip->ringkasan }}</p>
-    </div>
-    @endif
+    {{-- ═══ TOP HERO CARD ════════════════════════════════════════════════════════ --}}
+    <div style="background:#131218; border-bottom:1.5px solid rgba(255,200,26,0.2); padding:40px 24px 44px; position:relative; overflow:hidden;">
+        <!-- Subtle Glow -->
+        <div style="position:absolute; top:-40%; right:-10%; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle, rgba(255,200,26,0.07), transparent 70%); pointer-events:none;"></div>
 
-    {{-- Info kegiatan --}}
-    @if($arsip->kegiatan)
-    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:22px 24px;margin-bottom:28px;">
-      <p style="font-size:14px;font-weight:800;color:#FFF;margin:0 0 14px;">Informasi Kegiatan</p>
-      @foreach([
-        ['Program', $arsip->kegiatan->judul],
-        ['Jenis', ucfirst($arsip->kegiatan->jenis_kegiatan)],
-        ['Tanggal Pelaksanaan', $arsip->kegiatan->jadwal?->tgl_pelaksanaan?->format('d F Y') ?? '—'],
-        ['Total Peserta', $arsip->kegiatan->pendaftaran->where('status_pendaftaran','terdaftar')->count().' peserta'],
-      ] as [$l,$v])
-      <div style="display:flex;gap:16px;padding:9px 0;border-top:1px solid rgba(255,255,255,.08);">
-        <span style="min-width:160px;font-size:12px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;">{{ $l }}</span>
-        <span style="font-size:14px;color:#FFF;font-weight:500;">{{ $v }}</span>
-      </div>
-      @endforeach
-    </div>
-    @endif
+        <div style="max-width:1180px; margin:0 auto; position:relative; z-index:1;">
+            
+            {{-- Top Breadcrumb & Status --}}
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                <a href="{{ route('landing.arsip') }}" style="display:inline-flex;align-items:center;gap:6px;color:#FFC81A;font-size:12.5px;font-weight:800;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    @include('components.icon',['name'=>'chevron-left','size'=>15]) Kembali ke Daftar Arsip
+                </a>
 
-    {{-- GALERI DOKUMENTASI FOTO KEGIATAN (SLIDER SHOWCASE + HORIZONTAL STRIP) --}}
-    @if(!empty($arsip->dokumentasi))
-    @php
-        $fotoList = array_values($arsip->dokumentasi);
-        $totalFoto = count($fotoList);
-    @endphp
-    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:24px;margin-bottom:28px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
-        <h3 style="font-size:16px;font-weight:900;color:#FFF;margin:0;display:flex;align-items:center;gap:8px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          Galeri Dokumentasi Kegiatan
-        </h3>
-        <span style="font-size:12px;color:#FFC81A;font-weight:800;background:rgba(255,200,26,.12);padding:4px 14px;border-radius:20px;border:1px solid rgba(255,200,26,0.3);">
-          {{ $totalFoto }} Foto Dokumentasi
-        </span>
-      </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:10.5px; font-weight:900; padding:4px 12px; border-radius:100px; text-transform:uppercase; letter-spacing:1px; background:#FFC81A; color:#131218;">
+                        {{ ucfirst($arsip->kegiatan?->jenis_kegiatan ?? 'arsip') }}
+                    </span>
+                </div>
+            </div>
 
-      {{-- Featured Main Image Preview --}}
-      <div style="position:relative; width:100%; height:400px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.12); background:#131218; margin-bottom:14px; cursor:pointer;"
-           onclick="openLightBox(currentFotoIndex)">
-        <img id="featured-gallery-img" src="{{ asset('storage/'.$fotoList[0]) }}" alt="Foto Utama Dokumentasi"
-             style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;"
-             onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-        
-        {{-- Prev / Next Controls over Main Showcase --}}
-        <button type="button" onclick="event.stopPropagation(); changeFeaturedFoto(-1);" title="Foto Sebelumnya"
-                style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:40px; height:40px; border-radius:50%; background:rgba(19,18,24,0.75); border:1px solid rgba(255,255,255,0.2); color:#FFFFFF; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s;"
-                onmouseover="this.style.background='#FFC81A';this.style.color='#131218'" onmouseout="this.style.background='rgba(19,18,24,0.75)';this.style.color='#FFFFFF'">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button type="button" onclick="event.stopPropagation(); changeFeaturedFoto(1);" title="Foto Selanjutnya"
-                style="position:absolute; right:12px; top:50%; transform:translateY(-50%); width:40px; height:40px; border-radius:50%; background:rgba(19,18,24,0.75); border:1px solid rgba(255,255,255,0.2); color:#FFFFFF; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s;"
-                onmouseover="this.style.background='#FFC81A';this.style.color='#131218'" onmouseout="this.style.background='rgba(19,18,24,0.75)';this.style.color='#FFFFFF'">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
+            {{-- Main Title & Date Metadata --}}
+            <h1 style="font-size:clamp(22px, 3.5vw, 34px); font-weight:900; color:#FFFFFF; margin:0 0 12px; line-height:1.25; letter-spacing:-0.5px;">
+                {{ $arsip->judul ?? $arsip->kegiatan?->judul ?? 'Arsip Kegiatan' }}
+            </h1>
 
-        {{-- Counter Overlay & Zoom Hint --}}
-        <div style="position:absolute; bottom:12px; left:12px; background:rgba(19,18,24,0.85); border:1px solid rgba(255,255,255,0.2); padding:5px 14px; border-radius:20px; font-size:12px; color:#FFFFFF; font-weight:800; display:flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-            <span id="featured-counter-text">Foto 1 dari {{ $totalFoto }} (Klik untuk Perbesar)</span>
+            <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; color:rgba(255,255,255,0.65); font-size:13px; font-weight:600;">
+                <span style="display:inline-flex; align-items:center; gap:6px; color:#FFC81A; font-weight:700;">
+                    @include('components.icon',['name'=>'calendar','size'=>14,'style'=>'color:#FFC81A'])
+                    Diarsipkan {{ $arsip->created_at->translatedFormat('d M Y') }}
+                </span>
+                @if($arsip->kegiatan?->jadwal?->tgl_pelaksanaan)
+                <span style="color:rgba(255,255,255,0.3);">&bull;</span>
+                <span style="display:inline-flex; align-items:center; gap:6px;">
+                    @include('components.icon',['name'=>'clock','size'=>14,'style'=>'color:rgba(255,255,255,0.5)'])
+                    Pelaksanaan {{ $arsip->kegiatan->jadwal->tgl_pelaksanaan->translatedFormat('d M Y') }}
+                </span>
+                @endif
+            </div>
+
         </div>
-      </div>
+    </div>
 
-      {{-- Horizontal Thumbnail Strip (Scroll Samping) --}}
-      <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; scrollbar-width:thin;" id="thumb-strip">
-        @foreach($fotoList as $idx => $img)
-        <div id="thumb-item-{{ $idx }}"
-             style="width:90px; height:65px; border-radius:10px; overflow:hidden; flex-shrink:0; border:{{ $idx===0 ? '2px solid #FFC81A' : '1.5px solid rgba(255,255,255,0.15)' }}; cursor:pointer; transition:all 0.2s; opacity:{{ $idx===0 ? '1' : '0.6' }};"
-             onclick="selectFeaturedFoto({{ $idx }})"
-             onmouseover="this.style.opacity='1'" onmouseout="if(currentFotoIndex!=={{ $idx }}) this.style.opacity='0.6'">
-          <img src="{{ asset('storage/'.$img) }}" alt="Foto Thumb" style="width:100%; height:100%; object-fit:cover;">
+    {{-- ═══ MAIN CONTENT BODY ═════════════════════════════════════════════════════ --}}
+    <div style="max-width:1180px; margin:0 auto; padding:40px 24px 60px;">
+        
+        {{-- Ringkasan Laporan --}}
+        @if($arsip->ringkasan)
+        <div style="background:#1E1D26; border:1.5px solid rgba(255,200,26,0.25); border-radius:18px; padding:28px; margin-bottom:28px; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+            <h3 style="font-size:15px; font-weight:900; color:#FFC81A; margin:0 0 12px; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:8px;">
+                @include('components.icon',['name'=>'file-text','size'=>16,'style'=>'color:#FFC81A']) Ringkasan Laporan Kegiatan
+            </h3>
+            <p style="color:rgba(255,255,255,0.85); font-size:14.5px; line-height:1.8; margin:0; font-weight:500;">
+                {{ $arsip->ringkasan }}
+            </p>
         </div>
-        @endforeach
-      </div>
-    </div>
+        @endif
 
-    {{-- Fullscreen Lightbox Modal --}}
-    <div id="lightbox-modal" style="display:none; position:fixed; inset:0; background:rgba(10,10,14,0.95); z-index:99999; align-items:center; justify-content:center; flex-direction:column; padding:24px;" onclick="closeLightBox()">
-      
-      {{-- Top Header Toolbar --}}
-      <div style="position:absolute; top:20px; left:24px; right:24px; display:flex; justify-content:space-between; align-items:center; z-index:10;" onclick="event.stopPropagation();">
-        <span id="lightbox-counter" style="color:#FFC81A; font-size:13px; font-weight:900; background:rgba(255,200,26,0.15); padding:6px 16px; border-radius:20px; border:1px solid rgba(255,200,26,0.3);">
-          Foto 1 dari {{ $totalFoto }}
-        </span>
-        <button type="button" onclick="closeLightBox()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#FFFFFF; width:38px; height:38px; border-radius:50%; cursor:pointer; font-size:16px; font-weight:900; display:flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.background='#EF4444'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-          ✕
-        </button>
-      </div>
+        {{-- Detail Spesifikasi Informasi Kegiatan --}}
+        @if($arsip->kegiatan)
+        <div style="background:#1E1D26; border:1.5px solid rgba(255,200,26,0.25); border-radius:18px; padding:28px; margin-bottom:28px; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+            <h3 style="font-size:16px; font-weight:900; color:#FFFFFF; margin:0 0 20px; display:flex; align-items:center; gap:10px;">
+                @include('components.icon',['name'=>'info','size'=>18,'style'=>'color:#FFC81A']) Spesifikasi Informasi Kegiatan
+            </h3>
 
-      {{-- Prev Button --}}
-      <button type="button" onclick="event.stopPropagation(); changeLightBoxFoto(-1);" title="Foto Sebelumnya (Panah Kiri)"
-              style="position:absolute; left:20px; top:50%; transform:translateY(-50%); width:46px; height:46px; border-radius:50%; background:rgba(255,200,26,0.2); border:1.5px solid #FFC81A; color:#FFC81A; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; transition:all 0.2s;"
-              onmouseover="this.style.background='#FFC81A';this.style.color='#131218'" onmouseout="this.style.background='rgba(255,200,26,0.2)';this.style.color='#FFC81A'">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
+                @foreach([
+                    ['Program Kegiatan', $arsip->kegiatan->judul, 'book-open'],
+                    ['Jenis Kegiatan', ucfirst($arsip->kegiatan->jenis_kegiatan), 'layers'],
+                    ['Tanggal Pelaksanaan', $arsip->kegiatan->jadwal?->tgl_pelaksanaan?->translatedFormat('d F Y') ?? '—', 'calendar'],
+                    ['Total Peserta Terdaftar', $arsip->kegiatan->pendaftaran->where('status_pendaftaran','terdaftar')->count().' Peserta', 'users'],
+                ] as [$label, $val, $ico])
+                <div style="background:#131218; border:1px solid rgba(255,200,26,0.2); border-radius:14px; padding:16px 20px;">
+                    <p style="color:#FFC81A; font-size:11px; font-weight:900; margin:0 0 6px; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px;">
+                        @include('components.icon',['name'=>$ico,'size'=>13,'style'=>'color:#FFC81A']) {{ $label }}
+                    </p>
+                    <p style="color:#FFFFFF; font-size:14px; font-weight:800; margin:0;">
+                        {{ $val }}
+                    </p>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
 
-      {{-- Main Lightbox Image --}}
-      <img id="lightbox-img" style="max-width:88vw; max-height:80vh; border-radius:12px; object-fit:contain; box-shadow:0 16px 50px rgba(0,0,0,0.9); border:1px solid rgba(255,255,255,0.15);" onclick="event.stopPropagation();">
+        {{-- GALERI DOKUMENTASI FOTO KEGIATAN --}}
+        @if(!empty($arsip->dokumentasi))
+        @php
+            $fotoList = array_values($arsip->dokumentasi);
+            $totalFoto = count($fotoList);
+        @endphp
+        <div style="background:#1E1D26; border:1.5px solid rgba(255,200,26,0.25); border-radius:18px; padding:28px; margin-bottom:28px; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                <h3 style="font-size:16px; font-weight:900; color:#FFFFFF; margin:0; display:flex; align-items:center; gap:10px;">
+                    @include('components.icon',['name'=>'camera','size'=>18,'style'=>'color:#FFC81A'])
+                    Galeri Dokumentasi Foto Kegiatan
+                </h3>
+                <span style="font-size:12px; color:#FFC81A; font-weight:800; background:rgba(255,200,26,0.12); padding:5px 16px; border-radius:100px; border:1px solid rgba(255,200,26,0.3);">
+                    {{ $totalFoto }} Foto Dokumentasi
+                </span>
+            </div>
 
-      {{-- Next Button --}}
-      <button type="button" onclick="event.stopPropagation(); changeLightBoxFoto(1);" title="Foto Selanjutnya (Panah Kanan)"
-              style="position:absolute; right:20px; top:50%; transform:translateY(-50%); width:46px; height:46px; border-radius:50%; background:rgba(255,200,26,0.2); border:1.5px solid #FFC81A; color:#FFC81A; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; transition:all 0.2s;"
-              onmouseover="this.style.background='#FFC81A';this.style.color='#131218'" onmouseout="this.style.background='rgba(255,200,26,0.2)';this.style.color='#FFC81A'">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+            {{-- Featured Main Image Preview --}}
+            <div style="position:relative; width:100%; height:420px; border-radius:16px; overflow:hidden; border:2px solid #FFC81A; background:#131218; margin-bottom:16px; cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,0.4);"
+                 onclick="openLightBox(currentFotoIndex)">
+                <img id="featured-gallery-img" src="{{ asset('storage/'.$fotoList[0]) }}" alt="Foto Utama Dokumentasi"
+                     style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;"
+                     onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
 
-    </div>
+                {{-- Prev / Next Controls over Main Showcase --}}
+                <button type="button" onclick="event.stopPropagation(); changeFeaturedFoto(-1);" title="Foto Sebelumnya"
+                        style="position:absolute; left:14px; top:50%; transform:translateY(-50%); width:42px; height:42px; border-radius:50%; background:#131218; border:1.5px solid rgba(255,200,26,0.4); color:#FFC81A; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow:0 4px 14px rgba(0,0,0,0.5);"
+                        onmouseover="this.style.background='#FFC81A';this.style.color='#131218'" onmouseout="this.style.background='#131218';this.style.color='#FFC81A'">
+                    @include('components.icon',['name'=>'chevron-left','size'=>18])
+                </button>
+                <button type="button" onclick="event.stopPropagation(); changeFeaturedFoto(1);" title="Foto Selanjutnya"
+                        style="position:absolute; right:14px; top:50%; transform:translateY(-50%); width:42px; height:42px; border-radius:50%; background:#131218; border:1.5px solid rgba(255,200,26,0.4); color:#FFC81A; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow:0 4px 14px rgba(0,0,0,0.5);"
+                        onmouseover="this.style.background='#FFC81A';this.style.color='#131218'" onmouseout="this.style.background='#131218';this.style.color='#FFC81A'">
+                    @include('components.icon',['name'=>'chevron-right','size'=>18])
+                </button>
 
-    <script>
-    const allFotos = {!! json_encode(array_map(fn($f) => asset('storage/'.$f), $fotoList)) !!};
-    let currentFotoIndex = 0;
+                {{-- Counter Overlay & Zoom Hint --}}
+                <div style="position:absolute; bottom:14px; left:14px; background:rgba(19,18,24,0.9); border:1px solid rgba(255,200,26,0.3); padding:6px 16px; border-radius:100px; font-size:12px; color:#FFFFFF; font-weight:800; display:flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(0,0,0,0.4);">
+                    @include('components.icon',['name'=>'zoom-in','size'=>14,'style'=>'color:#FFC81A'])
+                    <span id="featured-counter-text">Foto 1 dari {{ $totalFoto }} (Klik untuk Perbesar)</span>
+                </div>
+            </div>
 
-    function selectFeaturedFoto(idx) {
-        if (idx < 0 || idx >= allFotos.length) return;
-        currentFotoIndex = idx;
-        
-        const featuredImg = document.getElementById('featured-gallery-img');
-        const counterText = document.getElementById('featured-counter-text');
-        
-        if (featuredImg) featuredImg.src = allFotos[idx];
-        if (counterText) counterText.innerText = `Foto ${idx + 1} dari ${allFotos.length} (Klik untuk Perbesar)`;
+            {{-- Horizontal Thumbnail Strip (Scroll Samping) --}}
+            <div style="display:flex; gap:12px; overflow-x:auto; padding-bottom:6px; scrollbar-width:thin;" id="thumb-strip">
+                @foreach($fotoList as $idx => $img)
+                <div id="thumb-item-{{ $idx }}"
+                     style="width:96px; height:68px; border-radius:12px; overflow:hidden; flex-shrink:0; border:{{ $idx===0 ? '2.5px solid #FFC81A' : '1.5px solid rgba(255,255,255,0.15)' }}; cursor:pointer; transition:all 0.2s; opacity:{{ $idx===0 ? '1' : '0.6' }};"
+                     onclick="selectFeaturedFoto({{ $idx }})"
+                     onmouseover="this.style.opacity='1'" onmouseout="if(currentFotoIndex!=={{ $idx }}) this.style.opacity='0.6'">
+                    <img src="{{ asset('storage/'.$img) }}" alt="Foto Thumb" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                @endforeach
+            </div>
+        </div>
 
-        for (let i = 0; i < allFotos.length; i++) {
-            const item = document.getElementById(`thumb-item-${i}`);
-            if (item) {
-                item.style.borderColor = i === idx ? '#FFC81A' : 'rgba(255,255,255,0.15)';
-                item.style.borderWidth = i === idx ? '2px' : '1.5px';
-                item.style.opacity = i === idx ? '1' : '0.6';
+        {{-- Fullscreen Lightbox Modal --}}
+        <div id="lightbox-modal" style="display:none; position:fixed; inset:0; background:rgba(14,13,20,0.95); z-index:99999; align-items:center; justify-content:center; flex-direction:column; padding:24px;" onclick="closeLightBox()">
+            
+            {{-- Top Header Toolbar --}}
+            <div style="position:absolute; top:20px; left:24px; right:24px; display:flex; justify-content:space-between; align-items:center; z-index:10;" onclick="event.stopPropagation();">
+                <span id="lightbox-counter" style="color:#FFC81A; font-size:13px; font-weight:900; background:rgba(255,200,26,0.15); padding:6px 18px; border-radius:100px; border:1px solid rgba(255,200,26,0.3);">
+                    Foto 1 dari {{ $totalFoto }}
+                </span>
+                <button type="button" onclick="closeLightBox()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#FFFFFF; width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:18px; font-weight:900; display:flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.background='#EF4444';this.style.borderColor='#EF4444'" onmouseout="this.style.background='rgba(255,255,255,0.1)';this.style.borderColor='rgba(255,255,255,0.2)'">
+                    &times;
+                </button>
+            </div>
+
+            {{-- Prev Button --}}
+            <button type="button" onclick="event.stopPropagation(); changeLightBoxFoto(-1);" title="Foto Sebelumnya"
+                    style="position:absolute; left:24px; top:50%; transform:translateY(-50%); width:48px; height:48px; border-radius:50%; background:#131218; border:1.5px solid #FFC81A; color:#FFC81A; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; transition:all 0.2s; box-shadow:0 6px 20px rgba(0,0,0,0.6);"
+                    onmouseover="this.style.background='#FFC81A';this.style.color='#131218'" onmouseout="this.style.background='#131218';this.style.color='#FFC81A'">
+                @include('components.icon',['name'=>'chevron-left','size'=>20])
+            </button>
+
+            {{-- Main Lightbox Image --}}
+            <img id="lightbox-img" style="max-width:88vw; max-height:80vh; border-radius:16px; object-fit:contain; box-shadow:0 20px 60px rgba(0,0,0,0.9); border:2px solid rgba(255,200,26,0.3);" onclick="event.stopPropagation();">
+
+            {{-- Next Button --}}
+            <button type="button" onclick="event.stopPropagation(); changeLightBoxFoto(1);" title="Foto Selanjutnya"
+                    style="position:absolute; right:24px; top:50%; transform:translateY(-50%); width:48px; height:48px; border-radius:50%; background:#131218; border:1.5px solid #FFC81A; color:#FFC81A; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; transition:all 0.2s; box-shadow:0 6px 20px rgba(0,0,0,0.6);"
+                    onmouseover="this.style.background='#FFC81A';this.style.color='#131218'" onmouseout="this.style.background='#131218';this.style.color='#FFC81A'">
+                @include('components.icon',['name'=>'chevron-right','size'=>20])
+            </button>
+
+        </div>
+
+        <script>
+        const allFotos = {!! json_encode(array_map(fn($f) => asset('storage/'.$f), $fotoList)) !!};
+        let currentFotoIndex = 0;
+
+        function selectFeaturedFoto(idx) {
+            if (idx < 0 || idx >= allFotos.length) return;
+            currentFotoIndex = idx;
+
+            const featuredImg = document.getElementById('featured-gallery-img');
+            const counterText = document.getElementById('featured-counter-text');
+
+            if (featuredImg) featuredImg.src = allFotos[idx];
+            if (counterText) counterText.innerText = `Foto ${idx + 1} dari ${allFotos.length} (Klik untuk Perbesar)`;
+
+            for (let i = 0; i < allFotos.length; i++) {
+                const item = document.getElementById(`thumb-item-${i}`);
+                if (item) {
+                    item.style.borderColor = i === idx ? '#FFC81A' : 'rgba(255,255,255,0.15)';
+                    item.style.borderWidth = i === idx ? '2.5px' : '1.5px';
+                    item.style.opacity = i === idx ? '1' : '0.6';
+                }
+            }
+
+            const activeThumb = document.getElementById(`thumb-item-${idx}`);
+            if (activeThumb) {
+                activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
         }
 
-        const activeThumb = document.getElementById(`thumb-item-${idx}`);
-        if (activeThumb) {
-            activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        function changeFeaturedFoto(direction) {
+            let newIdx = currentFotoIndex + direction;
+            if (newIdx < 0) newIdx = allFotos.length - 1;
+            if (newIdx >= allFotos.length) newIdx = 0;
+            selectFeaturedFoto(newIdx);
         }
-    }
 
-    function changeFeaturedFoto(direction) {
-        let newIdx = currentFotoIndex + direction;
-        if (newIdx < 0) newIdx = allFotos.length - 1;
-        if (newIdx >= allFotos.length) newIdx = 0;
-        selectFeaturedFoto(newIdx);
-    }
-
-    function openLightBox(idx) {
-        currentFotoIndex = idx;
-        updateLightBoxUI();
-        document.getElementById('lightbox-modal').style.display = 'flex';
-    }
-
-    function changeLightBoxFoto(direction) {
-        currentFotoIndex += direction;
-        if (currentFotoIndex < 0) currentFotoIndex = allFotos.length - 1;
-        if (currentFotoIndex >= allFotos.length) currentFotoIndex = 0;
-        updateLightBoxUI();
-        selectFeaturedFoto(currentFotoIndex);
-    }
-
-    function updateLightBoxUI() {
-        const lbImg = document.getElementById('lightbox-img');
-        const lbCounter = document.getElementById('lightbox-counter');
-        if (lbImg) lbImg.src = allFotos[currentFotoIndex];
-        if (lbCounter) lbCounter.innerText = `Foto ${currentFotoIndex + 1} dari ${allFotos.length}`;
-    }
-
-    function closeLightBox() {
-        document.getElementById('lightbox-modal').style.display = 'none';
-    }
-
-    document.addEventListener('keydown', function(e) {
-        const modal = document.getElementById('lightbox-modal');
-        if (modal && modal.style.display === 'flex') {
-            if (e.key === 'ArrowLeft') changeLightBoxFoto(-1);
-            if (e.key === 'ArrowRight') changeLightBoxFoto(1);
-            if (e.key === 'Escape') closeLightBox();
+        function openLightBox(idx) {
+            currentFotoIndex = idx;
+            updateLightBoxUI();
+            document.getElementById('lightbox-modal').style.display = 'flex';
         }
-    });
-    </script>
-    @endif
 
-    {{-- Berita acara --}}
-    @if(!empty($beritaAcaraFile) && file_exists($beritaAcaraFile))
-    <div style="background:rgba(255,255,255,.03);border:1.5px solid rgba(255,200,26,.3);border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:14px;margin-bottom:28px;">
-      <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,200,26,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2"><path d="M14 2H6a2 2 0 0 1-2 2v16a2 2 0 0 1 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      </div>
-      <div style="flex:1;">
-        <p style="font-size:14px;font-weight:800;color:#FFF;margin:0 0 3px;">Berita Acara Kegiatan</p>
-        <p style="font-size:12px;color:rgba(255,255,255,.5);margin:0;">Dokumen resmi pelaksanaan kegiatan</p>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <a href="{{ route('landing.arsip.pdf', $arsip, false) }}" target="_blank" class="fcc-btn-gold btn-shine" style="padding:9px 18px;font-size:13px;text-decoration:none;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          Lihat &amp; Cetak PDF
-        </a>
-        <a href="{{ $beritaAcaraUrl }}" class="fcc-btn-gold" style="padding:9px 18px;font-size:13px;border:none;cursor:pointer;border-radius:10px;display:inline-flex;align-items:center;gap:6px;background:#FFC81A;color:#131218;font-weight:900;box-shadow:0 4px 12px rgba(255,200,26,0.35);text-decoration:none;" download>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span>Unduh PDF</span>
-        </a>
-      </div>
+        function changeLightBoxFoto(direction) {
+            currentFotoIndex += direction;
+            if (currentFotoIndex < 0) currentFotoIndex = allFotos.length - 1;
+            if (currentFotoIndex >= allFotos.length) currentFotoIndex = 0;
+            updateLightBoxUI();
+            selectFeaturedFoto(currentFotoIndex);
+        }
+
+        function updateLightBoxUI() {
+            const lbImg = document.getElementById('lightbox-img');
+            const lbCounter = document.getElementById('lightbox-counter');
+            if (lbImg) lbImg.src = allFotos[currentFotoIndex];
+            if (lbCounter) lbCounter.innerText = `Foto ${currentFotoIndex + 1} dari ${allFotos.length}`;
+        }
+
+        function closeLightBox() {
+            document.getElementById('lightbox-modal').style.display = 'none';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('lightbox-modal');
+            if (modal && modal.style.display === 'flex') {
+                if (e.key === 'ArrowLeft') changeLightBoxFoto(-1);
+                if (e.key === 'ArrowRight') changeLightBoxFoto(1);
+                if (e.key === 'Escape') closeLightBox();
+            }
+        });
+        </script>
+        @endif
+
+        {{-- Berita Acara Document Action Box --}}
+        @if(!empty($beritaAcaraFile) && file_exists($beritaAcaraFile))
+        <div style="background:#1E1D26; border:1.5px solid rgba(255,200,26,0.25); border-radius:18px; padding:28px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; margin-bottom:28px; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div style="width:52px; height:52px; border-radius:16px; background:rgba(255,200,26,0.12); border:1.5px solid rgba(255,200,26,0.3); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    @include('components.icon',['name'=>'file-text','size'=>24,'style'=>'color:#FFC81A'])
+                </div>
+                <div>
+                    <h4 style="font-size:16px; font-weight:900; color:#FFFFFF; margin:0 0 4px;">Dokumen Berita Acara Resmi</h4>
+                    <p style="font-size:12.5px; color:rgba(255,255,255,0.65); margin:0; font-weight:500;">Dokumen Laporan &amp; Berita Acara Hasil Pelaksanaan Kegiatan</p>
+                </div>
+            </div>
+            
+            <a href="{{ route('landing.arsip.pdf', $arsip, false) }}" target="_blank" style="padding:11px 22px; font-size:13.5px; font-weight:900; border-radius:12px; display:inline-flex; align-items:center; gap:8px; background:#FFC81A; color:#131218; text-decoration:none; box-shadow:0 4px 14px rgba(255,200,26,0.35); transition:all 0.2s;" onmouseover="this.style.background='#FFFFFF'" onmouseout="this.style.background='#FFC81A'">
+                @include('components.icon',['name'=>'eye','size'=>16]) Lihat PDF Berita Acara &rarr;
+            </a>
+        </div>
+        @endif
+
+        {{-- Bottom Back Button --}}
+        <div style="text-align:center; margin-top:20px;">
+            <a href="{{ route('landing.arsip') }}" style="background:#1E1D26; border:1.5px solid rgba(255,200,26,0.25); color:#FFFFFF; padding:12px 28px; font-size:13.5px; display:inline-flex; align-items:center; gap:8px; text-decoration:none; border-radius:100px; transition:all 0.2s ease; font-weight:800; box-shadow:0 4px 16px rgba(0,0,0,0.3);" onmouseover="this.style.background='#FFC81A';this.style.color='#131218'" onmouseout="this.style.background='#1E1D26';this.style.color='#FFFFFF'">
+                @include('components.icon',['name'=>'chevron-left','size'=>16]) Kembali ke Daftar Arsip
+            </a>
+        </div>
+
     </div>
-    @endif
-
-    <a href="{{ route('landing.arsip') }}" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,200,26,0.3);color:rgba(255,255,255,.8);padding:10px 22px;font-size:14px;display:inline-flex;align-items:center;gap:6px;text-decoration:none;border-radius:12px;transition:all .2s ease;font-weight:700;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218'" onmouseout="this.style.background='rgba(255,200,26,0.04)';this.style.color='rgba(255,255,255,.8)'">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      Kembali ke Arsip
-    </a>
-  </div>
 </div>
 @endsection

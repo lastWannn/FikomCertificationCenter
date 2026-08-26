@@ -166,7 +166,7 @@
                         $isPassed = $k->isPassed();
                         $detail = $k->detail;
                     @endphp
-                    <tr style="border-top:1px solid #F1F5F9;transition:background .15s; {{ $isPassed ? 'background:#FFFDF5;' : '' }}" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='{{ $isPassed ? '#FFFDF5' : '' }}'">
+                    <tr style="border-top:1px solid #F1F5F9;transition:background .15s;cursor:pointer; {{ $isPassed ? 'background:#FFFDF5;' : '' }}" onclick="if(!event.target.closest('button, a, select, input, form')) window.location.href='{{ route('admin.kegiatan.show', $k) }}'" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='{{ $isPassed ? '#FFFDF5' : '' }}'">
                         {{-- Kegiatan Info --}}
                         <td style="padding:14px 20px;vertical-align:middle;">
                             <div style="display:flex;align-items:center;gap:12px;">

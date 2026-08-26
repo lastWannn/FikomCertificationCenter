@@ -133,7 +133,7 @@
                 </thead>
                 <tbody>
                     @forelse($pelatihan as $p)
-                    <tr style="border-top:1px solid #F1F5F9;transition:background .15s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''">
+                    <tr style="border-top:1px solid #F1F5F9;transition:background .15s;cursor:pointer;" onclick="if(!event.target.closest('button, a, select, input, form')) window.location.href='{{ route('admin.pelatihan.show', $p) }}'" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''">
                         {{-- Kode --}}
                         <td style="padding:14px 20px;vertical-align:middle;">
                             <span style="font-size:12px;font-weight:900;color:#FFC81A;background:#131218;padding:4px 10px;border-radius:8px;font-family:monospace;letter-spacing:0.5px;border:1px solid #131218;display:inline-block;">

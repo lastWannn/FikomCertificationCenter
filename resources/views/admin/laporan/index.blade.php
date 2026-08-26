@@ -143,22 +143,6 @@
     })();
   </script>
 
-  {{-- Print Header (Only visible on print) --}}
-  <div class="print-header">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <h2 style="margin:0;font-size:22px;font-weight:900;color:#131218;">FIKOM CERTIFICATION CENTER</h2>
-        <p style="margin:4px 0 0;font-size:13px;color:#4B5563;">Laporan Rekapitulasi & Statistik Eksekutif</p>
-      </div>
-      <div style="text-align:right;">
-        <p style="margin:0;font-size:12px;font-weight:700;color:#131218;">Periode: {{ $bulan ? \Carbon\Carbon::create()->month((int)$bulan)->translatedFormat('F') : 'Semua Bulan' }} {{ $tahun }}</p>
-        <p style="margin:2px 0 0;font-size:11px;color:#6B7280;">Dicetak pada: {{ now()->translatedFormat('d F Y H:i') }}</p>
-      </div>
-    </div>
-  </div>
-
-
-
   {{-- Filter & Action Bar --}}
   <div id="filter-bar" class="fcc-card no-print" style="padding:18px 22px;margin-bottom:24px;background:#131218;border:2px solid #131218;border-radius:18px;color:#FFF;box-shadow:0 6px 20px rgba(19,18,24,0.15);">
     <form method="GET" action="{{ route('admin.laporan.index') }}" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
@@ -189,21 +173,14 @@
         <option value="sertifikasi" {{ $jenisKegiatan == 'sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
       </select>
 
-
-
       @if($bulan || $jenisKegiatan || $tahun != date('Y'))
         <a href="{{ route('admin.laporan.index') }}" style="color:#9CA3B0;font-size:12px;font-weight:800;text-decoration:none;padding:8px 14px;background:#24232C;border-radius:20px;border:1px solid #363442;">
           Reset
         </a>
       @endif
 
-      {{-- Export & Print Buttons --}}
+      {{-- Export Button --}}
       <div style="margin-left:auto;display:flex;gap:10px;">
-        <button type="button" onclick="window.print()" style="background:#24232C;color:#FFF;border:1.5px solid #363442;padding:9px 18px;font-size:13px;font-weight:800;border-radius:30px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s;" onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#363442'">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          Cetak PDF
-        </button>
-
         <a href="{{ route('admin.laporan.export-csv', ['tahun'=>$tahun,'bulan'=>$bulan,'jenis_kegiatan'=>$jenisKegiatan]) }}" style="padding:9px 20px;font-size:13px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:30px;box-shadow:0 4px 12px rgba(255,200,26,0.3);transition:all .2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
           @include('components.icon',['name'=>'download','size'=>14])
           Export CSV

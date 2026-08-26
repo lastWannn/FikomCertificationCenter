@@ -308,7 +308,7 @@
 </div>
 
 {{-- ── TAMBAH BATCH JADWAL MODAL (Neo-Brutalist Glassmorphism) ────────────────────────────────────── --}}
-<div id="jadwal-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this) closeJadwalModal()">
+<div id="jadwal-modal" style="display:{{ $errors->any() ? 'flex' : 'none' }};position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this) closeJadwalModal()">
     <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:640px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;" onclick="event.stopPropagation()">
         
         {{-- Close button --}}
@@ -327,7 +327,7 @@
             <p style="color:#64748B;font-size:12.5px;margin:0;font-weight:500;">Jadwalkan tanggal dan jam pelaksanaan untuk {{ $pelatihan->judul }}.</p>
         </div>
 
-        <form action="{{ route('admin.jadwal-pelatihan.store', $pelatihan) }}" method="POST">
+        <form action="{{ route('admin.jadwal-pelatihan.store', $pelatihan) }}" method="POST" onsubmit="return validateJadwalTime(this)">
             @csrf
             
             {{-- NAMA KEGIATAN --}}
@@ -432,6 +432,57 @@ function openJadwalModal() {
 
 function closeJadwalModal() {
     document.getElementById('jadwal-modal').style.display = 'none';
+}
+
+function validateJadwalTime(form) {
+    const jamMulai = form.querySelector('input[name="jam_mulai"]');
+    const jamSelesai = form.querySelector('input[name="jam_selesai"]');
+    const tglDaftar = form.querySelector('input[name="tgl_batas_daftar"]');
+    const tglPelaksanaan = form.querySelector('input[name="tgl_pelaksanaan"]');
+    
+    if (tglDaftar && tglDaftar.value) {
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (tglDaftar.value < todayStr) {
+            const msg = 'Tanggal batas pendaftaran tidak boleh tanggal yang sudah lewat!';
+            if (typeof window.fccToast === 'function') {
+                window.fccToast(msg, 'error', 'Validasi Tanggal Gagal');
+            } else {
+                alert(msg);
+            }
+            tglDaftar.focus();
+            return false;
+        }
+    }
+
+    if (tglDaftar && tglPelaksanaan && tglDaftar.value && tglPelaksanaan.value) {
+        if (tglPelaksanaan.value < tglDaftar.value) {
+            const msg = 'Tanggal pelaksanaan tidak boleh sebelum tanggal batas pendaftaran!';
+            if (typeof window.fccToast === 'function') {
+                window.fccToast(msg, 'error', 'Validasi Tanggal Gagal');
+            } else {
+                alert(msg);
+            }
+            tglPelaksanaan.focus();
+            return false;
+        }
+    }
+
+    if (jamMulai && jamSelesai && jamMulai.value && jamSelesai.value) {
+        if (jamSelesai.value <= jamMulai.value) {
+            const msg = 'Jam selesai (' + jamSelesai.value + ') harus setelah jam mulai (' + jamMulai.value + ')!';
+            if (typeof window.fccToast === 'function') {
+                window.fccToast(msg, 'error', 'Validasi Waktu Gagal');
+            } else if (typeof window.fccConfirmAction === 'function') {
+                window.fccConfirmAction(null, 'Waktu Tidak Valid', msg, 'Saya Mengerti', true);
+            } else {
+                alert(msg);
+            }
+            jamSelesai.focus();
+            return false;
+        }
+    }
+
+    return true;
 }
 
 function addJadwalBiayaRow() {
