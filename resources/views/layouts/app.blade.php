@@ -23,7 +23,7 @@
     <meta property="og:description" content="@yield('og-description', $defaultOgDesc)"/>
     <meta property="og:image" content="@yield('og-image', $defaultOgImage)"/>
     <meta property="og:image:secure_url" content="@yield('og-image', $defaultOgImage)"/>
-    <meta property="og:image:type" content="image/png"/>
+    <meta property="og:image:type" content="image/webp"/>
     <meta property="og:image:width" content="1200"/>
     <meta property="og:image:height" content="630"/>
     <meta property="og:image:alt" content="FIKOM Certification Center UMI Makassar"/>

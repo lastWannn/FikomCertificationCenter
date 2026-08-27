@@ -3,7 +3,7 @@
 @section('meta-description','FIKOM Certification Center UMI Makassar — Platform resmi pelatihan dan sertifikasi kompetensi teknologi terpercaya. Sertifikasi BNSP & Pelatihan IT Profesional.')
 @section('og-title','Beranda — FIKOM Certification Center UMI')
 @section('og-description','Platform resmi pelatihan dan sertifikasi kompetensi teknologi terpercaya di Fakultas Ilmu Komputer Universitas Muslim Indonesia.')
-@section('og-image', asset('images/og-preview.png'))
+@section('og-image', asset('images/og-preview.webp'))
 
 @push('preloads')
 <link rel="preload" as="image" href="{{ asset('images/herosection.webp') }}" type="image/webp"/>
