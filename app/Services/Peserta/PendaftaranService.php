@@ -13,6 +13,9 @@ class PendaftaranService
         if (Pendaftaran::where(['peserta_id' => $pesertaId, 'kegiatan_id' => $kegiatan->id])->exists()) {
             throw new \RuntimeException('Anda sudah mendaftarkan diri ke kegiatan ini.');
         }
+        if ($kegiatan->isRegistrationClosed()) {
+            throw new \RuntimeException('Maaf, pendaftaran untuk kegiatan ini telah ditutup.');
+        }
         if ($kegiatan->isFull()) {
             throw new \RuntimeException('Maaf, kuota kegiatan sudah penuh.');
         }

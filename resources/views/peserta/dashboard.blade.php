@@ -230,9 +230,23 @@
           </div>
           <div style="margin-top:14px;padding-top:10px;border-top:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;">
             <span style="font-size:11px;color:#64748B;font-weight:600;">Kuota: {{ $k->terisi }}/{{ $k->jadwal?->kuota_peserta ?? '-' }}</span>
+            @if($k->isRegistrationClosed())
+            <span style="font-size:11.5px;font-weight:800;color:#94A3B8;padding:5px 12px;background:#F1F5F9;border-radius:6px;border:1px solid #CBD5E1;cursor:not-allowed;">
+              Tutup
+            </span>
+            @elseif($k->isComingSoon())
+            <span style="font-size:11.5px;font-weight:800;color:#D97706;padding:5px 12px;background:#FEF3C7;border-radius:6px;border:1px solid #FCD34D;">
+              Segera Hadir
+            </span>
+            @elseif($k->isFull())
+            <span style="font-size:11.5px;font-weight:800;color:#94A3B8;padding:5px 12px;background:#F1F5F9;border-radius:6px;border:1px solid #CBD5E1;cursor:not-allowed;">
+              Kuota Penuh
+            </span>
+            @else
             <a href="{{ route('landing.show', $k) }}" style="font-size:11.5px;font-weight:900;color:#131218;text-decoration:none;padding:5px 12px;background:#FFC81A;border-radius:6px;border:1px solid #131218;">
               Daftar &rarr;
             </a>
+            @endif
           </div>
         </div>
         @endforeach

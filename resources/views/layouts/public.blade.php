@@ -160,7 +160,7 @@ window.closeTnCModal = function() {
     foreach ($kegiatanList as $k) {
         $tgl = $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Jadwal Menyusul';
         $jenis = strtoupper($k->jenis_kegiatan);
-        $statusText = $k->isComingSoon() ? 'SEGERA HADIR' : ($k->isFull() ? 'KUOTA PENUH' : 'DIBUKA (' . ($k->kuota - $k->terisi) . ' Kuota Sisa)');
+        $statusText = $k->isComingSoon() ? 'SEGERA HADIR' : ($k->isRegistrationClosed() ? 'PENDAFTARAN DITUTUP' : ($k->isFull() ? 'KUOTA PENUH' : 'DIBUKA (' . ($k->kuota - $k->terisi) . ' Kuota Sisa)'));
         $tickerItems[] = [
             'text'   => $k->judul . ' — Pelaksanaan: ' . $tgl,
             'badge'  => $jenis,
