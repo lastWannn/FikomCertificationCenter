@@ -1,6 +1,9 @@
 @extends('layouts.public')
 @section('title','Beranda')
-@section('meta-description','FIKOM Certification Center UMI Makassar — Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya. Sertifikasi BNSP, pelatihan IT profesional.')
+@section('meta-description','FIKOM Certification Center UMI Makassar — Platform resmi pelatihan dan sertifikasi kompetensi teknologi terpercaya. Sertifikasi BNSP & Pelatihan IT Profesional.')
+@section('og-title','Beranda — FIKOM Certification Center UMI')
+@section('og-description','Platform resmi pelatihan dan sertifikasi kompetensi teknologi terpercaya di Fakultas Ilmu Komputer Universitas Muslim Indonesia.')
+@section('og-image', asset('images/herosection.webp'))
 
 @push('preloads')
 <link rel="preload" as="image" href="{{ asset('images/herosection.webp') }}" type="image/webp"/>

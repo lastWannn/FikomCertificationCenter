@@ -8,6 +8,30 @@
     <meta name="theme-color" content="#131218"/>
     <title>@yield('title','FCC') — FIKOM Certification Center UMI</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}"/>
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}"/>
+
+    {{-- Open Graph / WhatsApp / Facebook / LinkedIn Link Preview Meta Tags --}}
+    @php
+        $defaultOgTitle = View::hasSection('title') ? View::getSection('title') . ' — FIKOM Certification Center UMI' : 'FIKOM Certification Center UMI Makassar';
+        $defaultOgDesc  = View::hasSection('meta-description') ? View::getSection('meta-description') : 'FIKOM Certification Center UMI Makassar — Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya. Dapatkan sertifikasi resmi berstandar BNSP dan industri.';
+        $defaultOgImage = asset('images/herosection.webp');
+    @endphp
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="{{ url()->current() }}"/>
+    <meta property="og:site_name" content="FIKOM Certification Center UMI"/>
+    <meta property="og:title" content="@yield('og-title', $defaultOgTitle)"/>
+    <meta property="og:description" content="@yield('og-description', $defaultOgDesc)"/>
+    <meta property="og:image" content="@yield('og-image', $defaultOgImage)"/>
+    <meta property="og:image:secure_url" content="@yield('og-image', $defaultOgImage)"/>
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+    <meta property="og:image:alt" content="FIKOM Certification Center UMI Makassar"/>
+
+    {{-- Twitter & Telegram Large Card Preview --}}
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="@yield('og-title', $defaultOgTitle)"/>
+    <meta name="twitter:description" content="@yield('og-description', $defaultOgDesc)"/>
+    <meta name="twitter:image" content="@yield('og-image', $defaultOgImage)"/>
 
     {{-- Preconnect for Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
