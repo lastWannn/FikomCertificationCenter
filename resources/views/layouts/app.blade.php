@@ -14,7 +14,7 @@
     @php
         $defaultOgTitle = View::hasSection('title') ? View::getSection('title') . ' — FIKOM Certification Center UMI' : 'FIKOM Certification Center UMI Makassar';
         $defaultOgDesc  = View::hasSection('meta-description') ? View::getSection('meta-description') : 'FIKOM Certification Center UMI Makassar — Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya. Dapatkan sertifikasi resmi berstandar BNSP dan industri.';
-        $defaultOgImage = asset('images/herosection.webp');
+        $defaultOgImage = asset('images/og-preview.webp');
     @endphp
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="{{ url()->current() }}"/>
@@ -23,6 +23,7 @@
     <meta property="og:description" content="@yield('og-description', $defaultOgDesc)"/>
     <meta property="og:image" content="@yield('og-image', $defaultOgImage)"/>
     <meta property="og:image:secure_url" content="@yield('og-image', $defaultOgImage)"/>
+    <meta property="og:image:type" content="image/png"/>
     <meta property="og:image:width" content="1200"/>
     <meta property="og:image:height" content="630"/>
     <meta property="og:image:alt" content="FIKOM Certification Center UMI Makassar"/>
