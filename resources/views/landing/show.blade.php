@@ -122,6 +122,10 @@
                                 <a href="{{ route('peserta.pendaftaran') }}" style="display:flex; text-align:center; padding:12px 20px; border-radius:30px; font-size:13.5px; font-weight:900; justify-content:center; text-decoration:none; color:#10B981; border:2px solid #10B981; background:rgba(16,185,129,0.15);">
                                     ✓ Sudah Terdaftar
                                 </a>
+                            @elseif($kegiatan->isRegistrationClosed())
+                                <button style="padding:13px 24px; font-size:13.5px; font-weight:900; width:100%; justify-content:center; border-radius:30px; background:#131218; border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.4); cursor:not-allowed;" disabled>
+                                    Pendaftaran Ditutup
+                                </button>
                             @elseif(!$kegiatan->isFull())
                                 @auth('peserta')
                                     <button type="button" 

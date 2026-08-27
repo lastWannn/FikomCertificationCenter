@@ -81,8 +81,8 @@
                             </span>
                         </div>
                         <div style="position:absolute;top:12px;right:12px;">
-                            <span style="font-size:10.5px; font-weight:800; color:{{ $k->isComingSoon() ? '#D97706' : ($k->isFull() ? '#EF4444' : '#131218') }}; background:#FFFFFF; padding:4px 10px; border-radius:6px; border:1px solid #131218; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
-                                {{ $k->isComingSoon() ? 'Segera Hadir' : ($k->isFull() ? 'Kuota Penuh' : ($k->biaya->isNotEmpty() ? 'Berbayar' : 'Gratis')) }}
+                            <span style="font-size:10.5px; font-weight:800; color:{{ $k->isComingSoon() ? '#D97706' : ($k->isRegistrationClosed() ? '#EF4444' : ($k->isFull() ? '#EF4444' : '#131218')) }}; background:#FFFFFF; padding:4px 10px; border-radius:6px; border:1px solid #131218; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+                                {{ $k->isComingSoon() ? 'Segera Hadir' : ($k->isRegistrationClosed() ? 'Pendaftaran Ditutup' : ($k->isFull() ? 'Kuota Penuh' : ($k->biaya->isNotEmpty() ? 'Berbayar' : 'Gratis'))) }}
                             </span>
                         </div>
                     </div>
@@ -117,7 +117,7 @@
                             </div>
                             <div style="height:5px; background:#E5E7EB; border-radius:3px; overflow:hidden;">
                                 <div style="height:5px; border-radius:3px; transition:width 0.3s;
-                                            background:{{ $k->isComingSoon() ? '#F59E0B' : ($k->isFull() ? '#EF4444' : '#FFC81A') }};
+                                            background:{{ $k->isComingSoon() ? '#F59E0B' : ($k->isRegistrationClosed() || $k->isFull() ? '#EF4444' : '#FFC81A') }};
                                             width:{{ $k->kuota>0 ? min(100, round($k->terisi/$k->kuota*100)) : 0 }}%;"></div>
                             </div>
                         </div>
@@ -127,11 +127,27 @@
 
                 {{-- Action Button --}}
                 <div style="padding:0 20px 18px;">
+                    @if($k->isRegistrationClosed())
+                    <button disabled
+                       style="display:inline-flex; align-items:center; justify-content:center; padding:11px 14px; border-radius:10px; font-size:13px; font-weight:800; width:100%; box-sizing:border-box; background:#F3F4F6; border:1px solid #E5E7EB; color:#9CA3AF; cursor:not-allowed;">
+                        Tutup
+                    </button>
+                    @elseif($k->isComingSoon())
                     <a href="{{ route('landing.show', $k) }}"
-                       style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none; padding:11px 14px; border-radius:10px; font-size:13px; font-weight:800; transition:all 0.2s ease; width:100%; box-sizing:border-box;
-                              {{ $k->isComingSoon() ? 'background:#FFFBEB; border:1.5px solid #F59E0B; color:#D97706;' : ($k->isFull() ? 'background:#F3F4F6; border:1px solid #E5E7EB; color:#9CA3AF; cursor:not-allowed;' : 'background:#FFC81A; color:#131218; border:1.5px solid #131218; box-shadow:0 4px 12px rgba(255,200,26,0.3);') }}">
-                        {{ $k->isComingSoon() ? 'Segera Hadir →' : ($k->isFull() ? 'Kuota Penuh' : 'Detail & Daftar →') }}
+                       style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none; padding:11px 14px; border-radius:10px; font-size:13px; font-weight:800; transition:all 0.2s ease; width:100%; box-sizing:border-box; background:#FFFBEB; border:1.5px solid #F59E0B; color:#D97706;">
+                        Segera Hadir →
                     </a>
+                    @elseif($k->isFull())
+                    <button disabled
+                       style="display:inline-flex; align-items:center; justify-content:center; padding:11px 14px; border-radius:10px; font-size:13px; font-weight:800; width:100%; box-sizing:border-box; background:#F3F4F6; border:1px solid #E5E7EB; color:#9CA3AF; cursor:not-allowed;">
+                        Kuota Penuh
+                    </button>
+                    @else
+                    <a href="{{ route('landing.show', $k) }}"
+                       style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none; padding:11px 14px; border-radius:10px; font-size:13px; font-weight:800; transition:all 0.2s ease; width:100%; box-sizing:border-box; background:#FFC81A; color:#131218; border:1.5px solid #131218; box-shadow:0 4px 12px rgba(255,200,26,0.3);">
+                        Detail &amp; Daftar →
+                    </a>
+                    @endif
                 </div>
             </div>
             @empty
