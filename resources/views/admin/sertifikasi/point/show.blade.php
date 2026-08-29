@@ -75,10 +75,21 @@
         </div>
     </div>
 
+    @php $belumDimulai = $jadwal->tgl_pelaksanaan && \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->gt(now()->startOfDay()); @endphp
+    @if($belumDimulai)
+    <div style="margin-bottom:18px;padding:16px 20px;background:#FFFDF5;border:1.5px solid #FCD34D;border-radius:16px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 10px rgba(245,158,11,0.08);">
+        @include('components.icon',['name'=>'alert-circle','size'=>22,'style'=>'color:#D97706;flex-shrink:0;'])
+        <div>
+            <h4 style="margin:0 0 2px;font-size:14px;font-weight:900;color:#92400E;">Pelaksanaan Sertifikasi Belum Dimulai</h4>
+            <p style="margin:0;font-size:12px;color:#B45309;font-weight:600;">Tanggal pelaksanaan sertifikasi ini ditetapkan pada <strong>{{ \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->translatedFormat('d F Y') }}</strong>. Penginputan nilai peserta baru dapat dilakukan pada saat atau setelah tanggal pelaksanaan.</p>
+        </div>
+    </div>
+    @endif
+
     {{-- LIST PESERTA TABEL --}}
     <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
         <div style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;">
-            <h3 style="margin:0;font-size:16px;font-weight:900;color:#131218;">Daftar Peserta & Penilaian</h3>
+            <h3 style="margin:0;font-size:16px;font-weight:900;color:#131218;">Daftar Peserta &amp; Penilaian</h3>
             <span style="font-size:11.5px;font-weight:800;color:#131218;background:#FFC81A;padding:4px 12px;border-radius:20px;border:1px solid #131218;">{{ $totalPeserta }} Peserta</span>
         </div>
 
@@ -122,11 +133,17 @@
                         </td>
                         <td style="padding:14px 20px;text-align:center;vertical-align:middle;">
                             <div style="display:inline-flex;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap;">
-                                <button type="button" onclick="openNilaiModal('{{ $item->id }}', '{{ addslashes($item->peserta->nama ?? '') }}', {{ $item->nilai->toJson() }})"
-                                        style="padding:6px 13px;font-size:12px;font-weight:900;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;transition:all .18s;"
-                                        onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-                                    @include('components.icon',['name'=>'edit-3','size'=>13]) Input Nilai
-                                </button>
+                                @if($belumDimulai)
+                                    <button type="button" disabled style="padding:6px 13px;font-size:12px;font-weight:800;background:#F1F5F9;color:#94A3B8;border:1.5px solid #CBD5E1;border-radius:20px;cursor:not-allowed;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;" title="Sertifikasi belum dimulai">
+                                        @include('components.icon',['name'=>'clock','size'=>13]) Belum Dimulai
+                                    </button>
+                                @else
+                                    <button type="button" onclick="openNilaiModal('{{ $item->id }}', '{{ addslashes($item->peserta->nama ?? '') }}', {{ $item->nilai->toJson() }})"
+                                            style="padding:6px 13px;font-size:12px;font-weight:900;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;transition:all .18s;"
+                                            onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                        @include('components.icon',['name'=>'edit-3','size'=>13]) Input Nilai
+                                    </button>
+                                @endif
 
                                 <a href="{{ route('admin.cetak.penilaian', $item->hashid) }}" target="_blank"
                                    style="padding:6px 13px;font-size:12px;font-weight:800;background:#F1F5F9;color:#131218;border:1.5px solid #CBD5E1;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;text-decoration:none;white-space:nowrap;transition:all .18s;"

@@ -15,7 +15,18 @@ class UpdateBiayaRequest extends FormRequest
     {
         return [
             'nama_jenis'  => 'required|string|max:255',
-            'nominal'     => 'required|numeric|min:0',
+            'nominal'     => 'required|numeric|min:0|max:999999999',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'nama_jenis.required' => 'Nama jenis biaya wajib diisi.',
+            'nominal.required'    => 'Nominal biaya wajib diisi.',
+            'nominal.numeric'     => 'Nominal biaya harus berupa angka.',
+            'nominal.min'         => 'Nominal biaya tidak boleh minus.',
+            'nominal.max'         => 'Nominal biaya tidak boleh melebihi Rp 999.999.999.',
         ];
     }
 }

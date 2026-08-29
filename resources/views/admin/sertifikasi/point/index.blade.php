@@ -148,9 +148,17 @@
                             @endif
                         </td>
                         <td style="padding:14px 16px;text-align:center;vertical-align:middle;">
-                            <div style="display:inline-flex;align-items:center;gap:6px;background:#F8FAFC;border:1px solid #CBD5E1;padding:4px 12px;border-radius:20px;font-size:12.5px;font-weight:800;color:#334155;">
-                                @include('components.icon',['name'=>'calendar','size'=>14,'style'=>'color:#131218;flex-shrink:0;'])
-                                <span>{{ \Carbon\Carbon::parse($item->tgl_pelaksanaan)->translatedFormat('d M Y') }}</span>
+                            @php $isBelum = $item->tgl_pelaksanaan && \Carbon\Carbon::parse($item->tgl_pelaksanaan)->gt(now()->startOfDay()); @endphp
+                            <div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;">
+                                <div style="display:inline-flex;align-items:center;gap:6px;background:#F8FAFC;border:1px solid #CBD5E1;padding:4px 12px;border-radius:20px;font-size:12.5px;font-weight:800;color:#334155;">
+                                    @include('components.icon',['name'=>'calendar','size'=>14,'style'=>'color:#131218;flex-shrink:0;'])
+                                    <span>{{ \Carbon\Carbon::parse($item->tgl_pelaksanaan)->translatedFormat('d M Y') }}</span>
+                                </div>
+                                @if($isBelum)
+                                <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;background:#FFFDF5;color:#D97706;border:1px solid #FCD34D;display:inline-flex;align-items:center;gap:3px;" title="Sertifikasi belum dimulai">
+                                    @include('components.icon',['name'=>'clock','size'=>11]) Belum Dimulai
+                                </span>
+                                @endif
                             </div>
                         </td>
                         <td style="padding:14px 16px;text-align:center;vertical-align:middle;">

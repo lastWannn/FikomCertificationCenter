@@ -26,7 +26,8 @@
             </div>
             <div style="margin-bottom:24px;">
                 <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Nominal (Rp) *</label>
-                <input type="number" name="nominal" value="{{ old('nominal',isset($biaya)?$biaya->nominal:'') }}" placeholder="contoh: 200000" required min="0" class="fcc-input">
+                <input type="number" name="nominal" value="{{ old('nominal',isset($biaya)?$biaya->nominal:'') }}" placeholder="contoh: 200000" required min="0" max="999999999" class="fcc-input">
+                @error('nominal')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror
             </div>
             <div style="display:flex;gap:10px;">
                 <button type="submit" class="fcc-btn-gold" style="padding:11px 28px;font-size:14px;">

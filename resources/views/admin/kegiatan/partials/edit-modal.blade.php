@@ -85,7 +85,7 @@
                         <input type="text" name="nama_jenis_biaya[]" value="{{ $b->nama_jenis }}" placeholder="Nama Jenis Biaya (Misal: Umum / Mahasiswa)" class="fcc-input" style="flex:2;text-align:left;font-size:13px;border:1.5px solid #CBD5E1;border-radius:10px;">
                         <div style="position:relative;flex:1.2;">
                             <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12.5px;font-weight:800;color:#6B7280;">Rp</span>
-                            <input type="number" name="nominal_biaya[]" value="{{ (int)$b->nominal }}" placeholder="0" class="fcc-input" style="padding-left:38px;text-align:left;font-size:13px;border:1.5px solid #CBD5E1;border-radius:10px;" onfocus="this.select()">
+                            <input type="number" name="nominal_biaya[]" value="{{ (int)$b->nominal }}" placeholder="0" min="0" max="999999999" class="fcc-input" style="padding-left:38px;text-align:left;font-size:13px;border:1.5px solid #CBD5E1;border-radius:10px;" onfocus="this.select()">
                         </div>
                         <button type="button" onclick="this.closest('.biaya-row-modal').remove()" style="background:#FEF2F2;border:1.5px solid #FCA5A5;color:#EF4444;width:38px;height:38px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;" title="Hapus Biaya"
                                 onmouseover="this.style.background='#EF4444';this.style.color='#FFF';" onmouseout="this.style.background='#FEF2F2';this.style.color='#EF4444';">
@@ -97,7 +97,7 @@
                         <input type="text" name="nama_jenis_biaya[]" placeholder="Nama Jenis Biaya (Misal: Umum / Mahasiswa)" class="fcc-input" style="flex:2;text-align:left;font-size:13px;border:1.5px solid #CBD5E1;border-radius:10px;">
                         <div style="position:relative;flex:1.2;">
                             <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12.5px;font-weight:800;color:#6B7280;">Rp</span>
-                            <input type="number" name="nominal_biaya[]" placeholder="0" class="fcc-input" style="padding-left:38px;text-align:left;font-size:13px;border:1.5px solid #CBD5E1;border-radius:10px;" onfocus="this.select()">
+                            <input type="number" name="nominal_biaya[]" placeholder="0" min="0" max="999999999" class="fcc-input" style="padding-left:38px;text-align:left;font-size:13px;border:1.5px solid #CBD5E1;border-radius:10px;" onfocus="this.select()">
                         </div>
                         <button type="button" onclick="this.closest('.biaya-row-modal').remove()" style="background:#FEF2F2;border:1.5px solid #FCA5A5;color:#EF4444;width:38px;height:38px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;" title="Hapus Biaya"
                                 onmouseover="this.style.background='#EF4444';this.style.color='#FFF';" onmouseout="this.style.background='#FEF2F2';this.style.color='#EF4444';">
@@ -131,7 +131,7 @@ function addBiayaRowModal_{{ $kegiatan->id }}() {
         <input type="text" name="nama_jenis_biaya[]" placeholder="Nama Jenis Biaya (Misal: Umum / Mahasiswa)" class="fcc-input" style="flex:2;text-align:left;font-size:13px;border:1.5px solid #CBD5E1;border-radius:10px;">
         <div style="position:relative;flex:1.2;">
             <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12.5px;font-weight:800;color:#6B7280;">Rp</span>
-            <input type="number" name="nominal_biaya[]" placeholder="0" class="fcc-input" style="padding-left:38px;text-align:left;font-size:13px;border:1.5px solid #CBD5E1;border-radius:10px;" onfocus="this.select()">
+            <input type="number" name="nominal_biaya[]" placeholder="0" min="0" max="999999999" class="fcc-input" style="padding-left:38px;text-align:left;font-size:13px;border:1.5px solid #CBD5E1;border-radius:10px;" onfocus="this.select()">
         </div>
         <button type="button" onclick="this.closest('.biaya-row-modal').remove()" style="background:#FEF2F2;border:1.5px solid #FCA5A5;color:#EF4444;width:38px;height:38px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;" title="Hapus Biaya">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>

@@ -94,7 +94,11 @@
                     {{-- Action Bar: Price + CTA Button --}}
                     @php
                         $percentage = $kegiatan->kuota > 0 ? min(100, round(($kegiatan->terisi / $kegiatan->kuota) * 100)) : 0;
-                        $sudahDaftar = auth('peserta')->check() && auth('peserta')->user()->pendaftaran()->where('kegiatan_id', $kegiatan->id)->exists(); 
+                        $existingPendaftaran = auth('peserta')->check() 
+                            ? auth('peserta')->user()->pendaftaran()->where('kegiatan_id', $kegiatan->id)->first() 
+                            : null;
+                        $sudahDaftar = $existingPendaftaran && !in_array($existingPendaftaran->status_pendaftaran, ['ditolak', 'dibatalkan']) 
+                            && (!$existingPendaftaran->pembayaran || !in_array($existingPendaftaran->pembayaran->status_pembayaran, ['ditolak', 'kadaluarsa']));
                     @endphp
                     <div style="background:#131218; border:1.5px solid #FFC81A; border-radius:14px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-top:28px;">
                         <div>
@@ -114,7 +118,11 @@
                         </div>
 
                         <div style="flex-grow:1; max-width:240px;">
-                            @if($kegiatan->isComingSoon())
+                            @if($kegiatan->isDraf())
+                                <button type="button" disabled style="padding:13px 24px; font-size:13.5px; font-weight:900; width:100%; justify-content:center; border-radius:30px; background:#131218; border:1px solid rgba(255,255,255,0.2); color:#FBBF24; cursor:not-allowed;">
+                                    Draft (Konsep Admin)
+                                </button>
+                            @elseif($kegiatan->isComingSoon())
                                 <button type="button" disabled style="padding:13px 24px; font-size:13.5px; font-weight:900; width:100%; justify-content:center; border-radius:30px; background:#FFFDF5; border:1.5px solid #FFC81A; color:#D97706; cursor:not-allowed;">
                                     Segera Hadir
                                 </button>

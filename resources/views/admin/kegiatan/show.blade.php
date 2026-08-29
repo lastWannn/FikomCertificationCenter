@@ -355,7 +355,7 @@
                 <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Nominal (Rp) <span style="color:#EF4444;">*</span></label>
                 <div style="position:relative;">
                     <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:900;color:#64748B;">Rp</span>
-                    <input type="number" name="nominal" value="{{ old('nominal') }}" placeholder="0" min="0" required class="fcc-input" style="padding:9.5px 14px 9.5px 40px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;" onfocus="this.select()">
+                    <input type="number" name="nominal" value="{{ old('nominal') }}" placeholder="0" min="0" max="999999999" required class="fcc-input" style="padding:9.5px 14px 9.5px 40px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;" onfocus="this.select()">
                 </div>
                 <p style="font-size:11px;color:#64748B;margin:5px 0 0;font-weight:500;">Isi 0 jika pendaftaran tidak dipungut biaya.</p>
                 @error('nominal')<p style="color:#EF4444;font-size:11px;margin:4px 0 0;">{{ $message }}</p>@enderror

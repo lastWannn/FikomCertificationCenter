@@ -223,7 +223,7 @@
                             @forelse($biayas as $index => $b)
                             <div class="biaya-row-edit-{{ $j->id }}" style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;">
                                 <input type="text" name="nama_jenis_biaya[]" value="{{ $b['nama'] }}" placeholder="Jenis (contoh: Umum)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
-                                <input type="number" name="nominal_biaya[]" value="{{ $b['nominal'] }}" placeholder="Nominal (Rp)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
+                                <input type="number" name="nominal_biaya[]" value="{{ $b['nominal'] }}" placeholder="Nominal (Rp)" min="0" max="999999999" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
                                 <button type="button" onclick="this.closest('.biaya-row-edit-{{ $j->id }}').remove()" style="background:#FEF2F2;border:1px solid #FCA5A5;color:#EF4444;width:30px;height:30px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;" title="Hapus">
                                     @include('components.icon',['name'=>'trash','size'=>14])
                                 </button>
@@ -231,7 +231,7 @@
                             @empty
                             <div class="biaya-row-edit-{{ $j->id }}" style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;">
                                 <input type="text" name="nama_jenis_biaya[]" value="Umum" placeholder="Jenis (contoh: Umum)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
-                                <input type="number" name="nominal_biaya[]" value="0" placeholder="Nominal (Rp)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
+                                <input type="number" name="nominal_biaya[]" value="0" placeholder="Nominal (Rp)" min="0" max="999999999" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
                                 <span style="width:30px;"></span>
                             </div>
                             @endforelse
@@ -260,7 +260,7 @@
             div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;';
             div.innerHTML = `
                 <input type="text" name="nama_jenis_biaya[]" placeholder="Jenis (contoh: Mahasiswa)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
-                <input type="number" name="nominal_biaya[]" placeholder="Nominal (Rp)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
+                <input type="number" name="nominal_biaya[]" placeholder="Nominal (Rp)" min="0" max="999999999" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
                 <button type="button" onclick="this.closest('.biaya-row-edit-{{ $j->id }}').remove()" style="background:#FEF2F2;border:1px solid #FCA5A5;color:#EF4444;width:30px;height:30px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;" title="Hapus">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
                 </button>
@@ -390,7 +390,7 @@
                 <div id="jadwal-biaya-container">
                     <div class="biaya-row" style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;">
                         <input type="text" name="nama_jenis_biaya[]" value="{{ old('nama_jenis_biaya.0') }}" placeholder="Jenis (contoh: Umum)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
-                        <input type="number" name="nominal_biaya[]" value="{{ old('nominal_biaya.0') }}" placeholder="Nominal (Rp)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
+                        <input type="number" name="nominal_biaya[]" value="{{ old('nominal_biaya.0') }}" placeholder="Nominal (Rp)" min="0" max="999999999" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
                         <span style="width:24px;"></span>
                     </div>
                 </div>
@@ -409,7 +409,7 @@
             </div>
 
             {{-- Actions --}}
-            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:16px;">
+            <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px;">
                 <button type="button" onclick="closeJadwalModal()"
                         style="padding:11px 22px;font-size:13px;font-weight:800;color:#64748B;background:#F1F5F9;border:1.5px solid #CBD5E1;border-radius:30px;cursor:pointer;transition:all .18s;"
                         onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#CBD5E1';">
@@ -492,7 +492,7 @@ function addJadwalBiayaRow() {
     div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;';
     div.innerHTML = `
         <input type="text" name="nama_jenis_biaya[]" placeholder="contoh: Mahasiswa UMI" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
-        <input type="number" name="nominal_biaya[]" placeholder="0" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;" onfocus="this.select()">
+        <input type="number" name="nominal_biaya[]" placeholder="0" min="0" max="999999999" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;" onfocus="this.select()">
         <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;">✕</button>
     `;
     container.appendChild(div);

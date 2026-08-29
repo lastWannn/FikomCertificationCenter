@@ -38,6 +38,12 @@ class PresensiDetailManager extends Component
 
     public function markAttendance(int $pendaftaranId, string $status): void
     {
+        $jadwal = $this->kegiatan->jadwal;
+        if ($jadwal && $jadwal->tgl_pelaksanaan && \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->gt(now()->startOfDay())) {
+            $this->toastMessage = "Presensi tidak dapat diubah karena kegiatan belum dimulai (Tanggal Pelaksanaan: " . \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->format('d M Y') . ").";
+            return;
+        }
+
         if (!in_array($status, ['hadir', 'tidak_hadir', 'belum'])) return;
 
         $pendaftaran = Pendaftaran::where('id', $pendaftaranId)

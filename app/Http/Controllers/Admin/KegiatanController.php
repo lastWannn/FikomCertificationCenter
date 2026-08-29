@@ -99,15 +99,25 @@ class KegiatanController extends Controller
     public function update(Request $request, Kegiatan $kegiatan)
     {
         $request->validate([
-            'nama_kegiatan'    => 'required|string|max:255',
-            'tgl_pelaksanaan'  => 'nullable|date',
-            'jam_mulai'        => 'nullable',
-            'jam_selesai'      => 'nullable',
-            'tgl_batas_daftar' => 'nullable|date',
-            'kuota_peserta'    => 'required|integer|min:1',
-            'status'           => 'nullable|in:draf,comingsoon,public',
-            'nama_jenis_biaya' => 'nullable|array',
-            'nominal_biaya'    => 'nullable|array',
+            'nama_kegiatan'      => 'required|string|max:255',
+            'tgl_pelaksanaan'    => 'nullable|date',
+            'jam_mulai'          => 'nullable',
+            'jam_selesai'        => 'nullable',
+            'tgl_batas_daftar'   => 'nullable|date',
+            'kuota_peserta'      => 'required|integer|min:1|max:500',
+            'status'             => 'nullable|in:draf,comingsoon,public',
+            'nama_jenis_biaya'   => 'nullable|array',
+            'nama_jenis_biaya.*' => 'nullable|string|max:100',
+            'nominal_biaya'      => 'nullable|array',
+            'nominal_biaya.*'    => 'nullable|numeric|min:0|max:999999999',
+        ], [
+            'nama_kegiatan.required'  => 'Nama kegiatan wajib diisi.',
+            'kuota_peserta.required'  => 'Kuota peserta wajib diisi.',
+            'kuota_peserta.min'       => 'Kuota peserta minimal 1 orang.',
+            'kuota_peserta.max'       => 'Kuota peserta maksimal 500 orang.',
+            'nominal_biaya.*.numeric' => 'Nominal biaya harus berupa angka.',
+            'nominal_biaya.*.min'     => 'Nominal biaya tidak boleh minus.',
+            'nominal_biaya.*.max'     => 'Nominal biaya tidak boleh melebihi Rp 999.999.999.',
         ]);
 
         if ($request->filled('status')) {
