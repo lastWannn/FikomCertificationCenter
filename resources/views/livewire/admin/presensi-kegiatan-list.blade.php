@@ -90,12 +90,12 @@
                         <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:160px;">Peserta Terdaftar</th>
                         <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;width:320px;">Aksi Presensi</th>
                     </tr>
-                </thead>
                 <tbody>
                     @forelse($kegiatanList as $kegiatan)
                     @php
-                        $isPel = $kegiatan->jenis_kegiatan === 'pelatihan';
+                        $isPel  = $kegiatan->jenis_kegiatan === 'pelatihan';
                         $jadwal = $kegiatan->jadwal;
+                        $isBelum = $jadwal?->tgl_pelaksanaan && \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->gt(now()->startOfDay());
                     @endphp
                     <tr style="border-top:1px solid #F1F5F9;transition:background .15s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''">
                         
@@ -122,9 +122,16 @@
 
                         {{-- Jadwal Pelaksanaan --}}
                         <td style="padding:14px 16px;vertical-align:middle;">
-                            <p style="margin:0 0 2px;font-size:13px;font-weight:800;color:#131218;">
-                                {{ $jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}
-                            </p>
+                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap;">
+                                <span style="font-size:13px;font-weight:800;color:#131218;">
+                                    {{ $jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'TBA' }}
+                                </span>
+                                @if($isBelum)
+                                <span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;background:#FFFDF5;color:#D97706;border:1px solid #FCD34D;display:inline-flex;align-items:center;gap:3px;" title="Kegiatan belum dimulai">
+                                    @include('components.icon',['name'=>'clock','size'=>11]) Belum Dimulai
+                                </span>
+                                @endif
+                            </div>
                             <p style="margin:0;font-size:11.5px;color:#64748B;font-weight:600;">
                                 ⏰ {{ $jadwal?->jam_mulai ? substr($jadwal->jam_mulai, 0, 5) : '-' }} &ndash; {{ $jadwal?->jam_selesai ? substr($jadwal->jam_selesai, 0, 5) : '-' }} WITA
                             </p>

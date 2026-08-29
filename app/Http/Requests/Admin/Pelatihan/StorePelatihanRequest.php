@@ -23,7 +23,7 @@ class StorePelatihanRequest extends FormRequest {
             'nama_jenis_biaya' => 'nullable|array',
             'nama_jenis_biaya.*' => 'nullable|string|max:100',
             'nominal_biaya' => 'nullable|array',
-            'nominal_biaya.*' => 'nullable|numeric|min:0',
+            'nominal_biaya.*' => 'nullable|numeric|min:0|max:999999999',
             'kuota_peserta' => 'nullable|integer|min:1|max:500',
             'untuk_peserta' => 'nullable|in:L,P,LP',
             'tgl_batas_daftar' => 'nullable|date',
@@ -46,6 +46,7 @@ class StorePelatihanRequest extends FormRequest {
             'file_materi.mimes' => 'Format file materi tidak didukung.',
             'nominal_biaya.*.numeric' => 'Nominal biaya harus berupa angka.',
             'nominal_biaya.*.min' => 'Nominal biaya tidak boleh minus.',
+            'nominal_biaya.*.max' => 'Nominal biaya tidak boleh melebihi Rp 999.999.999.',
         ];
     }
 }

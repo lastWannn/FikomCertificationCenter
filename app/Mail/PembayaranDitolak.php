@@ -15,8 +15,9 @@ class PembayaranDitolak extends Mailable
 
     public function envelope(): Envelope
     {
+        $judul = $this->pembayaran->pendaftaran?->kegiatan?->judul ?? 'Kegiatan';
         return new Envelope(
-            subject: '[FCC] Pembayaran Ditolak — Perlu Tindak Lanjut'
+            subject: '[FIKOM FCC] Pembayaran Ditolak — ' . $judul
         );
     }
 

@@ -87,6 +87,10 @@ class LandingController extends Controller
 
     public function show(Kegiatan $kegiatan)
     {
+        if ($kegiatan->isDraf() && !auth()->guard('admin')->check()) {
+            abort(404, 'Kegiatan belum dipublikasikan.');
+        }
+
         $kegiatan->load([
             'kegiatanPelatihan.jadwalPelatihan.pelatihan.materi',
             'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi.materi',
@@ -202,7 +206,7 @@ class LandingController extends Controller
                 : redirect()->route('landing.kegiatan');
         }
 
-        $kegiatan = \App\Models\Kegiatan::with([
+        $kegiatan = \App\Models\Kegiatan::visibleToPublic()->with([
             'kegiatanPelatihan.jadwalPelatihan.pelatihan.kategori',
             'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi.kategori',
             'biaya',

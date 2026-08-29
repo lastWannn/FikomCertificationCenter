@@ -17,6 +17,19 @@
       </div>
     </div>
   </div>
+  @php
+    $jadwal = $pendaftaran->kegiatan?->jadwal;
+    $belumDimulai = $jadwal && $jadwal->tgl_pelaksanaan && \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->gt(now()->startOfDay());
+  @endphp
+  @if($belumDimulai)
+  <div style="margin-bottom:14px;padding:14px 18px;background:#FFFDF5;border:1.5px solid #FCD34D;border-radius:14px;display:flex;align-items:center;gap:12px;">
+    @include('components.icon',['name'=>'alert-circle','size'=>20,'style'=>'color:#D97706;flex-shrink:0;'])
+    <div>
+      <p style="margin:0;font-size:13.5px;font-weight:900;color:#92400E;">Pelaksanaan Kegiatan Belum Dimulai</p>
+      <p style="margin:2px 0 0;font-size:12px;color:#B45309;font-weight:600;">Jadwal pelaksanaan kegiatan ini adalah <strong>{{ \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->translatedFormat('d F Y') }}</strong>. Penginputan nilai baru dapat dilakukan saat atau setelah tanggal pelaksanaan.</p>
+    </div>
+  </div>
+  @endif
   <div class="fcc-card" style="padding:22px;">
     <form action="{{ route('admin.nilai.store', $pendaftaran) }}" method="POST">
       @csrf
@@ -37,7 +50,8 @@
           <input type="number" name="nilai[{{ $prefix }}-{{ $m->id }}]"
                  value="{{ old('nilai.'.$prefix.'-'.$m->id, $existingNilai?->nilai) }}"
                  min="0" max="100" step="0.5" placeholder="0–100"
-                 class="fcc-input" style="width:90px;text-align:center;"
+                 {{ $belumDimulai ? 'disabled' : '' }}
+                 class="fcc-input" style="width:90px;text-align:center;{{ $belumDimulai ? 'background:#F1F5F9;cursor:not-allowed;' : '' }}"
                  onkeydown="if(event.key==='Enter')event.preventDefault();">
           <span style="font-size:11px;color:#9CA3B0;">/100</span>
         </div>
@@ -47,7 +61,7 @@
       @endforelse
       @if($materiList->count() > 0)
       <div style="margin-top:18px;padding-top:14px;border-top:1px solid #E2E4EB;">
-        <button type="submit" class="fcc-btn-dark" style="padding:11px 24px;font-size:14px;">
+        <button type="submit" {{ $belumDimulai ? 'disabled' : '' }} class="fcc-btn-dark" style="padding:11px 24px;font-size:14px;{{ $belumDimulai ? 'opacity:0.6;cursor:not-allowed;' : '' }}">
           @include('components.icon',['name'=>'check','size'=>14,'style'=>'color:#FFC81A']) Simpan Nilai
         </button>
       </div>

@@ -84,6 +84,23 @@ class Pembayaran extends Model
         return $kode;
     }
 
+    /* ── NOMOR KWITANSI ─────────────────────────────────────── */
+    public static function generateNoKwitansi(): string
+    {
+        $prefix = 'KWT/FCC/' . now()->format('Ym') . '/';
+        $latest = self::where('no_kwitansi', 'like', "{$prefix}%")
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($latest && preg_match('/(\d+)$/', $latest->no_kwitansi, $matches)) {
+            $next = (int) $matches[1] + 1;
+        } else {
+            $next = 1;
+        }
+
+        return $prefix . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
+    }
+
     /* ── STATUS & EXPIRY ────────────────────────────────────── */
     public function isKadaluarsa(): bool
     {
@@ -163,10 +180,15 @@ class Pembayaran extends Model
 
     public function verifikasi(?string $noKwitansi = null): void
     {
+        if (empty(trim($noKwitansi ?? ''))) {
+            $noKwitansi = self::generateNoKwitansi();
+        }
+
         $this->update([
             'status_pembayaran' => 'terverifikasi',
             'no_kwitansi'       => $noKwitansi,
             'tgl_kwitansi'      => now()->toDateString(),
+            'tgl_verifikasi'    => now(),
         ]);
         $this->pendaftaran->update(['status_pendaftaran' => 'terdaftar']);
     }

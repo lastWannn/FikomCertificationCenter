@@ -57,6 +57,11 @@ class PresensiController extends Controller
 
     public function markHadir(Pendaftaran $pendaftaran, Request $r)
     {
+        $jadwal = $pendaftaran->kegiatan?->jadwal;
+        if ($jadwal && $jadwal->tgl_pelaksanaan && \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->gt(now()->startOfDay())) {
+            return back()->with('error', 'Presensi gagal: Pelaksanaan kegiatan belum dimulai (Tanggal Pelaksanaan: ' . \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->format('d M Y') . ').');
+        }
+
         $r->validate(['status_kehadiran' => 'required|in:hadir,tidak_hadir,belum']);
         $pendaftaran->update(['status_kehadiran' => $r->status_kehadiran]);
         return back()->with('success', 'Presensi peserta berhasil diperbarui.');

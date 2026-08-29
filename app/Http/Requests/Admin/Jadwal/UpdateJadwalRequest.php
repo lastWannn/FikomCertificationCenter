@@ -9,7 +9,7 @@ class UpdateJadwalRequest extends FormRequest {
                 'nama_jenis_biaya'=>'nullable|array',
                 'nama_jenis_biaya.*'=>'nullable|string|max:100',
                 'nominal_biaya'=>'nullable|array',
-                'nominal_biaya.*'=>'nullable|numeric|min:0',
+                'nominal_biaya.*'=>'nullable|numeric|min:0|max:999999999',
                 'kuota_peserta'=>'required|integer|min:1|max:500','untuk_peserta'=>'required|in:L,P,LP',
                 'tgl_batas_daftar'=>'required|date|before_or_equal:tgl_pelaksanaan',
                 'tgl_pelaksanaan'=>'required|date|after_or_equal:tgl_batas_daftar',
@@ -18,6 +18,9 @@ class UpdateJadwalRequest extends FormRequest {
 
     public function messages(): array {
         return [
+            'nominal_biaya.*.numeric'          => 'Nominal biaya harus berupa angka.',
+            'nominal_biaya.*.min'              => 'Nominal biaya tidak boleh minus.',
+            'nominal_biaya.*.max'              => 'Nominal biaya tidak boleh melebihi Rp 999.999.999.',
             'tgl_batas_daftar.required'        => 'Tanggal batas pendaftaran wajib diisi.',
             'tgl_batas_daftar.date'            => 'Tanggal batas pendaftaran harus berupa tanggal yang valid.',
             'tgl_batas_daftar.before_or_equal' => 'Tanggal batas pendaftaran harus sebelum atau sama dengan tanggal pelaksanaan.',

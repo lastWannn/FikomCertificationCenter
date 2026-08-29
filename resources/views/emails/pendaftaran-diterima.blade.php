@@ -39,12 +39,12 @@
               
               {{-- Status Banner --}}
               @if($pendaftaran->pembayaran)
-              <div style="background-color: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 14px 18px; margin-bottom: 24px;">
+              <div style="background-color: #FFFDF5; border: 1px solid #FCD34D; border-radius: 10px; padding: 14px 18px; margin-bottom: 24px;">
                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <td width="24" style="vertical-align: middle; color: #047857; font-size: 16px; font-weight: 900;">📄</td>
-                    <td style="vertical-align: middle; font-size: 13.5px; font-weight: 700; color: #047857;">
-                      Pendaftaran Diterima &mdash; Berkas Invoice PDF Terlampir
+                    <td width="24" style="vertical-align: middle; color: #D97706; font-size: 16px; font-weight: 900;">📄</td>
+                    <td style="vertical-align: middle; font-size: 13.5px; font-weight: 700; color: #92400E;">
+                      Tagihan Pendaftaran &mdash; Berkas Invoice PDF Terlampir (Menunggu Pembayaran)
                     </td>
                   </tr>
                 </table>
@@ -63,7 +63,7 @@
               @endif
 
               <h2 style="margin: 0 0 12px; font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
-                Konfirmasi Pendaftaran Kegiatan
+                {{ $pendaftaran->pembayaran ? 'Tagihan Pendaftaran Kegiatan' : 'Konfirmasi Pendaftaran Kegiatan' }}
               </h2>
 
               <p style="margin: 0 0 16px; font-size: 14.5px; color: #334155; line-height: 1.6;">
@@ -71,7 +71,11 @@
               </p>
 
               <p style="margin: 0 0 24px; font-size: 14.5px; color: #475569; line-height: 1.6;">
-                Pendaftaran Anda untuk kegiatan di bawah ini telah berhasil dicatat oleh sistem FIKOM Certification Center.
+                @if($pendaftaran->pembayaran)
+                  Pendaftaran Anda untuk kegiatan di bawah ini telah dicatat oleh sistem FIKOM Certification Center. Silakan lakukan pembayaran sesuai invoice terlampir sebelum batas waktu agar pendaftaran Anda dapat diverifikasi oleh admin.
+                @else
+                  Pendaftaran Anda untuk kegiatan di bawah ini telah berhasil dicatat oleh sistem FIKOM Certification Center.
+                @endif
               </p>
 
               {{-- Table Details Card --}}

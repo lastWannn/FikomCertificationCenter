@@ -73,7 +73,7 @@
                 @foreach(old('nama_jenis_biaya') as $index => $nama)
                 <div class="biaya-row" style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;">
                     <input type="text" name="nama_jenis_biaya[]" value="{{ $nama }}" placeholder="contoh: Umum" class="fcc-input" style="background:#FFF;">
-                    <input type="number" name="nominal_biaya[]" value="{{ old('nominal_biaya.'.$index) }}" placeholder="Nominal (Rp)" class="fcc-input" style="background:#FFF;">
+                    <input type="number" name="nominal_biaya[]" value="{{ old('nominal_biaya.'.$index) }}" placeholder="Nominal (Rp)" min="0" max="999999999" class="fcc-input" style="background:#FFF;">
                     <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:6px;">@include('components.icon',['name'=>'trash','size'=>14])</button>
                 </div>
                 @endforeach
@@ -81,14 +81,14 @@
                 @foreach($biayaSetup as $biaya)
                 <div class="biaya-row" style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;">
                     <input type="text" name="nama_jenis_biaya[]" value="{{ $biaya['nama'] }}" placeholder="contoh: Umum" class="fcc-input" style="background:#FFF;">
-                    <input type="number" name="nominal_biaya[]" value="{{ $biaya['nominal'] }}" placeholder="Nominal (Rp)" class="fcc-input" style="background:#FFF;">
+                    <input type="number" name="nominal_biaya[]" value="{{ $biaya['nominal'] }}" placeholder="Nominal (Rp)" min="0" max="999999999" class="fcc-input" style="background:#FFF;">
                     <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:6px;">@include('components.icon',['name'=>'trash','size'=>14])</button>
                 </div>
                 @endforeach
             @else
                 <div class="biaya-row" style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;">
                     <input type="text" name="nama_jenis_biaya[]" value="" placeholder="contoh: Umum" class="fcc-input" style="background:#FFF;">
-                    <input type="number" name="nominal_biaya[]" value="" placeholder="Nominal (Rp)" class="fcc-input" style="background:#FFF;">
+                    <input type="number" name="nominal_biaya[]" value="" placeholder="Nominal (Rp)" min="0" max="999999999" class="fcc-input" style="background:#FFF;">
                     <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:6px;">@include('components.icon',['name'=>'trash','size'=>14])</button>
                 </div>
             @endif
@@ -157,7 +157,7 @@ function addBiayaRow(containerId) {
     div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;';
     div.innerHTML = `
         <input type="text" name="nama_jenis_biaya[]" placeholder="contoh: Umum" class="fcc-input" style="background:#FFF;">
-        <input type="number" name="nominal_biaya[]" placeholder="Nominal (Rp)" class="fcc-input" style="background:#FFF;">
+        <input type="number" name="nominal_biaya[]" placeholder="Nominal (Rp)" min="0" max="999999999" class="fcc-input" style="background:#FFF;">
         <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:6px;">@include('components.icon',['name'=>'trash','size'=>14])</button>
     `;
     container.appendChild(div);

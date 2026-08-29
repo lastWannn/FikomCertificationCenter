@@ -56,7 +56,9 @@ class CetakController extends Controller
         if ($pembayaran->status_pembayaran !== 'terverifikasi') {
             return back()->with('error', 'Bukti hanya bisa dicetak setelah pembayaran terverifikasi.');
         }
-        $pembayaran->load(['pendaftaran.peserta','pendaftaran.kegiatan','pendaftaran.biaya']);
+        if (empty($pembayaran->no_kwitansi)) {
+            $pembayaran->update(['no_kwitansi' => Pembayaran::generateNoKwitansi()]);
+        }
 
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
             $safeKode = str_replace(['/', '\\'], '-', $pembayaran->kode_pembayaran);
@@ -76,6 +78,12 @@ class CetakController extends Controller
             'pendaftaran.peserta',
             'pendaftaran.pembayaran'
         ]);
+
+        if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.presensi-pdf', compact('kegiatan'))
+                ->setPaper('a4', 'portrait');
+            return $pdf->stream("presensi-{$kegiatan->id}.pdf");
+        }
 
         return view('admin.cetak.presensi-pdf', compact('kegiatan'));
     }

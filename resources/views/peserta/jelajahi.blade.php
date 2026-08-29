@@ -135,7 +135,9 @@
                             </span>
                         </td>
                         <td style="padding:16px 20px;text-align:center;vertical-align:middle;">
-                            @if($k->isComingSoon())
+                            @if($k->isDraf())
+                            <button disabled style="width:100%;padding:8px 14px;border-radius:10px;border:1.5px solid #CBD5E1;background:#F1F5F9;color:#94A3B8;font-size:12.5px;font-weight:800;cursor:not-allowed;">Draft / Belum Dibuka</button>
+                            @elseif($k->isComingSoon())
                             <button disabled style="width:100%;padding:8px 14px;border-radius:10px;border:1.5px solid #FCD34D;background:#FEF3C7;color:#D97706;font-size:12.5px;font-weight:800;cursor:not-allowed;">Segera Hadir</button>
                             @elseif($sudah)
                             <a href="{{ route('peserta.pendaftaran') }}" style="display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:10px;border:1.5px solid #10B981;background:#ECFDF5;color:#059669;font-size:12.5px;font-weight:900;text-decoration:none;">&#10003; Terdaftar</a>

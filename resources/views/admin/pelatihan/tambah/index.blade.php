@@ -241,7 +241,7 @@ function addBiayaRow(containerId) {
     div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;';
     div.innerHTML = `
         <input type="text" name="nama_jenis_biaya[]" placeholder="contoh: Umum" class="fcc-input" style="background:#FFF;">
-        <input type="number" name="nominal_biaya[]" placeholder="Nominal (Rp)" class="fcc-input" style="background:#FFF;">
+        <input type="number" name="nominal_biaya[]" placeholder="Nominal (Rp)" min="0" max="999999999" class="fcc-input" style="background:#FFF;">
         <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:6px;">@include('components.icon',['name'=>'trash','size'=>14])</button>
     `;
     container.appendChild(div);

@@ -25,8 +25,8 @@
                 <form action="{{ route('admin.pembayaran.verifikasi', $pembayaran) }}"
                       method="POST" style="display:flex;gap:8px;align-items:center;">
                     @csrf
-                    <input type="text" name="no_kwitansi" placeholder="No. Kwitansi (opsional)"
-                           class="fcc-input" style="width:190px;font-size:13px;">
+                    <input type="text" name="no_kwitansi" placeholder="No. Kwitansi (Auto Generate)"
+                           class="fcc-input" style="width:210px;font-size:12.5px;">
                     <button type="button" class="fcc-btn-gold" style="padding:9px 18px;font-size:13px;"
                             onclick="fccConfirmAction(this, 'Verifikasi Pembayaran?', 'Pembayaran akan ditandai terverifikasi dan peserta diberitahu via email.', 'Ya, Verifikasi', false)">
                         @include('components.icon',['name'=>'check','size'=>14]) Verifikasi

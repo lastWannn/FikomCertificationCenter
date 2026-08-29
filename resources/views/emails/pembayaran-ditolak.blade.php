@@ -43,14 +43,14 @@
                   <tr>
                     <td width="24" style="vertical-align: middle; color: #991B1B; font-size: 16px; font-weight: 900;">✕</td>
                     <td style="vertical-align: middle; font-size: 13.5px; font-weight: 700; color: #991B1B;">
-                      Pembayaran Ditolak &mdash; Upload Ulang Bukti Transfer
+                      Pendaftaran Ditolak &mdash; Silakan Lakukan Daftar Ulang
                     </td>
                   </tr>
                 </table>
               </div>
 
               <h2 style="margin: 0 0 12px; font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
-                Pembayaran Memerlukan Tindakan Ulang
+                Pendaftaran Memerlukan Daftar Ulang
               </h2>
 
               <p style="margin: 0 0 16px; font-size: 14.5px; color: #334155; line-height: 1.6;">
@@ -58,7 +58,7 @@
               </p>
 
               <p style="margin: 0 0 24px; font-size: 14.5px; color: #475569; line-height: 1.6;">
-                Maaf, pembayaran Anda untuk kegiatan di bawah ini belum dapat diverifikasi oleh Tim Pengelola FCC.
+                Maaf, pendaftaran/pembayaran Anda untuk kegiatan di bawah ini belum dapat diverifikasi oleh Tim Pengelola FCC.
               </p>
 
               {{-- Table Details Card --}}
@@ -93,12 +93,11 @@
 
               <div style="background-color: #F1F5F9; border-radius: 10px; padding: 16px 20px; margin-bottom: 24px;">
                 <div style="font-size: 12px; font-weight: 800; color: #334155; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
-                  Saran / Hal yang Perlu Diperhatikan:
+                  Informasi Penting:
                 </div>
                 <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
-                  <li>Pastikan foto struk / bukti transfer dapat terbaca dengan jelas</li>
-                  <li>Pastikan nominal transfer sesuai dengan total yang tertera (termasuk kode unik)</li>
-                  <li>Pastikan nama pemilik rekening pengirim sesuai</li>
+                  <li>Anda dapat melakukan pendaftaran ulang dengan menekan tombol <strong>Daftar Ulang</strong> di bawah ini.</li>
+                  <li>Pastikan data pendaftaran dan nominal transfer sesuai saat melakukan transaksi baru.</li>
                 </ul>
               </div>
 
@@ -106,8 +105,8 @@
               <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td align="center" style="padding-top: 8px;">
-                    <a href="{{ config('app.url') }}/peserta/pembayaran" target="_blank" style="display: inline-block; background-color: #131218; color: #FFC81A; font-size: 14px; font-weight: 800; text-decoration: none; padding: 14px 32px; border-radius: 10px; border: 1px solid #131218;">
-                      Upload Ulang Bukti Transfer &rarr;
+                    <a href="{{ route('landing.show', $pembayaran->pendaftaran->kegiatan_id) }}" target="_blank" style="display: inline-block; background-color: #131218; color: #FFC81A; font-size: 14px; font-weight: 800; text-decoration: none; padding: 14px 32px; border-radius: 10px; border: 1px solid #131218;">
+                      Daftar Ulang &rarr;
                     </a>
                   </td>
                 </tr>

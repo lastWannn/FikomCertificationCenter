@@ -1,4 +1,19 @@
 <div>
+    @php
+        $jadwal = $kegiatan->jadwal;
+        $belumDimulai = $jadwal && $jadwal->tgl_pelaksanaan && \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->gt(now()->startOfDay());
+    @endphp
+
+    @if($belumDimulai)
+    <div style="margin-bottom:20px;padding:16px 20px;background:#FFFDF5;border:1.5px solid #FCD34D;border-radius:16px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 10px rgba(245,158,11,0.08);">
+        @include('components.icon',['name'=>'alert-circle','size'=>22,'style'=>'color:#D97706;flex-shrink:0;'])
+        <div>
+            <h4 style="margin:0 0 2px;font-size:14px;font-weight:900;color:#92400E;">Pelaksanaan Kegiatan Belum Dimulai</h4>
+            <p style="margin:0;font-size:12px;color:#B45309;font-weight:600;">Tanggal pelaksanaan kegiatan ini ditetapkan pada <strong>{{ \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->translatedFormat('d F Y') }}</strong>. Pengelolaan presensi peserta baru dapat dilakukan pada saat atau setelah tanggal pelaksanaan.</p>
+        </div>
+    </div>
+    @endif
+
     {{-- Toast Notification --}}
     @if($toastMessage)
     <div style="padding: 12px 18px; border-radius: 12px; background: rgba(16, 185, 129, 0.12); border: 1.5px solid rgba(16, 185, 129, 0.3); color: #059669; font-weight: 800; font-size: 13px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
@@ -134,28 +149,34 @@
 
                         {{-- Reaktif Livewire Status Buttons --}}
                         <td style="padding:14px 20px;text-align:center;vertical-align:middle;">
-                            <div style="display:inline-flex;gap:4px;background:#F1F5F9;padding:4px;border-radius:12px;border:1.5px solid #CBD5E1;">
-                                <button type="button" wire:click="markAttendance({{ $pd->id }}, 'hadir')"
-                                        style="padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:900;cursor:pointer;transition:all 0.15s;
-                                               background:{{ $st === 'hadir' ? '#10B981' : 'transparent' }};
-                                               color:{{ $st === 'hadir' ? '#FFFFFF' : '#64748B' }};
-                                               box-shadow:{{ $st === 'hadir' ? '0 2px 8px rgba(16,185,129,0.3)' : 'none' }};">
-                                    ✓ Hadir
+                            @if($belumDimulai)
+                                <button type="button" disabled style="padding:6px 14px;border-radius:10px;border:1.5px solid #CBD5E1;background:#F1F5F9;color:#94A3B8;font-size:12px;font-weight:800;cursor:not-allowed;display:inline-flex;align-items:center;gap:5px;" title="Kegiatan belum dimulai">
+                                    @include('components.icon',['name'=>'clock','size'=>13]) Belum Dimulai
                                 </button>
-                                <button type="button" wire:click="markAttendance({{ $pd->id }}, 'tidak_hadir')"
-                                        style="padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:900;cursor:pointer;transition:all 0.15s;
-                                               background:{{ $st === 'tidak_hadir' ? '#EF4444' : 'transparent' }};
-                                               color:{{ $st === 'tidak_hadir' ? '#FFFFFF' : '#64748B' }};
-                                               box-shadow:{{ $st === 'tidak_hadir' ? '0 2px 8px rgba(239,68,68,0.3)' : 'none' }};">
-                                    ✕ Alpha
-                                </button>
-                                <button type="button" wire:click="markAttendance({{ $pd->id }}, 'belum')"
-                                        style="padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:900;cursor:pointer;transition:all 0.15s;
-                                               background:{{ $st === 'belum' ? '#64748B' : 'transparent' }};
-                                               color:{{ $st === 'belum' ? '#FFFFFF' : '#64748B' }};">
-                                    Belum
-                                </button>
-                            </div>
+                            @else
+                                <div style="display:inline-flex;gap:4px;background:#F1F5F9;padding:4px;border-radius:12px;border:1.5px solid #CBD5E1;">
+                                    <button type="button" wire:click="markAttendance({{ $pd->id }}, 'hadir')"
+                                            style="padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:900;cursor:pointer;transition:all 0.15s;
+                                                   background:{{ $st === 'hadir' ? '#10B981' : 'transparent' }};
+                                                   color:{{ $st === 'hadir' ? '#FFFFFF' : '#64748B' }};
+                                                   box-shadow:{{ $st === 'hadir' ? '0 2px 8px rgba(16,185,129,0.3)' : 'none' }};">
+                                        ✓ Hadir
+                                    </button>
+                                    <button type="button" wire:click="markAttendance({{ $pd->id }}, 'tidak_hadir')"
+                                            style="padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:900;cursor:pointer;transition:all 0.15s;
+                                                   background:{{ $st === 'tidak_hadir' ? '#EF4444' : 'transparent' }};
+                                                   color:{{ $st === 'tidak_hadir' ? '#FFFFFF' : '#64748B' }};
+                                                   box-shadow:{{ $st === 'tidak_hadir' ? '0 2px 8px rgba(239,68,68,0.3)' : 'none' }};">
+                                        ✕ Alpha
+                                    </button>
+                                    <button type="button" wire:click="markAttendance({{ $pd->id }}, 'belum')"
+                                            style="padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:900;cursor:pointer;transition:all 0.15s;
+                                                   background:{{ $st === 'belum' ? '#64748B' : 'transparent' }};
+                                                   color:{{ $st === 'belum' ? '#FFFFFF' : '#64748B' }};">
+                                        Belum
+                                    </button>
+                                </div>
+                            @endif
                         </td>
                     </tr>
                     @empty

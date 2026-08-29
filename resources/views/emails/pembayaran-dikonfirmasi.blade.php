@@ -107,20 +107,9 @@
                 @endif
               </table>
 
-              <p style="margin: 0 0 24px; font-size: 13.5px; color: #64748B; line-height: 1.6;">
+              <p style="margin: 0; font-size: 13.5px; color: #64748B; line-height: 1.6;">
                 Harap hadir tepat waktu saat sesi kegiatan berlangsung dan tunjukkan QR Code presensi yang ada pada portal peserta saat <em>check-in</em>.
               </p>
-
-              {{-- CTA Button --}}
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="center" style="padding-top: 8px;">
-                    <a href="{{ config('app.url') }}/peserta/pendaftaran" target="_blank" style="display: inline-block; background-color: #131218; color: #FFC81A; font-size: 14px; font-weight: 800; text-decoration: none; padding: 14px 32px; border-radius: 10px; border: 1px solid #131218;">
-                      Lihat Detail & QR Presensi &rarr;
-                    </a>
-                  </td>
-                </tr>
-              </table>
 
             </td>
           </tr>

@@ -10,8 +10,27 @@ class PendaftaranService
 {
     public function daftar(int $pesertaId, Kegiatan $kegiatan, ?int $biayaKegiatanId = null): Pendaftaran
     {
-        if (Pendaftaran::where(['peserta_id' => $pesertaId, 'kegiatan_id' => $kegiatan->id])->exists()) {
-            throw new \RuntimeException('Anda sudah mendaftarkan diri ke kegiatan ini.');
+        if ($kegiatan->isDraf()) {
+            throw new \RuntimeException('Maaf, kegiatan ini masih berstatus draf dan pendaftaran belum dibuka.');
+        }
+        if ($kegiatan->isComingSoon()) {
+            throw new \RuntimeException('Maaf, kegiatan ini berstatus Coming Soon dan pendaftaran belum dibuka.');
+        }
+        $existingPendaftaran = Pendaftaran::where([
+            'peserta_id'  => $pesertaId,
+            'kegiatan_id' => $kegiatan->id
+        ])->first();
+
+        if ($existingPendaftaran) {
+            $isRejectedOrCanceled = in_array($existingPendaftaran->status_pendaftaran, ['ditolak', 'dibatalkan']) ||
+                ($existingPendaftaran->pembayaran && in_array($existingPendaftaran->pembayaran->status_pembayaran, ['ditolak', 'kadaluarsa']));
+
+            if ($isRejectedOrCanceled) {
+                $existingPendaftaran->pembayaran()?->delete();
+                $existingPendaftaran->delete();
+            } else {
+                throw new \RuntimeException('Anda sudah mendaftarkan diri ke kegiatan ini.');
+            }
         }
         if ($kegiatan->isRegistrationClosed()) {
             throw new \RuntimeException('Maaf, pendaftaran untuk kegiatan ini telah ditutup.');

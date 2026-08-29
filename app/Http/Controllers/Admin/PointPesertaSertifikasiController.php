@@ -31,6 +31,11 @@ class PointPesertaSertifikasiController extends Controller
 
     public function update(Request $request, $jadwal_id, $pendaftaran_id)
     {
+        $jadwal = JadwalSertifikasi::findOrFail($jadwal_id);
+        if ($jadwal->tgl_pelaksanaan && $jadwal->tgl_pelaksanaan->gt(now()->startOfDay())) {
+            return back()->with('error', 'Penilaian tidak dapat dilakukan karena sertifikasi belum dimulai (Tanggal Pelaksanaan: ' . $jadwal->tgl_pelaksanaan->format('d M Y') . ').');
+        }
+
         $request->validate([
             'nilai' => 'required|array',
             'nilai.*' => 'nullable|numeric|min:0|max:100',

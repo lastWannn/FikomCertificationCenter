@@ -26,6 +26,11 @@ class NilaiController extends Controller
     }
     /** FIX: Menggunakan NilaiService yang sudah memperbaiki bug kolom materi_pel_id */
     public function store(StoreNilaiRequest $request, Pendaftaran $pendaftaran) {
+        $jadwal = $pendaftaran->kegiatan?->jadwal;
+        if ($jadwal && $jadwal->tgl_pelaksanaan && $jadwal->tgl_pelaksanaan->gt(now()->startOfDay())) {
+            return back()->with('error', 'Penilaian tidak dapat dilakukan karena kegiatan belum dimulai (Tanggal Pelaksanaan: ' . $jadwal->tgl_pelaksanaan->format('d M Y') . ').');
+        }
+
         $count = $this->service->simpan($pendaftaran, $request->validated()['nilai']);
         return back()->with('success', "{$count} nilai berhasil disimpan.");
     }

@@ -15,7 +15,7 @@ class PendaftaranDiterima extends Mailable
 
     public function envelope(): Envelope
     {
-        $subjectPrefix = $this->pendaftaran->pembayaran ? 'Konfirmasi Pendaftaran & Invoice — ' : 'Konfirmasi Pendaftaran — ';
+        $subjectPrefix = $this->pendaftaran->pembayaran ? 'Tagihan & Invoice Pendaftaran — ' : 'Konfirmasi Pendaftaran — ';
         return new Envelope(
             subject: $subjectPrefix . $this->pendaftaran->kegiatan->judul
         );
