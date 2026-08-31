@@ -27,37 +27,6 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
-
-    @media (min-width: 992px) {
-        .hero-grid-layout {
-            grid-template-columns: 1.15fr 0.85fr !important;
-            gap: 56px !important;
-        }
-    }
-    @media (max-width: 991px) {
-        .hero-model-section {
-            margin-top: 32px;
-        }
-        .hero-model-wrapper {
-            max-width: 360px !important;
-            height: 430px !important;
-        }
-        .floating-badge-bottom {
-            bottom: 12px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: calc(100% - 32px) !important;
-        }
-    }
-    @media (max-width: 576px) {
-        .hero-model-wrapper {
-            max-width: 290px !important;
-            height: 350px !important;
-        }
-        .trust-item-divider {
-            display: none !important;
-        }
-    }
 </style>
 @endpush
 
@@ -66,7 +35,7 @@
 {{-- ══════════════════════════════════════════════════════════════
      HERO SECTION — High-Impact Portal Layout with Background Image
   ══════════════════════════════════════════════════════════════════ --}}
-<section data-hero style="min-height:86vh;position:relative;overflow:hidden;display:flex;align-items:center;padding:110px 0 75px;border-bottom:1px solid #1E1D26;background:#131218;">
+<section data-hero style="position:relative;overflow:hidden;display:flex;align-items:center;border-bottom:1px solid #1E1D26;background:#131218;">
     {{-- Hero Background Image (LCP element — loaded as <img> for fastest discovery) --}}
     <img src="{{ asset('images/herosection.webp') }}" alt="" fetchpriority="high" decoding="async" width="1920" height="1080" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"/>
     {{-- Gradient Overlay --}}
@@ -77,7 +46,7 @@
     {{-- Main Content Container --}}
     <div style="position:relative;z-index:3;max-width:1240px;margin:0 auto;padding:0 24px;width:100%;">
 
-        <div class="hero-grid-layout" style="display:grid;grid-template-columns:1fr;gap:44px;align-items:center;">
+        <div class="hero-grid-layout">
             
             {{-- Left Column: Clean Typography & CTAs --}}
             <div style="max-width:660px;">
@@ -91,19 +60,19 @@
                 </div>
 
                 {{-- Headline --}}
-                <h1 style="color:#FFFFFF;font-size:clamp(34px,4.3vw,56px);font-weight:900;line-height:1.15;margin:0 0 20px;letter-spacing:-1px;">
+                <h1 style="color:#FFFFFF;font-weight:900;line-height:1.15;letter-spacing:-1px;">
                     Bimbing Langkah Anda Menuju <span style="color:#FFC81A;">Keahlian Profesional</span> &amp; Sertifikasi Resmi
                 </h1>
 
                 {{-- Subtitle --}}
-                <p style="color:rgba(255,255,255,0.8);font-size:clamp(15px,1.4vw,17px);margin:0 0 34px;line-height:1.75;max-width:600px;">
+                <p style="color:rgba(255,255,255,0.8);max-width:600px;">
                     Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya di Fakultas Ilmu Komputer Universitas Muslim Indonesia. Dapatkan pengakuan karir resmi berstandar industri.
                 </p>
 
                 {{-- Action Buttons --}}
-                <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:0;">
+                <div class="hero-cta-buttons">
                     <span class="btn-magnetic">
-                        <a href="{{ route('landing.kegiatan') }}" style="padding:14px 32px;font-size:14.5px;border-radius:30px;font-weight:800;display:inline-flex;align-items:center;gap:10px;background:#FFC81A;color:#131218;border:2px solid #FFC81A;box-shadow:0 6px 20px rgba(255,200,26,0.35);text-decoration:none;transition:all .25s ease;">
+                        <a href="{{ route('landing.kegiatan') }}" style="border-radius:30px;font-weight:800;display:inline-flex;align-items:center;gap:10px;background:#FFC81A;color:#131218;border:2px solid #FFC81A;box-shadow:0 6px 20px rgba(255,200,26,0.35);text-decoration:none;transition:all .25s ease;">
                             Jelajahi Program Sekarang
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                 <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -111,7 +80,7 @@
                         </a>
                     </span>
                     <span class="btn-magnetic">
-                        <a href="{{ route('landing.pendaftaran') }}" style="padding:14px 28px;font-size:14.5px;border-radius:30px;font-weight:800;display:inline-flex;align-items:center;gap:8px;background:#FFFFFF;color:#131218;border:2px solid #FFFFFF;text-decoration:none;box-shadow:0 6px 20px rgba(255,255,255,0.15);transition:all .25s ease;">
+                        <a href="{{ route('landing.pendaftaran') }}" style="border-radius:30px;font-weight:800;display:inline-flex;align-items:center;gap:8px;background:#FFFFFF;color:#131218;border:2px solid #FFFFFF;text-decoration:none;box-shadow:0 6px 20px rgba(255,255,255,0.15);transition:all .25s ease;">
                             Cara Mendaftar
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                         </a>
@@ -121,35 +90,35 @@
             </div>
 
             {{-- Right Column: Modern Asymmetric Layered Showcase --}}
-            <div class="hero-model-section" style="position:relative;display:flex;justify-content:center;align-items:center;">
+            <div class="hero-model-section">
                 
-                <div style="position:relative;width:100%;max-width:430px;height:500px;">
+                <div class="hero-showcase-box">
                     
                     {{-- Solid Yellow Angled Backdrop Card --}}
-                    <div style="position:absolute;inset:-6px 6px 6px -6px;background:#FFC81A;border-radius:120px 44px 120px 44px;transform:rotate(-3.5deg);z-index:1;box-shadow:0 15px 40px rgba(255,200,26,0.35);"></div>
+                    <div class="hero-backdrop-card"></div>
 
                     {{-- Main Asymmetric Model Container --}}
-                    <div class="hero-model-wrapper" style="position:relative;z-index:2;width:100%;height:100%;border-radius:115px 36px 115px 36px;padding:8px;background:#1E1D26;border:3px solid #131218;box-shadow:0 24px 60px rgba(0,0,0,0.6);overflow:visible;">
+                    <div class="hero-model-wrapper">
                         
                         {{-- Inner Image Arch Container --}}
-                        <div style="width:100%;height:100%;border-radius:108px 30px 108px 30px;overflow:hidden;position:relative;background:#131218;">
-                            <img src="{{ asset('images/hero-model.webp') }}" alt="Peserta Sertifikasi FIKOM UMI" width="520" height="620" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform 0.5s ease;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+                        <div class="hero-image-arch">
+                            <img src="{{ asset('images/hero-model.webp') }}" alt="Peserta Sertifikasi FIKOM UMI" width="520" height="620" fetchpriority="high" decoding="async" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
                         </div>
 
                         {{-- Floating Badge 1: Top Right Trust Tag --}}
-                        <div style="position:absolute;top:-16px;right:-20px;z-index:6;background:#FFC81A;border:2px solid #131218;border-radius:30px;padding:8px 18px;display:flex;align-items:center;gap:8px;box-shadow:0 10px 25px rgba(0,0,0,0.35);">
+                        <div class="hero-badge-top">
                             <span style="font-size:14px;">⭐</span>
-                            <span style="color:#131218;font-size:12px;font-weight:900;letter-spacing:0.3px;white-space:nowrap;">Standar BNSP &amp; Industri</span>
+                            <span>Standar BNSP &amp; Industri</span>
                         </div>
 
                         {{-- Floating Badge 2: Bottom Left Verification Badge --}}
-                        <div class="floating-badge-bottom" style="position:absolute;bottom:-20px;left:-24px;z-index:6;background:#131218;border:2.5px solid #FFC81A;border-radius:18px;padding:12px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 16px 36px rgba(0,0,0,0.5);">
-                            <div style="width:40px;height:40px;border-radius:10px;background:#FFC81A;display:flex;align-items:center;justify-content:center;color:#131218;font-weight:900;flex-shrink:0;">
+                        <div class="floating-badge-bottom">
+                            <div class="floating-badge-icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                             </div>
                             <div>
-                                <p style="margin:0;color:#FFFFFF;font-size:13.5px;font-weight:800;line-height:1.2;">Akreditasi A &amp; Terverifikasi</p>
-                                <p style="margin:2px 0 0;color:#FFC81A;font-size:11px;font-weight:800;">Resmi FIKOM UMI</p>
+                                <p>Akreditasi A &amp; Terverifikasi</p>
+                                <p>Resmi FIKOM UMI</p>
                             </div>
                         </div>
 
@@ -170,7 +139,7 @@
     <div style="max-width:1180px;margin:0 auto;width:100%;position:relative;z-index:1;">
         
         {{-- Section Header --}}
-        <div class="reveal" style="margin-bottom:34px;">
+        <div class="reveal" style="text-align:center;margin-bottom:34px;">
             <span style="display:inline-block;padding:6px 16px;background:#FFC81A;color:#131218;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-radius:100px;border:1.5px solid #131218;margin-bottom:10px;">
                 Jadwal Terbaru
             </span>
@@ -313,7 +282,7 @@
      TENTANG — High-Contrast Dark Section (Kuning + Putih + Hitam)
   ══════════════════════════════════════════════════════════════════ --}}
 <section class="section-stack" style="z-index:3;padding:90px 24px;background:#131218;position:sticky;overflow:hidden;">
-    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1;">
+    <div class="tentang-grid" style="max-width:1100px;margin:0 auto;align-items:center;position:relative;z-index:1;">
         
         {{-- Left Content --}}
         <div class="rl">
@@ -369,7 +338,7 @@
             @endforeach
 
             {{-- Visi Misi Mini Cards --}}
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;">
+            <div class="visi-misi-grid">
                 @foreach([
                     ['star','Visi','Menjadi unit pelatihan dan sertifikasi profesional pencetak tenaga kerja berkualitas, terampil, dan mandiri berstandar nasional dan internasional.'],
                     ['zap', 'Misi','Memberikan pelatihan & sertifikasi IT, membentuk SDM profesional, serta berkontribusi dalam peningkatan keterampilan anak bangsa.'],
@@ -412,7 +381,7 @@
         </div>
         
         {{-- Database Partners Grid --}}
-        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:28px;">
+        <div class="mitra-grid">
             @foreach($mitras as $m)
             @php
                 $mLogo    = is_array($m) ? ($m['logo'] ?? null) : ($m->logo ?? null);

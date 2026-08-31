@@ -66,6 +66,44 @@ window.closeTnCModal = function() {
     const tnc = document.getElementById('tncModal');
     if (tnc) tnc.style.display = 'none';
 };
+
+window.toggleMobileMenu = function() {
+    const menu = document.getElementById('fcc-mobile-menu');
+    const btn = document.getElementById('fcc-mobile-menu-btn');
+    const hamIcon = document.getElementById('fcc-ham-icon');
+    const closeIcon = document.getElementById('fcc-close-icon');
+    const ticker = document.getElementById('fcc-ticker');
+    
+    if (!menu) return;
+    const isHidden = menu.style.display === 'none' || menu.style.display === '';
+    
+    if (isHidden) {
+        const tickerHeight = (ticker && ticker.offsetParent !== null) ? ticker.offsetHeight : 0;
+        menu.style.top = (64 + tickerHeight) + 'px';
+        menu.style.display = 'block';
+        if (btn) btn.setAttribute('aria-expanded', 'true');
+        if (hamIcon) hamIcon.style.display = 'none';
+        if (closeIcon) closeIcon.style.display = 'block';
+    } else {
+        menu.style.display = 'none';
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        if (hamIcon) hamIcon.style.display = 'block';
+        if (closeIcon) closeIcon.style.display = 'none';
+    }
+};
+
+window.addEventListener('resize', function() {
+    if (window.innerWidth >= 1024) {
+        const menu = document.getElementById('fcc-mobile-menu');
+        const btn = document.getElementById('fcc-mobile-menu-btn');
+        const hamIcon = document.getElementById('fcc-ham-icon');
+        const closeIcon = document.getElementById('fcc-close-icon');
+        if (menu) menu.style.display = 'none';
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        if (hamIcon) hamIcon.style.display = 'block';
+        if (closeIcon) closeIcon.style.display = 'none';
+    }
+});
 </script>
 
 {{-- ═══ NAVBAR ══════════════════════════════════════════════════ --}}
@@ -82,18 +120,18 @@ window.closeTnCModal = function() {
             </div>
         </a>
 
-        {{-- Nav links (Centered) --}}
-        <div style="display:flex;align-items:center;justify-content:center;gap:4px;flex:1;">
-            @php
-            $navLinks = [
-                ['landing.index',    'Home'],
-                ['landing.profil',   'Profil'],
-                ['landing.kegiatan', 'Kegiatan'],
-                ['landing.pendaftaran','Pendaftaran'],
-                ['landing.arsip',    'Arsip'],
-                ['landing.kontak',   'Hubungi Kami'],
-            ];
-            @endphp
+        {{-- Nav links (Centered Desktop) --}}
+        @php
+        $navLinks = [
+            ['landing.index',    'Home'],
+            ['landing.profil',   'Profil'],
+            ['landing.kegiatan', 'Kegiatan'],
+            ['landing.pendaftaran','Pendaftaran'],
+            ['landing.arsip',    'Arsip'],
+            ['landing.kontak',   'Hubungi Kami'],
+        ];
+        @endphp
+        <div class="nav-links-center" style="display:flex;align-items:center;justify-content:center;gap:4px;flex:1;">
             @foreach($navLinks as [$route,$label])
             @php $isActive = request()->routeIs($route); @endphp
             <a href="{{ route($route) }}"
@@ -108,7 +146,6 @@ window.closeTnCModal = function() {
             </a>
             @endforeach
         </div>
-
 
         {{-- Search box --}}
         <div style="position:relative;flex:1;max-width:280px;display:none;" id="nav-search-box">
@@ -125,17 +162,17 @@ window.closeTnCModal = function() {
           <div id="nav-dropdown" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:#FFF;border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,.15);z-index:999;overflow:hidden;max-height:300px;overflow-y:auto;"></div>
         </div>
 
-        {{-- CTA right --}}
-        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        {{-- CTA right & Mobile Hamburger Button --}}
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
             @auth('peserta')
-            <a href="{{ route('peserta.dashboard') }}" style="padding:8px 20px;font-size:13px;font-weight:900;background:#FFC81A;color:#131218;border-radius:20px;text-decoration:none;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.3);display:inline-flex;align-items:center;gap:6px;">
+            <a href="{{ route('peserta.dashboard') }}" style="padding:8px 18px;font-size:13px;font-weight:900;background:#FFC81A;color:#131218;border-radius:20px;text-decoration:none;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.3);display:inline-flex;align-items:center;gap:6px;">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                Portal Saya
+                Portal
             </a>
             @elseauth('admin')
-            <a href="{{ route('admin.dashboard') }}" style="padding:8px 20px;font-size:13px;font-weight:900;background:#FFC81A;color:#131218;border-radius:20px;text-decoration:none;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.3);">Admin Panel</a>
+            <a href="{{ route('admin.dashboard') }}" style="padding:8px 18px;font-size:13px;font-weight:900;background:#FFC81A;color:#131218;border-radius:20px;text-decoration:none;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.3);">Admin Panel</a>
             @else
-            <a href="{{ route('auth.login') }}" style="padding:8px 22px;font-size:13.5px;font-weight:900;background:#FFC81A;color:#131218;border-radius:20px;text-decoration:none;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.3);display:inline-flex;align-items:center;gap:6px;">
+            <a href="{{ route('auth.login') }}" style="padding:8px 18px;font-size:13px;font-weight:900;background:#FFC81A;color:#131218;border-radius:20px;text-decoration:none;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.3);display:inline-flex;align-items:center;gap:6px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;">
                     <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                     <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
@@ -143,9 +180,44 @@ window.closeTnCModal = function() {
                 Masuk
             </a>
             @endauth
+
+            {{-- Hamburger Toggle Button (Mobile Only) --}}
+            <button id="fcc-mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu Navigasi" aria-expanded="false" class="mobile-menu-btn" style="display:none;width:38px;height:38px;border-radius:10px;background:#1E1D26;border:1.5px solid rgba(255,200,26,0.3);color:#FFC81A;cursor:pointer;align-items:center;justify-content:center;transition:all .2s ease;padding:0;" onmouseover="this.style.borderColor='#FFC81A';this.style.background='rgba(255,200,26,0.1)'" onmouseout="this.style.borderColor='rgba(255,200,26,0.3)';this.style.background='#1E1D26'">
+                <svg id="fcc-ham-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+                <svg id="fcc-close-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
         </div>
     </div>
 </nav>
+
+{{-- Mobile Menu Dropdown / Drawer --}}
+<div id="fcc-mobile-menu" style="display:none;position:fixed;left:0;right:0;top:64px;background:#131218;border-bottom:2px solid #FFC81A;box-shadow:0 20px 50px rgba(0,0,0,0.7);z-index:498;max-height:calc(100vh - 64px);overflow-y:auto;padding:16px 20px 24px;transition:all 0.3s ease;">
+    {{-- Mobile Links List --}}
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+        @foreach($navLinks as [$route,$label])
+        @php $isActive = request()->routeIs($route); @endphp
+        <a href="{{ route($route) }}"
+           style="display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:{{ $isActive ? '900' : '700' }};transition:all .2s ease;
+                  {{ $isActive ? 'background:#FFC81A;color:#131218 !important;border:1.5px solid #131218;box-shadow:0 4px 12px rgba(255,200,26,0.25);' : 'background:#1E1D26;color:rgba(255,255,255,0.9);border:1px solid rgba(255,200,26,0.15);' }}">
+            <span>{{ $label }}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        @endforeach
+    </div>
+
+    {{-- Brand footer info in mobile menu --}}
+    <div style="border-top:1px solid rgba(255,200,26,0.2);padding-top:12px;display:flex;flex-direction:column;gap:4px;">
+        <p style="margin:0;font-size:10px;font-weight:900;color:#FFC81A;text-transform:uppercase;letter-spacing:1.5px;">FIKOM Certification Center</p>
+        <p style="margin:0;font-size:11.5px;color:rgba(255,255,255,0.6);line-height:1.4;">Fakultas Ilmu Komputer Universitas Muslim Indonesia</p>
+    </div>
+</div>
 
 @php
     $dbInfos = \App\Models\Informasi::info()->aktif()->latest()->get();
@@ -276,7 +348,7 @@ window.closeTnCModal = function() {
     <div style="max-width:1180px;margin:0 auto;padding:64px 24px 0;position:relative;z-index:1;">
         
         {{-- Main 4-Column Grid --}}
-        <div style="display:grid;grid-template-columns:2.4fr 1.1fr 1.1fr 1.8fr;gap:48px;margin-bottom:52px;">
+        <div class="footer-grid">
 
             {{-- Brand Column --}}
             <div>
@@ -395,7 +467,7 @@ window.closeTnCModal = function() {
         </div>
 
         {{-- Bottom Copyright Bar --}}
-        <div style="border-top:1.5px solid rgba(255,200,26,0.2);padding:22px 0 30px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+        <div class="footer-bottom" style="border-top:1.5px solid rgba(255,200,26,0.2);padding:22px 0 30px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
             <p style="color:rgba(255,255,255,0.6);font-size:12.5px;font-weight:600;margin:0;">
                 &copy; {{ date('Y') }} FIKOM Certification Center &middot; Universitas Muslim Indonesia
             </p>
