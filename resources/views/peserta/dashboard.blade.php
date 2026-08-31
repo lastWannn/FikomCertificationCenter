@@ -2,10 +2,7 @@
 @section('title','Dashboard Peserta')
 @section('page-title','Dashboard Peserta')
 @section('page-content')
-<div style="padding:24px 28px;background:#F6F8FB;min-height:100vh;font-family:'Inter',sans-serif;position:relative;">
-
-  {{-- ═══ PESERTA DASHBOARD SKELETON OVERLAY ════════════════════════ --}}
-  <style>
+<style>
     @keyframes skeletonShimmer {
       0% { background-position: -200% 0; }
       100% { background-position: 200% 0; }
@@ -19,7 +16,89 @@
     #peserta-dashboard-skeleton-overlay {
       transition: opacity 0.35s ease, visibility 0.35s ease;
     }
-  </style>
+    .fcc-peserta-dashboard-wrap {
+      padding: 24px 28px;
+      background: #F6F8FB;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      position: relative;
+      box-sizing: border-box;
+    }
+    .fcc-peserta-banner {
+      background: linear-gradient(135deg, #131218 0%, #1F1D2B 100%);
+      border-radius: 22px;
+      padding: 30px 34px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid #FFC81A;
+      box-shadow: 0 12px 36px rgba(19,18,24,0.18);
+    }
+    .fcc-peserta-banner-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .fcc-peserta-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .fcc-peserta-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+    }
+    .fcc-peserta-table {
+      width: 100%;
+      min-width: 540px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    @media (max-width: 1023px) {
+      .fcc-peserta-stat-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .fcc-peserta-dashboard-wrap {
+        padding: 16px 12px 36px !important;
+      }
+      .fcc-peserta-banner {
+        padding: 20px 16px !important;
+        border-radius: 18px !important;
+        margin-bottom: 16px !important;
+      }
+      .fcc-peserta-banner h1 {
+        font-size: 19px !important;
+        line-height: 1.25 !important;
+      }
+      .fcc-peserta-banner-buttons {
+        width: 100% !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+      .fcc-peserta-banner-buttons a {
+        width: 100% !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        padding: 9px 16px !important;
+      }
+      .fcc-peserta-stat-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+        margin-bottom: 16px !important;
+      }
+      .fcc-card {
+        border-radius: 16px !important;
+      }
+    }
+</style>
+
+<div class="fcc-peserta-dashboard-wrap">
 
   <div id="peserta-dashboard-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px 28px;box-sizing:border-box;pointer-events:none;">
     {{-- Banner Skeleton --}}
@@ -29,7 +108,7 @@
       <div class="fcc-skeleton-box" style="width:480px;height:14px;background:#24232C;"></div>
     </div>
     {{-- 3 Stat Cards Skeleton --}}
-    <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:18px;margin-bottom:24px;">
+    <div class="fcc-peserta-stat-grid">
       @for($s=0;$s<3;$s++)
       <div style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;gap:16px;">
         <div class="fcc-skeleton-box" style="width:50px;height:50px;border-radius:14px;flex-shrink:0;"></div>
@@ -65,7 +144,7 @@
   </script>
 
   {{-- ═══ HERO WELCOME BANNER (NEO-BRUTALIST) ═════════════════════ --}}
-  <div style="background:linear-gradient(135deg, #131218 0%, #1F1D2B 100%);border-radius:22px;padding:30px 34px;margin-bottom:24px;position:relative;overflow:hidden;border:2px solid #FFC81A;box-shadow:0 12px 36px rgba(19,18,24,0.18);">
+  <div class="fcc-peserta-banner">
     <div style="position:absolute;top:-40px;right:-30px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle, rgba(255,200,26,0.15) 0%, transparent 70%);pointer-events:none;"></div>
     <div style="position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
       <div>
@@ -73,14 +152,14 @@
           <span style="width:6px;height:6px;border-radius:50%;background:#FFC81A;"></span>
           <span style="font-size:11px;font-weight:900;color:#FFC81A;text-transform:uppercase;letter-spacing:0.8px;">Portal Peserta FCC UMI</span>
         </div>
-        <h1 style="color:#FFFFFF;font-size:24px;font-weight:900;margin:0 0 6px;letter-spacing:-0.02em;">
+        <h1 style="color:#FFFFFF;font-size:clamp(19px, 3.5vw, 24px);font-weight:900;margin:0 0 6px;letter-spacing:-0.02em;">
           Selamat Datang Kembali, {{ $peserta->nama }} &#128075;
         </h1>
         <p style="color:#94A3B8;font-size:13px;margin:0;font-weight:500;max-width:560px;">
           Pantau status pendaftaran kegiatan, selesaikan administrasi pembayaran, dan unduh sertifikat digital kompetensi Anda.
         </p>
       </div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div class="fcc-peserta-banner-buttons">
         <a href="{{ route('peserta.jelajahi') }}" class="fcc-btn-gold" style="padding:10px 22px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border-radius:30px;font-weight:900;box-shadow:0 6px 18px rgba(255,200,26,0.35);">
           @include('components.icon',['name'=>'compass','size'=>16,'style'=>'color:#131218']) Jelajahi Kegiatan
         </a>
@@ -95,7 +174,7 @@
   </div>
 
   {{-- ═══ 3 STAT CARDS SUMMARY GRID ═══════════════════════════════ --}}
-  <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:18px;margin-bottom:24px;">
+  <div class="fcc-peserta-stat-grid">
     {{-- Card 1: Terdaftar Aktif --}}
     <div class="fcc-card" style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);display:flex;align-items:center;gap:16px;transition:all .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
       <div style="width:50px;height:50px;border-radius:14px;background:#ECFDF5;border:1.5px solid #10B981;display:flex;align-items:center;justify-content:center;color:#10B981;flex-shrink:0;box-shadow:0 6px 14px rgba(16,185,129,0.2);">
@@ -145,8 +224,8 @@
         </a>
       </div>
 
-      <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;text-align:left;">
+      <div class="fcc-peserta-table-wrap">
+        <table class="fcc-peserta-table">
           <thead>
             <tr style="background:#131218;color:#FFFFFF;">
               <th style="padding:12px 18px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#FFC81A;">Kegiatan</th>

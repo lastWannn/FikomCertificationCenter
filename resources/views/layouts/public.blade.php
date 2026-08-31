@@ -78,7 +78,8 @@ window.toggleMobileMenu = function() {
     const isHidden = menu.style.display === 'none' || menu.style.display === '';
     
     if (isHidden) {
-        const tickerHeight = (ticker && ticker.offsetParent !== null) ? ticker.offsetHeight : 0;
+        const tickerVisible = (ticker && window.getComputedStyle(ticker).display !== 'none' && ticker.offsetHeight > 0);
+        const tickerHeight = tickerVisible ? ticker.offsetHeight : 0;
         menu.style.top = (64 + tickerHeight) + 'px';
         menu.style.display = 'block';
         if (btn) btn.setAttribute('aria-expanded', 'true');
@@ -198,7 +199,7 @@ window.addEventListener('resize', function() {
 </nav>
 
 {{-- Mobile Menu Dropdown / Drawer --}}
-<div id="fcc-mobile-menu" style="display:none;position:fixed;left:0;right:0;top:64px;background:#131218;border-bottom:2px solid #FFC81A;box-shadow:0 20px 50px rgba(0,0,0,0.7);z-index:498;max-height:calc(100vh - 64px);overflow-y:auto;padding:16px 20px 24px;transition:all 0.3s ease;">
+<div id="fcc-mobile-menu" style="display:none;position:fixed;left:0;right:0;top:100px;background:#131218;border-bottom:2px solid #FFC81A;box-shadow:0 20px 50px rgba(0,0,0,0.7);z-index:501;max-height:calc(100vh - 100px);overflow-y:auto;padding:16px 20px 24px;transition:all 0.3s ease;">
     {{-- Mobile Links List --}}
     <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
         @foreach($navLinks as [$route,$label])
@@ -263,23 +264,23 @@ window.addEventListener('resize', function() {
         min-height: calc(100vh - 40px) !important;
     }
 </style>
-<div id="fcc-ticker" style="position:fixed;top:64px;left:0;right:0;background:#1E1D26;border-bottom:1.5px solid #FFC81A;z-index:499;overflow:hidden;">
-    <div style="display:flex;align-items:center;height:36px;">
+<div id="fcc-ticker" style="position:fixed;top:64px;left:0;right:0;width:100vw;max-width:100vw;background:#1E1D26;border-bottom:1.5px solid #FFC81A;z-index:499;overflow:hidden;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;height:36px;width:100%;max-width:100vw;overflow:hidden;box-sizing:border-box;">
 
         {{-- Label kiri: ikon pulse + teks --}}
-        <div style="flex-shrink:0;display:flex;align-items:center;gap:9px;padding:0 20px;height:100%;background:#FFC81A;border-right:1.5px solid #131218;">
+        <div style="flex-shrink:0;display:flex;align-items:center;gap:9px;padding:0 16px;height:100%;background:#FFC81A;border-right:1.5px solid #131218;box-sizing:border-box;">
             <span class="fcc-bell-wrap" style="position:relative;display:flex;align-items:center;justify-content:center;">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             </span>
-            <span style="color:#131218;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;">KEGIATAN &amp; INFO</span>
+            <span style="color:#131218;font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;">KEGIATAN &amp; INFO</span>
         </div>
 
         {{-- Marquee wrapper dengan fade edges --}}
-        <div class="fcc-marquee-wrap" style="flex:1;overflow:hidden;position:relative;height:100%;display:flex;align-items:center;">
+        <div class="fcc-marquee-wrap" style="flex:1 1 0%;min-width:0;width:0;overflow:hidden;position:relative;height:100%;display:flex;align-items:center;">
             {{-- Fade kiri --}}
-            <div style="position:absolute;left:0;top:0;bottom:0;width:48px;background:linear-gradient(90deg,#131218,transparent);z-index:2;pointer-events:none;"></div>
+            <div style="position:absolute;left:0;top:0;bottom:0;width:32px;background:linear-gradient(90deg,#131218,transparent);z-index:2;pointer-events:none;"></div>
             {{-- Fade kanan --}}
-            <div style="position:absolute;right:0;top:0;bottom:0;width:48px;background:linear-gradient(270deg,#131218,transparent);z-index:2;pointer-events:none;"></div>
+            <div style="position:absolute;right:0;top:0;bottom:0;width:32px;background:linear-gradient(270deg,#131218,transparent);z-index:2;pointer-events:none;"></div>
 
             <div class="fcc-ticker-track">
                 @foreach(array_merge($tickerItems, $tickerItems) as $item)
@@ -468,10 +469,10 @@ window.addEventListener('resize', function() {
 
         {{-- Bottom Copyright Bar --}}
         <div class="footer-bottom" style="border-top:1.5px solid rgba(255,200,26,0.2);padding:22px 0 30px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
-            <p style="color:rgba(255,255,255,0.6);font-size:12.5px;font-weight:600;margin:0;">
+            <p style="color:rgba(255,255,255,0.6);font-size:12.5px;font-weight:600;margin:0;line-height:1.5;">
                 &copy; {{ date('Y') }} FIKOM Certification Center &middot; Universitas Muslim Indonesia
             </p>
-            <div style="display:flex;align-items:center;gap:20px;">
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;">
                 @foreach(['Kebijakan Privasi','Syarat & Ketentuan'] as $l)
                 <span style="color:rgba(255,255,255,0.6);font-size:12.5px;font-weight:600;cursor:pointer;transition:color .2s;"
                       onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">

@@ -938,9 +938,36 @@ html, body {
     .mobile-menu-btn {
         display: inline-flex !important;
     }
+    #fcc-nav {
+        padding: 0 12px !important;
+        gap: 8px !important;
+        box-sizing: border-box !important;
+    }
     #fcc-nav > div {
-        padding: 0 16px !important;
-        gap: 12px !important;
+        padding: 0 !important;
+        gap: 8px !important;
+        box-sizing: border-box !important;
+    }
+}
+@media (max-width: 480px) {
+    #fcc-nav {
+        padding: 0 10px !important;
+    }
+    #nav-brand {
+        font-size: 11px !important;
+    }
+    #fcc-nav a[href*="login"],
+    #fcc-nav a[href*="dashboard"] {
+        padding: 7px 12px !important;
+        font-size: 12px !important;
+    }
+    #fcc-ticker > div > div:first-child {
+        padding: 0 10px !important;
+        gap: 6px !important;
+    }
+    #fcc-ticker > div > div:first-child span:last-child {
+        font-size: 9px !important;
+        letter-spacing: 1px !important;
     }
 }
 

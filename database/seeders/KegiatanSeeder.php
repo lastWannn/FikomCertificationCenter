@@ -45,14 +45,14 @@ class KegiatanSeeder extends Seeder
                 ['nama_latar' => $latarFile]
             );
             
-            KegiatanPelatihan::firstOrCreate([
-                'kegiatan_id' => $kegiatan1->id,
-                'jadwal_pelatihan_id' => $jadwal1->id
-            ]);
+            KegiatanPelatihan::updateOrCreate(
+                ['kegiatan_id' => $kegiatan1->id],
+                ['jadwal_pelatihan_id' => $jadwal1->id]
+            );
 
-            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan1->id, 'nama_jenis' => 'Mahasiswa FIKOM UMI', 'nominal' => 150000]);
-            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan1->id, 'nama_jenis' => 'Dosen/Pegawai UMI, Alumni UMI, Mahasiswa Umum', 'nominal' => 250000]);
-            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan1->id, 'nama_jenis' => 'Umum', 'nominal' => 350000]);
+            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan1->id, 'nama_jenis' => 'Mahasiswa FIKOM UMI'], ['nominal' => 150000]);
+            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan1->id, 'nama_jenis' => 'Dosen/Pegawai UMI, Alumni UMI, Mahasiswa Umum'], ['nominal' => 250000]);
+            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan1->id, 'nama_jenis' => 'Umum'], ['nominal' => 350000]);
         }
 
         // 2. Kegiatan Workshop Git (Gratis)
@@ -75,10 +75,10 @@ class KegiatanSeeder extends Seeder
                 ['nama_latar' => $latarFile]
             );
             
-            KegiatanPelatihan::firstOrCreate([
-                'kegiatan_id' => $kegiatan2->id,
-                'jadwal_pelatihan_id' => $jadwal2->id
-            ]);
+            KegiatanPelatihan::updateOrCreate(
+                ['kegiatan_id' => $kegiatan2->id],
+                ['jadwal_pelatihan_id' => $jadwal2->id]
+            );
             // Tanpa Biaya -> Gratis
         }
 
@@ -102,14 +102,14 @@ class KegiatanSeeder extends Seeder
                 ['nama_latar' => $latarFile]
             );
 
-            KegiatanSertifikasi::firstOrCreate([
-                'kegiatan_id' => $kegiatan3->id,
-                'jadwal_sertifikasi_id' => $jadwal3->id
-            ]);
+            KegiatanSertifikasi::updateOrCreate(
+                ['kegiatan_id' => $kegiatan3->id],
+                ['jadwal_sertifikasi_id' => $jadwal3->id]
+            );
 
-            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan3->id, 'nama_jenis' => 'Mahasiswa FIKOM UMI', 'nominal' => 400000]);
-            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan3->id, 'nama_jenis' => 'Dosen/Pegawai UMI, Alumni UMI, Mahasiswa Umum', 'nominal' => 600000]);
-            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan3->id, 'nama_jenis' => 'Umum', 'nominal' => 800000]);
+            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan3->id, 'nama_jenis' => 'Mahasiswa FIKOM UMI'], ['nominal' => 400000]);
+            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan3->id, 'nama_jenis' => 'Dosen/Pegawai UMI, Alumni UMI, Mahasiswa Umum'], ['nominal' => 600000]);
+            BiayaKegiatan::firstOrCreate(['kegiatan_id' => $kegiatan3->id, 'nama_jenis' => 'Umum'], ['nominal' => 800000]);
         }
     }
 }

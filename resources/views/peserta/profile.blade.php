@@ -709,18 +709,4 @@ document.addEventListener('DOMContentLoaded', function() {
     @endif
 });
 </script>
-@endpushceholder = document.getElementById('avatar-placeholder');
-        preview.src = e.target.result;
-        preview.style.display = 'block';
-        if (placeholder) placeholder.style.display = 'none';
-    };
-    reader.readAsDataURL(file);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    @if(session('require_otp_change_email') || !empty($peserta->pending_email))
-        openOtpEmailModal("{{ $peserta->pending_email ?? session('pending_email') }}", "{{ $activeOtpHint }}");
-    @endif
-});
-</script>
 @endpush

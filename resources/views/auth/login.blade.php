@@ -4,9 +4,38 @@
 @section('content')
 <style>
     body, html {
-        overflow: hidden !important;
-        height: 100% !important;
+        min-height: 100% !important;
         margin: 0 !important;
+        background: #0E0D14;
+    }
+    .fcc-auth-page-wrap {
+        min-height: 100vh;
+        width: 100%;
+        box-sizing: border-box;
+        background: linear-gradient(135deg, rgba(10,9,13,0.88) 0%, rgba(14,13,20,0.94) 100%), url('{{ asset('images/herosection.webp') }}') center center / cover no-repeat fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 20px;
+        font-family: 'Inter', sans-serif;
+        position: relative;
+    }
+    .fcc-auth-card-container {
+        width: 100%;
+        max-width: 1020px;
+        background: rgba(14,13,18,0.92);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1.5px solid rgba(255,200,26,0.22);
+        border-radius: 28px;
+        padding: 32px 36px;
+        display: flex;
+        gap: 36px;
+        box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 50px rgba(255,200,26,0.08);
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+        align-items: stretch;
     }
     .fcc-yellow-input {
         width: 100%;
@@ -70,6 +99,7 @@
         border-radius: 14px;
         backdrop-filter: blur(10px);
         transition: all 0.25s ease;
+        box-sizing: border-box;
     }
     .fcc-contact-card:hover {
         background: rgba(255, 255, 255, 0.09);
@@ -154,27 +184,74 @@
         background: rgba(255, 200, 26, 0.08);
         box-shadow: 0 0 0 3px rgba(255, 200, 26, 0.2);
     }
+
+    /* Mobile & Tablet Responsiveness */
     @media (max-width: 991px) {
-        body, html { overflow: auto !important; height: auto !important; }
-        .fcc-auth-card-container { flex-direction: column !important; padding: 20px !important; border-radius: 20px !important; max-height: none !important; }
-        .fcc-auth-yellow-card { width: 100% !important; padding: 24px 0 !important; border-radius: 18px !important; }
-        .fcc-slide-item { padding: 0 16px !important; }
+        .fcc-auth-page-wrap {
+            padding: 20px 12px 40px !important;
+            align-items: flex-start !important;
+        }
+        .fcc-auth-card-container {
+            flex-direction: column !important;
+            padding: 20px 14px !important;
+            border-radius: 22px !important;
+            max-width: 440px !important;
+            gap: 16px !important;
+            margin: 0 auto;
+        }
+        .fcc-auth-left-panel {
+            text-align: center !important;
+        }
+        .fcc-headline-wrapper {
+            min-height: auto !important;
+            margin-bottom: 4px !important;
+        }
+        .fcc-headline-panel {
+            position: relative !important;
+        }
+        .fcc-headline-panel.fcc-headline-inactive-up,
+        .fcc-headline-panel.fcc-headline-inactive-down {
+            display: none !important;
+        }
+        .fcc-headline-panel.fcc-headline-active {
+            display: block !important;
+        }
+        .fcc-auth-left-panel h1 {
+            font-size: 24px !important;
+            margin-bottom: 6px !important;
+        }
+        .fcc-auth-left-panel p {
+            font-size: 12.5px !important;
+            margin: 0 auto !important;
+            max-width: 340px !important;
+        }
+        .fcc-auth-contacts-wrap {
+            display: none !important;
+        }
+        .fcc-auth-yellow-card {
+            width: 100% !important;
+            padding: 20px 0 16px !important;
+            border-radius: 18px !important;
+        }
+        .fcc-slide-item {
+            padding: 0 14px !important;
+        }
     }
 </style>
 
 @php $activeTab = $initialTab ?? 'login'; @endphp
 
-<div style="height:100vh;max-height:100vh;overflow:hidden;background:linear-gradient(135deg,rgba(10,9,13,0.85) 0%,rgba(14,13,20,0.92) 100%), url('{{ asset('images/herosection.webp') }}') center center / cover no-repeat fixed;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;font-family:'Inter',sans-serif;position:relative;">
+<div class="fcc-auth-page-wrap">
     
     {{-- MAIN CARD CONTAINER --}}
-    <div class="fcc-auth-card-container" style="width:100%;max-width:1020px;max-height:calc(100vh - 40px);background:rgba(14,13,18,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1.5px solid rgba(255,200,26,0.22);border-radius:28px;padding:32px 36px;display:flex;gap:36px;box-shadow:0 32px 80px rgba(0,0,0,0.7), 0 0 50px rgba(255,200,26,0.08);box-sizing:border-box;position:relative;overflow:hidden;align-items:stretch;">
+    <div class="fcc-auth-card-container">
         
         {{-- KIRI: CONTENT TEKS & STRUCTURED CONTACT LIST --}}
-        <div style="flex:1.05;display:flex;flex-direction:column;justify-content:space-between;z-index:2;">
+        <div class="fcc-auth-left-panel" style="flex:1.05;display:flex;flex-direction:column;justify-content:space-between;z-index:2;">
             <div>
                 {{-- Top Badge --}}
-                <div style="margin-bottom:20px;">
-                    <a href="{{ route('landing.index') }}" style="display:inline-flex;align-items:center;gap:10px;padding:6px 16px;border-radius:100px;border:1.5px solid #FFC81A;background:rgba(255,200,26,0.1);backdrop-filter:blur(10px);color:#FFC81A;font-size:12px;font-weight:800;letter-spacing:0.5px;text-decoration:none;">
+                <div style="margin-bottom:16px;">
+                    <a href="{{ route('landing.index') }}" style="display:inline-flex;align-items:center;gap:10px;padding:6px 16px;border-radius:100px;border:1.5px solid #FFC81A;background:rgba(255,200,26,0.1);backdrop-filter:blur(10px);color:#FFC81A;font-size:11.5px;font-weight:800;letter-spacing:0.5px;text-decoration:none;">
                         <div style="width:20px;height:20px;border-radius:50%;background:#FFC81A;display:flex;align-items:center;justify-content:center;color:#131218;flex-shrink:0;">
                             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         </div>
@@ -183,9 +260,9 @@
                 </div>
 
                 {{-- Headline Dynamic --}}
-                <div style="position:relative;min-height:140px;">
+                <div style="position:relative;min-height:140px;" class="fcc-headline-wrapper">
                     <div id="left-login-text" class="fcc-headline-panel {{ $activeTab === 'login' ? 'fcc-headline-active' : 'fcc-headline-inactive-up' }}">
-                        <h1 style="color:#FFFFFF;font-size:36px;font-weight:900;line-height:1.15;margin:0 0 14px;letter-spacing:-1px;text-shadow:0 2px 10px rgba(0,0,0,0.5);">
+                        <h1 style="color:#FFFFFF;font-size:clamp(26px, 3.5vw, 36px);font-weight:900;line-height:1.15;margin:0 0 12px;letter-spacing:-0.8px;text-shadow:0 2px 10px rgba(0,0,0,0.5);">
                             Selamat Datang<br/>Kembali 👋
                         </h1>
                         <p style="color:rgba(255,255,255,0.7);font-size:13.5px;line-height:1.6;margin:0;max-width:420px;">
@@ -194,7 +271,7 @@
                     </div>
 
                     <div id="left-register-text" class="fcc-headline-panel {{ $activeTab === 'register' ? 'fcc-headline-active' : 'fcc-headline-inactive-down' }}">
-                        <h1 style="color:#FFFFFF;font-size:36px;font-weight:900;line-height:1.15;margin:0 0 14px;letter-spacing:-1px;text-shadow:0 2px 10px rgba(0,0,0,0.5);">
+                        <h1 style="color:#FFFFFF;font-size:clamp(26px, 3.5vw, 36px);font-weight:900;line-height:1.15;margin:0 0 12px;letter-spacing:-0.8px;text-shadow:0 2px 10px rgba(0,0,0,0.5);">
                             Mulai Masa Depan<br/>Digital Anda 🚀
                         </h1>
                         <p style="color:rgba(255,255,255,0.7);font-size:13.5px;line-height:1.6;margin:0;max-width:420px;">
@@ -205,7 +282,7 @@
             </div>
 
             {{-- Bottom Contact Feature List (Structured & Compact) --}}
-            <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
+            <div class="fcc-auth-contacts-wrap" style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
                 <div class="fcc-contact-card">
                     <div class="fcc-contact-icon-bg">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -238,7 +315,7 @@
             </div>
         </div>
 
-        {{-- KANAN: VIBRANT YELLOW CARD WITH ZERO SCROLL FIT & TRUST FOOTER --}}
+        {{-- KANAN: VIBRANT YELLOW CARD WITH SMOOTH TRANSITION & TRUST FOOTER --}}
         <div class="fcc-auth-yellow-card" style="flex:0.95;background:#FFC81A;border-radius:24px;padding:26px 0 20px;display:flex;flex-direction:column;justify-content:center;z-index:2;box-sizing:border-box;box-shadow:0 16px 40px rgba(0,0,0,0.3);overflow:hidden;position:relative;">
             
             <div id="authSliderTrack" class="fcc-gpu-track" style="{{ $activeTab === 'register' ? 'transform:translate3d(-50%,0,0);' : 'transform:translate3d(0,0,0);' }}">
