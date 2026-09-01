@@ -27,9 +27,10 @@ $perpStatus = $pembayaran->status_perpanjangan;
 
 <style>
 .pembayaran-wrapper {
-    padding: 24px;
+    padding: 24px 28px;
     max-width: 1120px;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 .pembayaran-grid {
     display: grid;
@@ -63,25 +64,81 @@ $perpStatus = $pembayaran->status_perpanjangan;
     border-radius: 10px;
     padding: 14px 16px;
 }
+.fcc-mobile-calc-separator {
+    display: block;
+}
+
 @media (max-width: 1024px) {
     .pembayaran-grid {
         grid-template-columns: 1fr;
     }
+    .pembayaran-grid > div:last-child {
+        position: static;
+    }
 }
+
 @media (max-width: 640px) {
     .pembayaran-wrapper {
-        padding: 16px 12px;
+        padding: 14px 12px 36px !important;
     }
     .form-grid-2col {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
     }
     .nominal-calc-box {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: 8px;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        padding: 14px !important;
     }
     .nominal-calc-box > div {
+        text-align: left !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+    }
+    .nominal-calc-box > div.fcc-mobile-calc-total {
+        padding-top: 10px !important;
+        border-top: 1px dashed #CBD5E1 !important;
+    }
+    .fcc-mobile-calc-separator {
+        display: none !important;
+    }
+    .fcc-rekening-inner-flex {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+    .fcc-rekening-inner-flex button,
+    .fcc-rekening-inner-flex a {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    .fcc-rekening-no {
+        font-size: 20px !important;
+        letter-spacing: 1px !important;
+        word-break: break-all !important;
+    }
+    .fcc-header-timer-box {
+        width: 100% !important;
         text-align: center !important;
+        margin-top: 8px !important;
+    }
+    .fcc-card {
+        padding: 18px 16px !important;
+        border-radius: 16px !important;
+    }
+    .fcc-status-banner-wrap {
+        padding: 16px 14px !important;
+        border-radius: 16px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    .fcc-status-banner-wrap button {
+        width: 100% !important;
+        justify-content: center !important;
     }
 }
 </style>
@@ -103,12 +160,21 @@ $perpStatus = $pembayaran->status_perpanjangan;
       #pembayaran-detail-skeleton-overlay {
         transition: opacity 0.35s ease, visibility 0.35s ease;
       }
+      @media (max-width: 640px) {
+        #pembayaran-detail-skeleton-overlay {
+          padding: 14px 12px 32px !important;
+        }
+        .fcc-pembayaran-detail-skeleton-grid {
+          grid-template-columns: 1fr !important;
+          gap: 14px !important;
+        }
+      }
     </style>
 
     <div id="pembayaran-detail-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px 28px;box-sizing:border-box;pointer-events:none;">
       <div class="fcc-skeleton-box" style="width:180px;height:32px;border-radius:20px;margin-bottom:16px;"></div>
       <div class="fcc-skeleton-box" style="width:100%;height:80px;border-radius:18px;margin-bottom:20px;"></div>
-      <div style="display:grid;grid-template-columns:1fr 380px;gap:20px;">
+      <div class="fcc-pembayaran-detail-skeleton-grid" style="display:grid;grid-template-columns:1fr 380px;gap:20px;">
         <div class="fcc-skeleton-box" style="width:100%;height:320px;border-radius:20px;"></div>
         <div class="fcc-skeleton-box" style="width:100%;height:320px;border-radius:20px;"></div>
       </div>
@@ -137,7 +203,7 @@ $perpStatus = $pembayaran->status_perpanjangan;
     </div>
 
     @if(!($pembayaran->status_pembayaran === 'kadaluarsa' && $perpStatus === 'menunggu'))
-    <div style="background:{{ $sc['bg'] }};border:2px solid {{ $sc['border'] }};
+    <div class="fcc-status-banner-wrap" style="background:{{ $sc['bg'] }};border:2px solid {{ $sc['border'] }};
                 border-radius:18px;padding:22px 26px;margin-bottom:22px;
                 display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 4px 16px rgba(0,0,0,0.03);">
         <div style="display:flex;align-items:center;gap:16px;">
@@ -146,7 +212,7 @@ $perpStatus = $pembayaran->status_perpanjangan;
                 @include('components.icon',['name'=>$sc['icon'],'size'=>24,'style'=>"color:#FFC81A"])
             </div>
             <div>
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;flex-wrap:wrap;">
                     <span style="font-size:10.5px;font-weight:900;padding:2px 8px;border-radius:6px;background:{{ $sc['color'] }};color:#FFFFFF;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Status</span>
                     <p style="margin:0;font-size:17px;font-weight:900;color:#131218;">{{ $sc['label'] }}</p>
                 </div>
@@ -154,7 +220,7 @@ $perpStatus = $pembayaran->status_perpanjangan;
             </div>
         </div>
         @if(($pembayaran->status_pembayaran === 'kadaluarsa' || $pembayaran->minutes_left <= 0) && $pembayaran->bisaRequestPerpanjangan())
-        <form action="{{ route('peserta.pembayaran.request-perpanjangan', $pembayaran) }}" method="POST" style="display:inline;">
+        <form action="{{ route('peserta.pembayaran.request-perpanjangan', $pembayaran) }}" method="POST" style="display:inline;width:100%;">
             @csrf
             <button type="submit" class="fcc-btn-gold"
                onclick="return fccConfirmAction(this, 'Ajukan Perpanjangan Waktu', 'Apakah Anda yakin ingin mengajukan perpanjangan waktu pembayaran ke Admin?', 'Ya, Ajukan', false)"
@@ -218,31 +284,36 @@ $perpStatus = $pembayaran->status_perpanjangan;
             @if(in_array($pembayaran->status_pembayaran, ['menunggu_pembayaran','kadaluarsa']))
             <div class="fcc-card" style="padding:28px;margin-bottom:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
 
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-                    <div>
-                        <h3 style="font-size:17px;font-weight:900;color:#131218;margin:0 0 3px;display:flex;align-items:center;gap:10px;">
-                            @include('components.icon',['name'=>'credit-card','size'=>20,'style'=>'color:#131218'])
-                            Instruksi Pembayaran Transfer
-                        </h3>
-                        <p style="font-size:12.5px;color:#64748B;margin:0;font-weight:500">Silakan transfer tepat nominal berikut ke rekening resmi FCC UMI</p>
-                    </div>
-                    @if($pembayaran->status_pembayaran === 'menunggu_pembayaran')
-                    <div style="background:#FEF2F2;border:1.5px solid #FCA5A5;padding:8px 16px;border-radius:12px;text-align:right;">
-                        <p style="font-size:10px;color:#991B1B;margin:0 0 2px;font-weight:900;text-transform:uppercase;letter-spacing:0.5px;">Batas Waktu Bayar:</p>
-                        <p id="timer" style="font-size:22px;font-weight:900;color:#DC2626;font-family:monospace;margin:0;line-height:1">--:--:--</p>
-                    </div>
-                    @endif
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:17px;font-weight:900;color:#131218;margin:0 0 3px;display:flex;align-items:center;gap:10px;">
+                        @include('components.icon',['name'=>'credit-card','size'=>20,'style'=>'color:#131218'])
+                        Instruksi Pembayaran Transfer
+                    </h3>
+                    <p style="font-size:12.5px;color:#64748B;margin:0;font-weight:500">Silakan transfer tepat nominal berikut ke rekening resmi FCC UMI</p>
                 </div>
+
+                {{-- TIMER COUNTDOWN BANNER (ULTRA COMPACT) --}}
+                @if($pembayaran->status_pembayaran === 'menunggu_pembayaran')
+                <div style="background:#FEF2F2;border:1.5px solid #FCA5A5;border-radius:12px;padding:9px 14px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 2px 6px rgba(220,38,38,0.05);">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        @include('components.icon',['name'=>'clock','size'=>16,'style'=>'color:#DC2626;flex-shrink:0'])
+                        <span style="font-size:11.5px;color:#991B1B;font-weight:900;text-transform:uppercase;letter-spacing:0.4px;">Batas Waktu Bayar</span>
+                    </div>
+                    <div style="background:#FFFFFF;border:1px solid #FCA5A5;padding:4px 10px;border-radius:8px;text-align:center;flex-shrink:0;">
+                        <span id="timer" style="font-size:16px;font-weight:900;color:#DC2626;font-family:monospace;line-height:1;letter-spacing:1px;display:inline-block;">--:--:--</span>
+                    </div>
+                </div>
+                @endif
 
                 {{-- BANNER REKENING --}}
                 @if($rekening)
                 <div style="background:#131218;border-radius:16px;padding:22px 26px;color:#FFF;margin-bottom:20px;border:1.5px solid #FFC81A;box-shadow:0 6px 20px rgba(19,18,24,0.18);">
-                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+                    <div class="fcc-rekening-inner-flex" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
                         <div>
                             <p style="color:#FFC81A;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin:0 0 6px">
                                 Transfer Ke {{ $rekening->bank }}
                             </p>
-                            <p style="color:#FFFFFF;font-size:26px;font-weight:900;font-family:monospace;letter-spacing:2px;margin:0 0 6px">
+                            <p class="fcc-rekening-no" style="color:#FFFFFF;font-size:26px;font-weight:900;font-family:monospace;letter-spacing:2px;margin:0 0 6px">
                                 {{ $rekening->no_rekening }}
                             </p>
                             <p style="color:#CBD5E1;font-size:13px;font-weight:700;margin:0">
@@ -259,41 +330,30 @@ $perpStatus = $pembayaran->status_perpanjangan;
                 </div>
                 @endif
 
-                {{-- RINCIAN NOMINAL TRANSFER --}}
+                {{-- RINCIAN NOMINAL TRANSFER (COMPACT) --}}
                 @if($pembayaran->kode_unik)
-                <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:16px;padding:18px;margin-bottom:16px;">
-                    <p style="font-size:11px;font-weight:900;color:#64748B;text-transform:uppercase;letter-spacing:1px;margin:0 0 14px;text-align:center">
+                <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:16px;padding:16px;margin-bottom:18px;">
+                    <p style="font-size:11px;font-weight:900;color:#64748B;text-transform:uppercase;letter-spacing:1px;margin:0 0 12px;">
                         Rincian Nominal Transfer (Wajib Tepat)
                     </p>
-                    <div class="nominal-calc-box" style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:12px;padding:16px;">
-                        <div>
-                            <p style="font-size:11px;color:#64748B;margin:0 0 2px;font-weight:700">Nominal Biaya</p>
-                            <p style="font-size:15px;font-weight:800;color:#131218;margin:0;font-family:monospace">
-                                {{ $pembayaran->jumlah_bayar_format }}
-                            </p>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:1px dashed #E2E8F0;">
+                            <span style="font-size:12.5px;color:#64748B;font-weight:700;">Nominal Biaya</span>
+                            <span style="font-size:14px;font-weight:800;color:#131218;font-family:monospace;">{{ $pembayaran->jumlah_bayar_format }}</span>
                         </div>
-                        <div style="font-size:18px;color:#94A3B8;font-weight:800;text-align:center">+</div>
-                        <div style="text-align:center">
-                            <p style="font-size:11px;color:#64748B;margin:0 0 2px;font-weight:700">Kode Unik</p>
-                            <span style="background:#131218;color:#FFC81A;font-weight:900;font-size:15px;font-family:monospace;padding:3px 10px;border-radius:6px;display:inline-block;letter-spacing:1.5px;border:1px solid #131218;">
-                                {{ $pembayaran->kode_unik }}
-                            </span>
+                        <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:1px dashed #E2E8F0;">
+                            <span style="font-size:12.5px;color:#64748B;font-weight:700;">Kode Unik Transaksi</span>
+                            <span style="background:#131218;color:#FFC81A;font-weight:900;font-size:12.5px;font-family:monospace;padding:2px 8px;border-radius:6px;border:1px solid #131218;">+ {{ $pembayaran->kode_unik }}</span>
                         </div>
-                        <div style="font-size:18px;color:#94A3B8;font-weight:800;text-align:center">=</div>
-                        <div style="text-align:right">
-                            <p style="font-size:11px;color:#64748B;margin:0 0 2px;font-weight:700">Total Wajib Ditransfer</p>
-                            <p style="font-size:20px;font-weight:900;color:#059669;margin:0;font-family:monospace">
+                        <div style="background:#ECFDF5;border:1.5px solid #A7F3D0;border-radius:12px;padding:12px 16px;margin-top:2px;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+                                <span style="font-size:10.5px;color:#047857;font-weight:900;text-transform:uppercase;letter-spacing:0.5px;">Total Wajib Ditransfer</span>
+                                <span style="font-size:10.5px;color:#065F46;font-weight:700;">(Wajib Tepat Digit)</span>
+                            </div>
+                            <p style="font-size:22px;font-weight:900;color:#059669;font-family:monospace;letter-spacing:1px;margin:0;line-height:1.2;word-break:break-all;">
                                 {{ $pembayaran->nominal_transfer_format }}
                             </p>
                         </div>
-                    </div>
-                    <div style="background:#ECFDF5;border:1px solid #A7F3D0;
-                                border-radius:10px;padding:10px 14px;margin-top:14px;
-                                display:flex;align-items:center;gap:10px;">
-                        @include('components.icon',['name'=>'info','size'=>16,'style'=>'color:#059669;flex-shrink:0'])
-                        <p style="font-size:12px;color:#065F46;margin:0;font-weight:600">
-                            Transfer <strong>tepat {{ $pembayaran->nominal_transfer_format }}</strong> agar pembayaran Anda terverifikasi secara otomatis oleh sistem/Admin.
-                        </p>
                     </div>
                 </div>
                 @endif

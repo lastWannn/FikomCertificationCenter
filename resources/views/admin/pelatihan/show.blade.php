@@ -299,10 +299,44 @@
         </div>
       </div>
 
-      <div class="fcc-card" style="padding:20px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+      @php
+        $rawIsi = $pelatihan->isi ?? '';
+        $parts = preg_split('/(?:\r?\n){1,2}(?:--- Fasilitas ---|Fasilitas & Benefit:|Fasilitas:)\s*/i', $rawIsi, 2);
+        $cleanDescText = trim($parts[0] ?? $rawIsi);
+
+        $adminFacilities = [];
+        if (!empty($rawIsi)) {
+            foreach (explode("\n", $rawIsi) as $line) {
+                $line = trim($line);
+                if (preg_match('/^\-{1,}\s*Fasilitas/i', $line) || preg_match('/^(?:Fasilitas & Benefit|Fasilitas):/i', $line)) continue;
+                if (preg_match('/^[\-\*\+\•\>]\s*(.+)$/u', $line, $matches)) {
+                    $item = trim(strip_tags($matches[1]));
+                    if (!empty($item) && !in_array($item, $adminFacilities)) {
+                        $adminFacilities[] = $item;
+                    }
+                }
+            }
+        }
+      @endphp
+
+      <div class="fcc-card" style="padding:20px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;{{ !empty($adminFacilities) ? 'margin-bottom:16px;' : '' }}">
         <p style="font-size:14px;font-weight:900;color:#131218;margin:0 0 10px;">Deskripsi Program</p>
-        <p style="color:#475569;font-size:13px;line-height:1.75;margin:0;font-weight:500;">{{ $pelatihan->isi }}</p>
+        <p style="color:#475569;font-size:13px;line-height:1.75;margin:0;font-weight:500;">{!! nl2br(e($cleanDescText)) !!}</p>
       </div>
+
+      @if(!empty($adminFacilities))
+      <div class="fcc-card" style="padding:20px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <p style="font-size:13px;font-weight:900;color:#131218;margin:0 0 12px;text-transform:uppercase;letter-spacing:0.5px;">Fasilitas &amp; Benefit Keikutsertaan</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:10px;">
+          @foreach($adminFacilities as $fac)
+          <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:#131218;font-weight:700;">
+            <span style="color:#10B981;font-weight:900;">✓</span>
+            <span>{{ $fac }}</span>
+          </div>
+          @endforeach
+        </div>
+      </div>
+      @endif
     </div>
   </div>
 </div>

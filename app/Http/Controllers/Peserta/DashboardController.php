@@ -13,7 +13,14 @@ class DashboardController extends Controller {
             'sertifikat' => Sertifikat::whereHas('pendaftaran',fn($q)=>$q->where('peserta_id',$peserta->id))->count(),
         ];
         $pendaftaranTerbaru = Pendaftaran::where('peserta_id',$peserta->id)->with(['kegiatan','biaya','pembayaran'])->orderBy('created_at','desc')->limit(5)->get();
-        $kegiatan = Kegiatan::visibleToPublic()->upcoming()->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan','kegiatanSertifikasi.jadwalSertifikasi.sertifikasi','biaya'])->orderBy('created_at','desc')->limit(3)->get();
-        return view('peserta.dashboard',compact('peserta','stats','pendaftaranTerbaru','kegiatan'));
+        $sudahDaftar = Pendaftaran::where('peserta_id',$peserta->id)->pluck('kegiatan_id')->toArray();
+        $kegiatan = Kegiatan::visibleToPublic()
+            ->upcoming()
+            ->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan','kegiatanSertifikasi.jadwalSertifikasi.sertifikasi','biaya','pendaftaran'])
+            ->orderBy('created_at','desc')
+            ->get()
+            ->filter(fn($k) => $k->isRegisterable())
+            ->take(3);
+        return view('peserta.dashboard',compact('peserta','stats','pendaftaranTerbaru','sudahDaftar','kegiatan'));
     }
 }

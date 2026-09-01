@@ -292,17 +292,18 @@ Route::middleware('auth.peserta')->prefix('peserta')->name('peserta.')->group(fu
     Route::post('/pembayaran/{pembayaran}/aktifkan',   [PesertaBayar::class,'aktifkan'])->name('pembayaran.aktifkan');
     Route::post('/pembayaran/{pembayaran}/konfirmasi', [PesertaBayar::class,'konfirmasi'])->name('pembayaran.konfirmasi');
     Route::post('/pembayaran/{pembayaran}/request-perpanjangan', [PesertaBayar::class,'requestPerpanjangan'])->name('pembayaran.request-perpanjangan');
-    Route::get('/sertifikat',            [PesertaSertifikat::class,'index'])->name('sertifikat');
-    Route::get('/sertifikat/{sertifikat}/download',[PesertaSertifikat::class,'download'])->name('sertifikat.download');
-    Route::get('/sertifikat/{sertifikat}/preview',[PesertaSertifikat::class,'preview'])->name('sertifikat.preview');
+    // Sertifikat Peserta (Sembunyikan sementara per permintaan user)
+    Route::get('/sertifikat',                      fn() => redirect()->route('peserta.dashboard'))->name('sertifikat');
+    Route::get('/sertifikat/{sertifikat}/download',fn() => redirect()->route('peserta.dashboard'))->name('sertifikat.download');
+    Route::get('/sertifikat/{sertifikat}/preview', fn() => redirect()->route('peserta.dashboard'))->name('sertifikat.preview');
     // QR Peserta
     Route::get('/qr/{pendaftaran}',      [PesertaQr::class,'show'])->name('qr.show');
     Route::get('/qr/{pendaftaran}/cetak',[PesertaQr::class,'cetak'])->name('qr.cetak');
-    // Testimoni Peserta
-    Route::get('/testimoni',             [PesertaTestimoni::class,'index'])->name('testimoni');
-    Route::post('/testimoni',            [PesertaTestimoni::class,'store'])->name('testimoni.store');
-    Route::put('/testimoni/{testimoni}', [PesertaTestimoni::class,'update'])->name('testimoni.update');
-    Route::delete('/testimoni/{testimoni}', [PesertaTestimoni::class,'destroy'])->name('testimoni.destroy');
+    // Testimoni Peserta (Sembunyikan sementara per permintaan user)
+    Route::get('/testimoni',             fn() => redirect()->route('peserta.dashboard'))->name('testimoni');
+    Route::post('/testimoni',            fn() => redirect()->route('peserta.dashboard'))->name('testimoni.store');
+    Route::put('/testimoni/{testimoni}', fn() => redirect()->route('peserta.dashboard'))->name('testimoni.update');
+    Route::delete('/testimoni/{testimoni}', fn() => redirect()->route('peserta.dashboard'))->name('testimoni.destroy');
     // API Chart
     Route::get('/api/chart/aktivitas', [PesertaDashboard::class,'chartAktivitas'])->name('api.chart.aktivitas');
 });

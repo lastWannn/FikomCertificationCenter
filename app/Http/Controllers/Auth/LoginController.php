@@ -120,6 +120,6 @@ class LoginController extends Controller
         $this->service->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('landing.index')->with('success','Anda berhasil keluar.');
+        return redirect()->route('landing.index');
     }
 }

@@ -207,13 +207,16 @@
                     <div class="fcc-mitra-card" 
                          onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='#FFC81A'; this.style.boxShadow='0 12px 28px rgba(0,0,0,0.08)';" 
                          onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='#E2E8F0'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.04)';">
-                        @if($m->logo && file_exists(public_path('storage/'.$m->logo)))
-                        <img src="{{ asset('storage/'.$m->logo) }}" alt="{{ $m->nama_mitra }}" style="max-height:52px; max-width:150px; object-fit:contain; margin-bottom:14px;">
-                        @else
-                        <div style="width:48px; height:48px; border-radius:12px; background:#FFC81A; border:1.5px solid #131218; color:#131218; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px; margin-bottom:14px; box-shadow:0 4px 10px rgba(255,200,26,0.25);">
-                            {{ Str::upper(Str::substr($m->inisial ?? $m->nama_mitra, 0, 4)) }}
+                        {{-- Logo Box Container --}}
+                        <div style="width: 100%; height: 96px; border-radius: 16px; background: #F8FAFC; border: 1.5px solid #E2E8F0; display: flex; align-items: center; justify-content: center; padding: 14px; margin-bottom: 18px; box-sizing: border-box; box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);">
+                            @if($m->logo && file_exists(public_path('storage/'.$m->logo)))
+                            <img src="{{ asset('storage/'.$m->logo) }}" alt="{{ $m->nama_mitra }}" style="max-height: 68px; max-width: 100%; object-fit: contain;">
+                            @else
+                            <div style="width: 58px; height: 58px; border-radius: 14px; background: #FFC81A; border: 2px solid #131218; color: #131218; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; font-family: monospace; box-shadow: 0 4px 12px rgba(255,200,26,0.3);">
+                                {{ Str::upper(Str::substr($m->inisial ?? $m->nama_mitra, 0, 4)) }}
+                            </div>
+                            @endif
                         </div>
-                        @endif
                         <h4 style="color:#0F172A; font-size:15.5px; font-weight:900; margin:0 0 4px; line-height:1.3;">{{ $m->nama_mitra }}</h4>
                         <p style="color:#D97706; font-size:10.5px; margin:0 0 14px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Mitra Resmi FIKOM UMI</p>
                         
@@ -225,7 +228,8 @@
                             Kunjungi Website ↗
                         </a>
                         @else
-                        <span style="padding:6px 14px; font-size:11px; font-weight:800; background:#F1F5F9; color:#475569; border-radius:30px; border:1px solid #CBD5E1;">
+                        <span style="padding:7px 16px; font-size:11.5px; font-weight:900; background:#ECFDF5; color:#047857; border-radius:30px; border:1.5px solid #10B981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 3px 10px rgba(16,185,129,0.15);">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                             Mitra Terverifikasi
                         </span>
                         @endif
@@ -295,9 +299,9 @@
 }
 .fcc-tentang-grid {
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-columns: 1fr 1fr;
     gap: 40px;
-    align-items: start;
+    align-items: center;
     box-sizing: border-box;
     width: 100%;
 }
@@ -385,13 +389,13 @@
 }
 .fcc-mitra-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
     box-sizing: border-box;
     width: 100%;
 }
 .fcc-mitra-card {
-    padding: 24px 20px;
+    padding: 28px 24px;
     background: #FFFFFF;
     border-radius: 20px;
     border: 1.5px solid #E2E8F0;
@@ -403,6 +407,7 @@
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
+    height: 100%;
 }
 
 /* Tablet (< 1024px) & Mobile (< 768px) */

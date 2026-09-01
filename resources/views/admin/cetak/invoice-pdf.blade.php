@@ -267,7 +267,11 @@
       <table style="width: auto; border: none;">
         <tr>
           <td style="padding: 0; border: none; vertical-align: middle;">
-            <img src="{{ public_path('images/logo.png') }}" style="height: 38px; width: auto; margin-right: 12px; vertical-align: middle;">
+            @php
+              $logoPath = public_path('images/logo_hitamkuning.svg');
+              $logoSrc = file_exists($logoPath) ? 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($logoPath)) : asset('images/logo_hitamkuning.svg');
+            @endphp
+            <img src="{{ $logoSrc }}" style="height: 44px; width: auto; margin-right: 12px; vertical-align: middle;">
           </td>
           <td style="padding: 0; border: none; vertical-align: middle;">
             <div class="brand-title">FIKOM CERTIFICATION CENTER</div>
@@ -399,17 +403,22 @@
     <td style="width: 42%;">
       <div class="signature-area">
         <div style="font-size: 8.5pt; color: #64748B;">Makassar, {{ $pembayaran->created_at->format('d M Y') }}</div>
-        <div class="signature-line"></div>
-        <div class="signature-label">Authorised Sign</div>
-        <div style="font-size: 8pt; color: #64748B; margin-top: 2px;">Sekretariat FCC FIKOM UMI</div>
+        <div class="signature-line" style="margin-top: 45px;"></div>
+        <div class="signature-label" style="font-size: 9.5pt; font-weight: bold; color: #131218;">Fatimah AR. Tuasamu, S.Kom., MTA, MCF.</div>
+        <div style="font-size: 8.5pt; color: #64748B; margin-top: 2px; font-weight: bold;">Administrasi</div>
       </div>
     </td>
   </tr>
 </table>
 
 <!-- Bottom Footer Contact Bar -->
+@php
+  $invoiceKontak = \App\Models\Kontak::aktif();
+  $invPhone   = $invoiceKontak?->telepon ?? '(0411) 455 855';
+  $invAddress = $invoiceKontak?->alamat ?? 'Gedung FIKOM UMI, Jl. Urip Sumoharjo KM 5, Makassar';
+@endphp
 <div class="bottom-footer-bar">
-  Phone #: (0411) 455 855 &nbsp;&bull;&nbsp; Address: Gedung FIKOM UMI, Jl. Urip Sumoharjo KM 5, Makassar &nbsp;&bull;&nbsp; Website: fcc.fikom.umi.ac.id
+  Phone #: {{ $invPhone }} &nbsp;&bull;&nbsp; Address: {{ $invAddress }} &nbsp;&bull;&nbsp; Website: fcc.fikom.umi.ac.id
 </div>
 
 </body>

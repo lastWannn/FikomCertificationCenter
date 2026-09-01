@@ -93,10 +93,24 @@
             top: 0;
             bottom: 0;
             left: 0;
+            height: 100dvh !important;
+            max-height: 100vh !important;
             width: 260px !important;
             min-width: 260px !important;
             transform: translateX(-100%) !important;
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        .fcc-peserta-sidebar .sb-header-block {
+            padding: 12px 14px !important;
+        }
+        .fcc-peserta-sidebar #sb-profile {
+            padding: 10px 14px !important;
+        }
+        .fcc-peserta-sidebar .sidebar-link {
+            padding: 8px 14px !important;
+        }
+        .fcc-peserta-sidebar .sb-bottom-block {
+            padding: 6px 0 !important;
         }
         .fcc-peserta-sidebar.mobile-open {
             transform: translateX(0) !important;
@@ -113,6 +127,19 @@
     @media (min-width: 600px) {
         .fcc-sm-show { display: block !important; }
     }
+    @media (max-width: 599px) {
+        .fcc-topbar-profile-btn {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+        .fcc-topbar-profile-icon {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 10px !important;
+        }
+    }
 </style>
 
 <div class="fcc-peserta-layout">
@@ -122,7 +149,7 @@
     {{-- SIDEBAR --}}
     <div id="sidebar" class="fcc-peserta-sidebar">
         {{-- Logo --}}
-        <div style="padding:20px 18px;border-bottom:1px solid rgba(255,200,26,.14);
+        <div class="sb-header-block" style="padding:16px 18px;border-bottom:1px solid rgba(255,200,26,.14);
             display:flex;align-items:center;gap:12px;flex-shrink:0;">
             <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="height:38px;width:auto;object-fit:contain;flex-shrink:0;">
             <div id="sb-title">
@@ -136,8 +163,12 @@
         </div>
         {{-- Profile mini --}}
         <div id="sb-profile" style="padding:14px 18px;border-bottom:1px solid rgba(255,200,26,.1);display:flex;align-items:center;gap:10px;">
-            <div style="width:34px;height:34px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#FFC81A,#FFD84D);display:flex;align-items:center;justify-content:center;">
+            <div style="width:34px;height:34px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#FFC81A,#FFD84D);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #FFC81A;">
+                @if(auth('peserta')->user()?->foto)
+                <img src="{{ asset('storage/'.auth('peserta')->user()->foto) }}" alt="Foto" style="width:100%;height:100%;object-fit:cover;">
+                @else
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                @endif
             </div>
             <div>
                 <p style="margin:0;color:#FFF;font-size:13px;font-weight:700;">{{ auth('peserta')->user()->nama ?? 'Peserta' }}</p>
@@ -152,8 +183,8 @@
                 ['route'=>'peserta.jelajahi',     'icon'=>'search',           'label'=>'Jelajahi Kegiatan'],
                 ['route'=>'peserta.pendaftaran',  'icon'=>'clipboard-list',   'label'=>'Pendaftaran Saya'],
                 ['route'=>'peserta.pembayaran',   'icon'=>'credit-card',      'label'=>'Pembayaran'],
-                ['route'=>'peserta.sertifikat',   'icon'=>'file-text',        'label'=>'Sertifikat Saya'],
-                ['route'=>'peserta.testimoni',    'icon'=>'message-square',   'label'=>'Beri Testimoni'],
+                // ['route'=>'peserta.sertifikat',   'icon'=>'file-text',        'label'=>'Sertifikat Saya'],
+                // ['route'=>'peserta.testimoni',    'icon'=>'message-square',   'label'=>'Beri Testimoni'],
             ];
             $unpaidCount = auth('peserta')->check()
                 ? \App\Models\Pembayaran::whereHas('pendaftaran', function($q) {
@@ -175,7 +206,7 @@
             @endforeach
         </nav>
         {{-- Bottom --}}
-        <div style="border-top:1px solid rgba(255,200,26,.14);padding:10px 0;flex-shrink:0;">
+        <div class="sb-bottom-block" style="border-top:1px solid rgba(255,200,26,.14);padding:8px 0;flex-shrink:0;">
             <a href="{{ route('landing.index') }}" class="sidebar-link" style="text-decoration:none;">
                 @include('components.icon', ['name'=>'home', 'size'=>17, 'class'=>'sidebar-icon'])
                 <span id="sb-lbl-home" style="font-size:14px;font-weight:500;">Beranda</span>
@@ -203,18 +234,17 @@
             </button>
             <p style="margin:0;color:#0F0F14;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@yield('page-title', 'Dashboard')</p>
             <div style="flex:1;"></div>
-            <a href="{{ route('peserta.profile') }}"
-               style="display:flex;align-items:center;gap:8px;background:#F7F8FA;border:1px solid #E2E4EB;
-                    border-radius:10px;padding:5px 10px 5px 5px;text-decoration:none;transition:border-color .18s;max-width:180px;flex-shrink:0;"
-               onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E0E2E8'">
-                <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#FFC81A,#FFD84D);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <a href="{{ route('peserta.profile') }}" class="fcc-topbar-profile-btn"
+               style="display:flex;align-items:center;gap:8px;background:#F7F8FA;border:1px solid #E2E4EB;border-radius:12px;padding:4px 10px 4px 4px;text-decoration:none;transition:all .18s;flex-shrink:0;"
+               onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E2E4EB'">
+                <div class="fcc-topbar-profile-icon" style="width:32px;height:32px;border-radius:9px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(19,18,24,0.15);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </div>
                 <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" class="fcc-sm-show">
-                    <p style="margin:0;font-size:12px;font-weight:700;color:#0F0F14;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ auth('peserta')->user()->nama ?? 'Peserta' }}</p>
-                    <p style="margin:0;font-size:9.5px;color:#FFC81A;">Peserta</p>
+                    <p style="margin:0;font-size:12px;font-weight:800;color:#131218;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ auth('peserta')->user()->nama ?? 'Peserta' }}</p>
+                    <p style="margin:0;font-size:9.5px;color:#64748B;font-weight:700;">Peserta</p>
                 </div>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#A0A3AD" stroke-width="2" class="fcc-sm-show"><polyline points="6 9 12 15 18 9"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" class="fcc-sm-show"><polyline points="6 9 12 15 18 9"/></svg>
             </a>
         </header>
 

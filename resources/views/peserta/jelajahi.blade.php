@@ -109,24 +109,50 @@
       #jelajahi-skeleton-overlay {
         transition: opacity 0.35s ease, visibility 0.35s ease;
       }
+      @media (max-width: 640px) {
+        #jelajahi-skeleton-overlay {
+          padding: 14px 12px 32px !important;
+        }
+      }
     </style>
 
     <div id="jelajahi-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px 28px;box-sizing:border-box;pointer-events:none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-        <div style="width:40%;">
-          <div class="fcc-skeleton-box" style="width:140px;height:18px;margin-bottom:8px;border-radius:20px;"></div>
-          <div class="fcc-skeleton-box" style="width:280px;height:24px;margin-bottom:6px;"></div>
-          <div class="fcc-skeleton-box" style="width:220px;height:12px;"></div>
+      {{-- Header Skeleton --}}
+      <div style="margin-bottom:20px;">
+        <div class="fcc-skeleton-box" style="width:140px;height:18px;margin-bottom:8px;border-radius:20px;"></div>
+        <div class="fcc-skeleton-box" style="width:60%;height:24px;margin-bottom:6px;"></div>
+        <div class="fcc-skeleton-box" style="width:85%;height:13px;"></div>
+      </div>
+
+      {{-- Search + Filter Card Skeleton --}}
+      <div style="padding:12px 14px;margin-bottom:18px;border-radius:16px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <div class="fcc-skeleton-box" style="flex:1;min-width:180px;height:40px;border-radius:10px;"></div>
+        <div class="fcc-skeleton-box" style="width:180px;height:40px;border-radius:12px;"></div>
+      </div>
+
+      {{-- Activity Cards Skeleton (Matches Desktop & Mobile List Layout) --}}
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        @for($s=0;$s<3;$s++)
+        <div style="padding:14px 16px;border-radius:16px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <div class="fcc-skeleton-box" style="width:40px;height:40px;border-radius:12px;flex-shrink:0;"></div>
+            <div style="flex:1;">
+              <div class="fcc-skeleton-box" style="width:75%;height:16px;margin-bottom:6px;"></div>
+              <div style="display:flex;gap:8px;">
+                <div class="fcc-skeleton-box" style="width:60px;height:16px;border-radius:6px;"></div>
+                <div class="fcc-skeleton-box" style="width:70px;height:16px;"></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px dashed #F1F5F9;">
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div class="fcc-skeleton-box" style="width:100px;height:12px;"></div>
+              <div class="fcc-skeleton-box" style="width:80px;height:11px;"></div>
+            </div>
+            <div class="fcc-skeleton-box" style="width:74px;height:30px;border-radius:8px;"></div>
+          </div>
         </div>
-      </div>
-      <div style="padding:14px 18px;margin-bottom:22px;border-radius:16px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;gap:12px;align-items:center;">
-        <div class="fcc-skeleton-box" style="flex:1;height:38px;border-radius:10px;"></div>
-        <div class="fcc-skeleton-box" style="width:200px;height:38px;border-radius:10px;"></div>
-      </div>
-      <div style="padding:28px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
-        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
-        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
-        <div class="fcc-skeleton-box" style="width:100%;height:44px;border-radius:10px;"></div>
+        @endfor
       </div>
     </div>
 

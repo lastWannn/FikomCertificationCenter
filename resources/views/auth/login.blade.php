@@ -263,7 +263,7 @@
                 <div style="position:relative;min-height:140px;" class="fcc-headline-wrapper">
                     <div id="left-login-text" class="fcc-headline-panel {{ $activeTab === 'login' ? 'fcc-headline-active' : 'fcc-headline-inactive-up' }}">
                         <h1 style="color:#FFFFFF;font-size:clamp(26px, 3.5vw, 36px);font-weight:900;line-height:1.15;margin:0 0 12px;letter-spacing:-0.8px;text-shadow:0 2px 10px rgba(0,0,0,0.5);">
-                            Selamat Datang<br/>Kembali 👋
+                            Selamat Datang<br/>di FCC UMI 👋
                         </h1>
                         <p style="color:rgba(255,255,255,0.7);font-size:13.5px;line-height:1.6;margin:0;max-width:420px;">
                             Platform sertifikasi &amp; pelatihan profesional FIKOM Universitas Muslim Indonesia. Masuk untuk mengelola pendaftaran dan sertifikat Anda.
@@ -323,6 +323,7 @@
                 {{-- SLIDE 1: LOGIN FORM --}}
                 <div class="fcc-slide-item">
                     <div>
+
                         <div style="margin-bottom:16px;">
                             <h2 style="color:#131218;font-size:24px;font-weight:900;margin:0 0 4px;letter-spacing:-0.5px;">Masuk Akun</h2>
                             <p style="color:rgba(19,18,24,0.65);font-size:13px;margin:0;font-weight:600;">
@@ -413,6 +414,7 @@
                 {{-- SLIDE 2: REGISTER FORM --}}
                 <div class="fcc-slide-item">
                     <div>
+
                         <div style="margin-bottom:10px;">
                             <h2 style="color:#131218;font-size:22px;font-weight:900;margin:0 0 3px;letter-spacing:-0.5px;">Buat Akun Peserta</h2>
                             <p style="color:rgba(19,18,24,0.65);font-size:12.5px;margin:0;font-weight:600;">

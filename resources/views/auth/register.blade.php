@@ -263,7 +263,7 @@
                 <div style="position:relative;min-height:140px;" class="fcc-headline-wrapper">
                     <div id="left-login-text" class="fcc-headline-panel fcc-headline-inactive-up">
                         <h1 style="color:#FFFFFF;font-size:clamp(26px, 3.5vw, 36px);font-weight:900;line-height:1.15;margin:0 0 12px;letter-spacing:-0.8px;text-shadow:0 2px 10px rgba(0,0,0,0.5);">
-                            Selamat Datang<br/>Kembali 👋
+                            Selamat Datang<br/>di FCC UMI 👋
                         </h1>
                         <p style="color:rgba(255,255,255,0.7);font-size:13.5px;line-height:1.6;margin:0;max-width:420px;">
                             Platform sertifikasi &amp; pelatihan profesional FIKOM Universitas Muslim Indonesia. Masuk untuk mengelola pendaftaran dan sertifikat Anda.
@@ -323,6 +323,12 @@
                 {{-- SLIDE 1: LOGIN FORM --}}
                 <div class="fcc-slide-item">
                     <div>
+                        <div style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
+                            <a href="{{ route('landing.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#131218;font-size:12px;font-weight:900;text-decoration:none;background:rgba(19,18,24,0.08);padding:4px 12px;border-radius:100px;transition:background 0.2s;" onmouseover="this.style.background='rgba(19,18,24,0.15)';" onmouseout="this.style.background='rgba(19,18,24,0.08)';">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                                <span>Beranda</span>
+                            </a>
+                        </div>
                         <div style="margin-bottom:16px;">
                             <h2 style="color:#131218;font-size:24px;font-weight:900;margin:0 0 4px;letter-spacing:-0.5px;">Masuk Akun</h2>
                             <p style="color:rgba(19,18,24,0.65);font-size:13px;margin:0;font-weight:600;">
@@ -413,6 +419,12 @@
                 {{-- SLIDE 2: REGISTER FORM --}}
                 <div class="fcc-slide-item">
                     <div>
+                        <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+                            <a href="{{ route('landing.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#131218;font-size:12px;font-weight:900;text-decoration:none;background:rgba(19,18,24,0.08);padding:4px 12px;border-radius:100px;transition:background 0.2s;" onmouseover="this.style.background='rgba(19,18,24,0.15)';" onmouseout="this.style.background='rgba(19,18,24,0.08)';">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                                <span>Beranda</span>
+                            </a>
+                        </div>
                         <div style="margin-bottom:10px;">
                             <h2 style="color:#131218;font-size:22px;font-weight:900;margin:0 0 3px;letter-spacing:-0.5px;">Buat Akun Peserta</h2>
                             <p style="color:rgba(19,18,24,0.65);font-size:12.5px;margin:0;font-weight:600;">

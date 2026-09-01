@@ -99,7 +99,6 @@
 
                         {{-- Floating Badge 1: Top Right Trust Tag --}}
                         <div class="hero-badge-top">
-                            <span style="font-size:14px;">⭐</span>
                             <span>Standar BNSP &amp; Industri</span>
                         </div>
 
@@ -109,7 +108,7 @@
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                             </div>
                             <div>
-                                <p>Akreditasi A &amp; Terverifikasi</p>
+                                <p>Terverifikasi</p>
                                 <p>Resmi FIKOM UMI</p>
                             </div>
                         </div>
@@ -382,7 +381,7 @@
                 $mLink    = is_array($m) ? ($m['link_website'] ?? null) : ($m->link_website ?? null);
             @endphp
             <div class="spring-up stagger-{{ ($loop->index % 3) + 1 }}" 
-                 style="background:#FFFFFF;border:2px solid #E5E7EB;border-radius:24px;padding:36px 30px;display:flex;flex-direction:column;align-items:center;text-align:center;transition:all .3s ease;box-shadow:0 6px 20px rgba(0,0,0,0.03);"
+                 style="background:#FFFFFF;border:2px solid #E5E7EB;border-radius:24px;padding:36px 30px;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:space-between;height:100%;box-sizing:border-box;transition:all .3s ease;box-shadow:0 6px 20px rgba(0,0,0,0.03);"
                  onmouseover="this.style.borderColor='#FFC81A';this.style.transform='translateY(-6px)';this.style.boxShadow='0 16px 36px rgba(0,0,0,0.08)';"
                  onmouseout="this.style.borderColor='#E5E7EB';this.style.transform='translateY(0)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.03)';">
                 
@@ -415,7 +414,8 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
                 </a>
                 @else
-                <span style="padding:8px 18px;font-size:12px;font-weight:800;background:#F3F4F6;color:#6B7280;border-radius:30px;border:1px solid #E5E7EB;">
+                <span style="padding:8px 18px;font-size:12px;font-weight:900;background:#ECFDF5;color:#047857;border-radius:30px;border:1.5px solid #10B981;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(16,185,129,0.15);">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                     Mitra Terverifikasi
                 </span>
                 @endif

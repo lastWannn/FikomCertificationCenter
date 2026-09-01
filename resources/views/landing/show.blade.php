@@ -52,6 +52,18 @@
             font-size: 21px !important;
             margin-bottom: 14px !important;
         }
+        .fcc-detail-register-btn {
+            min-height: 52px !important;
+            align-items: center !important;
+            border: 1.5px solid #131218 !important;
+            border-radius: 6px !important;
+            box-shadow: 3px 3px 0 #131218 !important;
+            transition: transform .18s ease, box-shadow .18s ease !important;
+        }
+        .fcc-detail-register-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #131218 !important;
+        }
     }
 </style>
 @endpush
@@ -192,7 +204,8 @@
                                 </button>
                             @elseif(!$kegiatan->isFull())
                                 @auth('peserta')
-                                    <button type="button" 
+                                    <button type="button"
+                                        class="fcc-detail-register-btn"
                                         onclick="showDaftarModal('{{ $kegiatan->hashid }}', '{{ addslashes($kegiatan->judul) }}', {{ $kegiatan->biaya->toJson() }})" 
                                         style="padding:13px 24px; font-size:14px; font-weight:900; width:100%; justify-content:center; border-radius:30px; background:#FFC81A; color:#131218; border:none; cursor:pointer; box-shadow:0 6px 20px rgba(255,200,26,0.35); transition:all 0.2s;"
                                         onmouseover="this.style.background='#FFFFFF';"
@@ -200,7 +213,7 @@
                                         Daftar Sekarang ➔
                                     </button>
                                 @else
-                                    <a href="{{ route('auth.login') }}" style="padding:13px 24px; font-size:14px; font-weight:900; text-decoration:none; display:inline-flex; width:100%; justify-content:center; border-radius:30px; background:#FFC81A; color:#131218; box-shadow:0 6px 20px rgba(255,200,26,0.35);">
+                                    <a href="{{ route('auth.login') }}" class="fcc-detail-register-btn" style="padding:13px 24px; font-size:14px; font-weight:900; text-decoration:none; display:inline-flex; width:100%; justify-content:center; border-radius:30px; background:#FFC81A; color:#131218; box-shadow:0 6px 20px rgba(255,200,26,0.35);">
                                         Masuk untuk Daftar ➔
                                     </a>
                                 @endauth
@@ -326,15 +339,19 @@
                     @endif
 
                     {{-- Help / Penyelenggara Card --}}
+                    @php
+                        $kontakAktif = \App\Models\Kontak::aktif() ?? \App\Models\Kontak::first();
+                        $waUrlPanitia = $kontakAktif?->wa_url ?? 'https://wa.me/6281234567890';
+                    @endphp
                     <div style="background:#FFFFFF; border:1.5px solid #E2E8F0; border-radius:20px; padding:24px; box-shadow:0 8px 24px rgba(0,0,0,0.04);">
                         <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
-                            <img src="{{ asset('images/logo.png') }}" alt="Logo FCC UMI" style="width:38px; height:38px; object-fit:contain;">
+                            <img src="{{ asset('images/logo_hitamkuning.svg') }}" alt="Logo FCC UMI" style="width:38px; height:38px; object-fit:contain;">
                             <div>
                                 <p style="color:#0F172A; font-size:14px; font-weight:900; margin:0;">FIKOM Certification Center</p>
                                 <p style="color:#D97706; font-size:11.5px; font-weight:800; margin:2px 0 0;">Universitas Muslim Indonesia</p>
                             </div>
                         </div>
-                        <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" 
+                        <a href="{{ $waUrlPanitia }}" target="_blank" rel="noopener noreferrer" 
                            style="display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:11px; border-radius:12px; background:#131218; color:#FFC81A; font-size:13px; font-weight:900; text-decoration:none; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
                             @include('components.icon',['name'=>'phone','size'=>14,'style'=>'color:#FFC81A']) Tanya Panitia (WhatsApp)
                         </a>
@@ -381,3 +398,6 @@
 @vite('resources/js/pages/landing-jelajahi.js')
 @endpush
 @endsection
+
+
+

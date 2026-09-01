@@ -2,7 +2,7 @@
 @section('title','Pendaftaran Saya')
 @section('page-title','Pendaftaran Saya')
 @section('page-content')
-<div style="padding:24px 28px;background:#F6F8FB;min-height:100vh;font-family:'Inter',sans-serif;position:relative;">
+<div class="fcc-pendaftaran-page-wrap" style="padding:24px 28px;background:#F6F8FB;min-height:100vh;font-family:'Inter',sans-serif;position:relative;">
 
     {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
     <style>
@@ -19,22 +19,75 @@
       #pendaftaran-skeleton-overlay {
         transition: opacity 0.35s ease, visibility 0.35s ease;
       }
+
+      .fcc-mobile-pendaftaran-card-list {
+        display: none;
+      }
+      .fcc-desktop-pendaftaran-table {
+        display: block;
+      }
+
+      @media (max-width: 640px) {
+        .fcc-pendaftaran-page-wrap {
+          padding: 14px 12px 32px !important;
+        }
+        #pendaftaran-skeleton-overlay {
+          padding: 14px 12px 32px !important;
+        }
+        .fcc-pendaftaran-header-bar {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 12px !important;
+          margin-bottom: 16px !important;
+        }
+        .fcc-pendaftaran-header-bar h1 {
+          font-size: 19px !important;
+        }
+        .fcc-pendaftaran-header-bar a {
+          width: 100% !important;
+          justify-content: center !important;
+          padding: 9px 14px !important;
+          box-sizing: border-box !important;
+        }
+        .fcc-desktop-pendaftaran-table {
+          display: none !important;
+        }
+        .fcc-mobile-pendaftaran-card-list {
+          display: block !important;
+        }
+        .fcc-card {
+          border-radius: 16px !important;
+        }
+      }
     </style>
 
     <div id="pendaftaran-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px 28px;box-sizing:border-box;pointer-events:none;">
       {{-- Header Skeleton --}}
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-        <div style="width:40%;">
-          <div class="fcc-skeleton-box" style="width:140px;height:18px;margin-bottom:8px;border-radius:20px;"></div>
-          <div class="fcc-skeleton-box" style="width:280px;height:24px;margin-bottom:6px;"></div>
-          <div class="fcc-skeleton-box" style="width:220px;height:12px;"></div>
-        </div>
+      <div style="margin-bottom:20px;">
+        <div class="fcc-skeleton-box" style="width:130px;height:18px;margin-bottom:8px;border-radius:20px;"></div>
+        <div class="fcc-skeleton-box" style="width:60%;height:24px;margin-bottom:6px;"></div>
+        <div class="fcc-skeleton-box" style="width:85%;height:13px;"></div>
       </div>
-      {{-- Table Skeleton --}}
-      <div style="padding:28px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
-        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
-        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
-        <div class="fcc-skeleton-box" style="width:100%;height:44px;border-radius:10px;"></div>
+      {{-- Card List Skeleton --}}
+      <div style="border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;overflow:hidden;">
+        @for($s=0;$s<3;$s++)
+        <div style="padding:14px 16px;border-bottom:1px solid #F1F5F9;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <div class="fcc-skeleton-box" style="width:36px;height:36px;border-radius:10px;flex-shrink:0;"></div>
+            <div style="flex:1;">
+              <div class="fcc-skeleton-box" style="width:75%;height:16px;margin-bottom:6px;"></div>
+              <div class="fcc-skeleton-box" style="width:45%;height:11px;"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:2px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div class="fcc-skeleton-box" style="width:70px;height:18px;border-radius:6px;"></div>
+              <div class="fcc-skeleton-box" style="width:60px;height:12px;"></div>
+            </div>
+            <div class="fcc-skeleton-box" style="width:60px;height:24px;border-radius:6px;"></div>
+          </div>
+        </div>
+        @endfor
       </div>
     </div>
 
@@ -52,7 +105,7 @@
     </script>
 
     {{-- Header & Action Bar --}}
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
+    <div class="fcc-pendaftaran-header-bar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
         <div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
                 <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Histori &amp; Status</span>
@@ -60,16 +113,12 @@
             </div>
             <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">Kelola dan pantau status pendaftaran kegiatan pelatihan serta sertifikasi kompetensi Anda.</p>
         </div>
-        <div>
-            <a href="{{ route('peserta.jelajahi') }}" class="fcc-btn-gold" style="padding:9px 18px;font-size:12.5px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border-radius:30px;font-weight:900;box-shadow:0 4px 12px rgba(255,200,26,0.3);">
-                + Tambah Pendaftaran Baru
-            </a>
-        </div>
     </div>
 
     {{-- Main Neo-Brutalist Table Card --}}
     <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
-        <div style="overflow-x:auto;">
+        {{-- Desktop Table View --}}
+        <div class="fcc-desktop-pendaftaran-table" style="overflow-x:auto;">
             <table style="width:100%;border-collapse:collapse;text-align:left;">
                 <thead>
                     <tr style="background:#131218;color:#FFFFFF;">
@@ -137,6 +186,61 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- Mobile Card List View --}}
+        <div class="fcc-mobile-pendaftaran-card-list">
+            @forelse($pendaftaran as $pd)
+            @php
+            $isPel = $pd->kegiatan->jenis_kegiatan === 'pelatihan';
+            $sc = match($pd->status_pendaftaran){
+                'terdaftar'           => ['#ECFDF5','#059669','#10B981','Terdaftar'],
+                'menunggu_verifikasi' => ['#FFFDF5','#D97706','#F59E0B','Menunggu Verifikasi'],
+                'ditolak'             => ['#FEF2F2','#DC2626','#EF4444','Ditolak'],
+                default               => ['#F1F5F9','#4B5563','#CBD5E1','Menunggu Bayar'],
+            };
+            @endphp
+            <div style="padding:14px 16px;border-bottom:1px solid #F1F5F9;display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;align-items:flex-start;gap:12px;">
+                    <div style="width:38px;height:38px;border-radius:10px;background:{{ $isPel?'#FFFDF5':'#EEF2FF' }};border:1.5px solid {{ $isPel?'#FFC81A':'#6366F1' }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>18,'style'=>"color:".($isPel?'#131218':'#6366F1')])
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap;">
+                            <span style="font-size:9.5px;font-weight:900;padding:2px 7px;border-radius:6px;background:{{ $isPel?'#FFC81A':'#3B82F6' }};color:{{ $isPel?'#131218':'#FFFFFF' }};border:1px solid #131218;text-transform:uppercase;">
+                                {{ ucfirst($pd->kegiatan->jenis_kegiatan) }}
+                            </span>
+                            <span style="font-size:10.5px;color:#64748B;font-weight:600;">Paket: {{ $pd->biaya?->nama_jenis ?? 'Gratis' }}</span>
+                        </div>
+                        <p style="font-size:13.5px;font-weight:900;color:#131218;margin:0;line-height:1.35;">{{ $pd->kegiatan->judul }}</p>
+                    </div>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;padding-top:6px;border-top:1px dashed #F1F5F9;">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span style="font-size:9.5px;font-weight:900;padding:3px 8px;border-radius:6px;background:{{ $sc[0] }};color:{{ $sc[1] }};border:1px solid {{ $sc[2] }};text-transform:uppercase;">
+                            {{ $sc[3] }}
+                        </span>
+                        <span style="font-size:10.5px;color:#64748B;font-weight:600;">{{ $pd->tgl_daftar->format('d M Y') }}</span>
+                    </div>
+                    <div>
+                        @if($pd->pembayaran && $pd->status_pendaftaran==='menunggu_pembayaran')
+                        <a href="{{ route('peserta.pembayaran.show',$pd->pembayaran->id) }}" style="font-size:11.5px;font-weight:900;color:#131218;text-decoration:none;padding:5px 12px;background:#FFC81A;border-radius:6px;border:1px solid #131218;box-shadow:0 2px 8px rgba(255,200,26,0.3);display:inline-block;">
+                            Bayar Sekarang
+                        </a>
+                        @else
+                        <button type="button" onclick="openPendaftaranModal('{{ $pd->hashid }}', '{{ addslashes($pd->kegiatan->judul) }}', '{{ ucfirst($pd->kegiatan->jenis_kegiatan) }}', '{{ addslashes($pd->biaya?->nama_jenis ?? 'Gratis') }}', '{{ $pd->tgl_daftar->format('d F Y - H:i WIB') }}', '{{ $pd->status_pendaftaran }}', '{{ addslashes($sc[3]) }}', '{{ $sc[0] }}', '{{ $sc[1] }}', '{{ $sc[2] }}', '{{ $pd->pembayaran ? route('peserta.pembayaran.show', $pd->pembayaran->id) : '' }}', '{{ $pd->pembayaran ? route('peserta.pembayaran.invoice', $pd->pembayaran->id) : '' }}')" style="font-size:11.5px;font-weight:800;color:#131218;cursor:pointer;padding:5px 12px;background:#F1F5F9;border-radius:6px;border:1px solid #CBD5E1;display:inline-block;">
+                            Detail &rarr;
+                        </button>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div style="padding:32px 20px;text-align:center;color:#94A3B8;font-size:13px;font-weight:600;">
+                Belum ada pendaftaran kegiatan. <a href="{{ route('peserta.jelajahi') }}" style="color:#131218;font-weight:900;text-decoration:underline;">Jelajahi kegiatan &rarr;</a>
+            </div>
+            @endforelse
         </div>
         @if($pendaftaran->hasPages())
         <div style="padding:16px 24px;border-top:1.5px solid #E2E8F0;background:#F8FAFC;">{{ $pendaftaran->links() }}</div>

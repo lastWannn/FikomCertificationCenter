@@ -2,7 +2,7 @@
 @section('title','Pembayaran Saya')
 @section('page-title','Pembayaran Saya')
 @section('page-content')
-<div style="padding:24px 28px;background:#F6F8FB;min-height:100vh;font-family:'Inter',sans-serif;position:relative;">
+<div class="fcc-pembayaran-page-wrap" style="padding:24px 28px;background:#F6F8FB;min-height:100vh;font-family:'Inter',sans-serif;position:relative;">
 
     {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
     <style>
@@ -18,6 +18,28 @@
       }
       #pembayaran-skeleton-overlay {
         transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+
+      .fcc-mobile-pembayaran-card {
+        display: none !important;
+      }
+      .fcc-desktop-pembayaran-card {
+        display: block !important;
+      }
+
+      @media (max-width: 640px) {
+        .fcc-pembayaran-page-wrap {
+          padding: 14px 12px 32px !important;
+        }
+        #pembayaran-skeleton-overlay {
+          padding: 14px 12px 32px !important;
+        }
+        .fcc-mobile-pembayaran-card {
+          display: flex !important;
+        }
+        .fcc-desktop-pembayaran-card {
+          display: none !important;
+        }
       }
     </style>
 
@@ -65,7 +87,7 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
         <div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-                <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Finansial &amp; Transaksi</span>
+                <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Transaksi</span>
                 <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0;letter-spacing:-0.02em;">Pembayaran Saya</h1>
             </div>
             <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">Kelola transaksi tagihan, upload bukti transfer, dan pantau verifikasi status pembayaran kegiatan Anda.</p>
@@ -84,26 +106,60 @@
             default               => ['#F8FAFC','#2563EB','#3B82F6','Menunggu Bayar'],
         };
         @endphp
-        <a href="{{ route('peserta.pembayaran.show', $p) }}" style="text-decoration:none;color:inherit;display:block;outline:none;"
+
+        {{-- Desktop Card View --}}
+        <a href="{{ route('peserta.pembayaran.show', $p) }}" class="fcc-desktop-pembayaran-card" style="text-decoration:none;color:inherit;display:block;outline:none;"
            onmouseover="this.querySelector('.fcc-card').style.borderColor='#131218';this.querySelector('.fcc-card').style.transform='translateY(-2px)';"
            onmouseout="this.querySelector('.fcc-card').style.borderColor='#E5E7EB';this.querySelector('.fcc-card').style.transform='translateY(0)';">
-            <div class="fcc-card" style="padding:22px 26px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);display:flex;align-items:center;gap:20px;transition:all .18s;">
-                <div style="width:50px;height:50px;border-radius:14px;flex-shrink:0;background:#131218;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(19,18,24,0.2);">
-                    @include('components.icon',['name'=>'credit-card','size'=>22,'style'=>'color:#FFC81A'])
+            <div class="fcc-card" style="padding:20px 24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);display:flex;align-items:center;gap:18px;transition:all .18s;">
+                <div style="width:46px;height:46px;border-radius:14px;flex-shrink:0;background:#131218;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(19,18,24,0.2);">
+                    @include('components.icon',['name'=>'credit-card','size'=>20,'style'=>'color:#FFC81A'])
                 </div>
                 <div style="flex:1;min-width:0;">
-                    <p style="font-size:15px;font-weight:900;color:#131218;margin:0 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $p->pendaftaran->kegiatan->judul ?? '-' }}</p>
-                    <p style="font-size:12px;color:#64748B;margin:0;font-weight:600;">Kode Pembayaran: <span style="font-family:monospace;font-weight:900;color:#131218;background:#F1F5F9;padding:2px 8px;border-radius:6px;border:1px solid #CBD5E1;">{{ $p->kode_pembayaran }}</span></p>
+                    <p style="font-size:14.5px;font-weight:900;color:#131218;margin:0 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $p->pendaftaran->kegiatan->judul ?? '-' }}</p>
+                    <p style="font-size:11.5px;color:#64748B;margin:0;font-weight:600;">Kode Pembayaran: <span style="font-family:monospace;font-weight:900;color:#131218;background:#F1F5F9;padding:1px 6px;border-radius:6px;border:1px solid #CBD5E1;">{{ $p->kode_pembayaran }}</span></p>
                 </div>
                 <div style="text-align:right;">
-                    <p style="font-size:17px;font-weight:900;color:#131218;margin:0 0 4px;letter-spacing:-0.02em;">{{ $p->jumlah_bayar_format }}</p>
-                    <span style="font-size:10.5px;font-weight:900;padding:4px 10px;border-radius:6px;background:{{ $sc[0] }};color:{{ $sc[1] }};border:1px solid {{ $sc[2] }};text-transform:uppercase;letter-spacing:0.5px;">{{ $sc[3] }}</span>
+                    <p style="font-size:16px;font-weight:900;color:#131218;margin:0 0 3px;letter-spacing:-0.02em;">{{ $p->nominal_transfer_format ?? $p->jumlah_bayar_format }}</p>
+                    <span style="font-size:10px;font-weight:900;padding:3px 9px;border-radius:6px;background:{{ $sc[0] }};color:{{ $sc[1] }};border:1px solid {{ $sc[2] }};text-transform:uppercase;letter-spacing:0.5px;">{{ $sc[3] }}</span>
                 </div>
                 <div style="flex-shrink:0;width:32px;height:32px;border-radius:10px;background:#F8FAFC;border:1px solid #CBD5E1;display:flex;align-items:center;justify-content:center;">
                     @include('components.icon',['name'=>'chevron-right','size'=>16,'style'=>'color:#131218'])
                 </div>
             </div>
         </a>
+
+        {{-- Mobile Card View --}}
+        <div class="fcc-mobile-pembayaran-card" style="border-radius:16px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                <span style="font-size:9.5px;font-weight:900;padding:3px 8px;border-radius:6px;background:{{ $sc[0] }};color:{{ $sc[1] }};border:1px solid {{ $sc[2] }};text-transform:uppercase;letter-spacing:0.5px;">
+                    {{ $sc[3] }}
+                </span>
+                <span style="font-size:11px;color:#64748B;font-weight:600;font-family:monospace;">
+                    {{ $p->kode_pembayaran }}
+                </span>
+            </div>
+
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+                <div style="width:36px;height:36px;border-radius:10px;background:#131218;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 8px rgba(19,18,24,0.15);">
+                    @include('components.icon',['name'=>'credit-card','size'=>16,'style'=>'color:#FFC81A'])
+                </div>
+                <div style="flex:1;min-width:0;">
+                    <p style="font-size:13.5px;font-weight:900;color:#131218;margin:0 0 2px;line-height:1.35;">{{ $p->pendaftaran->kegiatan->judul ?? '-' }}</p>
+                    <p style="font-size:11px;color:#64748B;margin:0;font-weight:600;">Paket: {{ $p->pendaftaran->biaya?->nama_jenis ?? 'Gratis' }}</p>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px dashed #F1F5F9;margin-top:2px;">
+                <div>
+                    <p style="font-size:10px;color:#64748B;margin:0 0 1px;font-weight:700;text-transform:uppercase;">Total Tagihan</p>
+                    <p style="font-size:15px;font-weight:900;color:#131218;margin:0;font-family:monospace;">{{ $p->nominal_transfer_format ?? $p->jumlah_bayar_format }}</p>
+                </div>
+                <a href="{{ route('peserta.pembayaran.show', $p) }}" style="font-size:11.5px;font-weight:900;color:#131218;text-decoration:none;padding:6px 14px;background:{{ $p->status_pembayaran==='menunggu_pembayaran'?'#FFC81A':'#F1F5F9' }};border-radius:8px;border:1px solid {{ $p->status_pembayaran==='menunggu_pembayaran'?'#131218':'#CBD5E1' }};box-shadow:0 2px 8px rgba(0,0,0,0.04);display:inline-flex;align-items:center;gap:4px;">
+                    {{ $p->status_pembayaran==='menunggu_pembayaran'?'Bayar →':'Detail →' }}
+                </a>
+            </div>
+        </div>
         @empty
         <div class="fcc-card" style="text-align:center;padding:64px;background:#FFFFFF;border-radius:20px;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
             <div style="width:64px;height:64px;border-radius:20px;background:#FFFDF5;border:1.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 16px rgba(255,200,26,0.3);">

@@ -60,15 +60,15 @@ class LandingController extends Controller
     {
         app(\App\Services\Admin\ArsipService::class)->autoArchiveCompleted();
 
-        $query  = Kegiatan::upcoming()
+        $query = Kegiatan::visibleToPublic()
             ->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan',
                     'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
-                    'biaya', 'pendaftaran'])
-            ->orderByRaw("CASE WHEN status = 'comingsoon' THEN 1 ELSE 0 END ASC")
-            ->orderBy('created_at', 'desc');
+                    'biaya', 'pendaftaran']);
+
         if ($request->jenis && in_array($request->jenis, ['pelatihan','sertifikasi'])) {
             $query->where('jenis_kegiatan', $request->jenis);
         }
+
         if ($request->kategori) {
             $query->where(function($q) use ($request) {
                 $q->whereHas('kegiatanPelatihan.jadwalPelatihan.pelatihan', function($q) use ($request) {
@@ -79,7 +79,50 @@ class LandingController extends Controller
             });
         }
         
-        $kegiatan = $query->paginate(9);
+        $allKegiatan = $query->get();
+
+        $sorted = $allKegiatan->sort(function ($a, $b) {
+            $aOpen = $a->isRegisterable();
+            $bOpen = $b->isRegisterable();
+
+            if ($aOpen !== $bOpen) {
+                return $aOpen ? -1 : 1;
+            }
+
+            if ($aOpen) {
+                $aDate = $a->jadwal?->tgl_batas_daftar ?? $a->jadwal?->tgl_pelaksanaan;
+                $bDate = $b->jadwal?->tgl_batas_daftar ?? $b->jadwal?->tgl_pelaksanaan;
+
+                $aTs = $aDate ? $aDate->timestamp : PHP_INT_MAX;
+                $bTs = $bDate ? $bDate->timestamp : PHP_INT_MAX;
+
+                return $aTs <=> $bTs;
+            } else {
+                $aDate = $a->jadwal?->tgl_pelaksanaan ?? $a->created_at;
+                $bDate = $b->jadwal?->tgl_pelaksanaan ?? $b->created_at;
+
+                $aTs = $aDate ? $aDate->timestamp : 0;
+                $bTs = $bDate ? $bDate->timestamp : 0;
+
+                return $bTs <=> $aTs;
+            }
+        });
+
+        $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 9;
+        $currentItems = $sorted->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        $kegiatan = new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentItems,
+            $sorted->count(),
+            $perPage,
+            $currentPage,
+            [
+                'path' => \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPath(),
+                'query' => $request->query(),
+            ]
+        );
+
         $kategoris = \App\Models\Kategori::all();
         
         return view('landing.kegiatan', compact('kegiatan', 'kategoris'));

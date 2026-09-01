@@ -24,9 +24,11 @@
             </div>
             <button id="btnSubmitForgot" type="submit" class="fcc-btn-gold" style="width:100%;justify-content:center;padding:12px;font-size:15px;">Kirim Kode OTP</button>
         </form>
-        <p style="text-align:center;margin-top:18px;font-size:14px;color:#6B7280;">
-            <a href="{{ route('auth.login') }}" style="color:#FFC81A;font-weight:700;text-decoration:none;">&larr; Kembali ke Login</a>
-        </p>
+        <div style="text-align:center;margin-top:18px;display:flex;justify-content:center;align-items:center;gap:16px;font-size:13px;">
+            <a href="{{ route('auth.login') }}" style="color:#131218;font-weight:800;text-decoration:none;">&larr; Kembali ke Login</a>
+            <span style="color:#D1D5DB;">|</span>
+            <a href="{{ route('landing.index') }}" style="color:#D97706;font-weight:800;text-decoration:none;">Beranda Utama ➔</a>
+        </div>
     </div>
 </div>
 

@@ -12,7 +12,7 @@ class Peserta extends Authenticatable
 
     protected $table    = 'peserta';
     protected $fillable = [
-        'nama','alamat','email','pending_email','kelamin','instansi','no_hp','password',
+        'nama','alamat','email','pending_email','kelamin','instansi','no_hp','foto','password',
         'status_akun','email_verified_at','remember_token',
     ];
     protected $hidden = ['password','remember_token'];
