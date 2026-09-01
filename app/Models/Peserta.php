@@ -12,7 +12,7 @@ class Peserta extends Authenticatable
 
     protected $table    = 'peserta';
     protected $fillable = [
-        'nama','alamat','email','pending_email','kelamin','instansi','no_hp','foto','password',
+        'nama','alamat','email','pending_email','kelamin','instansi','pekerjaan','no_hp','foto','password',
         'status_akun','email_verified_at','remember_token',
     ];
     protected $hidden = ['password','remember_token'];
@@ -31,4 +31,17 @@ class Peserta extends Authenticatable
         return $value ?? 'aktif';
     }
     public function isAktif(): bool { return ($this->status_akun ?? 'aktif') === 'aktif'; }
+
+    /**
+     * Cek apakah informasi pribadi peserta sudah lengkap.
+     * Wajib melengkapi: nama, email, no_hp, instansi, pekerjaan.
+     */
+    public function isProfileComplete(): bool
+    {
+        return !empty(trim($this->nama ?? ''))
+            && !empty(trim($this->email ?? ''))
+            && !empty(trim($this->no_hp ?? ''))
+            && !empty(trim($this->instansi ?? ''))
+            && !empty(trim($this->pekerjaan ?? ''));
+    }
 }

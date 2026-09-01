@@ -9,7 +9,7 @@ class ProfileService
 {
     public function update(Peserta $peserta, array $data): array
     {
-        $payload = collect($data)->only(['nama', 'no_hp', 'alamat', 'instansi'])->toArray();
+        $payload = collect($data)->only(['nama', 'no_hp', 'alamat', 'instansi', 'pekerjaan'])->toArray();
 
         if (isset($data['foto']) && $data['foto'] instanceof UploadedFile) {
             if (!empty($peserta->foto) && \Illuminate\Support\Facades\Storage::disk('public')->exists($peserta->foto)) {

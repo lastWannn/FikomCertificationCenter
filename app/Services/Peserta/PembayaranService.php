@@ -38,6 +38,7 @@ class PembayaranService
 
         $pembayaran->update([
             'metode_pembayaran' => $data['metode_pembayaran'],
+            'nama_layanan_bank' => $data['nama_layanan_bank'] ?? null,
             'nama_pengirim'     => $data['nama_pengirim'],
             'tgl_transfer'      => $data['tgl_transfer'],
             'jam_transfer'      => $data['jam_transfer'],

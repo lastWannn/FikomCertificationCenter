@@ -25,6 +25,23 @@ class AuthPeserta
             return redirect()->route('auth.login')->with('error', $msg);
         }
 
+        // Cek kelengkapan data profil pribadi peserta
+        $currentRoute = $request->route()?->getName();
+        $allowedProfileRoutes = [
+            'peserta.profile',
+            'peserta.profile.update',
+            'peserta.profile.verify-email-otp',
+            'peserta.profile.resend-email-otp',
+            'peserta.profile.cancel-email-change',
+            'auth.logout',
+            'logout',
+        ];
+
+        if (!$user->isProfileComplete() && !in_array($currentRoute, $allowedProfileRoutes)) {
+            return redirect()->route('peserta.profile')
+                ->with('warning', 'Harap lengkapi informasi profil pribadi Anda (Nama Lengkap, Email, No. HP, Instansi, dan Pekerjaan) terlebih dahulu.');
+        }
+
         return $next($request);
     }
 }

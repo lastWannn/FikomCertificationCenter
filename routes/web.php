@@ -266,8 +266,9 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     Route::post('rekening/{rekening}/aktifkan', [RekeningController::class,'aktifkan'])->name('rekening.aktifkan');
 
     /* LAPORAN */
-    Route::get('laporan',            [LaporanController::class,'index'])->name('laporan.index');
-    Route::get('laporan/export-csv', [LaporanController::class,'exportCsv'])->name('laporan.export-csv');
+    Route::get('laporan',                        [LaporanController::class,'index'])->name('laporan.index');
+    Route::get('laporan/export-csv',             [LaporanController::class,'exportCsv'])->name('laporan.export-csv');
+    Route::get('laporan/export-kegiatan-excel',  [LaporanController::class,'exportKegiatanExcel'])->name('laporan.export-kegiatan-excel');
 
     /* PROFIL */
     Route::get('/profil',  [AdminProfile::class,'edit'])->name('profile');

@@ -189,9 +189,10 @@
                      alt="Bukti Transfer">
                 <div style="margin-top:14px;">
                     @foreach([
-                        ['Nama Pengirim', $pembayaran->nama_pengirim],
-                        ['Tgl Transfer',  optional($pembayaran->tgl_transfer)->format('d M Y').' '.$pembayaran->jam_transfer],
-                        ['Metode',        $pembayaran->metode_pembayaran],
+                        ['Nama Pengirim',    $pembayaran->nama_pengirim],
+                        ['Tgl Transfer',     optional($pembayaran->tgl_transfer)->format('d M Y').' '.$pembayaran->jam_transfer],
+                        ['Jenis Pembayaran', $pembayaran->metode_pembayaran],
+                        ['Layanan / Bank',   $pembayaran->nama_layanan_bank],
                     ] as [$l,$v])
                     @if($v)
                     <div style="display:flex;justify-content:space-between;padding:8px 0;
@@ -214,11 +215,12 @@
                 </h3>
 
                 @foreach([
-                    ['Nominal Biaya',   $pembayaran->jumlah_bayar_format],
-                    ['Kode Unik',       $pembayaran->kode_unik ?? '-'],
-                    ['Total Transfer',  $pembayaran->nominal_transfer_format],
-                    ['Metode',          $pembayaran->metode_pembayaran ?? '-'],
-                    ['Batas Bayar',     $pembayaran->tgl_kadaluarsa?->format('d M Y H:i')],
+                    ['Nominal Biaya',     $pembayaran->jumlah_bayar_format],
+                    ['Kode Unik',         $pembayaran->kode_unik ?? '-'],
+                    ['Total Transfer',    $pembayaran->nominal_transfer_format],
+                    ['Jenis Pembayaran',  $pembayaran->metode_pembayaran ?? '-'],
+                    ['Layanan / Bank',    $pembayaran->nama_layanan_bank ?? '-'],
+                    ['Batas Bayar',       $pembayaran->tgl_kadaluarsa?->format('d M Y H:i')],
                 ] as [$l,$v])
                 <div style="display:flex;justify-content:space-between;align-items:center;
                             padding:9px 0;border-top:1px solid #F0F1F5;">

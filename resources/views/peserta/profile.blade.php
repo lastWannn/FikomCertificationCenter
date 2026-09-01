@@ -167,6 +167,28 @@
     @endif
 
     {{-- ── SUCCESS / ERROR / INFO ALERTS ────────────────────────────── --}}
+    @if(session('warning'))
+    <div style="background:#FFFBEB;border:2px solid #F59E0B;border-radius:16px;padding:16px 20px;margin-bottom:22px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px rgba(245,158,11,0.12);">
+        <div style="width:40px;height:40px;border-radius:12px;background:#F59E0B;color:#FFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            @include('components.icon',['name'=>'alert-triangle','size'=>20,'style'=>'color:#FFF;'])
+        </div>
+        <div>
+            <h4 style="margin:0 0 2px;font-size:14.5px;font-weight:900;color:#B45309;">Lengkapi Informasi Data Diri</h4>
+            <p style="margin:0;font-size:13px;color:#92400E;font-weight:600;">{{ session('warning') }}</p>
+        </div>
+    </div>
+    @elseif(!$peserta->isProfileComplete())
+    <div style="background:#FFFBEB;border:2px solid #F59E0B;border-radius:16px;padding:16px 20px;margin-bottom:22px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px rgba(245,158,11,0.12);">
+        <div style="width:40px;height:40px;border-radius:12px;background:#F59E0B;color:#FFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            @include('components.icon',['name'=>'alert-triangle','size'=>20,'style'=>'color:#FFF;'])
+        </div>
+        <div>
+            <h4 style="margin:0 0 2px;font-size:14.5px;font-weight:900;color:#B45309;">Data Profil Belum Lengkap</h4>
+            <p style="margin:0;font-size:13px;color:#92400E;font-weight:600;">Harap lengkapi informasi data diri Anda (Nama Lengkap, Email, No. HP, Instansi, dan Pekerjaan) terlebih dahulu untuk dapat menggunakan seluruh fitur FIKOM Certification Center.</p>
+        </div>
+    </div>
+    @endif
+
     @if(session('info'))
     <div style="background:#FFFBEB;border:2px solid #F59E0B;border-radius:14px;padding:14px 20px;margin-bottom:22px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 14px rgba(245,158,11,0.15);">
         @include('components.icon',['name'=>'info','size'=>20,'style'=>'color:#D97706;flex-shrink:0'])
@@ -276,11 +298,19 @@
                                    onkeydown="if(event.key==='Enter')event.preventDefault();">
                         </div>
 
-                        <div style="grid-column:1 / -1;">
+                        <div>
                             <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
-                                Instansi / Universitas / Perusahaan
+                                Instansi / Perusahaan *
                             </label>
-                            <input type="text" name="instansi" value="{{ old('instansi',$peserta->instansi) }}" placeholder="Contoh: Universitas Muslim Indonesia" class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
+                            <input type="text" name="instansi" value="{{ old('instansi',$peserta->instansi) }}" required placeholder="Contoh: Universitas Muslim Indonesia" class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
+                                   onkeydown="if(event.key==='Enter')event.preventDefault();">
+                        </div>
+
+                        <div>
+                            <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
+                                Pekerjaan / Status *
+                            </label>
+                            <input type="text" name="pekerjaan" value="{{ old('pekerjaan',$peserta->pekerjaan) }}" required placeholder="Contoh: Mahasiswa, Pegawai, Dosen, Pelajar, Umum..." class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
                                    onkeydown="if(event.key==='Enter')event.preventDefault();">
                         </div>
 

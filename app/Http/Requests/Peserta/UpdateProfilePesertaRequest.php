@@ -13,13 +13,14 @@ class UpdateProfilePesertaRequest extends FormRequest {
     public function rules(): array {
         $id = Auth::guard('peserta')->id();
         return [
-            'nama'     => 'required|string|max:150',
-            'email'    => ['required', 'email', new UniqueEmailAcrossRoles('peserta', $id)],
-            'no_hp'    => 'required|string|max:20',
-            'alamat'   => 'nullable|string|max:500',
-            'instansi' => 'nullable|string|max:200',
-            'foto'     => 'nullable|image|mimes:jpeg,jpg,png,webp,gif,bmp|max:10240',
-            'password' => 'nullable|string|min:8|confirmed',
+            'nama'      => 'required|string|max:150',
+            'email'     => ['required', 'email', new UniqueEmailAcrossRoles('peserta', $id)],
+            'no_hp'     => 'required|string|max:20',
+            'instansi'  => 'required|string|max:200',
+            'pekerjaan' => 'required|string|max:100',
+            'alamat'    => 'nullable|string|max:500',
+            'foto'      => 'nullable|image|mimes:jpeg,jpg,png,webp,gif,bmp|max:10240',
+            'password'  => 'nullable|string|min:8|confirmed',
         ];
     }
 

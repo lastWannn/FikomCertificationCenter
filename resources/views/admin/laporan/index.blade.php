@@ -189,6 +189,67 @@
     </form>
   </div>
 
+  {{-- Card Export Data Pembayaran Per Kegiatan (Excel) --}}
+  <div class="fcc-card no-print" style="padding:20px 24px;margin-bottom:24px;background:#FFFFFF;border:2px solid #E5E7EB;border-radius:18px;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div>
+        <h3 style="margin:0 0 4px;font-size:17px;font-weight:900;color:#131218;">Export Laporan Pembayaran Per Kegiatan</h3>
+        <p style="margin:0;color:#64748B;font-size:13px;font-weight:500;">Pilih program kegiatan dan jadwal pelaksanaan untuk mengunduh laporan pembayaran peserta.</p>
+      </div>
+
+      <form action="{{ route('admin.laporan.export-kegiatan-excel') }}" method="GET" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        {{-- Dropdown 1: Pilih Program --}}
+        <select id="select-program" onchange="onProgramChange(this.value)" class="fcc-input" style="width:240px;max-width:100%;background:#F8FAFC;color:#131218;border:1.5px solid #CBD5E1;border-radius:12px;padding:9.5px 14px;font-size:13px;font-weight:800;cursor:pointer;">
+          <option value="">-- 1. Pilih Program --</option>
+          @foreach($programGroupList as $key => $group)
+            <option value="{{ $key }}">{{ $group['program_name'] }} ({{ $group['jenis'] }})</option>
+          @endforeach
+        </select>
+
+        {{-- Dropdown 2: Pilih Jadwal --}}
+        <select id="select-jadwal" name="kegiatan_id" required disabled class="fcc-input" style="width:260px;max-width:100%;background:#F8FAFC;color:#131218;border:1.5px solid #CBD5E1;border-radius:12px;padding:9.5px 14px;font-size:13px;font-weight:800;cursor:pointer;">
+          <option value="">-- 2. Pilih Jadwal --</option>
+        </select>
+
+        <button type="submit" style="padding:9.5px 22px;font-size:13px;font-weight:900;display:inline-flex;align-items:center;gap:8px;background:#10B981;color:#FFFFFF;border:1.5px solid #059669;border-radius:30px;cursor:pointer;box-shadow:0 4px 14px rgba(16,185,129,0.25);transition:all .2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export Laporan
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const programGroupData = @json($programGroupList);
+
+    function onProgramChange(selectedKey) {
+      const selectJadwal = document.getElementById('select-jadwal');
+      selectJadwal.innerHTML = '<option value="">-- 2. Pilih Jadwal --</option>';
+
+      if (!selectedKey || !programGroupData[selectedKey]) {
+        selectJadwal.disabled = true;
+        return;
+      }
+
+      const group = programGroupData[selectedKey];
+      if (group.jadwal_list && group.jadwal_list.length > 0) {
+        group.jadwal_list.forEach(j => {
+          const opt = document.createElement('option');
+          opt.value = j.id;
+          if (j.nama_jadwal && j.nama_jadwal.trim() !== '') {
+            opt.textContent = `${j.nama_jadwal} (${j.tgl_pelaksanaan})`;
+          } else {
+            opt.textContent = `Pelaksanaan: ${j.tgl_pelaksanaan}`;
+          }
+          selectJadwal.appendChild(opt);
+        });
+        selectJadwal.disabled = false;
+      } else {
+        selectJadwal.disabled = true;
+      }
+    }
+  </script>
+
   {{-- 4 Main KPI Stat Cards Grid --}}
   <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:18px;margin-bottom:24px;">
     

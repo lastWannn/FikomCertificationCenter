@@ -389,10 +389,10 @@ $perpStatus = $pembayaran->status_perpanjangan;
                     <div class="form-grid-2col" style="margin-bottom:16px;">
                         <div>
                             <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
-                                Metode Transfer *
+                                Jenis Pembayaran *
                             </label>
-                            <input type="text" name="metode_pembayaran"
-                                   placeholder="Transfer Bank / QRIS / m-Banking" required class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
+                            <input type="text" name="metode_pembayaran" value="{{ old('metode_pembayaran') }}"
+                                   placeholder="Contoh: Transfer Bank / ATM / M-Banking / QRIS" required class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
                                    onkeydown="if(event.key==='Enter')event.preventDefault();">
                         </div>
 
@@ -400,8 +400,17 @@ $perpStatus = $pembayaran->status_perpanjangan;
                             <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
                                 Nama Pengirim (sesuai rekening) *
                             </label>
-                            <input type="text" name="nama_pengirim"
+                            <input type="text" name="nama_pengirim" value="{{ old('nama_pengirim') }}"
                                    placeholder="Nama di rekening asal" required class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
+                                   onkeydown="if(event.key==='Enter')event.preventDefault();">
+                        </div>
+
+                        <div>
+                            <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
+                                Layanan / Bank Yang Digunakan *
+                            </label>
+                            <input type="text" name="nama_layanan_bank" value="{{ old('nama_layanan_bank') }}"
+                                   placeholder="Contoh: Bank BCA, Mandiri, BRI, SeaBank, Gopay, dll" required class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
                                    onkeydown="if(event.key==='Enter')event.preventDefault();">
                         </div>
 
@@ -409,7 +418,7 @@ $perpStatus = $pembayaran->status_perpanjangan;
                             <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
                                 Tanggal Transfer *
                             </label>
-                            <input type="date" name="tgl_transfer" required class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
+                            <input type="date" name="tgl_transfer" value="{{ old('tgl_transfer', date('Y-m-d')) }}" required class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
                                    onkeydown="if(event.key==='Enter')event.preventDefault();">
                         </div>
 
@@ -417,7 +426,7 @@ $perpStatus = $pembayaran->status_perpanjangan;
                             <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
                                 Jam Transfer *
                             </label>
-                            <input type="time" name="jam_transfer" required class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
+                            <input type="time" name="jam_transfer" value="{{ old('jam_transfer', date('H:i')) }}" required class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
                                    onkeydown="if(event.key==='Enter')event.preventDefault();">
                         </div>
                     </div>

@@ -11,6 +11,7 @@ class KonfirmasiPembayaranRequest extends FormRequest
     {
         return [
             'metode_pembayaran' => 'required|string|max:100',
+            'nama_layanan_bank' => 'required|string|max:100',
             'nama_pengirim'     => 'required|string|max:150',
             'tgl_transfer'      => 'required|date|before_or_equal:today',
             'jam_transfer'      => 'required',
