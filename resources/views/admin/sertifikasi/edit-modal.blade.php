@@ -51,6 +51,7 @@
             <div style="margin-bottom:14px;">
                 <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Deskripsi Program <span style="color:#EF4444;">*</span></label>
                 <textarea name="isi" rows="4" required class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;resize:vertical;">{{ old('isi', $sEdit->isi) }}</textarea>
+                <p style="color:#64748B;font-size:11px;margin:4px 0 0;font-weight:500;">💡 <strong>Tips Fasilitas:</strong> Gunakan tanda minus (<code>- </code>) di baris baru untuk menambahkan daftar Fasilitas/Benefit yang akan tampil secara otomatis di halaman kegiatan.</p>
             </div>
 
             <div style="margin-bottom:16px;">

@@ -9,6 +9,20 @@ class PelatihanService
 {
     public function create(array $data): Pelatihan
     {
+        if (isset($data['fasilitas_input'])) {
+            $deskripsiText = trim($data['isi'] ?? '');
+            $fasilitasText = trim($data['fasilitas_input']);
+            if (!empty($fasilitasText)) {
+                $lines = array_filter(array_map('trim', explode("\n", $fasilitasText)));
+                $formattedLines = array_map(function($line) {
+                    return preg_match('/^[\-\*\+\•]\s*/u', $line) ? $line : '- ' . $line;
+                }, $lines);
+                $data['isi'] = $deskripsiText . "\n\n--- Fasilitas ---\n" . implode("\n", $formattedLines);
+            } else {
+                $data['isi'] = $deskripsiText;
+            }
+        }
+
         $pelData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id', 'prasyarat_id', 'link_materi'])->toArray();
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
             $pelData['gambar'] = \App\Helpers\ImageHelper::compressToWebp($data['gambar'], 'pelatihan');
@@ -76,6 +90,20 @@ class PelatihanService
 
     public function update(Pelatihan $pelatihan, array $data): Pelatihan
     {
+        if (isset($data['fasilitas_input'])) {
+            $deskripsiText = trim($data['isi'] ?? '');
+            $fasilitasText = trim($data['fasilitas_input']);
+            if (!empty($fasilitasText)) {
+                $lines = array_filter(array_map('trim', explode("\n", $fasilitasText)));
+                $formattedLines = array_map(function($line) {
+                    return preg_match('/^[\-\*\+\•]\s*/u', $line) ? $line : '- ' . $line;
+                }, $lines);
+                $data['isi'] = $deskripsiText . "\n\n--- Fasilitas ---\n" . implode("\n", $formattedLines);
+            } else {
+                $data['isi'] = $deskripsiText;
+            }
+        }
+
         $pelData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id', 'prasyarat_id', 'link_materi'])->toArray();
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
             $pelData['gambar'] = \App\Helpers\ImageHelper::compressToWebp($data['gambar'], 'pelatihan');

@@ -9,6 +9,7 @@ class StorePelatihanRequest extends FormRequest {
             'kode'=>'required|string|max:20|unique:pelatihan,kode',
             'judul'=>'required|string|max:255',
             'isi'=>'required|string',
+            'fasilitas_input'=>'nullable|string',
             'kategori_id'=>'required|exists:kategori,id',
             'prasyarat_id'=>'nullable|exists:pelatihan,id',
             'gambar'=>'nullable|image|max:2048',

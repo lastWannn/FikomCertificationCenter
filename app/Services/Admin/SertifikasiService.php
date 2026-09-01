@@ -10,6 +10,20 @@ class SertifikasiService
 {
     public function create(array $data): Sertifikasi
     {
+        if (isset($data['fasilitas_input'])) {
+            $deskripsiText = trim($data['isi'] ?? '');
+            $fasilitasText = trim($data['fasilitas_input']);
+            if (!empty($fasilitasText)) {
+                $lines = array_filter(array_map('trim', explode("\n", $fasilitasText)));
+                $formattedLines = array_map(function($line) {
+                    return preg_match('/^[\-\*\+\•]\s*/u', $line) ? $line : '- ' . $line;
+                }, $lines);
+                $data['isi'] = $deskripsiText . "\n\n--- Fasilitas ---\n" . implode("\n", $formattedLines);
+            } else {
+                $data['isi'] = $deskripsiText;
+            }
+        }
+
         $sertData = collect($data)->only(['kode', 'judul', 'isi', 'kategori_id'])->toArray();
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
             $sertData['gambar'] = \App\Helpers\ImageHelper::compressToWebp($data['gambar'], 'sertifikasi');
@@ -89,10 +103,24 @@ class SertifikasiService
 
     public function update(Sertifikasi $sertifikasi, array $data): Sertifikasi
     {
+        if (isset($data['fasilitas_input'])) {
+            $deskripsiText = trim($data['isi'] ?? '');
+            $fasilitasText = trim($data['fasilitas_input']);
+            if (!empty($fasilitasText)) {
+                $lines = array_filter(array_map('trim', explode("\n", $fasilitasText)));
+                $formattedLines = array_map(function($line) {
+                    return preg_match('/^[\-\*\+\•]\s*/u', $line) ? $line : '- ' . $line;
+                }, $lines);
+                $data['isi'] = $deskripsiText . "\n\n--- Fasilitas ---\n" . implode("\n", $formattedLines);
+            } else {
+                $data['isi'] = $deskripsiText;
+            }
+        }
+
         if (isset($data['gambar']) && $data['gambar'] instanceof UploadedFile) {
             $data['gambar'] = \App\Helpers\ImageHelper::compressToWebp($data['gambar'], 'sertifikasi');
         }
-        unset($data['_token'], $data['_method']);
+        unset($data['_token'], $data['_method'], $data['fasilitas_input']);
         $sertifikasi->update($data);
         return $sertifikasi->fresh();
     }

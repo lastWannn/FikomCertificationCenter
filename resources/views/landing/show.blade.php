@@ -1,10 +1,66 @@
 @extends('layouts.public')
 @section('title', $kegiatan->judul ?? 'Detail Kegiatan')
+@push('styles')
+<style>
+    @media (max-width: 1023px) {
+        .fcc-hero-grid {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+        }
+        .fcc-details-grid {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+        }
+        .fcc-poster-card {
+            max-width: 100% !important;
+            max-height: 280px !important;
+        }
+        .fcc-poster-card img {
+            max-height: 280px !important;
+            width: 100% !important;
+            object-fit: cover !important;
+        }
+        .fcc-hero-content-box {
+            padding: 22px 18px !important;
+        }
+        .fcc-action-bar {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 14px !important;
+        }
+        .fcc-action-bar-btn {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .fcc-hero-section {
+            padding: 24px 16px 32px !important;
+        }
+        .fcc-details-section {
+            padding: 24px 16px 48px !important;
+        }
+        .fcc-meta-grid {
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+        }
+        .fcc-facility-grid {
+            grid-template-columns: 1fr !important;
+        }
+        .fcc-hero-content-box h1 {
+            font-size: 21px !important;
+            margin-bottom: 14px !important;
+        }
+    }
+</style>
+@endpush
+
 @section('page-content')
 <div style="padding-top:84px; background:#131218; min-height: calc(100vh - 84px);">
     
     {{-- ═══ TOP HERO CARD — Integrated Poster, Info & Action Panel ════════════════════ --}}
-    <div style="background:#131218; border-bottom:1.5px solid rgba(255,200,26,0.2); padding:44px 24px 48px; position:relative; overflow:hidden;">
+    <div class="fcc-hero-section" style="background:#131218; border-bottom:1.5px solid rgba(255,200,26,0.2); padding:44px 24px 48px; position:relative; overflow:hidden;">
         <!-- Subtle Glow -->
         <div style="position:absolute; top:-40%; right:-10%; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle, rgba(255,200,26,0.07), transparent 70%); pointer-events:none;"></div>
         
@@ -27,7 +83,7 @@
             <div style="display:grid; grid-template-columns: 280px 1fr; gap:36px; align-items:stretch;" class="fcc-hero-grid">
                 
                 {{-- Left Poster Image --}}
-                <div style="border-radius:18px; overflow:hidden; border:2px solid #FFC81A; background:#1E1D26; box-shadow:0 12px 32px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center;">
+                <div class="fcc-poster-card" style="border-radius:18px; overflow:hidden; border:2px solid #FFC81A; background:#1E1D26; box-shadow:0 12px 32px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center;">
                     @if($kegiatan->detail?->gambar_url)
                         <img src="{{ $kegiatan->detail->gambar_url }}" alt="{{ $kegiatan->judul }}" style="width:100%; height:100%; max-height:360px; object-fit:cover; display:block;" />
                     @else
@@ -47,14 +103,14 @@
                 </div>
 
                 {{-- Right Hero Content & Action --}}
-                <div style="background:#1E1D26; border:1.5px solid rgba(255,200,26,0.25); border-radius:18px; padding:32px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+                <div class="fcc-hero-content-box" style="background:#1E1D26; border:1.5px solid rgba(255,200,26,0.25); border-radius:18px; padding:32px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
                     <div>
                         <h1 style="font-size:clamp(22px, 3vw, 32px); font-weight:900; color:#FFFFFF; margin:0 0 20px; line-height:1.25; letter-spacing:-0.5px;">
                             {{ $kegiatan->judul }}
                         </h1>
 
                         <!-- Meta Info Row -->
-                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:14px; margin-bottom:24px;">
+                        <div class="fcc-meta-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:14px; margin-bottom:24px;">
                             <div style="background:#131218; border:1px solid rgba(255,200,26,0.2); border-radius:12px; padding:12px 16px;">
                                 <p style="color:#FFC81A; font-size:10px; font-weight:900; margin:0 0 4px; text-transform:uppercase; display:flex; align-items:center; gap:4px;">
                                     @include('components.icon',['name'=>'calendar','size'=>12,'style'=>'color:#FFC81A']) Pelaksanaan
@@ -100,7 +156,7 @@
                         $sudahDaftar = $existingPendaftaran && !in_array($existingPendaftaran->status_pendaftaran, ['ditolak', 'dibatalkan']) 
                             && (!$existingPendaftaran->pembayaran || !in_array($existingPendaftaran->pembayaran->status_pembayaran, ['ditolak', 'kadaluarsa']));
                     @endphp
-                    <div style="background:#131218; border:1.5px solid #FFC81A; border-radius:14px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-top:28px;">
+                    <div class="fcc-action-bar" style="background:#131218; border:1.5px solid #FFC81A; border-radius:14px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-top:28px;">
                         <div>
                             <p style="color:#FFC81A; font-size:11px; font-weight:900; margin:0 0 6px; text-transform:uppercase; letter-spacing:1px;">Rincian Biaya Pendaftaran</p>
                             @if($kegiatan->biaya->isNotEmpty())
@@ -117,7 +173,7 @@
                             @endif
                         </div>
 
-                        <div style="flex-grow:1; max-width:240px;">
+                        <div class="fcc-action-bar-btn" style="flex-grow:1; max-width:240px;">
                             @if($kegiatan->isDraf())
                                 <button type="button" disabled style="padding:13px 24px; font-size:13.5px; font-weight:900; width:100%; justify-content:center; border-radius:30px; background:#131218; border:1px solid rgba(255,255,255,0.2); color:#FBBF24; cursor:not-allowed;">
                                     Draft (Konsep Admin)
@@ -162,48 +218,76 @@
     </div>
 
     {{-- ═══ BOTTOM COMPACT DETAILS (2 Columns Side-by-Side) ═══════════════════════════ --}}
-    <div style="background:#F8F9FA; padding:48px 24px 72px;">
+    <div class="fcc-details-section" style="background:#F8F9FA; padding:48px 24px 72px;">
         <div style="max-width:1180px; margin:0 auto;">
             <div style="display:grid; grid-template-columns: 1.4fr 1fr; gap:32px; align-items:start;" class="fcc-details-grid">
                 
                 {{-- Left: Deskripsi & Fasilitas --}}
                 <div style="display:flex; flex-direction:column; gap:28px;">
                     
-                    {{-- Deskripsi Program --}}
+                    {{-- Deskripsi Program & Fasilitas Processing --}}
+                    @php
+                        $rawIsi = $kegiatan->detail?->isi ?? '';
+
+                        // Clean description: remove '--- Fasilitas ---' header block and bullet point lines
+                        $splitParts = preg_split('/(?:\r?\n){1,2}(?:\-{1,}\s*Fasilitas\s*\-{0,}|Fasilitas & Benefit:|Fasilitas:)\s*/i', $rawIsi, 2);
+                        $cleanDescText = trim($splitParts[0] ?? $rawIsi);
+                        $descLines = explode("\n", $cleanDescText);
+                        $nonBulletDescLines = array_filter($descLines, function($l) {
+                            $t = trim($l);
+                            return !preg_match('/^[\-\*\+\•\>]\s*/u', $t) && !preg_match('/^\-{1,}\s*Fasilitas/i', $t);
+                        });
+                        $finalDeskripsi = !empty($nonBulletDescLines) ? implode("\n", $nonBulletDescLines) : $cleanDescText;
+                        if (empty(trim($finalDeskripsi))) {
+                            $finalDeskripsi = 'Informasi lengkap mengenai program ini akan segera dirilis oleh panitia FIKOM Certification Center.';
+                        }
+
+                        // Extract Custom Facilities from Admin Input
+                        // Extract Custom Facilities strictly from Admin Input (isi / Fasilitas field)
+                        $customFacilities = [];
+                        if (!empty($rawIsi)) {
+                            $lines = explode("\n", $rawIsi);
+                            foreach ($lines as $line) {
+                                $line = trim($line);
+                                // Ignore header lines like --- Fasilitas --- or -- Fasilitas ---
+                                if (preg_match('/^\-{1,}\s*Fasilitas/i', $line) || preg_match('/^(?:Fasilitas & Benefit|Fasilitas):/i', $line)) {
+                                    continue;
+                                }
+                                if (preg_match('/^[\-\*\+\•\>]\s*(.+)$/u', $line, $matches)) {
+                                    $item = trim(strip_tags($matches[1]));
+                                    if (!empty($item) && !in_array($item, $customFacilities)) {
+                                        $customFacilities[] = $item;
+                                    }
+                                }
+                            }
+                        }
+                    @endphp
                     <div style="background:#FFFFFF; border:1.5px solid #E2E8F0; border-radius:20px; padding:28px; box-shadow:0 8px 24px rgba(0,0,0,0.04);">
                         <h3 style="font-size:16px; font-weight:900; color:#0F172A; margin:0 0 16px; text-transform:uppercase; letter-spacing:0.8px; display:flex; align-items:center; gap:8px;">
                             <div style="width:4px; height:20px; background:#FFC81A; border-radius:2px;"></div>
                             @include('components.icon',['name'=>'info','size'=>16,'style'=>'color:#D97706']) Deskripsi Program
                         </h3>
                         <div style="color:#334155; font-size:14.5px; line-height:1.8; font-weight:500;">
-                            {!! nl2br(e($kegiatan->detail?->isi ?? 'Informasi lengkap mengenai program ini akan segera dirilis oleh panitia FIKOM Certification Center.')) !!}
+                            {!! nl2br(e(trim($finalDeskripsi))) !!}
                         </div>
                     </div>
 
-                    {{-- Benefit / Fasilitas Peserta --}}
+                    {{-- Benefit / Fasilitas Peserta (Hanya tampil jika diisi oleh Admin) --}}
+                    @if(!empty($customFacilities))
                     <div style="background:#FFFFFF; border:1.5px solid #E2E8F0; border-radius:20px; padding:24px 28px; box-shadow:0 8px 24px rgba(0,0,0,0.04);">
                         <h3 style="font-size:14px; font-weight:900; color:#0F172A; margin:0 0 16px; text-transform:uppercase; letter-spacing:0.8px;">
                             Fasilitas &amp; Benefit Keikutsertaan
                         </h3>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+                        <div class="fcc-facility-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+                            @foreach($customFacilities as $fac)
                             <div style="display:flex; align-items:center; gap:10px; font-size:13.5px; color:#0F172A; font-weight:700;">
-                                @include('components.icon',['name'=>'check-circle','size'=>16,'style'=>'color:#D97706'])
-                                <span>Sertifikat Resmi BNSP / Global</span>
+                                @include('components.icon',['name'=>'check-circle','size'=>16,'style'=>'color:#D97706; flex-shrink:0;'])
+                                <span>{{ $fac }}</span>
                             </div>
-                            <div style="display:flex; align-items:center; gap:10px; font-size:13.5px; color:#0F172A; font-weight:700;">
-                                @include('components.icon',['name'=>'check-circle','size'=>16,'style'=>'color:#D97706'])
-                                <span>Instruktur Dosen &amp; Praktisi IT</span>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:10px; font-size:13.5px; color:#0F172A; font-weight:700;">
-                                @include('components.icon',['name'=>'check-circle','size'=>16,'style'=>'color:#D97706'])
-                                <span>Akses Modul &amp; Material Pelatihan</span>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:10px; font-size:13.5px; color:#0F172A; font-weight:700;">
-                                @include('components.icon',['name'=>'check-circle','size'=>16,'style'=>'color:#D97706'])
-                                <span>Portofolio &amp; Pengakuan Kerja</span>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
+                    @endif
                 </div>
 
                 {{-- Right: Silabus & Help Desk --}}

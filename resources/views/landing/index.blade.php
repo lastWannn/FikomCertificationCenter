@@ -50,23 +50,15 @@
             
             {{-- Left Column: Clean Typography & CTAs --}}
             <div style="max-width:660px;">
-                
-                {{-- Clean Solid Tag Pill --}}
-                <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;background:#FFC81A;border:1.5px solid #131218;border-radius:100px;padding:6px 18px;box-shadow:0 4px 12px rgba(255,200,26,0.25);">
-                    <div style="width:7px;height:7px;border-radius:50%;background:#131218;"></div>
-                    <span style="color:#131218;font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;">
-                        FIKOM CERTIFICATION CENTER &middot; UMI MAKASSAR
-                    </span>
-                </div>
 
                 {{-- Headline --}}
                 <h1 style="color:#FFFFFF;font-weight:900;line-height:1.15;letter-spacing:-1px;">
-                    Bimbing Langkah Anda Menuju <span style="color:#FFC81A;">Keahlian Profesional</span> &amp; Sertifikasi Resmi
+                    Dapatkan <span style="color:#FFC81A;">Sertifikasi Resmi</span> &amp; Gelar Kompetensi Berstandar Industri
                 </h1>
 
                 {{-- Subtitle --}}
-                <p style="color:rgba(255,255,255,0.8);max-width:600px;">
-                    Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya di Fakultas Ilmu Komputer Universitas Muslim Indonesia. Dapatkan pengakuan karir resmi berstandar industri.
+                <p style="color:rgba(255,255,255,0.85);max-width:600px;font-size:15px;line-height:1.65;margin-top:14px;">
+                    Platform pelatihan dan sertifikasi kompetensi terpercaya di Fakultas Ilmu Komputer UMI. Raih gelar profesi serta sertifikat resmi berstandar industri yang <strong style="color:#FFF;">berlaku seumur hidup</strong> untuk menunjang karir Anda.
                 </p>
 
                 {{-- Action Buttons --}}

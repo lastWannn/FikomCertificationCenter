@@ -48,9 +48,20 @@
                 <input type="text" name="judul" value="{{ old('judul', $pEdit->judul) }}" required class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
             </div>
 
+            @php
+              $parts = preg_split('/(?:\r?\n){1,2}(?:--- Fasilitas ---|Fasilitas & Benefit:|Fasilitas:)\s*/i', $pEdit->isi, 2);
+              $deskripsiVal = trim($parts[0] ?? $pEdit->isi);
+              $fasilitasVal = trim($parts[1] ?? '');
+            @endphp
             <div style="margin-bottom:14px;">
                 <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Deskripsi Program <span style="color:#EF4444;">*</span></label>
-                <textarea name="isi" rows="4" required class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;resize:vertical;">{{ old('isi', $pEdit->isi) }}</textarea>
+                <textarea name="isi" rows="3" required class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;resize:vertical;">{{ old('isi', $deskripsiVal) }}</textarea>
+            </div>
+
+            <div style="margin-bottom:14px;">
+                <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Fasilitas &amp; Benefit Keikutsertaan <span style="font-weight:500;color:#64748B;">(Opsional)</span></label>
+                <textarea name="fasilitas_input" rows="3" placeholder="Contoh:&#10;- E-Book & Modul Digital&#10;- Ruang Lab AC & Wi-Fi&#10;- Coffee Break & Lunch" class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;resize:vertical;">{{ old('fasilitas_input', $fasilitasVal) }}</textarea>
+                <p style="color:#64748B;font-size:11px;margin:4px 0 0;font-weight:500;">Tuliskan setiap fasilitas tambahan di baris baru untuk ditampilkan secara otomatis di halaman kegiatan.</p>
             </div>
 
             <div style="margin-bottom:16px;">
