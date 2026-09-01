@@ -199,16 +199,16 @@
 
       <form action="{{ route('admin.laporan.export-kegiatan-excel') }}" method="GET" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         {{-- Dropdown 1: Pilih Program --}}
-        <select id="select-program" onchange="onProgramChange(this.value)" class="fcc-input" style="width:240px;max-width:100%;background:#F8FAFC;color:#131218;border:1.5px solid #CBD5E1;border-radius:12px;padding:9.5px 14px;font-size:13px;font-weight:800;cursor:pointer;">
+        <select id="select-program" name="program_key" required onchange="onProgramChange(this.value)" class="fcc-input" style="width:240px;max-width:100%;background:#F8FAFC;color:#131218;border:1.5px solid #CBD5E1;border-radius:12px;padding:9.5px 14px;font-size:13px;font-weight:800;cursor:pointer;">
           <option value="">-- 1. Pilih Program --</option>
           @foreach($programGroupList as $key => $group)
             <option value="{{ $key }}">{{ $group['program_name'] }} ({{ $group['jenis'] }})</option>
           @endforeach
         </select>
 
-        {{-- Dropdown 2: Pilih Jadwal --}}
-        <select id="select-jadwal" name="kegiatan_id" required disabled class="fcc-input" style="width:260px;max-width:100%;background:#F8FAFC;color:#131218;border:1.5px solid #CBD5E1;border-radius:12px;padding:9.5px 14px;font-size:13px;font-weight:800;cursor:pointer;">
-          <option value="">-- 2. Pilih Jadwal --</option>
+        {{-- Dropdown 2: Pilih Jadwal (Default: Semua Jadwal Multi-Sheet) --}}
+        <select id="select-jadwal" name="kegiatan_id" disabled class="fcc-input" style="width:260px;max-width:100%;background:#F8FAFC;color:#131218;border:1.5px solid #CBD5E1;border-radius:12px;padding:9.5px 14px;font-size:13px;font-weight:800;cursor:pointer;">
+          <option value="all">-- Semua Jadwal (Multi-Sheet) --</option>
         </select>
 
         <button type="submit" style="padding:9.5px 22px;font-size:13px;font-weight:900;display:inline-flex;align-items:center;gap:8px;background:#10B981;color:#FFFFFF;border:1.5px solid #059669;border-radius:30px;cursor:pointer;box-shadow:0 4px 14px rgba(16,185,129,0.25);transition:all .2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
@@ -224,7 +224,7 @@
 
     function onProgramChange(selectedKey) {
       const selectJadwal = document.getElementById('select-jadwal');
-      selectJadwal.innerHTML = '<option value="">-- 2. Pilih Jadwal --</option>';
+      selectJadwal.innerHTML = '<option value="all">-- Semua Jadwal (Multi-Sheet) --</option>';
 
       if (!selectedKey || !programGroupData[selectedKey]) {
         selectJadwal.disabled = true;
@@ -245,7 +245,7 @@
         });
         selectJadwal.disabled = false;
       } else {
-        selectJadwal.disabled = true;
+        selectJadwal.disabled = false;
       }
     }
   </script>
