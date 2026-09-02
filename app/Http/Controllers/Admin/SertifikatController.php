@@ -58,4 +58,66 @@ class SertifikatController extends Controller
         $count = $this->service->terbitkanSemua($kegiatan, $r->tgl_terbit);
         return back()->with('success', "{$count} sertifikat berhasil diterbitkan.");
     }
+
+    public function layoutEditor(Kegiatan $kegiatan) {
+        $kegiatan->load(['kegiatanPelatihan.jadwalPelatihan.pelatihan', 'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi']);
+        $layout = $kegiatan->layout_settings;
+        $name = $layout['name'] ?? [];
+        $name['font_family'] = $name['font_family'] ?? 'Allura';
+        $layout['name'] = $name;
+
+        $desc = $layout['desc'] ?? [];
+        $desc['font_family'] = $desc['font_family'] ?? 'Poppins';
+        $layout['desc'] = $desc;
+
+        $bgSrc = null;
+        $gambarLatarPath = $kegiatan->nama_latar;
+        if (empty($gambarLatarPath) || !file_exists(public_path('storage/' . $gambarLatarPath))) {
+            if (file_exists(storage_path('app/public/latar-sertifikat/LfPQPcpLb5uKPx2YELbIUgQuIhxbnViaBBACTWv5.webp'))) {
+                $gambarLatarPath = 'latar-sertifikat/LfPQPcpLb5uKPx2YELbIUgQuIhxbnViaBBACTWv5.webp';
+            }
+        }
+
+        if (!empty($gambarLatarPath)) {
+            $realPath = public_path('storage/' . $gambarLatarPath);
+            if (!file_exists($realPath)) {
+                $realPath = storage_path('app/public/' . $gambarLatarPath);
+            }
+            if (file_exists($realPath) && is_file($realPath)) {
+                $type = pathinfo($realPath, PATHINFO_EXTENSION);
+                $data = file_get_contents($realPath);
+                $bgSrc = 'data:image/' . ($type === 'svg' ? 'svg+xml' : ($type === 'webp' ? 'webp' : $type)) . ';base64,' . base64_encode($data);
+            }
+        }
+
+        $dummySertifikat = Sertifikat::whereHas('pendaftaran', fn($q) => $q->where('kegiatan_id', $kegiatan->id))->with('pendaftaran.peserta')->first();
+
+        return view('admin.sertifikat.layout-editor', compact('kegiatan', 'layout', 'bgSrc', 'dummySertifikat'));
+    }
+
+    public function saveLayout(Request $r, Kegiatan $kegiatan) {
+        $r->validate([
+            'layout' => 'required|array',
+        ]);
+
+        $targetJudul = trim($kegiatan->judul);
+        $matching = Kegiatan::all()->filter(fn($k) => trim($k->judul) === $targetJudul);
+        foreach ($matching as $k) {
+            $k->update(['sertifikat_layout' => $r->layout]);
+
+            Sertifikat::whereHas('pendaftaran', fn($q) => $q->where('kegiatan_id', $k->id))
+                ->update(['file_sertifikat' => null]);
+        }
+
+        if ($r->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Koordinat tata letak & font sertifikat berhasil disimpan.']);
+        }
+
+        return back()->with('success', 'Koordinat tata letak & font sertifikat berhasil disimpan.');
+    }
 }
+
+
+
+
+

@@ -10,31 +10,67 @@ class CetakController extends Controller
     /** Sertifikat PDF per peserta */
     public function sertifikat(Sertifikat $sertifikat)
     {
-        $sertifikat->load(['pendaftaran.peserta','pendaftaran.kegiatan']);
+        $sertifikat->load([
+            'pendaftaran.peserta',
+            'pendaftaran.kegiatan.kegiatanPelatihan.jadwalPelatihan',
+            'pendaftaran.kegiatan.kegiatanSertifikasi.jadwalSertifikasi'
+        ]);
         $bgSrc = null;
-        if (!empty($sertifikat->gambar_latar)) {
-            $realPath = public_path('storage/' . $sertifikat->gambar_latar);
+        $gambarLatarPath = $sertifikat->gambar_latar ?? $sertifikat->pendaftaran->kegiatan?->nama_latar;
+        if (empty($gambarLatarPath) || !file_exists(public_path('storage/' . $gambarLatarPath))) {
+            // Check default uploaded background template
+            if (file_exists(storage_path('app/public/latar-sertifikat/LfPQPcpLb5uKPx2YELbIUgQuIhxbnViaBBACTWv5.webp'))) {
+                $gambarLatarPath = 'latar-sertifikat/LfPQPcpLb5uKPx2YELbIUgQuIhxbnViaBBACTWv5.webp';
+            }
+        }
+
+        if (!empty($gambarLatarPath)) {
+            $realPath = public_path('storage/' . $gambarLatarPath);
             if (!file_exists($realPath)) {
-                $realPath = storage_path('app/public/' . $sertifikat->gambar_latar);
+                $realPath = storage_path('app/public/' . $gambarLatarPath);
             }
             if (file_exists($realPath) && is_file($realPath)) {
                 $type = pathinfo($realPath, PATHINFO_EXTENSION);
                 $data = file_get_contents($realPath);
-                $bgSrc = 'data:image/' . ($type === 'svg' ? 'svg+xml' : $type) . ';base64,' . base64_encode($data);
+                $bgSrc = 'data:image/' . ($type === 'svg' ? 'svg+xml' : ($type === 'webp' ? 'webp' : $type)) . ';base64,' . base64_encode($data);
             }
         }
 
-        if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+        $tglPelaksanaanFormat = $sertifikat->pendaftaran->kegiatan?->jadwal?->tgl_pelaksanaan 
+            ? $sertifikat->pendaftaran->kegiatan->jadwal->tgl_pelaksanaan->translatedFormat('d F Y') 
+            : 'September 12th, 2021';
+
+        $tglTerbitFormat = $sertifikat->tgl_terbit 
+            ? $sertifikat->tgl_terbit->translatedFormat('d F Y') 
+            : 'September 12th, 2021';
+
+        $layout = $sertifikat->pendaftaran->kegiatan?->layout_settings ?? [];
+        $name = $layout['name'] ?? [];
+        $name['font_family'] = $name['font_family'] ?? 'Allura';
+        $layout['name'] = $name;
+
+        $desc = $layout['desc'] ?? [];
+        $desc['font_family'] = $desc['font_family'] ?? 'Poppins';
+        $layout['desc'] = $desc;
+
+        if (!file_exists(storage_path('fonts'))) {
+            @mkdir(storage_path('fonts'), 0777, true);
+        }
+
+        if (class_exists(\Barryvdh\DomPDF\PDF::class)) {
             $safeNomor = str_replace(['/', '\\'], '-', $sertifikat->nomor_sertifikat);
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.sertifikat-pdf', compact('sertifikat', 'bgSrc'))
-                ->setPaper('a4','landscape');
+            $pdf = app('dompdf.wrapper')
+                ->setPaper('a4', 'landscape')
+                ->setOption('isRemoteEnabled', true)
+                ->setOption('isHtml5ParserEnabled', true);
+
+            $pdf->loadView('admin.cetak.sertifikat-pdf', compact('sertifikat', 'bgSrc', 'tglPelaksanaanFormat', 'tglTerbitFormat', 'layout'));
 
             return $pdf->stream("sertifikat-{$safeNomor}.pdf");
         }
         // Fallback: tampilkan sebagai HTML untuk di-print
-        return view('admin.cetak.sertifikat-pdf', compact('sertifikat', 'bgSrc'));
+        return view('admin.cetak.sertifikat-pdf', compact('sertifikat', 'bgSrc', 'tglPelaksanaanFormat', 'tglTerbitFormat', 'layout'));
     }
-
     /** Invoice PDF — tagihan sebelum bayar */
     public function invoice(Pembayaran $pembayaran)
     {
@@ -96,3 +132,10 @@ class CetakController extends Controller
         return view('admin.cetak.penilaian-pdf', compact('pendaftaran'));
     }
 }
+
+
+
+
+
+
+

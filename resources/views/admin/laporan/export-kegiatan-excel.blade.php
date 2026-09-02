@@ -1,5 +1,5 @@
-<?xml version="1.0"?>
-<?mso-application progid="Excel.Sheet"?>
+{!! '<?xml version="1.0"?>' !!}
+{!! '<?mso-application progid="Excel.Sheet"?>' !!}
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:o="urn:schemas-microsoft-com:office:office"
  xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -181,7 +181,7 @@
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">{{ e($pembayaranText) }}</Data></Cell>
     <Cell ss:StyleID="TableCellRightBold"><Data ss:Type="String">{{ e($nominalText) }}</Data></Cell>
     <Cell ss:StyleID="{{ $isLunas ? 'StatusLunas' : 'StatusTidakLunas' }}"><Data ss:Type="String">{{ $isLunas ? 'Lunas' : 'Tidak Lunas' }}</Data></Cell>
-    <Cell ss:StyleID="{{ $buktiUrl ? 'LinkStyle' : 'TableCellCenter' }}" {{ $buktiUrl ? 'ss:HRef='.$buktiUrl : '' }}>
+    <Cell ss:StyleID="{{ $buktiUrl ? 'LinkStyle' : 'TableCellCenter' }}"@if($buktiUrl) ss:HRef="{{ $buktiUrl }}"@endif>
      <Data ss:Type="String">{{ $buktiUrl ? 'Lihat Bukti Bayar ↗' : '- Tidak Ada -' }}</Data>
     </Cell>
    </Row>

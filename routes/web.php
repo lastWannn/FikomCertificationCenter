@@ -214,6 +214,8 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
 
     Route::get('sertifikat',                          [AdminSertifikat::class,'index'])->name('sertifikat.index');
     Route::get('sertifikat/{kegiatan}/peserta',       [AdminSertifikat::class,'peserta'])->name('sertifikat.peserta');
+    Route::get('sertifikat/{kegiatan}/layout-editor', [AdminSertifikat::class,'layoutEditor'])->name('sertifikat.layout-editor');
+    Route::post('sertifikat/{kegiatan}/save-layout',  [AdminSertifikat::class,'saveLayout'])->name('sertifikat.save-layout');
     Route::post('sertifikat/upload-latar',            [AdminSertifikat::class,'uploadLatar'])->name('sertifikat.upload-latar');
     Route::post('sertifikat/{pendaftaran}/terbitkan', [AdminSertifikat::class,'terbitkan'])->name('sertifikat.terbitkan');
     Route::post('sertifikat/terbitkan-semua/{kegiatan}', [AdminSertifikat::class,'terbitkanSemua'])->name('sertifikat.terbitkan-semua');

@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Sertifikat;
+use App\Services\Admin\SertifikatService;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\File;
 
 class RegenerateSertifikatPdfSeeder extends Seeder
 {
@@ -15,7 +15,11 @@ class RegenerateSertifikatPdfSeeder extends Seeder
             return;
         }
 
-        $sertifikats = Sertifikat::with(['pendaftaran.peserta', 'pendaftaran.kegiatan'])
+        $sertifikats = Sertifikat::with([
+            'pendaftaran.peserta',
+            'pendaftaran.kegiatan.kegiatanPelatihan.jadwalPelatihan',
+            'pendaftaran.kegiatan.kegiatanSertifikasi.jadwalSertifikasi',
+        ])
             ->orderBy('id')
             ->get();
 
@@ -24,31 +28,18 @@ class RegenerateSertifikatPdfSeeder extends Seeder
             return;
         }
 
-        $outputDir = storage_path('app/public/sertifikat-cetak');
-        File::ensureDirectoryExists($outputDir);
-
         $count = 0;
+        $sertifikatService = app(SertifikatService::class);
+
         foreach ($sertifikats as $sertifikat) {
             if (!$sertifikat->pendaftaran || !$sertifikat->pendaftaran->peserta || !$sertifikat->pendaftaran->kegiatan) {
                 continue;
             }
 
-            $safeNomor = str_replace(['/', '\\'], '-', $sertifikat->nomor_sertifikat);
-            $fileName = "sertifikat-{$safeNomor}.pdf";
-            $filePath = $outputDir . DIRECTORY_SEPARATOR . $fileName;
-
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.sertifikat-pdf', [
-                'sertifikat' => $sertifikat,
-            ])->setPaper('a4', 'landscape');
-
-            File::put($filePath, $pdf->output());
-
-            $sertifikat->forceFill([
-                'file_sertifikat' => 'sertifikat-cetak/' . $fileName,
-            ])->save();
-
+            $sertifikatService->regeneratePdf($sertifikat);
             $count++;
-            $this->command?->line("✅ {$sertifikat->nomor_sertifikat} -> {$fileName}");
+
+            $this->command?->line("{$sertifikat->nomor_sertifikat} diregenerasi.");
         }
 
         $this->command?->info("Selesai meregenerasi {$count} file PDF sertifikat.");

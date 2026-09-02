@@ -6,13 +6,33 @@ use App\Traits\HasHashid;
 class Kegiatan extends Model {
     use HasHashid;
     protected $table    = 'kegiatan';
-    protected $fillable = ['jenis_kegiatan','nama_latar','qr_token','status'];
+    protected $fillable = ['jenis_kegiatan','nama_latar','sertifikat_layout','qr_token','status'];
+    protected $casts    = ['sertifikat_layout' => 'array'];
 
     public function kegiatanPelatihan()   { return $this->hasOne(KegiatanPelatihan::class); }
     public function kegiatanSertifikasi() { return $this->hasOne(KegiatanSertifikasi::class); }
     public function biaya()               { return $this->hasMany(BiayaKegiatan::class); }
     public function pendaftaran()         { return $this->hasMany(Pendaftaran::class); }
     public function arsip()               { return $this->hasOne(ArsipKegiatan::class); }
+
+    public function getLayoutSettingsAttribute(): array
+    {
+        $default = [
+            'title' => ['top' => 40, 'left' => 0, 'font_size' => 32, 'font_family' => 'Times New Roman'],
+            'label' => ['top' => 63, 'left' => 0, 'font_size' => 8.5, 'font_family' => 'Arial'],
+            'name'  => ['top' => 71, 'left' => 0, 'font_size' => 36, 'font_family' => 'Great Vibes'],
+            'desc'  => ['top' => 109, 'left' => 0, 'font_size' => 10, 'title_font_size' => 14, 'line_height' => 1.35, 'line_gap' => 1, 'font_family' => 'Arial'],
+            'date'  => ['top' => 146, 'right' => 46, 'font_size' => 9.5, 'font_family' => 'Arial'],
+            'sig1'  => ['top' => 167.5, 'left' => 60, 'font_size' => 10, 'font_family' => 'Arial'],
+            'sig2'  => ['top' => 167.5, 'right' => 46, 'font_size' => 10, 'font_family' => 'Arial'],
+        ];
+
+        if (empty($this->sertifikat_layout)) {
+            return $default;
+        }
+
+        return array_replace_recursive($default, $this->sertifikat_layout);
+    }
 
     public function getDetailAttribute() {
         if ($this->jenis_kegiatan === 'pelatihan')

@@ -285,17 +285,24 @@
             }
 
             if (hasLatar && latarUrl) {
+                const editorUrl = "{{ route('admin.sertifikat.layout-editor', ':id') }}".replace(':id', selectedId);
                 container.innerHTML = `
                     <div style="background:#ECFDF5;border:1.5px solid #10B981;border-radius:14px;padding:14px;position:relative;transition:all .2s;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
                             <span style="font-size:11px;font-weight:900;color:#047857;background:#D1FAE5;padding:3px 10px;border-radius:20px;border:1px solid #10B981;text-transform:uppercase;letter-spacing:0.5px;display:inline-flex;align-items:center;gap:4px;">
                                 ✅ Template Latar Sudah Terupload
                             </span>
-                            <button type="button" onclick="openLatarModal('${latarUrl}', '${judul.replace(/'/g, "\\'")}')"
-                                    style="font-size:11px;font-weight:800;color:#065F46;background:#FFF;border:1px solid #10B981;padding:4px 10px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s;"
-                                    onmouseover="this.style.background='#10B981';this.style.color='#FFF';" onmouseout="this.style.background='#FFF';this.style.color='#065F46';">
-                                🔍 Zoom Preview
-                            </button>
+                            <div style="display:flex;gap:6px;">
+                                <a href="${editorUrl}"
+                                   style="font-size:11px;font-weight:800;color:#FFFFFF;background:#F59E0B;border:1px solid #D97706;padding:4px 10px;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(245,158,11,0.25);">
+                                    🎨 Atur Koordinat Teks
+                                </a>
+                                <button type="button" onclick="openLatarModal('${latarUrl}', '${judul.replace(/'/g, "\\'")}')"
+                                        style="font-size:11px;font-weight:800;color:#065F46;background:#FFF;border:1px solid #10B981;padding:4px 10px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s;"
+                                        onmouseover="this.style.background='#10B981';this.style.color='#FFF';" onmouseout="this.style.background='#FFF';this.style.color='#065F46';">
+                                    🔍 Zoom
+                                </button>
+                            </div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px;">
                             <div style="position:relative;width:96px;height:65px;border-radius:8px;overflow:hidden;border:1.5px solid #059669;box-shadow:0 3px 10px rgba(0,0,0,0.12);flex-shrink:0;cursor:pointer;" onclick="openLatarModal('${latarUrl}', '${judul.replace(/'/g, "\\'")}')">
@@ -542,19 +549,11 @@
 
                         {{-- File Sertifikat --}}
                         <td style="padding:14px 20px;text-align:center;vertical-align:middle;">
-                            @if($s->file_sertifikat)
-                            <a href="{{ asset('storage/'.$s->file_sertifikat) }}" target="_blank"
-                               style="padding:6px 14px;font-size:12px;font-weight:800;background:#FFFFFF;color:#131218;border-radius:8px;border:1.5px solid #131218;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .18s;"
-                               onmouseover="this.style.background='#131218';this.style.color='#FFFFFF';" onmouseout="this.style.background='#FFFFFF';this.style.color='#131218';">
-                                @include('components.icon',['name'=>'download','size'=>13]) Unduh PDF
-                            </a>
-                            @else
                             <a href="{{ route('admin.cetak.sertifikat', $s) }}" target="_blank"
                                style="padding:6px 14px;font-size:12px;font-weight:800;background:#131218;color:#FFC81A;border-radius:8px;border:1px solid #131218;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .18s;"
                                onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">
                                 @include('components.icon',['name'=>'printer','size'=>13]) Lihat PDF
                             </a>
-                            @endif
                         </td>
                     </tr>
                     @empty

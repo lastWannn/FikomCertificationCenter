@@ -100,9 +100,14 @@
                 <p style="margin:0;font-size:13px;font-weight:800;color:#064E3B;">Template latar sertifikat kegiatan ini sudah terupload &amp; siap diterbitkan.</p>
             </div>
         </div>
-        <a href="{{ route('admin.sertifikat.index') }}" style="font-size:12px;font-weight:800;color:#047857;background:#FFFFFF;border:1.5px solid #10B981;padding:6px 14px;border-radius:10px;text-decoration:none;transition:all .15s;" onmouseover="this.style.background='#10B981';this.style.color='#FFF';" onmouseout="this.style.background='#FFF';this.style.color='#047857';">
-            Ganti Template Latar &rarr;
-        </a>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <a href="{{ route('admin.sertifikat.layout-editor', $kegiatan) }}" style="font-size:12px;font-weight:900;color:#FFFFFF;background:#F59E0B;border:1.5px solid #D97706;padding:6px 14px;border-radius:10px;text-decoration:none;box-shadow:0 2px 8px rgba(245,158,11,0.25);">
+                🎨 Atur Koordinat Teks
+            </a>
+            <a href="{{ route('admin.sertifikat.index') }}" style="font-size:12px;font-weight:800;color:#047857;background:#FFFFFF;border:1.5px solid #10B981;padding:6px 14px;border-radius:10px;text-decoration:none;transition:all .15s;" onmouseover="this.style.background='#10B981';this.style.color='#FFF';" onmouseout="this.style.background='#FFF';this.style.color='#047857';">
+                Ganti Template Latar &rarr;
+            </a>
+        </div>
     </div>
     @else
     <div style="background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:16px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 2px 10px rgba(245,158,11,0.08);">

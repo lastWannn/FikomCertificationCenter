@@ -443,10 +443,6 @@
               <span style="font-size:10px;font-weight:900;padding:2px 8px;border-radius:12px;background:{{ $k->jenis_kegiatan==='pelatihan'?'#FFC81A':'#3B82F6' }};color:{{ $k->jenis_kegiatan==='pelatihan'?'#131218':'#FFF' }};border:1px solid #131218;text-transform:uppercase;">
                 {{ $k->jenis_kegiatan }}
               </span>
-              @php $minNominal = $k->biaya->min('nominal') ?? 0; @endphp
-              <span style="font-size:11.5px;font-weight:800;color:#64748B;">
-                {{ $minNominal > 0 ? 'Rp '.number_format($minNominal,0,',','.') : 'Gratis' }}
-              </span>
             </div>
             <h4 style="margin:0 0 6px;font-size:14px;font-weight:900;color:#131218;line-height:1.3;">{{ Str::limit($k->judul, 50) }}</h4>
           </div>

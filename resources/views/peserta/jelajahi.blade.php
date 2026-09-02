@@ -224,10 +224,7 @@
                                     @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>20,'style'=>"color:".($isPel?'#131218':'#6366F1')])
                                 </div>
                                 <div>
-                                    <p style="font-size:14px;font-weight:900;color:#131218;margin:0 0 3px;line-height:1.35;">{{ $k->judul }}</p>
-                                    <p style="font-size:11.5px;color:#64748B;margin:0;font-weight:600;">
-                                        Biaya: <span style="color:{{ $k->biaya->isNotEmpty() ? '#059669' : '#64748B' }};font-weight:800;">{{ $k->biaya->isNotEmpty() ? ('Rp '.number_format($k->biaya->min('nominal'),0,',','.')) : 'Gratis' }}</span>
-                                    </p>
+                                    <p style="font-size:14px;font-weight:900;color:#131218;margin:0;line-height:1.35;">{{ $k->judul }}</p>
                                 </div>
                             </div>
                         </td>
@@ -287,7 +284,6 @@
                     <p style="font-size:13.5px;font-weight:900;color:#131218;margin:0 0 4px;line-height:1.3;">{{ $k->judul }}</p>
                     <div class="fcc-mobile-card-meta">
                         <span style="font-size:10px;font-weight:900;padding:2px 8px;border-radius:6px;background:{{ $isPel?'#FFC81A':'#3B82F6' }};color:{{ $isPel?'#131218':'#FFF' }};border:1px solid #131218;text-transform:uppercase;">{{ ucfirst($k->jenis_kegiatan) }}</span>
-                        <span style="font-size:11px;color:#059669;font-weight:800;">{{ $k->biaya->isNotEmpty() ? ('Rp '.number_format($k->biaya->min('nominal'),0,',','.')) : 'Gratis' }}</span>
                     </div>
                 </div>
             </div>

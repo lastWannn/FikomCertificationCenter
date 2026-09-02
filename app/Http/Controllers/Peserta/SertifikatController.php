@@ -3,11 +3,14 @@ namespace App\Http\Controllers\Peserta;
 
 use App\Http\Controllers\Controller;
 use App\Models\Sertifikat;
+use App\Services\Admin\SertifikatService;
 use App\Models\Testimoni;
 use Illuminate\Support\Facades\Auth;
 
 class SertifikatController extends Controller
 {
+    public function __construct(private SertifikatService $sertifikatService) {}
+
     public function index()
     {
         $peserta = Auth::guard('peserta')->user();
@@ -39,8 +42,13 @@ class SertifikatController extends Controller
                 ->with('warning', 'Silakan tulis testimoni pengalaman Anda terlebih dahulu untuk membuka akses pengunduhan sertifikat kompetensi.');
         }
 
-        if (!$sertifikat->file_sertifikat) {
-            return back()->with('error', 'File sertifikat belum tersedia. Hubungi Admin FCC.');
+        $filePath = $sertifikat->file_sertifikat
+            ? storage_path('app/public/' . $sertifikat->file_sertifikat)
+            : null;
+
+        if (!$filePath || !file_exists($filePath)) {
+            $this->sertifikatService->regeneratePdf($sertifikat);
+            $sertifikat->refresh();
         }
 
         $filePath = storage_path('app/public/' . $sertifikat->file_sertifikat);
@@ -69,6 +77,15 @@ class SertifikatController extends Controller
         }
 
         $sertifikat->load('pendaftaran.kegiatan', 'pendaftaran.peserta');
+        $filePath = $sertifikat->file_sertifikat
+            ? storage_path('app/public/' . $sertifikat->file_sertifikat)
+            : null;
+
+        if (!$filePath || !file_exists($filePath)) {
+            $this->sertifikatService->regeneratePdf($sertifikat);
+            $sertifikat->refresh();
+        }
+
         return view('peserta.sertifikat-preview', compact('sertifikat'));
     }
 }
