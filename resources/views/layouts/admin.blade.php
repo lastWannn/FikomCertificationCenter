@@ -103,6 +103,7 @@
           [
               'label' => 'KONTEN',
               'items' => [
+                  ['route'=>'admin.tanda-tangan.index',  'icon'=>'pen-tool',         'label'=>'Kelola Tanda Tangan'],
                   ['route'=>'admin.informasi.index',     'icon'=>'info',             'label'=>'Informasi & FAQ'],
                   ['route'=>'admin.pesan.index',         'icon'=>'mail',             'label'=>'Pesan Masuk'],
                   ['route'=>'admin.mitra.index',         'icon'=>'users',            'label'=>'Mitra / Partner'],

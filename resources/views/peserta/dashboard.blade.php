@@ -276,20 +276,23 @@
         </p>
       </div>
       <div class="fcc-peserta-banner-buttons">
-        <a href="{{ route('peserta.jelajahi') }}" class="fcc-btn-gold" style="padding:10px 22px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border-radius:30px;font-weight:900;box-shadow:0 6px 18px rgba(255,200,26,0.35);">
-          @include('components.icon',['name'=>'compass','size'=>16,'style'=>'color:#131218']) Jelajahi Kegiatan &rarr;
+        <a href="{{ route('peserta.jelajahi') }}" class="fcc-btn-gold" style="padding:10px 20px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border-radius:30px;font-weight:900;box-shadow:0 6px 18px rgba(255,200,26,0.35);">
+          @include('components.icon', ['name' => 'compass', 'size' => 16, 'style' => 'color:#131218']) Jelajahi Kegiatan &rarr;
         </a>
-        {{-- Disabled temporarily per user request --}}
-        {{-- <a href="{{ route('peserta.testimoni') }}">Beri Testimoni</a> --}}
-        {{-- <a href="{{ route('peserta.sertifikat') }}">Sertifikat Saya</a> --}}
+        <a href="{{ route('peserta.sertifikat') }}" class="fcc-btn-outline-light" style="padding:10px 18px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:7px;border-radius:30px;font-weight:800;background:rgba(255,255,255,0.1);color:#FFF;border:1.5px solid rgba(255,255,255,0.3);">
+          @include('components.icon', ['name' => 'award', 'size' => 15]) Sertifikat Saya
+        </a>
+        <a href="{{ route('peserta.testimoni') }}" class="fcc-btn-outline-light" style="padding:10px 18px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:7px;border-radius:30px;font-weight:800;background:rgba(255,255,255,0.1);color:#FFF;border:1.5px solid rgba(255,255,255,0.3);">
+          @include('components.icon', ['name' => 'message-square', 'size' => 15]) Beri Testimoni
+        </a>
       </div>
     </div>
   </div>
 
-  {{-- ═══ 2 STAT CARDS SUMMARY GRID ═══════════════════════════════ --}}
-  <div class="fcc-peserta-stat-grid">
+  {{-- ═══ 3 STAT CARDS SUMMARY GRID ═══════════════════════════════ --}}
+  <div class="fcc-peserta-stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
     {{-- Card 1: Terdaftar Aktif --}}
-    <div class="fcc-card" style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);display:flex;align-items:center;gap:16px;transition:all .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+    <a href="{{ route('peserta.pendaftaran') }}" class="fcc-card" style="text-decoration:none;padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);display:flex;align-items:center;gap:16px;transition:all .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
       <div style="width:50px;height:50px;border-radius:14px;background:#ECFDF5;border:1.5px solid #10B981;display:flex;align-items:center;justify-content:center;color:#10B981;flex-shrink:0;box-shadow:0 6px 14px rgba(16,185,129,0.2);">
         @include('components.icon',['name'=>'check-circle','size'=>22])
       </div>
@@ -297,18 +300,29 @@
         <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Terdaftar Aktif</p>
         <p style="margin:2px 0 0;font-size:24px;font-weight:900;color:#131218;letter-spacing:-0.02em;">{{ $stats['terdaftar'] }} <span style="font-size:13px;font-weight:700;color:#94A3B8;">Kegiatan</span></p>
       </div>
-    </div>
+    </a>
 
     {{-- Card 2: Menunggu Verifikasi --}}
-    <div class="fcc-card" style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);display:flex;align-items:center;gap:16px;transition:all .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-      <div style="width:50px;height:50px;border-radius:14px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;color:#131218;flex-shrink:0;box-shadow:0 6px 14px rgba(255,200,26,0.3);">
+    <a href="{{ route('peserta.pembayaran') }}" class="fcc-card" style="text-decoration:none;padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);display:flex;align-items:center;gap:16px;transition:all .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+      <div style="width:50px;height:50px;border-radius:14px;background:#FFFDF5;border:1.5px solid #F59E0B;display:flex;align-items:center;justify-content:center;color:#D97706;flex-shrink:0;box-shadow:0 6px 14px rgba(245,158,11,0.2);">
         @include('components.icon',['name'=>'clock','size'=>22])
       </div>
       <div>
         <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Menunggu Verifikasi</p>
         <p style="margin:2px 0 0;font-size:24px;font-weight:900;color:#131218;letter-spacing:-0.02em;">{{ $stats['menunggu'] }} <span style="font-size:13px;font-weight:700;color:#94A3B8;">Pendaftaran</span></p>
       </div>
-    </div>
+    </a>
+
+    {{-- Card 3: Sertifikat Diterbitkan --}}
+    <a href="{{ route('peserta.sertifikat') }}" class="fcc-card" style="text-decoration:none;padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);display:flex;align-items:center;gap:16px;transition:all .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+      <div style="width:50px;height:50px;border-radius:14px;background:#EEF2FF;border:1.5px solid #6366F1;display:flex;align-items:center;justify-content:center;color:#4F46E5;flex-shrink:0;box-shadow:0 6px 14px rgba(99,102,241,0.2);">
+        @include('components.icon',['name'=>'award','size'=>22])
+      </div>
+      <div>
+        <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Sertifikat Diterbitkan</p>
+        <p style="margin:2px 0 0;font-size:24px;font-weight:900;color:#131218;letter-spacing:-0.02em;">{{ $stats['sertifikat'] }} <span style="font-size:13px;font-weight:700;color:#94A3B8;">Dokumen</span></p>
+      </div>
+    </a>
   </div>
 
   {{-- ═══ SINGLE COLUMN CONTENT LAYOUT ══════════════════════════════ --}}

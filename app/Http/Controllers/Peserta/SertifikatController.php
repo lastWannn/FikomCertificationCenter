@@ -14,16 +14,15 @@ class SertifikatController extends Controller
     public function index()
     {
         $peserta = Auth::guard('peserta')->user();
-        $sertifikat = Sertifikat::whereHas(
-            'pendaftaran',
-            fn($q) => $q->where('peserta_id', $peserta->id)
-        )
-        ->with('pendaftaran.kegiatan')
-        ->get();
+        $pendaftaranList = \App\Models\Pendaftaran::where('peserta_id', $peserta->id)
+            ->where('status_pendaftaran', 'terdaftar')
+            ->with(['kegiatan.kegiatanPelatihan.jadwalPelatihan', 'kegiatan.kegiatanSertifikasi.jadwalSertifikasi', 'sertifikat'])
+            ->latest()
+            ->get();
 
         $hasTestimoni = Testimoni::where('peserta_id', $peserta->id)->exists();
 
-        return view('peserta.sertifikat', compact('sertifikat', 'hasTestimoni'));
+        return view('peserta.sertifikat', compact('peserta', 'pendaftaranList', 'hasTestimoni'));
     }
 
     public function download(Sertifikat $sertifikat)
@@ -62,30 +61,6 @@ class SertifikatController extends Controller
 
     public function preview(Sertifikat $sertifikat)
     {
-        $pesertaId = Auth::guard('peserta')->id();
-
-        // Pastikan sertifikat milik peserta yang sedang login
-        if ($sertifikat->pendaftaran->peserta_id !== $pesertaId) {
-            abort(403, 'Akses ditolak.');
-        }
-
-        // Syarat Wajib Testimoni untuk Preview Sertifikat
-        $hasTestimoni = Testimoni::where('peserta_id', $pesertaId)->exists();
-        if (!$hasTestimoni) {
-            return redirect()->route('peserta.testimoni')
-                ->with('warning', 'Silakan tulis testimoni pengalaman Anda terlebih dahulu untuk melihat pratinjau sertifikat kompetensi.');
-        }
-
-        $sertifikat->load('pendaftaran.kegiatan', 'pendaftaran.peserta');
-        $filePath = $sertifikat->file_sertifikat
-            ? storage_path('app/public/' . $sertifikat->file_sertifikat)
-            : null;
-
-        if (!$filePath || !file_exists($filePath)) {
-            $this->sertifikatService->regeneratePdf($sertifikat);
-            $sertifikat->refresh();
-        }
-
-        return view('peserta.sertifikat-preview', compact('sertifikat'));
+        return redirect()->route('peserta.sertifikat');
     }
 }

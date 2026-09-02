@@ -188,47 +188,112 @@
             </form>
         </div>
 
-        {{-- Card 2: Terbitkan Sertifikat Info & Activity Background Quick List --}}
+        {{-- Card 2: Kelola Layout & Penerbitan Sertifikat Per Jadwal --}}
         <div class="fcc-card" style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);display:flex;flex-direction:column;justify-content:space-between;">
             <div>
-                <h3 style="font-size:15px;font-weight:900;color:#131218;margin:0 0 12px;display:flex;align-items:center;gap:8px;">
-                    <div style="width:32px;height:32px;border-radius:10px;background:#ECFDF5;border:1.5px solid #10B981;display:flex;align-items:center;justify-content:center;color:#10B981;">
-                        @include('components.icon',['name'=>'award','size'=>16])
-                    </div>
-                    Penerbitan Sertifikat Peserta
-                </h3>
-                <p style="color:#64748B;font-size:13px;line-height:1.6;margin:0 0 16px;font-weight:500;">
-                    Sertifikat dapat diterbitkan per kegiatan kepada peserta yang telah memenuhi syarat pendaftaran. Pilih kegiatan di bawah ini untuk mengelola sertifikat peserta:
-                </p>
-                <div style="background:#F8FAFC;border:1.5px solid #E2E4EB;border-radius:14px;padding:16px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                        <p style="margin:0;font-size:12px;font-weight:800;color:#131218;text-transform:uppercase;letter-spacing:0.5px;">Status Latar &amp; Penerbitan:</p>
-                        <span style="font-size:11px;font-weight:800;color:#64748B;">Total: {{ $kegiatan->count() }} Kegiatan</span>
-                    </div>
-                    <div style="display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto;padding-right:4px;">
-                        @foreach($kegiatan as $kg)
-                        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:6px 0;border-bottom:1px dashed #E2E8F0;">
-                            <div style="display:flex;flex-direction:column;gap:2px;max-width:65%;">
-                                <span style="color:#131218;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $kg->judul }}</span>
-                                @if($kg->has_latar)
-                                    <span style="font-size:10px;font-weight:800;color:#059669;display:inline-flex;align-items:center;gap:3px;">
-                                        @include('components.icon',['name'=>'check-circle','size'=>11]) Latar Ready
-                                    </span>
-                                @else
-                                    <span style="font-size:10px;font-weight:800;color:#D97706;display:inline-flex;align-items:center;gap:3px;">
-                                        @include('components.icon',['name'=>'alert-triangle','size'=>11]) Belum Ada Latar
-                                    </span>
-                                @endif
-                            </div>
-                            <a href="{{ route('admin.sertifikat.peserta', $kg) }}" style="padding:4px 10px;font-size:11px;font-weight:800;color:#FFC81A;background:#131218;border-radius:6px;text-decoration:none;border:1px solid #131218;transition:all .15s;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">
-                                Kelola Peserta &rarr;
-                            </a>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px;">
+                    <h3 style="font-size:15px;font-weight:900;color:#131218;margin:0;display:flex;align-items:center;gap:8px;">
+                        <div style="width:32px;height:32px;border-radius:10px;background:#ECFDF5;border:1.5px solid #10B981;display:flex;align-items:center;justify-content:center;color:#10B981;">
+                            @include('components.icon',['name'=>'award','size'=>16])
                         </div>
-                        @endforeach
+                        Penerbitan Sertifikat Per Jadwal
+                    </h3>
+
+                    {{-- Search Input --}}
+                    <input type="text" onkeyup="filterBatchList(this.value)" placeholder="🔍 Cari kegiatan..." style="padding:6px 12px;font-size:12px;border-radius:8px;border:1.5px solid #CBD5E1;width:180px;font-weight:600;">
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;padding-right:4px;">
+                    @foreach($masterGroups as $idx => $group)
+                    <div class="master-batch-item" style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:12px;padding:12px;">
+                        {{-- Master Header --}}
+                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                            <div style="cursor:pointer;flex:1;" onclick="toggleBatchAccordion('batch-list-{{ $idx }}')">
+                                <div style="font-size:13px;font-weight:900;color:#131218;display:flex;align-items:center;gap:6px;">
+                                    <span>{{ $group['judul'] }}</span>
+                                    <span id="icon-batch-list-{{ $idx }}" style="font-size:10px;color:#64748B;">▼</span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+                                    @if($group['has_latar'])
+                                        <span style="font-size:9.5px;font-weight:800;color:#059669;background:#D1FAE5;padding:1px 6px;border-radius:5px;">
+                                            ✔ Ready
+                                        </span>
+                                    @else
+                                        <span style="font-size:9.5px;font-weight:800;color:#D97706;background:#FEF3C7;padding:1px 6px;border-radius:5px;">
+                                            ⚠️ Tanpa Latar
+                                        </span>
+                                    @endif
+                                    <span style="font-size:11px;color:#64748B;font-weight:700;">({{ count($group['jadwal_list']) }} Batch)</span>
+                                </div>
+                            </div>
+                            
+                            {{-- Quick Tools Per Master --}}
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <a href="{{ route('admin.sertifikat.preview-sample', $group['utama']) }}" target="_blank" title="Lihat Hasil PDF Sampel" style="padding:3.5px 8px;font-size:10.5px;font-weight:800;color:#1E40AF;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                                    👁️ Sample
+                                </a>
+                                <a href="{{ route('admin.sertifikat.layout-editor', $group['utama']) }}" title="Edit Tata Letak & Font PDF" style="padding:3.5px 8px;font-size:10.5px;font-weight:800;color:#131218;background:#FFC81A;border:1px solid #131218;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                                    🎨 Layout
+                                </a>
+                            </div>
+                        </div>
+
+                        {{-- Sub-Jadwal Batch List (Collapsible, hidden by default) --}}
+                        <div id="batch-list-{{ $idx }}" class="batch-sub-list" style="display:none;flex-direction:column;gap:6px;margin-top:10px;border-top:1px dashed #CBD5E1;padding-top:8px;">
+                            @foreach($group['jadwal_list'] as $j)
+                            <div style="background:#FFF;border:1px solid #E2E8F0;border-radius:8px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+                                <div>
+                                    <span style="font-size:11.5px;font-weight:800;color:#131218;">{{ $j['jadwal_nama'] }}</span>
+                                    <span style="font-size:10.5px;color:#64748B;margin-left:4px;">({{ $j['tgl_pelaksanaan_format'] }})</span>
+                                    <div style="font-size:10px;color:#475569;font-weight:700;">
+                                        Peserta: <strong>{{ $j['total_peserta'] }}</strong> | Terbit: <strong style="color:#059669;">{{ $j['total_terbit'] }}</strong>
+                                    </div>
+                                </div>
+
+                                <a href="{{ route('admin.sertifikat.peserta', $j['kegiatan']) }}" style="padding:3px 8px;font-size:10px;font-weight:800;color:#131218;background:#F1F5F9;border:1px solid #94A3B8;border-radius:6px;text-decoration:none;">
+                                    👥 Peserta
+                                </a>
+                            </div>
+                            @endforeach
+                        </div>
                     </div>
+                    @endforeach
                 </div>
             </div>
         </div>
+
+        <script>
+        function toggleBatchAccordion(id) {
+            var elem = document.getElementById(id);
+            var icon = document.getElementById('icon-' + id);
+            if (elem) {
+                if (elem.style.display === 'none' || !elem.style.display) {
+                    elem.style.display = 'flex';
+                    if (icon) icon.innerText = '▲';
+                } else {
+                    elem.style.display = 'none';
+                    if (icon) icon.innerText = '▼';
+                }
+            }
+        }
+
+        function filterBatchList(query) {
+            var q = query.toLowerCase().trim();
+            var cards = document.querySelectorAll('.master-batch-item');
+            cards.forEach(function(card) {
+                var text = card.textContent.toLowerCase();
+                if (!q || text.includes(q)) {
+                    card.style.display = 'block';
+                    if (q) {
+                        var sub = card.querySelector('.batch-sub-list');
+                        if (sub) sub.style.display = 'flex';
+                    }
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        </script>
 
     </div>
 

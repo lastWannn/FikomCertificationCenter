@@ -93,10 +93,17 @@ class JadwalPelatihanService
             if (!$status) {
                 $status = request()->boolean('langsung_aktifkan') ? 'public' : 'public';
             }
+
+            // Inherit background template and layout settings from existing Kegiatan with matching title
+            $targetJudul = trim($jadwal->pelatihan?->judul ?? '');
+            $existing = Kegiatan::all()->first(fn($k) => trim($k->judul) === $targetJudul && (!empty($k->nama_latar) || !empty($k->sertifikat_layout)));
+
             $kegiatan = Kegiatan::create([
-                'jenis_kegiatan' => 'pelatihan',
-                'status'         => in_array($status, ['draf','comingsoon','public']) ? $status : 'public',
-                'qr_token'       => Str::random(32),
+                'jenis_kegiatan'    => 'pelatihan',
+                'status'            => in_array($status, ['draf','comingsoon','public']) ? $status : 'public',
+                'qr_token'          => Str::random(32),
+                'nama_latar'        => $existing?->nama_latar,
+                'sertifikat_layout' => $existing?->sertifikat_layout,
             ]);
             KegiatanPelatihan::create([
                 'kegiatan_id'          => $kegiatan->id,

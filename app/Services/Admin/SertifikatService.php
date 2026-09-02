@@ -85,7 +85,7 @@ class SertifikatService
 
     public function terbitkan(Pendaftaran $pendaftaran, string $tglTerbit): Sertifikat
     {
-        return Sertifikat::updateOrCreate(
+        $sertifikat = Sertifikat::updateOrCreate(
             ['pendaftaran_id' => $pendaftaran->id],
             [
                 'nomor_sertifikat' => Sertifikat::generateNomor($pendaftaran->kegiatan_id, $pendaftaran->id),
@@ -93,6 +93,10 @@ class SertifikatService
                 'gambar_latar'     => $pendaftaran->kegiatan->nama_latar,
             ]
         );
+
+        $this->regeneratePdf($sertifikat);
+
+        return $sertifikat;
     }
 
     public function terbitkanSemua(Kegiatan $kegiatan, string $tglTerbit): int
@@ -104,12 +108,13 @@ class SertifikatService
 
         $count = 0;
         foreach ($pendaftaran as $pd) {
-            Sertifikat::create([
+            $cert = Sertifikat::create([
                 'pendaftaran_id'   => $pd->id,
                 'nomor_sertifikat' => Sertifikat::generateNomor($pd->kegiatan_id, $pd->id),
                 'tgl_terbit'       => $tglTerbit,
-                'gambar_latar'     => $kegiatan->nama_latar,
+                'gambar_latar'     => $pd->kegiatan->nama_latar,
             ]);
+            $this->regeneratePdf($cert);
             $count++;
         }
         return $count;

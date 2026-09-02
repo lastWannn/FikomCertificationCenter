@@ -34,11 +34,12 @@ class PendaftaranController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
-        if ($pendaftaran->biaya_kegiatan_id) {
-            return redirect()->route('peserta.pembayaran')
-                ->with('success', 'Pendaftaran berhasil! Segera lakukan pembayaran dalam 2 jam.');
+        if ($pendaftaran->pembayaran) {
+            return redirect()->route('peserta.pembayaran.show', $pendaftaran->pembayaran)
+                ->with('success', 'Pendaftaran berhasil! Silakan lakukan pembayaran sesuai petunjuk di bawah.');
         }
-        return redirect()->route('peserta.pendaftaran')
+
+        return redirect()->route('peserta.pendaftaran.show', $pendaftaran)
             ->with('success', 'Pendaftaran berhasil! Kegiatan gratis, Anda langsung terdaftar.');
     }
 

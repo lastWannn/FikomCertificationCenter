@@ -364,14 +364,15 @@
   .cert-overlay #text-desc-title,
   .cert-overlay #text-desc-line2,
   .cert-overlay #text-desc-date {
-    line-height: var(--desc-line-height, 1.35) !important;
+    line-height: var(--desc-line-height, 0.9) !important;
     white-space: nowrap !important;
+    margin-top: 0 !important;
   }
 
   .cert-overlay #text-desc-line1,
   .cert-overlay #text-desc-title,
   .cert-overlay #text-desc-line2 {
-    margin-bottom: var(--desc-line-gap, 1mm) !important;
+    margin-bottom: var(--desc-line-gap, 0mm) !important;
   }
 </style>
 
@@ -400,7 +401,17 @@
       </div>
     </div>
 
-    <div style="display:flex;align-items:center;gap:12px;">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <button type="button" onclick="openCopyLayoutModal()" class="fcc-btn-outline-light" style="padding:9.5px 18px;font-size:13px;background:rgba(255,200,26,0.12);border:1.5px solid rgba(255,200,26,0.35);color:#FFC81A;display:inline-flex;align-items:center;gap:6px;transition:all .15s;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='rgba(255,200,26,0.12)';this.style.color='#FFC81A';">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Salin Layout Kegiatan Lain
+      </button>
+
+      <a href="{{ route('admin.sertifikat.preview-sample', $kegiatan) }}" target="_blank" class="fcc-btn-outline-light" style="padding:9.5px 18px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Live PDF Sample
+      </a>
+
       <button onclick="resetToDefault()" class="fcc-btn-outline-light" style="padding:9.5px 18px;font-size:13px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         Reset Standar
@@ -475,6 +486,14 @@
               </div>
             </div>
 
+            {{-- 2. SUBTITLE (PENGHARGAAN) --}}
+            <div class="drag-element" id="el-subtitle" onclick="selectElement('subtitle')" style="width:100%;text-align:center;">
+              <div class="drag-badge" id="badge-subtitle">2. Sub-Judul</div>
+              <div id="text-subtitle" style="font-family:'Montserrat', Arial, sans-serif;font-weight:900;letter-spacing:6px;color:#B45309;text-transform:uppercase;line-height:1;">
+                PENGHARGAAN
+              </div>
+            </div>
+
             {{-- 2. LABEL (DIBERIKAN KEPADA) --}}
             <div class="drag-element" id="el-label" onclick="selectElement('label')" style="width:100%;text-align:center;">
               <div class="drag-badge" id="badge-label">2. Label Subtitle</div>
@@ -487,7 +506,7 @@
             <div class="drag-element" id="el-name" onclick="selectElement('name')" style="width:100%;text-align:center;">
               <div class="drag-badge" id="badge-name">3. Nama Peserta</div>
               <div id="text-name" style="font-family:'Great Vibes', 'Brush Script MT', cursive, serif;color:#0F172A;line-height:1.1;">
-                {{ $dummySertifikat->pendaftaran->peserta->nama ?? 'Raihan Nur Rizqiullah' }}
+                {{ \Illuminate\Support\Str::title(mb_strtolower($dummySertifikat->pendaftaran->peserta->nama ?? 'Abdul Halim, S.Kom.')) }}
               </div>
             </div>
 
@@ -517,18 +536,39 @@
               </div>
             </div>
 
+            @php
+              $editorTtd = \App\Models\TandaTangan::getAktif();
+            @endphp
             {{-- 6. SIG 1 (DEKAN - KIRI) --}}
             <div class="drag-element" id="el-sig1" onclick="selectElement('sig1')" style="text-align:center;">
               <div class="drag-badge" id="badge-sig1">6. Dekan (Kiri)</div>
-              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#0F172A;" id="sig1-name">Purnawansyah</div>
-              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;letter-spacing:1.5px;margin-top:1px;" id="sig1-role">DEKAN</div>
+              <div style="height: 44px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 4px;">
+                @if($editorTtd->dekan_ttd_url)
+                  <img src="{{ $editorTtd->dekan_ttd_url }}" style="height: 42px; max-width: 100%; object-fit: contain; pointer-events: none;">
+                @else
+                  <div style="font-size: 10px; font-style: italic; color: #94A3B8; border: 1px dashed #CBD5E1; padding: 2px 10px; border-radius: 4px; background: rgba(241,245,249,0.7); pointer-events: none;">
+                    [ Tanda Tangan Dekan ]
+                  </div>
+                @endif
+              </div>
+              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#0F172A;" id="sig1-name">{{ $editorTtd->dekan_nama }}</div>
+              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;letter-spacing:1.5px;margin-top:1px;" id="sig1-role">{{ $editorTtd->dekan_jabatan }}</div>
             </div>
 
             {{-- 7. SIG 2 (KETUA UNIT - KANAN) --}}
             <div class="drag-element" id="el-sig2" onclick="selectElement('sig2')" style="text-align:center;">
               <div class="drag-badge" id="badge-sig2">7. Ketua Unit (Kanan)</div>
-              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#0F172A;" id="sig2-name">Abdul Rachman Manga'</div>
-              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;letter-spacing:1.5px;margin-top:1px;" id="sig2-role">KETUA UNIT</div>
+              <div style="height: 44px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 4px;">
+                @if($editorTtd->ketua_ttd_url)
+                  <img src="{{ $editorTtd->ketua_ttd_url }}" style="height: 42px; max-width: 100%; object-fit: contain; pointer-events: none;">
+                @else
+                  <div style="font-size: 10px; font-style: italic; color: #94A3B8; border: 1px dashed #CBD5E1; padding: 2px 10px; border-radius: 4px; background: rgba(241,245,249,0.7); pointer-events: none;">
+                    [ Tanda Tangan Ketua ]
+                  </div>
+                @endif
+              </div>
+              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#0F172A;" id="sig2-name">{{ $editorTtd->ketua_nama }}</div>
+              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;letter-spacing:1.5px;margin-top:1px;" id="sig2-role">{{ $editorTtd->ketua_jabatan }}</div>
             </div>
 
           </div>
@@ -551,12 +591,13 @@
         <label class="ctrl-label">Pilih Elemen Teks Active</label>
         <select id="select-element" onchange="selectElement(this.value)" class="fcc-input" style="width:100%;background:#F8FAFC;font-size:13px;font-weight:800;border-color:#CBD5E1;">
           <option value="title">1. Judul Sertifikat (SERTIFIKAT)</option>
-          <option value="label">2. Label Subtitle (DIBERIKAN KEPADA)</option>
-          <option value="name">3. Nama Peserta Penerima</option>
-          <option value="desc">4. Deskripsi &amp; Nama Kegiatan</option>
-          <option value="date">5. Lokasi &amp; Tanggal Terbit</option>
-          <option value="sig1">6. Tanda Tangan Kiri (Dekan)</option>
-          <option value="sig2">7. Tanda Tangan Kanan (Ketua Unit)</option>
+          <option value="subtitle">2. Sub-Judul (PENGHARGAAN)</option>
+          <option value="label">3. Label Subtitle (DIBERIKAN KEPADA)</option>
+          <option value="name">4. Nama Peserta Penerima</option>
+          <option value="desc">5. Deskripsi &amp; Nama Kegiatan</option>
+          <option value="date">6. Lokasi &amp; Tanggal Terbit</option>
+          <option value="sig1">7. Tanda Tangan Kiri (Dekan)</option>
+          <option value="sig2">8. Tanda Tangan Kanan (Ketua Unit)</option>
         </select>
       </div>
 
@@ -623,6 +664,8 @@
         <input type="range" id="input-font" min="6" max="60" step="0.5" oninput="updateActiveElementFromInputs()" style="width:100%;accent-color:#FFC81A;">
       </div>
 
+
+
       {{-- 5. TITLE FONT SIZE FOR DESC --}}
       <div class="ctrl-group" id="group-title-font" style="display:none;">
         <div class="ctrl-label">
@@ -637,13 +680,13 @@
 
       <div class="ctrl-group" id="group-line-height" style="display:none;">
         <div class="ctrl-label">
-          <span>Jarak Antarbaris Deskripsi</span>
+          <span>Jarak Spasi Antarbaris</span>
           <div style="display:flex;align-items:center;gap:4px;">
-            <input type="number" id="num-line-height" min="0" max="10" step="0.5" onchange="onNumInputChange('line_gap', this.value)" style="width:64px;padding:2px 6px;font-size:11.5px;font-weight:900;color:#B45309;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;text-align:right;">
+            <input type="number" id="num-line-height" min="0" max="15" step="0.5" onchange="onNumInputChange('line_gap', this.value)" style="width:64px;padding:2px 6px;font-size:11.5px;font-weight:900;color:#B45309;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;text-align:right;">
             <span style="font-size:11px;font-weight:800;color:#B45309;">mm</span>
           </div>
         </div>
-        <input type="range" id="input-line-height" min="0" max="10" step="0.5" oninput="updateActiveElementFromInputs()" style="width:100%;accent-color:#FFC81A;">
+        <input type="range" id="input-line-height" min="0" max="15" step="0.5" oninput="updateActiveElementFromInputs()" style="width:100%;accent-color:#FFC81A;">
       </div>
     </div>
 
@@ -655,24 +698,26 @@
 
 <script>
   const defaultLayout = {
-    title: { top: 40, left: 0, font_size: 32, font_family: 'Times New Roman' },
-    label: { top: 63, left: 0, font_size: 8.5, font_family: 'Arial' },
-    name:  { top: 71, left: 0, font_size: 36, font_family: 'Allura' },
-    desc:  { top: 109, left: 0, font_size: 10, title_font_size: 14, line_height: 1.35, line_gap: 1, font_family: 'Arial' },
-    date:  { top: 146, right: 46, font_size: 9.5, font_family: 'Arial' },
-    sig1:  { top: 167.5, left: 60, font_size: 10, font_family: 'Arial' },
-    sig2:  { top: 167.5, right: 46, font_size: 10, font_family: 'Arial' }
+    title:    { top: 36, left: 0, font_size: 32, font_family: 'Times New Roman' },
+    subtitle: { top: 48, left: 0, font_size: 11, font_family: 'Montserrat' },
+    label:    { top: 63, left: 0, font_size: 8.5, font_family: 'Arial' },
+    name:     { top: 71, left: 0, font_size: 36, font_family: 'Allura' },
+    desc:     { top: 109, left: 0, font_size: 10, title_font_size: 14, line_height: 0.9, line_gap: 0, font_family: 'Poppins' },
+    date:     { top: 146, right: 46, font_size: 9.5, font_family: 'Arial' },
+    sig1:     { top: 167.5, left: 60, font_size: 10, font_family: 'Arial' },
+    sig2:     { top: 167.5, right: 46, font_size: 10, font_family: 'Arial' }
   };
 
   let currentLayout = JSON.parse(JSON.stringify(@json($layout))) || defaultLayout;
-  if (!currentLayout.title) currentLayout.title = { top: 40, left: 0, font_size: 32, font_family: 'Times New Roman' };
-  if (!currentLayout.label) currentLayout.label = { top: 63, left: 0, font_size: 8.5, font_family: 'Arial' };
-  if (!currentLayout.name)  currentLayout.name  = { top: 71, left: 0, font_size: 36, font_family: 'Allura' };
-  if (!currentLayout.desc)  currentLayout.desc  = { top: 109, left: 0, font_size: 10, title_font_size: 14, line_height: 1.35, line_gap: 1, font_family: 'Arial' };
-  if (!currentLayout.desc.line_height) currentLayout.desc.line_height = 1.35;
-  if (currentLayout.desc.line_gap === undefined) currentLayout.desc.line_gap = 1;
-  if (!currentLayout.sig1)  currentLayout.sig1  = { top: 167.5, left: 60, font_size: 10, font_family: 'Arial' };
-  if (!currentLayout.sig2)  currentLayout.sig2  = { top: 167.5, right: 46, font_size: 10, font_family: 'Arial' };
+  if (!currentLayout.title)    currentLayout.title    = { top: 36, left: 0, font_size: 32, font_family: 'Times New Roman' };
+  if (!currentLayout.subtitle) currentLayout.subtitle = { top: 48, left: 0, font_size: 11, font_family: 'Montserrat' };
+  if (!currentLayout.label)    currentLayout.label    = { top: 63, left: 0, font_size: 8.5, font_family: 'Arial' };
+  if (!currentLayout.name)     currentLayout.name     = { top: 71, left: 0, font_size: 36, font_family: 'Allura' };
+  if (!currentLayout.desc)     currentLayout.desc     = { top: 109, left: 0, font_size: 10, title_font_size: 14, line_height: 0.9, line_gap: 0, font_family: 'Poppins' };
+  if (!currentLayout.desc.line_height) currentLayout.desc.line_height = 0.9;
+  if (currentLayout.desc.line_gap === undefined || currentLayout.desc.line_gap < 0) currentLayout.desc.line_gap = 0;
+  if (!currentLayout.sig1)     currentLayout.sig1     = { top: 167.5, left: 60, font_size: 10, font_family: 'Arial' };
+  if (!currentLayout.sig2)     currentLayout.sig2     = { top: 167.5, right: 46, font_size: 10, font_family: 'Arial' };
 
   let activeElementKey = 'title';
   let currentStep = 0.5;
@@ -683,13 +728,14 @@
   const TOTAL_WIDTH_MM = 297;
 
   const elementNames = {
-    title: '1. JUDUL',
-    label: '2. LABEL SUBTITLE',
-    name:  '3. NAMA PESERTA',
-    desc:  '4. DESKRIPSI & KEGIATAN',
-    date:  '5. LOKASI & TANGGAL',
-    sig1:  '6. DEKAN (KIRI)',
-    sig2:  '7. KETUA UNIT (KANAN)'
+    title:    '1. JUDUL (SERTIFIKAT)',
+    subtitle: '2. SUB-JUDUL (PENGHARGAAN)',
+    label:    '3. LABEL SUBTITLE',
+    name:     '4. NAMA PESERTA',
+    desc:     '5. DESKRIPSI & KEGIATAN',
+    date:     '6. LOKASI & TANGGAL',
+    sig1:     '7. DEKAN (KIRI)',
+    sig2:     '8. KETUA UNIT (KANAN)'
   };
 
   function getFontCss(fontName) {
@@ -711,6 +757,7 @@
   function getDefaultFontForKey(key) {
     if (key === 'title') return 'Times New Roman';
     if (key === 'name') return 'Allura';
+    if (key === 'desc') return 'Poppins';
     return 'Arial';
   }
 
@@ -802,6 +849,20 @@
     titleText.style.fontSize = currentLayout.title.font_size + 'pt';
     titleText.style.fontFamily = getFontCss(currentLayout.title.font_family || 'Times New Roman');
 
+    // 2. Subtitle (PENGHARGAAN)
+    const subtitleEl = document.getElementById('el-subtitle');
+    if (subtitleEl) {
+      subtitleEl.style.top = (currentLayout.subtitle?.top || 48) + 'mm';
+      subtitleEl.style.left = (currentLayout.subtitle?.left || 0) + 'mm';
+      subtitleEl.style.width = TOTAL_WIDTH_MM + 'mm';
+      subtitleEl.style.marginLeft = '0px';
+      const subtitleText = document.getElementById('text-subtitle');
+      if (subtitleText) {
+        subtitleText.style.fontSize = (currentLayout.subtitle?.font_size || 11) + 'pt';
+        subtitleText.style.fontFamily = getFontCss(currentLayout.subtitle?.font_family || 'Montserrat');
+      }
+    }
+
     // 2. Label
     const labelEl = document.getElementById('el-label');
     labelEl.style.top = currentLayout.label.top + 'mm';
@@ -829,7 +890,7 @@
     descEl.style.width = TOTAL_WIDTH_MM + 'mm';
     descEl.style.marginLeft = '0px';
     const descFont = getFontCss(currentLayout.desc.font_family || 'Arial');
-    const descLineHeight = currentLayout.desc.line_height || 1;
+    const descLineHeight = currentLayout.desc.line_height || 0.9;
     descEl.style.setProperty('--desc-line-height', descLineHeight);
     descEl.style.setProperty('--desc-line-gap', (currentLayout.desc.line_gap || 0) + 'mm');
     document.getElementById('text-desc-line1').style.fontSize = currentLayout.desc.font_size + 'pt';
@@ -1001,9 +1062,11 @@
       const titleFontVal = parseFloat(document.getElementById('input-title-font').value);
       data.title_font_size = titleFontVal;
       document.getElementById('num-title-font').value = titleFontVal;
+
       const lineGapVal = parseFloat(document.getElementById('input-line-height').value);
       data.line_gap = lineGapVal;
       document.getElementById('num-line-height').value = lineGapVal;
+      data.line_height = 0.9;
     }
 
     renderLayoutOnCanvas();
@@ -1021,6 +1084,8 @@
       document.getElementById('input-offset').value = val;
     } else if (type === 'title_font') {
       document.getElementById('input-title-font').value = val;
+    } else if (type === 'subtitle_font') {
+      document.getElementById('input-subtitle-font').value = val;
     } else if (type === 'line_gap') {
       document.getElementById('input-line-height').value = val;
     }
@@ -1167,6 +1232,47 @@
     }
   });
 
+  function openCopyLayoutModal() {
+    const modal = document.getElementById('copy-layout-modal');
+    if (modal) {
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeCopyLayoutModal() {
+    const modal = document.getElementById('copy-layout-modal');
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  function applyCopiedLayout(sourceLayout, sourceTitle) {
+    if (!sourceLayout || typeof sourceLayout !== 'object') return;
+
+    currentLayout = JSON.parse(JSON.stringify(sourceLayout));
+
+    if (currentLayout.desc && parseFloat(currentLayout.desc.line_gap) < 0) {
+      currentLayout.desc.line_gap = 0;
+    }
+
+    renderLayoutOnCanvas();
+    selectElement(activeElementKey);
+
+    closeCopyLayoutModal();
+
+    if (typeof window.fccToast === 'function') {
+      window.fccToast({
+        type: 'success',
+        title: 'Layout Berhasil Disalin!',
+        msg: 'Koordinat & font dari "' + sourceTitle + '" telah diterapkan. Klik "Simpan Koordinat" untuk menyimpan.'
+      });
+    } else {
+      alert('Layout dari "' + sourceTitle + '" berhasil diterapkan! Klik "Simpan Koordinat" untuk menyimpan.');
+    }
+  }
+
   window.addEventListener('resize', renderLayoutOnCanvas);
   document.addEventListener('DOMContentLoaded', () => {
     selectElement('title');
@@ -1174,6 +1280,59 @@
     initMouseDrag();
   });
 </script>
+
+{{-- ═══ MODAL SALIN LAYOUT KEGIATAN LAIN ════════════════════════ --}}
+<div id="copy-layout-modal" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(19,18,24,0.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#131218;border:2px solid #FFC81A;border-radius:20px;padding:28px;max-width:560px;width:100%;color:#FFF;box-shadow:0 24px 64px rgba(0,0,0,0.5);position:relative;">
+    
+    <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:16px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:42px;height:42px;background:#FFC81A;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#131218;flex-shrink:0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </div>
+        <div>
+          <h3 style="margin:0;font-size:18px;font-weight:900;font-family:'Outfit',sans-serif;color:#FFF;">Salin Layout Sertifikat</h3>
+          <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.6);">Pilih kegiatan asal untuk menerapkan posisi koordinat & font</p>
+        </div>
+      </div>
+      <button type="button" onclick="closeCopyLayoutModal()" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:24px;cursor:pointer;" onmouseover="this.style.color='#FFF'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&times;</button>
+    </div>
+
+    @if(!empty($otherKegiatans) && count($otherKegiatans) > 0)
+      <div style="max-height:360px;overflow-y:auto;padding-right:6px;display:flex;flex-direction:column;gap:10px;" id="other-kegiatan-list">
+        @foreach($otherKegiatans as $other)
+          <div style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;transition:all .15s;" onmouseover="this.style.borderColor='#FFC81A';this.style.background='rgba(255,200,26,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.background='rgba(255,255,255,0.04)'">
+            <div style="min-width:0;flex:1;">
+              <div style="font-size:13.5px;font-weight:800;color:#FFF;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                {{ $other['judul'] }}
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                @if($other['has_latar'])
+                  <span style="background:rgba(16,185,129,0.2);color:#34D399;border:1px solid rgba(52,211,153,0.3);font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:10px;">✔ Tersedia Latar</span>
+                @else
+                  <span style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:10px;">Latar Standar</span>
+                @endif
+                <span style="font-size:11px;color:rgba(255,255,255,0.5);">Judul Y: {{ $other['layout']['title']['top'] ?? 36 }}mm</span>
+              </div>
+            </div>
+
+            <button type="button" onclick="applyCopiedLayout({{ json_encode($other['layout']) }}, '{{ addslashes($other['judul']) }}')" style="background:#FFC81A;color:#131218;border:none;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:900;cursor:pointer;white-space:nowrap;box-shadow:0 4px 12px rgba(255,200,26,0.3);transition:transform .15s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+              Gunakan Layout
+            </button>
+          </div>
+        @endforeach
+      </div>
+    @else
+      <div style="text-align:center;padding:36px 16px;color:rgba(255,255,255,0.5);">
+        <div style="font-size:14px;font-weight:700;">Belum ada kegiatan lain untuk disalin layout-nya.</div>
+      </div>
+    @endif
+
+    <div style="margin-top:20px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:flex-end;">
+      <button type="button" onclick="closeCopyLayoutModal()" class="fcc-btn-outline-light" style="padding:8px 18px;font-size:12.5px;">Tutup</button>
+    </div>
+  </div>
+</div>
 @endsection
 
 

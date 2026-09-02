@@ -400,12 +400,37 @@
     </td>
 
     {{-- Right: Authorised Sign --}}
+    @php
+      $snapInv = $pembayaran->ttd_snapshot;
+      $hasSnapInv = !empty($snapInv) && is_array($snapInv) && array_key_exists('bendahara_nama', $snapInv);
+
+      if ($hasSnapInv) {
+          $bendaharaNama = $snapInv['bendahara_nama'] ?? '';
+          $bendaharaJabatan = $snapInv['bendahara_jabatan'] ?? '';
+          $bendaharaTtd = $snapInv['bendahara_ttd'] ?? null;
+      } else {
+          $invoiceTtd = \App\Models\TandaTangan::getAktif();
+          $bendaharaNama = $invoiceTtd->bendahara_nama;
+          $bendaharaJabatan = $invoiceTtd->bendahara_jabatan;
+          $bendaharaTtd = $invoiceTtd->bendahara_ttd;
+      }
+
+      $bendaharaTtdSrc = ($bendaharaTtd && file_exists(public_path('storage/' . $bendaharaTtd))) ? public_path('storage/' . $bendaharaTtd) : null;
+    @endphp
     <td style="width: 42%;">
-      <div class="signature-area">
+      <div class="signature-area" style="position: relative;">
         <div style="font-size: 8.5pt; color: #64748B;">Makassar, {{ $pembayaran->created_at->format('d M Y') }}</div>
-        <div class="signature-line" style="margin-top: 45px;"></div>
-        <div class="signature-label" style="font-size: 9.5pt; font-weight: bold; color: #131218;">Fatimah AR. Tuasamu, S.Kom., MTA, MCF.</div>
-        <div style="font-size: 8.5pt; color: #64748B; margin-top: 2px; font-weight: bold;">Administrasi</div>
+        
+        @if($bendaharaTtdSrc)
+          <div style="margin: 4px 0 -10px 0; text-align: center;">
+            <img src="{{ $bendaharaTtdSrc }}" style="height: 50px; max-width: 100%; object-fit: contain;">
+          </div>
+        @else
+          <div class="signature-line" style="margin-top: 45px;"></div>
+        @endif
+
+        <div class="signature-label" style="font-size: 9.5pt; font-weight: bold; color: #131218;">{{ $bendaharaNama }}</div>
+        <div style="font-size: 8.5pt; color: #64748B; margin-top: 2px; font-weight: bold;">{{ $bendaharaJabatan }}</div>
       </div>
     </td>
   </tr>

@@ -40,6 +40,7 @@ use App\Http\Controllers\Admin\{
     KontakController,
     PesanController           as AdminPesan,
     TestimoniController,
+    TandaTanganController,
 };
 
 // Peserta
@@ -214,6 +215,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
 
     Route::get('sertifikat',                          [AdminSertifikat::class,'index'])->name('sertifikat.index');
     Route::get('sertifikat/{kegiatan}/peserta',       [AdminSertifikat::class,'peserta'])->name('sertifikat.peserta');
+    Route::get('sertifikat/{kegiatan}/preview-sample', [AdminSertifikat::class,'previewSamplePdf'])->name('sertifikat.preview-sample');
     Route::get('sertifikat/{kegiatan}/layout-editor', [AdminSertifikat::class,'layoutEditor'])->name('sertifikat.layout-editor');
     Route::post('sertifikat/{kegiatan}/save-layout',  [AdminSertifikat::class,'saveLayout'])->name('sertifikat.save-layout');
     Route::post('sertifikat/upload-latar',            [AdminSertifikat::class,'uploadLatar'])->name('sertifikat.upload-latar');
@@ -266,6 +268,9 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     Route::put('kontak', [KontakController::class, 'update'])->name('kontak.update');
     Route::resource('rekening',  RekeningController::class);
     Route::post('rekening/{rekening}/aktifkan', [RekeningController::class,'aktifkan'])->name('rekening.aktifkan');
+    Route::get('tanda-tangan',                  [TandaTanganController::class, 'index'])->name('tanda-tangan.index');
+    Route::post('tanda-tangan',                 [TandaTanganController::class, 'update'])->name('tanda-tangan.update');
+    Route::delete('tanda-tangan/{type}',        [TandaTanganController::class, 'destroy'])->name('tanda-tangan.destroy');
 
     /* LAPORAN */
     Route::get('laporan',                        [LaporanController::class,'index'])->name('laporan.index');
@@ -295,18 +300,18 @@ Route::middleware('auth.peserta')->prefix('peserta')->name('peserta.')->group(fu
     Route::post('/pembayaran/{pembayaran}/aktifkan',   [PesertaBayar::class,'aktifkan'])->name('pembayaran.aktifkan');
     Route::post('/pembayaran/{pembayaran}/konfirmasi', [PesertaBayar::class,'konfirmasi'])->name('pembayaran.konfirmasi');
     Route::post('/pembayaran/{pembayaran}/request-perpanjangan', [PesertaBayar::class,'requestPerpanjangan'])->name('pembayaran.request-perpanjangan');
-    // Sertifikat Peserta (Sembunyikan sementara per permintaan user)
-    Route::get('/sertifikat',                      fn() => redirect()->route('peserta.dashboard'))->name('sertifikat');
-    Route::get('/sertifikat/{sertifikat}/download',fn() => redirect()->route('peserta.dashboard'))->name('sertifikat.download');
-    Route::get('/sertifikat/{sertifikat}/preview', fn() => redirect()->route('peserta.dashboard'))->name('sertifikat.preview');
+    // Sertifikat Peserta
+    Route::get('/sertifikat',                      [PesertaSertifikat::class, 'index'])->name('sertifikat');
+    Route::get('/sertifikat/{sertifikat}/download',[PesertaSertifikat::class, 'download'])->name('sertifikat.download');
+    Route::get('/sertifikat/{sertifikat}/preview', [PesertaSertifikat::class, 'preview'])->name('sertifikat.preview');
     // QR Peserta
     Route::get('/qr/{pendaftaran}',      [PesertaQr::class,'show'])->name('qr.show');
     Route::get('/qr/{pendaftaran}/cetak',[PesertaQr::class,'cetak'])->name('qr.cetak');
-    // Testimoni Peserta (Sembunyikan sementara per permintaan user)
-    Route::get('/testimoni',             fn() => redirect()->route('peserta.dashboard'))->name('testimoni');
-    Route::post('/testimoni',            fn() => redirect()->route('peserta.dashboard'))->name('testimoni.store');
-    Route::put('/testimoni/{testimoni}', fn() => redirect()->route('peserta.dashboard'))->name('testimoni.update');
-    Route::delete('/testimoni/{testimoni}', fn() => redirect()->route('peserta.dashboard'))->name('testimoni.destroy');
+    // Testimoni Peserta
+    Route::get('/testimoni',             [PesertaTestimoni::class, 'index'])->name('testimoni');
+    Route::post('/testimoni',            [PesertaTestimoni::class, 'store'])->name('testimoni.store');
+    Route::put('/testimoni/{testimoni}', [PesertaTestimoni::class, 'update'])->name('testimoni.update');
+    Route::delete('/testimoni/{testimoni}', [PesertaTestimoni::class, 'destroy'])->name('testimoni.destroy');
     // API Chart
     Route::get('/api/chart/aktivitas', [PesertaDashboard::class,'chartAktivitas'])->name('api.chart.aktivitas');
 });

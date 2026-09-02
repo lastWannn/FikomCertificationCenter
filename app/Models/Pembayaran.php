@@ -16,7 +16,7 @@ class Pembayaran extends Model
         'metode_pembayaran', 'nama_layanan_bank', 'nama_pengirim',
         'no_referensi', 'berita_transaksi',
         'tgl_transfer', 'jam_transfer', 'bukti_bayar',
-        'no_kwitansi', 'tgl_kwitansi',
+        'no_kwitansi', 'tgl_kwitansi', 'ttd_snapshot',
         // Perpanjangan
         'request_perpanjangan_at', 'alasan_perpanjangan',
         'status_perpanjangan', 'catatan_perpanjangan',
@@ -29,7 +29,25 @@ class Pembayaran extends Model
         'tgl_verifikasi'           => 'datetime',
         'jumlah_bayar'             => 'decimal:0',
         'request_perpanjangan_at'  => 'datetime',
+        'ttd_snapshot'             => 'array',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->ttd_snapshot)) {
+                $aktif = TandaTangan::getAktif();
+                $model->ttd_snapshot = [
+                    'bendahara_nama'    => $aktif->bendahara_nama,
+                    'bendahara_jabatan' => $aktif->bendahara_jabatan,
+                    'bendahara_nip'     => $aktif->bendahara_nip,
+                    'bendahara_ttd'     => $aktif->bendahara_ttd,
+                ];
+            }
+        });
+    }
 
     /* ── RELATIONS ────────────────────────────────────────────── */
     public function pendaftaran() { return $this->belongsTo(Pendaftaran::class); }

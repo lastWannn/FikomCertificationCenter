@@ -56,7 +56,7 @@
   /* 1. Judul SERTIFIKAT */
   .title-block {
     position: absolute;
-    top: {{ $layout['title']['top'] ?? 40 }}mm;
+    top: {{ $layout['title']['top'] ?? 36 }}mm;
     left: {{ $layout['title']['left'] ?? 0 }}mm;
     width: 297mm;
     text-align: center;
@@ -67,6 +67,25 @@
     font-weight: bold;
     letter-spacing: 5px;
     color: #000000;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+  }
+
+  /* 2. Sub-Judul PENGHARGAAN */
+  .subtitle-block {
+    position: absolute;
+    top: {{ $layout['subtitle']['top'] ?? 48 }}mm;
+    left: {{ $layout['subtitle']['left'] ?? 0 }}mm;
+    width: 297mm;
+    text-align: center;
+  }
+  .cert-subtitle {
+    font-family: {!! !empty($layout['subtitle']['font_family']) ? "'" . addslashes($layout['subtitle']['font_family']) . "', " : "" !!}'Montserrat', Arial, sans-serif;
+    font-size: {{ $layout['subtitle']['font_size'] ?? 11 }}pt;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: #B45309;
     text-transform: uppercase;
     margin: 0;
     line-height: 1;
@@ -120,23 +139,24 @@
     font-size: {{ $layout['desc']['font_size'] ?? 10 }}pt;
     color: #475569;
     font-weight: 500;
-    margin-bottom: {{ $layout['desc']['line_gap'] ?? 0 }}mm;
-    line-height: {{ $layout['desc']['line_height'] ?? 1 }};
+    margin: 0 0 {{ max(0, (float)($layout['desc']['line_gap'] ?? 0)) }}mm 0;
+    line-height: {{ $layout['desc']['line_height'] ?? 0.9 }};
   }
   .course-title {
     font-family: {!! !empty($layout['desc']['font_family']) ? "'" . addslashes($layout['desc']['font_family']) . "', " : "" !!}'Poppins', Arial, sans-serif;
     font-size: {{ $layout['desc']['title_font_size'] ?? 14 }}pt;
     font-weight: 900;
     color: #B45309;
-    margin-bottom: {{ $layout['desc']['line_gap'] ?? 0 }}mm;
-    line-height: {{ $layout['desc']['line_height'] ?? 1 }};
+    margin: 0 0 {{ max(0, (float)($layout['desc']['line_gap'] ?? 0)) }}mm 0;
+    line-height: {{ $layout['desc']['line_height'] ?? 0.9 }};
   }
   .course-date {
     font-family: {!! !empty($layout['desc']['font_family']) ? "'" . addslashes($layout['desc']['font_family']) . "', " : "" !!}'Poppins', Arial, sans-serif;
     font-size: 11pt;
     font-weight: 800;
     color: #0F172A;
-    line-height: {{ $layout['desc']['line_height'] ?? 1 }};
+    margin: 0;
+    line-height: {{ $layout['desc']['line_height'] ?? 0.9 }};
   }
 
   /* 5. Lokasi & Tanggal Terbit */
@@ -168,34 +188,6 @@
     color: #0F172A;
   }
   .sig1-role {
-    font-family: {!! !empty($layout['sig1']['font_family']) ? "'" . addslashes($layout['sig1']['font_family']) . "', " : "" !!}'Arial', Helvetica, sans-serif;
-    font-size: 8.5pt;
-    font-weight: 900;
-    color: #B45309;
-    letter-spacing: 1.5px;
-    margin-top: 0;
-    text-transform: uppercase;
-  }
-
-  /* 6b. Penandatangan Kanan (Ketua Unit) */
-  .sig2-block {
-    position: absolute;
-    top: {{ $layout['sig2']['top'] ?? 167.5 }}mm;
-    right: {{ $layout['sig2']['right'] ?? 46 }}mm;
-    width: 68mm;
-    text-align: center;
-  }
-  .sig2-name {
-    font-family: {!! !empty($layout['sig2']['font_family']) ? "'" . addslashes($layout['sig2']['font_family']) . "', " : "" !!}'Arial', Helvetica, sans-serif;
-    font-size: {{ $layout['sig2']['font_size'] ?? 10 }}pt;
-    font-weight: 900;
-    color: #0F172A;
-  }
-  .sig2-role {
-    font-family: {!! !empty($layout['sig2']['font_family']) ? "'" . addslashes($layout['sig2']['font_family']) . "', " : "" !!}'Arial', Helvetica, sans-serif;
-    font-size: 8.5pt;
-    font-weight: 900;
-    color: #B45309;
     font-family: {!! !empty($layout['sig1']['font_family']) ? "'" . addslashes($layout['sig1']['font_family']) . "', " : "" !!}'Arial', Helvetica, sans-serif;
     font-size: 8.5pt;
     font-weight: 900;
@@ -260,12 +252,16 @@
       <h1 class="cert-title">SERTIFIKAT</h1>
     </div>
 
+    <div class="subtitle-block">
+      <div class="cert-subtitle">PENGHARGAAN</div>
+    </div>
+
     <div class="label-block">
       <div class="given-to-label">DIBERIKAN KEPADA</div>
     </div>
 
     <div class="name-block">
-      <div class="recipient-name">{{ $sertifikat->pendaftaran->peserta->nama }}</div>
+      <div class="recipient-name">{{ \Illuminate\Support\Str::title(mb_strtolower($sertifikat->pendaftaran->peserta->nama)) }}</div>
     </div>
 
     <div class="desc-block">
@@ -280,24 +276,56 @@
       <strong>{{ $tglTerbitFormat ?? ($sertifikat->tgl_terbit?->translatedFormat('d F Y') ?? '-') }}</strong>
     </div>
 
+    {{-- Penandatangan Kiri (Dekan) & Kanan (Ketua Unit) --}}
+    @php
+      $snap = $sertifikat->ttd_snapshot;
+      $hasSnap = !empty($snap) && is_array($snap) && (array_key_exists('dekan_nama', $snap) || array_key_exists('ketua_nama', $snap));
+
+      if ($hasSnap) {
+          $dekanNama = $snap['dekan_nama'] ?? '';
+          $dekanJabatan = $snap['dekan_jabatan'] ?? '';
+          $dekanTtd = $snap['dekan_ttd'] ?? null;
+
+          $ketuaNama = $snap['ketua_nama'] ?? '';
+          $ketuaJabatan = $snap['ketua_jabatan'] ?? '';
+          $ketuaTtd = $snap['ketua_ttd'] ?? null;
+      } else {
+          $activeTtd = \App\Models\TandaTangan::getAktif();
+          $dekanNama = $activeTtd->dekan_nama;
+          $dekanJabatan = $activeTtd->dekan_jabatan;
+          $dekanTtd = $activeTtd->dekan_ttd;
+
+          $ketuaNama = $activeTtd->ketua_nama;
+          $ketuaJabatan = $activeTtd->ketua_jabatan;
+          $ketuaTtd = $activeTtd->ketua_ttd;
+      }
+
+      $dekanTtdSrc = ($dekanTtd && file_exists(public_path('storage/' . $dekanTtd))) ? public_path('storage/' . $dekanTtd) : null;
+      $ketuaTtdSrc = ($ketuaTtd && file_exists(public_path('storage/' . $ketuaTtd))) ? public_path('storage/' . $ketuaTtd) : null;
+    @endphp
+
     {{-- Penandatangan Kiri (Dekan) --}}
     <div class="sig1-block">
-      <div class="sig1-name">Purnawansyah</div>
-      <div class="sig1-role">DEKAN</div>
+      <div style="height: 44px; margin-bottom: 4px;">
+        @if($dekanTtdSrc)
+          <img src="{{ $dekanTtdSrc }}" style="height: 42px; max-width: 100%; object-fit: contain;">
+        @endif
+      </div>
+      <div class="sig1-name">{{ $dekanNama }}</div>
+      <div class="sig1-role">{{ $dekanJabatan }}</div>
     </div>
 
     {{-- Penandatangan Kanan (Ketua Unit) --}}
     <div class="sig2-block">
-      <div class="sig2-name">Abdul Rachman Manga'</div>
-      <div class="sig2-role">KETUA UNIT</div>
+      <div style="height: 44px; margin-bottom: 4px;">
+        @if($ketuaTtdSrc)
+          <img src="{{ $ketuaTtdSrc }}" style="height: 42px; max-width: 100%; object-fit: contain;">
+        @endif
+      </div>
+      <div class="sig2-name">{{ $ketuaNama }}</div>
+      <div class="sig2-role">{{ $ketuaJabatan }}</div>
     </div>
   </div>
 </div>
 </body>
 </html>
-
-
-
-
-
-

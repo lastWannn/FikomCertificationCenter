@@ -18,10 +18,11 @@ class Kegiatan extends Model {
     public function getLayoutSettingsAttribute(): array
     {
         $default = [
-            'title' => ['top' => 40, 'left' => 0, 'font_size' => 32, 'font_family' => 'Times New Roman'],
+            'title'    => ['top' => 36, 'left' => 0, 'font_size' => 32, 'font_family' => 'Times New Roman'],
+            'subtitle' => ['top' => 48, 'left' => 0, 'font_size' => 11, 'font_family' => 'Montserrat'],
             'label' => ['top' => 63, 'left' => 0, 'font_size' => 8.5, 'font_family' => 'Arial'],
             'name'  => ['top' => 71, 'left' => 0, 'font_size' => 36, 'font_family' => 'Great Vibes'],
-            'desc'  => ['top' => 109, 'left' => 0, 'font_size' => 10, 'title_font_size' => 14, 'line_height' => 1.35, 'line_gap' => 1, 'font_family' => 'Arial'],
+            'desc'  => ['top' => 109, 'left' => 0, 'font_size' => 10, 'title_font_size' => 14, 'line_height' => 0.9, 'line_gap' => 0, 'font_family' => 'Poppins'],
             'date'  => ['top' => 146, 'right' => 46, 'font_size' => 9.5, 'font_family' => 'Arial'],
             'sig1'  => ['top' => 167.5, 'left' => 60, 'font_size' => 10, 'font_family' => 'Arial'],
             'sig2'  => ['top' => 167.5, 'right' => 46, 'font_size' => 10, 'font_family' => 'Arial'],
@@ -31,7 +32,11 @@ class Kegiatan extends Model {
             return $default;
         }
 
-        return array_replace_recursive($default, $this->sertifikat_layout);
+        $merged = array_replace_recursive($default, $this->sertifikat_layout);
+        if (isset($merged['desc']['line_gap']) && (float)$merged['desc']['line_gap'] < 0) {
+            $merged['desc']['line_gap'] = 0;
+        }
+        return $merged;
     }
 
     public function getDetailAttribute() {
@@ -44,7 +49,7 @@ class Kegiatan extends Model {
             return $this->kegiatanPelatihan?->jadwalPelatihan;
         return $this->kegiatanSertifikasi?->jadwalSertifikasi;
     }
-    public function getJudulAttribute(): string { return $this->jadwal?->nama_kegiatan ?? $this->detail?->judul ?? '-'; }
+    public function getJudulAttribute(): string { return $this->detail?->judul ?? $this->jadwal?->nama_kegiatan ?? '-'; }
     public function getLatarUrlAttribute(): ?string {
         if (empty($this->nama_latar)) return null;
         if (str_starts_with($this->nama_latar, 'http://') || str_starts_with($this->nama_latar, 'https://')) {

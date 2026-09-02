@@ -66,10 +66,14 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
         <div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-                <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Sertifikat Digital</span>
+                <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">
+                  {{ $kegiatan->jadwal?->nama_kegiatan ?: ('Jadwal ' . ($kegiatan->jadwal?->tgl_pelaksanaan?->translatedFormat('d M Y') ?? 'Reguler')) }}
+                </span>
                 <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0;letter-spacing:-0.02em;">{{ $kegiatan->judul }}</h1>
             </div>
-            <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">Kelola penerbitan sertifikat digital per peserta kegiatan ini.</p>
+            <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">
+              Penerbitan sertifikat khusus peserta yang terdaftar pada <strong>{{ $kegiatan->jadwal?->nama_kegiatan ?: ('Jadwal ' . ($kegiatan->jadwal?->tgl_pelaksanaan?->translatedFormat('d F Y') ?? 'Reguler')) }}</strong>.
+            </p>
         </div>
 
         {{-- Form Terbitkan Semua --}}

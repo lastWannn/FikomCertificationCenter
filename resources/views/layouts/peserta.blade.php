@@ -183,8 +183,8 @@
                 ['route'=>'peserta.jelajahi',     'icon'=>'search',           'label'=>'Jelajahi Kegiatan'],
                 ['route'=>'peserta.pendaftaran',  'icon'=>'clipboard-list',   'label'=>'Pendaftaran Saya'],
                 ['route'=>'peserta.pembayaran',   'icon'=>'credit-card',      'label'=>'Pembayaran'],
-                // ['route'=>'peserta.sertifikat',   'icon'=>'file-text',        'label'=>'Sertifikat Saya'],
-                // ['route'=>'peserta.testimoni',    'icon'=>'message-square',   'label'=>'Beri Testimoni'],
+                ['route'=>'peserta.sertifikat',   'icon'=>'award',            'label'=>'Sertifikat Saya'],
+                ['route'=>'peserta.testimoni',    'icon'=>'message-square',   'label'=>'Beri Testimoni'],
             ];
             $unpaidCount = auth('peserta')->check()
                 ? \App\Models\Pembayaran::whereHas('pendaftaran', function($q) {

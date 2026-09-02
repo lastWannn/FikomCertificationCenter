@@ -11,11 +11,41 @@ class SertifikatController extends Controller
     public function __construct(private SertifikatService $service) {}
 
     public function index(Request $r) {
-        $kegiatanList = Kegiatan::latest()->get();
-        if ($kegiatanList->isEmpty()) {
-            $kegiatanList = Kegiatan::whereHas('pendaftaran', fn($q) => $q->where('status_pendaftaran', 'terdaftar'))->get();
-        }
-        $kegiatanUnique = $kegiatanList->unique(fn($k) => trim($k->judul))->values();
+        $allKegiatan = Kegiatan::with([
+            'kegiatanPelatihan.jadwalPelatihan.pelatihan',
+            'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
+            'pendaftaran.sertifikat',
+            'pendaftaran.peserta',
+        ])->latest()->get();
+
+        $groupedByTitle = $allKegiatan->groupBy(fn($k) => trim($k->judul));
+
+        $masterGroups = $groupedByTitle->map(function ($items, $judul) {
+            $utama = $items->first(fn($k) => $k->has_latar) ?? $items->first();
+            $jadwalItems = $items->map(function ($k) {
+                $totalPeserta = $k->pendaftaran->where('status_pendaftaran', 'terdaftar')->count();
+                $totalTerbit = $k->pendaftaran->filter(fn($p) => $p->sertifikat !== null)->count();
+                return [
+                    'kegiatan'               => $k,
+                    'jadwal_nama'            => $k->jadwal?->nama_kegiatan ?: ('Jadwal ' . ($k->jadwal?->tgl_pelaksanaan?->translatedFormat('d M Y') ?? 'Reguler')),
+                    'tgl_pelaksanaan_format' => $k->jadwal?->tgl_pelaksanaan?->translatedFormat('d F Y') ?? '-',
+                    'total_peserta'          => $totalPeserta,
+                    'total_terbit'           => $totalTerbit,
+                ];
+            });
+
+            return [
+                'judul'           => $judul,
+                'utama'           => $utama,
+                'has_latar'       => $utama->has_latar,
+                'latar_url'       => $utama->latar_url,
+                'layout_settings' => $utama->layout_settings,
+                'jadwal_list'     => $jadwalItems,
+                'sample_sertifikat' => Sertifikat::whereHas('pendaftaran', fn($q) => $q->whereIn('kegiatan_id', $items->pluck('id')))->first(),
+            ];
+        })->values();
+
+        $kegiatanUnique = $allKegiatan->unique(fn($k) => trim($k->judul))->values();
 
         $query = Sertifikat::with(['pendaftaran.peserta','pendaftaran.kegiatan'])->latest();
 
@@ -28,19 +58,48 @@ class SertifikatController extends Controller
         }
 
         if ($r->filled('filter_kegiatan')) {
-            $query->whereHas('pendaftaran', fn($p) => $p->where('kegiatan_id', $r->filter_kegiatan));
+            $selectedKegiatan = Kegiatan::find($r->filter_kegiatan);
+            if ($selectedKegiatan) {
+                $targetJudul = trim($selectedKegiatan->judul);
+                $matchingIds = Kegiatan::all()
+                    ->filter(fn($k) => trim($k->judul) === $targetJudul)
+                    ->pluck('id');
+                $query->whereHas('pendaftaran', fn($p) => $p->whereIn('kegiatan_id', $matchingIds));
+            }
         }
 
         $sertifikat = $query->paginate(10)->withQueryString();
 
         return view('admin.sertifikat.index', [
-            'sertifikat' => $sertifikat,
-            'kegiatan'   => $kegiatanUnique,
+            'sertifikat'   => $sertifikat,
+            'kegiatan'     => $kegiatanUnique,
+            'masterGroups' => $masterGroups,
         ]);
+    }
+
+    public function previewSamplePdf(Kegiatan $kegiatan) {
+        $targetJudul = trim($kegiatan->judul);
+        $matchingIds = Kegiatan::all()->filter(fn($k) => trim($k->judul) === $targetJudul)->pluck('id');
+        $sample = Sertifikat::whereHas('pendaftaran', fn($q) => $q->whereIn('kegiatan_id', $matchingIds))->first();
+
+        if (!$sample) {
+            $sample = Sertifikat::first();
+        }
+
+        if (!$sample) {
+            return back()->with('error', 'Belum ada data sertifikat/peserta untuk melakukan preview layout PDF.');
+        }
+
+        return (new CetakController())->sertifikat($sample);
     }
     public function peserta(Kegiatan $kegiatan) {
         $kegiatan->load(['kegiatanPelatihan.jadwalPelatihan.pelatihan','kegiatanSertifikasi.jadwalSertifikasi.sertifikasi']);
-        $pendaftaran = Pendaftaran::where('kegiatan_id',$kegiatan->id)->with(['peserta','sertifikat'])->orderBy('status_pendaftaran')->get();
+
+        $pendaftaran = Pendaftaran::where('kegiatan_id', $kegiatan->id)
+            ->with(['peserta', 'sertifikat', 'kegiatan.kegiatanPelatihan.jadwalPelatihan', 'kegiatan.kegiatanSertifikasi.jadwalSertifikasi'])
+            ->orderBy('status_pendaftaran')
+            ->get();
+
         return view('admin.sertifikat.peserta', compact('kegiatan','pendaftaran'));
     }
     public function uploadLatar(Request $r) {
@@ -92,7 +151,25 @@ class SertifikatController extends Controller
 
         $dummySertifikat = Sertifikat::whereHas('pendaftaran', fn($q) => $q->where('kegiatan_id', $kegiatan->id))->with('pendaftaran.peserta')->first();
 
-        return view('admin.sertifikat.layout-editor', compact('kegiatan', 'layout', 'bgSrc', 'dummySertifikat'));
+        $otherKegiatans = Kegiatan::with([
+            'kegiatanPelatihan.jadwalPelatihan.pelatihan',
+            'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
+        ])
+        ->get()
+        ->filter(fn($k) => trim($k->judul) !== trim($kegiatan->judul))
+        ->unique(fn($k) => trim($k->judul))
+        ->values()
+        ->map(function($k) {
+            return [
+                'id'        => $k->id,
+                'judul'     => $k->judul,
+                'has_latar' => $k->has_latar,
+                'latar_url' => $k->latar_url,
+                'layout'    => $k->layout_settings,
+            ];
+        });
+
+        return view('admin.sertifikat.layout-editor', compact('kegiatan', 'layout', 'bgSrc', 'dummySertifikat', 'otherKegiatans'));
     }
 
     public function saveLayout(Request $r, Kegiatan $kegiatan) {
