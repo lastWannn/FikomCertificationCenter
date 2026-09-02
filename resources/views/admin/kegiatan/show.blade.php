@@ -45,12 +45,13 @@
         <span style="font-size:12px;font-weight:900;padding:8px 16px;border-radius:30px;background:#ECFDF5;color:#10B981;border:1.5px solid #10B981;display:inline-flex;align-items:center;gap:6px;">
           ✓ Sudah Diarsipkan
         </span>
-        @elseif($kegiatan->isPassed())
+        @else
         <form action="{{ route('admin.kegiatan.arsipkan', $kegiatan) }}" method="POST" style="display:inline;">
           @csrf
-          <button type="button" onclick="fccConfirmAction(this, 'Tandai Selesai & Arsipkan', 'Apakah Anda yakin ingin menandai kegiatan ini selesai dan memindahkannya ke Arsip Kegiatan?', 'Ya, Arsipkan', false)"
-                  style="display:inline-flex;align-items:center;gap:8px;padding:9.5px 18px;border-radius:30px;border:1.5px solid #131218;background:#10B981;color:#FFFFFF;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(16,185,129,0.3);transition:all .18s;">
-            @include('components.icon',['name'=>'archive','size'=>14]) Tandai Selesai / Arsipkan
+          <button type="button" onclick="fccConfirmAction(this, 'Arsipkan Kegiatan', 'Apakah Anda yakin ingin memindahkan kegiatan ini ke Arsip Kegiatan?', 'Ya, Arsipkan', false)"
+                  style="display:inline-flex;align-items:center;gap:8px;padding:9.5px 18px;border-radius:30px;border:1.5px solid #131218;background:#10B981;color:#FFFFFF;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(16,185,129,0.3);transition:all .18s;"
+                  onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+            @include('components.icon',['name'=>'archive','size'=>14]) Arsipkan Kegiatan
           </button>
         </form>
         @endif

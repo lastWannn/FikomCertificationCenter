@@ -170,18 +170,14 @@ class KegiatanController extends Controller
 
     public function arsipkan(Kegiatan $kegiatan)
     {
-        if (!$kegiatan->isPassed()) {
-            return back()->with('error', 'Kegiatan belum selesai dilaksanakan dan tidak dapat dipindahkan ke Arsip Kegiatan.');
-        }
-
         if (!$kegiatan->arsip) {
             \App\Models\ArsipKegiatan::create([
                 'kegiatan_id' => $kegiatan->id,
                 'judul'       => $kegiatan->judul,
-                'ringkasan'   => 'Kegiatan ' . $kegiatan->judul . ' telah selesai dilaksanakan.',
+                'ringkasan'   => 'Kegiatan ' . $kegiatan->judul . ' telah diarsipkan.',
             ]);
         }
-        return back()->with('success', 'Kegiatan berhasil ditandai selesai dan dipindahkan ke Arsip Kegiatan.');
+        return back()->with('success', 'Kegiatan berhasil dipindahkan ke Arsip Kegiatan.');
     }
 }
 
