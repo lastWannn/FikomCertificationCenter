@@ -407,7 +407,7 @@
         Salin Layout Kegiatan Lain
       </button>
 
-      <a href="{{ route('admin.sertifikat.preview-sample', $kegiatan) }}" target="_blank" class="fcc-btn-outline-light" style="padding:9.5px 18px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+      <a href="{{ route('admin.sertifikat.preview-sample', $kegiatan->id) }}" target="_blank" class="fcc-btn-outline-light" style="padding:9.5px 18px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         Live PDF Sample
       </a>
@@ -506,7 +506,7 @@
             <div class="drag-element" id="el-name" onclick="selectElement('name')" style="width:100%;text-align:center;">
               <div class="drag-badge" id="badge-name">3. Nama Peserta</div>
               <div id="text-name" style="font-family:'Great Vibes', 'Brush Script MT', cursive, serif;color:#0F172A;line-height:1.1;">
-                {{ \Illuminate\Support\Str::title(mb_strtolower($dummySertifikat->pendaftaran->peserta->nama ?? 'Abdul Halim, S.Kom.')) }}
+                {{ $dummySertifikat->pendaftaran->peserta->nama ?? 'M. Rizwan.' }}
               </div>
             </div>
 
@@ -1122,7 +1122,7 @@
     btn.disabled = true;
     btn.innerHTML = '<svg class="animate-spin" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 1 1-10 10" stroke-opacity="1"/></svg> Menyimpan...';
 
-    fetch("{{ route('admin.sertifikat.save-layout', $kegiatan) }}", {
+    fetch("{{ route('admin.sertifikat.save-layout', $kegiatan->id) }}", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -96,7 +96,7 @@ class JadwalPelatihanService
 
             // Inherit background template and layout settings from existing Kegiatan with matching title
             $targetJudul = trim($jadwal->pelatihan?->judul ?? '');
-            $existing = Kegiatan::all()->first(fn($k) => trim($k->judul) === $targetJudul && (!empty($k->nama_latar) || !empty($k->sertifikat_layout)));
+            $existing = Kegiatan::all()->first(fn($k) => trim($k->detail?->judul ?? $k->judul) === $targetJudul && (!empty($k->nama_latar) || !empty($k->sertifikat_layout)));
 
             $kegiatan = Kegiatan::create([
                 'jenis_kegiatan'    => 'pelatihan',

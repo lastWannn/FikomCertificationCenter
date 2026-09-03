@@ -81,8 +81,14 @@ class SearchKegiatan extends Component
         }
 
         $kegiatan = $query
+            ->leftJoin('kegiatan_pelatihan as kp', 'kegiatan.id', '=', 'kp.kegiatan_id')
+            ->leftJoin('jadwal_pelatihan as jp', 'kp.jadwal_pelatihan_id', '=', 'jp.id')
+            ->leftJoin('kegiatan_sertifikasi as ks', 'kegiatan.id', '=', 'ks.kegiatan_id')
+            ->leftJoin('jadwal_sertifikasi as js', 'ks.jadwal_sertifikasi_id', '=', 'js.id')
+            ->select('kegiatan.*')
             ->orderByRaw("CASE WHEN status = 'comingsoon' THEN 1 ELSE 0 END ASC")
-            ->latest()
+            ->orderByRaw("COALESCE(jp.tgl_pelaksanaan, js.tgl_pelaksanaan) ASC")
+            ->orderBy('kegiatan.id', 'asc')
             ->paginate(9);
         $kategoris = Kategori::orderBy('nama_kategori')->get();
 

@@ -26,18 +26,20 @@ class CetakController extends Controller
             }
         }
 
-        // 2. If not pre-rendered yet, generate, save to static storage, and serve
+        // 2. If not pre-rendered yet and sertifikat exists in DB, generate and save to static storage
         $service = app(\App\Services\Admin\SertifikatService::class);
-        $service->regeneratePdf($sertifikat);
+        if ($sertifikat->exists) {
+            $service->regeneratePdf($sertifikat);
 
-        $sertifikat->refresh();
-        if (!empty($sertifikat->file_sertifikat)) {
-            $filePath = storage_path('app/public/' . $sertifikat->file_sertifikat);
-            if (file_exists($filePath) && is_file($filePath)) {
-                return response()->file($filePath, [
-                    'Content-Type' => 'application/pdf',
-                    'Content-Disposition' => 'inline; filename="sertifikat-' . $safeNomor . '.pdf"'
-                ]);
+            $sertifikat->refresh();
+            if (!empty($sertifikat->file_sertifikat)) {
+                $filePath = storage_path('app/public/' . $sertifikat->file_sertifikat);
+                if (file_exists($filePath) && is_file($filePath)) {
+                    return response()->file($filePath, [
+                        'Content-Type' => 'application/pdf',
+                        'Content-Disposition' => 'inline; filename="sertifikat-' . $safeNomor . '.pdf"'
+                    ]);
+                }
             }
         }
 

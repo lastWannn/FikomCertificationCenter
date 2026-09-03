@@ -11,4 +11,10 @@ class JadwalPelatihan extends Model {
     public function kegiatanPelatihan(){ return $this->hasOne(KegiatanPelatihan::class); }
     public function kegiatan()        { return $this->hasOneThrough(Kegiatan::class,KegiatanPelatihan::class,'jadwal_pelatihan_id','id','id','kegiatan_id'); }
     public function getMasihDapatDidaftarAttribute(): bool { return now()->lte($this->tgl_batas_daftar); }
+    
+    public function getNamaDisplayAttribute(): string 
+    {
+        $nama = trim($this->nama_kegiatan ?? '');
+        return !empty($nama) ? $nama : ($this->pelatihan?->judul ?? '-');
+    }
 }

@@ -17,6 +17,7 @@ class StoreSertifikasiRequest extends FormRequest
             'kode' => 'required|string|max:50|unique:sertifikasi,kode',
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
+            'fasilitas_input' => 'nullable|string',
             'kategori_id' => 'required|exists:kategori,id',
             'gambar' => 'nullable|image|max:2048',
             

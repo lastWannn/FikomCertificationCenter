@@ -23,8 +23,14 @@ class LandingController extends Controller
             ->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan',
                     'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
                     'biaya'])
+            ->leftJoin('kegiatan_pelatihan as kp', 'kegiatan.id', '=', 'kp.kegiatan_id')
+            ->leftJoin('jadwal_pelatihan as jp', 'kp.jadwal_pelatihan_id', '=', 'jp.id')
+            ->leftJoin('kegiatan_sertifikasi as ks', 'kegiatan.id', '=', 'ks.kegiatan_id')
+            ->leftJoin('jadwal_sertifikasi as js', 'ks.jadwal_sertifikasi_id', '=', 'js.id')
+            ->select('kegiatan.*')
             ->orderByRaw("CASE WHEN status = 'comingsoon' THEN 1 ELSE 0 END ASC")
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw("COALESCE(jp.tgl_pelaksanaan, js.tgl_pelaksanaan) ASC")
+            ->orderBy('kegiatan.id', 'asc')
             ->limit(6)
             ->get();
 
