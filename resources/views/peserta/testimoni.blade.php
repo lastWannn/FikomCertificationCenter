@@ -244,16 +244,7 @@
                     @error('kata') <p style="color:#EF4444;font-size:12px;margin:4px 0 0;">{{ $message }}</p> @enderror
                 </div>
 
-                {{-- Sync Avatar Badge --}}
-                <div style="margin-bottom:24px;padding:14px 18px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:14px;display:flex;align-items:center;gap:14px;">
-                    <div style="width:44px;height:44px;border-radius:50%;background:#FFC81A;border:2px solid #131218;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#131218;flex-shrink:0;">
-                        {{ Str::upper(Str::substr($peserta->nama, 0, 1)) }}
-                    </div>
-                    <div>
-                        <p style="margin:0;font-size:12.5px;font-weight:800;color:#131218;">Foto &amp; Nama Otomatis Terhubung</p>
-                        <p style="margin:2px 0 0;font-size:11.5px;color:#64748B;">Identitas testimoni disinkronkan secara otomatis sesuai akun resmi Anda ({{ $peserta->nama }}).</p>
-                    </div>
-                </div>
+
 
                 {{-- Action Buttons --}}
                 <div class="fcc-testimoni-btn-group">

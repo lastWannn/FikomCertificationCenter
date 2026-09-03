@@ -55,6 +55,8 @@
                 $posterUrl = $k->detail?->gambar_url;
             @endphp
             <div class="fcc-kegiatan-card"
+                 style="cursor:pointer;"
+                 onclick="window.location.href='{{ route('landing.show', $k) }}';"
                  onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='#FFC81A'; this.style.boxShadow='0 14px 28px rgba(0,0,0,0.08)';"
                  onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='#E5E7EB'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.04)';">
 

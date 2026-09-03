@@ -34,6 +34,12 @@
             <form action="{{ route('admin.kontak.update') }}" method="POST">
                 @csrf @method('PUT')
                 
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;font-size:11px;font-weight:800;color:#64748B;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px;">Nama Kontak / Penanggung Jawab</label>
+                    <input type="text" name="nama" class="fcc-input" value="{{ old('nama', $kontak->nama ?? '') }}" placeholder="contoh: Admin FCC / Wawan" style="width:100%;font-size:13.5px;height:42px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;font-weight:600;box-sizing:border-box;">
+                    <p style="font-size:11px;color:#94A3B8;margin:4px 0 0;font-weight:500;">💡 Jika diisi, di halaman depan nomor telepon akan ditampilkan dengan format: <strong>Nomor (Nama)</strong></p>
+                </div>
+
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
                     <div>
                         <label style="display:block;font-size:11px;font-weight:800;color:#64748B;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px;">Alamat Email Resmi *</label>
@@ -41,7 +47,8 @@
                     </div>
                     <div>
                         <label style="display:block;font-size:11px;font-weight:800;color:#64748B;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px;">Nomor Telepon / WhatsApp *</label>
-                        <input type="text" name="telepon" class="fcc-input" value="{{ old('telepon', $kontak->telepon ?? '') }}" placeholder="contoh: (0411) 455 855" style="width:100%;font-size:13.5px;height:42px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;font-weight:600;box-sizing:border-box;">
+                        <input type="text" name="telepon" class="fcc-input" value="{{ old('telepon', $kontak->telepon ?? '') }}" placeholder="contoh: (0411) 455 855" oninput="this.value = this.value.replace(/[^0-9\+\-\(\)\/\s]/g, '')" style="width:100%;font-size:13.5px;height:42px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;font-weight:600;box-sizing:border-box;">
+                        @error('telepon')<p style="color:#EF4444;font-size:11.5px;margin:4px 0 0;font-weight:600;">{{ $message }}</p>@enderror
                     </div>
                 </div>
 

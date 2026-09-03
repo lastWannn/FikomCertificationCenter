@@ -15,7 +15,7 @@ class UpdateProfilePesertaRequest extends FormRequest {
         return [
             'nama'      => 'required|string|max:150',
             'email'     => ['required', 'email', new UniqueEmailAcrossRoles('peserta', $id)],
-            'no_hp'     => 'required|string|max:20',
+            'no_hp'     => ['required', 'string', 'max:20', 'regex:/^[0-9\+\-\(\)\/\s]+$/'],
             'instansi'  => 'required|string|max:200',
             'pekerjaan' => 'required|string|max:100',
             'alamat'    => 'nullable|string|max:500',
@@ -26,6 +26,8 @@ class UpdateProfilePesertaRequest extends FormRequest {
 
     public function messages(): array {
         return [
+            'no_hp.regex'        => 'Nomor HP hanya boleh berisi angka dan simbol (+, -, (), spasi).',
+            'no_hp.required'     => 'Nomor HP wajib diisi.',
             'email.unique'       => 'Email sudah digunakan akun lain.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
             'foto.max'           => 'Ukuran foto profil maksimal adalah 10 MB.',

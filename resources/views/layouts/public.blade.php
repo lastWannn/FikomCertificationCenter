@@ -442,7 +442,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 @php
                     $fKontak = \App\Models\Kontak::aktif();
                     $fAlamat = $fKontak->alamat ?? 'Jl. Urip Sumoharjo No.225, Makassar 90232';
-                    $fTelp   = $fKontak->telepon ?? '(0411) 455 855';
+                    $fTelp   = $fKontak?->telepon_dengan_nama ?? ($fKontak->telepon ?? '(0411) 455 855');
                     $fEmail  = $fKontak->email ?? 'fcc@fikom.umi.ac.id';
                     $fWaUrl  = $fKontak?->wa_url ?? 'https://wa.me/6281234567890';
                     $fMailUrl= $fKontak?->mailto_url ?? 'mailto:fcc@fikom.umi.ac.id';

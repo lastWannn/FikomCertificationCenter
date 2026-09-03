@@ -137,7 +137,7 @@
                                         <span style="font-size:9.5px; background:#25D366; color:#FFF; padding:2px 6px; border-radius:4px; font-weight:800; text-transform:none;">Chat WhatsApp &nearr;</span>
                                     </div>
                                     <p class="fcc-tel-num" style="margin:0; color:#0F172A; font-size:13.5px; font-weight:700; transition:color 0.2s; word-break:break-word;">
-                                        {{ $kontak->telepon ?? '(0411) 455 855 / WhatsApp: +62 812-3456-7890' }}
+                                        {{ $kontak?->telepon_dengan_nama ?? ($kontak->telepon ?? '(0411) 455 855 / WhatsApp: +62 812-3456-7890') }}
                                     </p>
                                 </div>
                             </a>

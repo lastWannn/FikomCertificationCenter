@@ -152,7 +152,8 @@
                 $posterUrl   = $k->detail?->gambar_url;
             @endphp
             <div class="kegiatan-card" data-jenis="{{ $k->jenis_kegiatan }}"
-                 style="flex:1 1 310px; max-width:{{ $kCount == 1 ? '480px' : ($kCount == 2 ? '410px' : '370px') }}; width:100%; border-radius:18px; border:2px solid #E5E7EB; background:#FFFFFF; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.28s ease; box-shadow:0 4px 16px rgba(0,0,0,0.04);"
+                 style="flex:1 1 310px; max-width:{{ $kCount == 1 ? '480px' : ($kCount == 2 ? '410px' : '370px') }}; width:100%; border-radius:18px; border:2px solid #E5E7EB; background:#FFFFFF; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.28s ease; box-shadow:0 4px 16px rgba(0,0,0,0.04); cursor:pointer;"
+                 onclick="window.location.href='{{ route('landing.show', $k) }}';"
                  onmouseover="this.style.transform='translateY(-6px)'; this.style.borderColor='#FFC81A'; this.style.boxShadow='0 16px 32px rgba(0,0,0,0.08)';"
                  onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='#E5E7EB'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.04)';">
 

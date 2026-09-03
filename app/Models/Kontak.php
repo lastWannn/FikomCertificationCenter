@@ -3,8 +3,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 class Kontak extends Model {
     protected $table='kontak';
-    protected $fillable=['alamat','telepon','email','maps_embed'];
+    protected $fillable=['nama','alamat','telepon','email','maps_embed'];
     public static function aktif(): ?self { return self::latest()->first(); }
+
+    /**
+     * Format nomor telepon dengan nama jika tersedia: "081234567890 (Admin FCC)"
+     */
+    public function getTeleponDenganNamaAttribute(): string
+    {
+        $telp = $this->telepon ?? '(0411) 455 855';
+        if (!empty($this->nama)) {
+            return $telp . ' (' . $this->nama . ')';
+        }
+        return $telp;
+    }
 
     /**
      * URL WhatsApp otomatis dari nomor telepon/WA

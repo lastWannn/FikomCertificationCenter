@@ -21,6 +21,7 @@ class PengaturanSeeder extends Seeder
         Kontak::updateOrCreate(
             ['email' => 'fcc@fikom.umi.ac.id'],
             [
+                'nama' => 'Admin FCC',
                 'alamat' => 'Jl. Urip Sumoharjo No.225, Makassar 90232',
                 'telepon' => '(0411) 455 855',
                 'maps_embed' => '<iframe src="https://maps.google.com/maps?q=Fakultas%20Ilmu%20Komputer%20UMI%20Makassar&t=&z=17&ie=UTF8&iwloc=&output=embed" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'

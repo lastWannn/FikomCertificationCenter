@@ -295,7 +295,9 @@
                             </label>
                             <input type="tel" name="no_hp" value="{{ old('no_hp',$peserta->no_hp) }}" required class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
                                    placeholder="081234567890"
+                                   oninput="this.value = this.value.replace(/[^0-9\+\-\(\)\/\s]/g, '')"
                                    onkeydown="if(event.key==='Enter')event.preventDefault();">
+                            @error('no_hp')<p style="color:#EF4444;font-size:11.5px;margin:4px 0 0;font-weight:600;">{{ $message }}</p>@enderror
                         </div>
 
                         <div>

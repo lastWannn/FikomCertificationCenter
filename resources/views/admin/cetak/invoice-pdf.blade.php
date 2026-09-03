@@ -439,7 +439,7 @@
 <!-- Bottom Footer Contact Bar -->
 @php
   $invoiceKontak = \App\Models\Kontak::aktif();
-  $invPhone   = $invoiceKontak?->telepon ?? '(0411) 455 855';
+  $invPhone   = $invoiceKontak?->telepon_dengan_nama ?? ($invoiceKontak?->telepon ?? '(0411) 455 855');
   $invAddress = $invoiceKontak?->alamat ?? 'Gedung FIKOM UMI, Jl. Urip Sumoharjo KM 5, Makassar';
 @endphp
 <div class="bottom-footer-bar">
