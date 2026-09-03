@@ -252,21 +252,8 @@
                         @include('components.icon', ['name' => 'check-circle', 'size' => 16])
                         {{ $testimoni ? 'Simpan Perubahan' : 'Kirim & Simpan Testimoni' }}
                     </button>
-
-                    @if($testimoni)
-                    <button type="button" onclick="if(confirm('Apakah Anda yakin ingin menghapus testimoni ini?')) document.getElementById('delete-testimoni-form').submit();" style="padding:12px 20px;font-size:13px;font-weight:800;background:#FEF2F2;color:#EF4444;border:1.5px solid #FCA5A5;border-radius:30px;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='#EF4444';this.style.color='#FFF';" onmouseout="this.style.background='#FEF2F2';this.style.color='#EF4444';">
-                        Hapus Testimoni
-                    </button>
-                    @endif
                 </div>
             </form>
-
-            @if($testimoni)
-            <form id="delete-testimoni-form" action="{{ route('peserta.testimoni.destroy', $testimoni->id) }}" method="POST" style="display:none;">
-                @csrf
-                @method('DELETE')
-            </form>
-            @endif
         </div>
 
         {{-- Right: Live Preview Card --}}

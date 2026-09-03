@@ -74,7 +74,7 @@
     {{-- Critical inline CSS: prevents FOUC when CSS is async --}}
     <style>
         *,*::before,*::after{box-sizing:border-box;}
-        body{margin:0;padding:0;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;}
+        html,body{margin:0;padding:0;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;background-color:#131218;min-height:100vh;}
         select,textarea,input{font-family:'Inter',ui-sans-serif,system-ui,sans-serif;}
         /* Global Autofill Dark Override */
         input:-webkit-autofill,
