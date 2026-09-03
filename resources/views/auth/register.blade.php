@@ -582,10 +582,10 @@
             @csrf
             <input type="hidden" name="email" id="otpEmailInput">
             <div style="display:flex;gap:12px;justify-content:center;margin-bottom:24px;" id="otpInputs">
-                <input type="text" maxlength="1" class="otp-box" required autofocus>
-                <input type="text" maxlength="1" class="otp-box" required>
-                <input type="text" maxlength="1" class="otp-box" required>
-                <input type="text" maxlength="1" class="otp-box" required>
+                <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required autofocus>
+                <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
             </div>
             <input type="hidden" name="otp" id="finalOtp">
             <div id="otpError" style="color:#EF4444;font-size:13px;margin-bottom:18px;display:none;font-weight:700;"></div>
