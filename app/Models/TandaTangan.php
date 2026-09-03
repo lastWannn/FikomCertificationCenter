@@ -21,6 +21,10 @@ class TandaTangan extends Model
         'bendahara_jabatan',
         'bendahara_nip',
         'bendahara_ttd',
+        'proktor_nama',
+        'proktor_jabatan',
+        'proktor_nip',
+        'proktor_ttd',
     ];
 
     /**
@@ -35,6 +39,8 @@ class TandaTangan extends Model
             'ketua_jabatan'     => 'KETUA UNIT',
             'bendahara_nama'    => 'Panitia FCC',
             'bendahara_jabatan' => 'BENDAHARA / KEUANGAN',
+            'proktor_nama'      => "Ir. Abdul Rachman Manga', S.Kom., M.T., MTA., MCF",
+            'proktor_jabatan'   => 'PROKTOR UJIAN',
         ]);
     }
 
@@ -51,5 +57,10 @@ class TandaTangan extends Model
     public function getBendaharaTtdUrlAttribute(): ?string
     {
         return $this->bendahara_ttd ? asset('storage/' . $this->bendahara_ttd) : null;
+    }
+
+    public function getProktorTtdUrlAttribute(): ?string
+    {
+        return $this->proktor_ttd ? asset('storage/' . $this->proktor_ttd) : null;
     }
 }

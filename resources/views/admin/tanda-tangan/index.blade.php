@@ -25,8 +25,9 @@
         </p>
       </div>
 
-      <button type="submit" style="background: #FFC81A; color: #131218; border: 2px solid #131218; border-radius: 12px; padding: 12px 24px; font-size: 13.5px; font-weight: 900; cursor: pointer; box-shadow: 3px 3px 0px #FFF; transition: all .15s; white-space: nowrap;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
-        💾 Simpan Pengaturan
+      <button type="submit" style="background: #FFC81A; color: #131218; border: 2px solid #131218; border-radius: 12px; padding: 12px 24px; font-size: 13.5px; font-weight: 900; cursor: pointer; box-shadow: 3px 3px 0px #FFF; transition: all .15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 8px;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <span>Simpan Pengaturan</span>
       </button>
     </div>
 
@@ -61,10 +62,29 @@
       </div>
     @endif
 
+    {{-- ═══ NAVIGASI KATEGORI TANDA TANGAN (COMPACT DROPDOWN WITH SVG ICON) ═════════ --}}
+    <div style="background: #FFF; border: 2.5px solid #131218; border-radius: 16px; padding: 18px 24px; margin-bottom: 24px; box-shadow: 4px 4px 0px #131218; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+      
+      {{-- Dropdown Select --}}
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; width: 100%;">
+        <label for="ttd-category-select" style="font-size: 13.5px; font-weight: 800; color: #1E293B; display: inline-flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          <span>Pilih Kategori Tanda Tangan:</span>
+        </label>
+        
+        <select id="ttd-category-select" onchange="switchTtdCategory(this.value)" style="flex: 1; min-width: 280px; padding: 11px 16px; border: 2px solid #131218; border-radius: 12px; font-size: 13.5px; font-weight: 800; color: #0F172A; background: #FFF; cursor: pointer; outline: none; box-shadow: 2px 2px 0px #131218;">
+          <option value="sertifikat" selected>Tanda Tangan Sertifikat (Dekan & Ketua Unit)</option>
+          <option value="invoice">Tanda Tangan Invoice & Kwitansi (Bendahara)</option>
+          <option value="presensi">Tanda Tangan Presensi & Kehadiran (Proktor Ujian)</option>
+          <option value="all">Tampilkan Semua Kategori Tanda Tangan</option>
+        </select>
+      </div>
+    </div>
+
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; margin-bottom: 28px;">
 
       {{-- 🎓 CARD 1: DEKAN --}}
-      <div style="background: #FFF; border: 2.5px solid #131218; border-radius: 16px; padding: 22px; box-shadow: 5px 5px 0px #131218; display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="ttd-card-group" data-category="sertifikat" style="background: #FFF; border: 2.5px solid #131218; border-radius: 16px; padding: 22px; box-shadow: 5px 5px 0px #131218; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #F1F5F9; padding-bottom: 14px; margin-bottom: 16px;">
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -141,7 +161,7 @@
       </div>
 
       {{-- 📜 CARD 2: KETUA UNIT --}}
-      <div style="background: #FFF; border: 2.5px solid #131218; border-radius: 16px; padding: 22px; box-shadow: 5px 5px 0px #131218; display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="ttd-card-group" data-category="sertifikat" style="background: #FFF; border: 2.5px solid #131218; border-radius: 16px; padding: 22px; box-shadow: 5px 5px 0px #131218; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #F1F5F9; padding-bottom: 14px; margin-bottom: 16px;">
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -218,7 +238,7 @@
       </div>
 
       {{-- 🧾 CARD 3: BENDAHARA / INVOICE --}}
-      <div style="background: #FFF; border: 2.5px solid #131218; border-radius: 16px; padding: 22px; box-shadow: 5px 5px 0px #131218; display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="ttd-card-group" data-category="invoice" style="background: #FFF; border: 2.5px solid #131218; border-radius: 16px; padding: 22px; box-shadow: 5px 5px 0px #131218; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #F1F5F9; padding-bottom: 14px; margin-bottom: 16px;">
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -294,6 +314,83 @@
         @endif
       </div>
 
+      {{-- 📝 CARD 4: PROKTOR UJIAN --}}
+      <div class="ttd-card-group" data-category="presensi" style="background: #FFF; border: 2.5px solid #131218; border-radius: 16px; padding: 22px; box-shadow: 5px 5px 0px #131218; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #F1F5F9; padding-bottom: 14px; margin-bottom: 16px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; background: #F3E8FF; border: 1.5px solid #9333EA; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #7E22CE;">
+                4
+              </div>
+              <div>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 900; color: #131218;">Proktor Ujian (Lembar Presensi)</h3>
+                <span style="font-size: 11.5px; color: #64748B; font-weight: 600;">Digunakan pada Cetakan Presensi Ujian</span>
+              </div>
+            </div>
+            <span style="background: #F3E8FF; border: 1px solid #D8B4FE; color: #7E22CE; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px;">Presensi Ujian</span>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 6px;">Nama Lengkap Proktor Ujian & Gelar</label>
+            <input type="text" name="proktor_nama" value="{{ old('proktor_nama', $ttd->proktor_nama) }}" required style="width: 100%; padding: 10px 14px; border: 2px solid #CBD5E1; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #0F172A; outline: none;" onfocus="this.style.borderColor='#FFC81A'" onblur="this.style.borderColor='#CBD5E1'">
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 6px;">Jabatan Utama</label>
+            <input type="text" name="proktor_jabatan" value="{{ old('proktor_jabatan', $ttd->proktor_jabatan) }}" required style="width: 100%; padding: 10px 14px; border: 2px solid #CBD5E1; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #0F172A; outline: none;" onfocus="this.style.borderColor='#FFC81A'" onblur="this.style.borderColor='#CBD5E1'">
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 6px;">NIP / NIDN / ID Proktor (Opsional)</label>
+            <input type="text" name="proktor_nip" value="{{ old('proktor_nip', $ttd->proktor_nip) }}" placeholder="Contoh: NIDN. 0912..." style="width: 100%; padding: 10px 14px; border: 2px solid #CBD5E1; border-radius: 10px; font-size: 13.5px; font-weight: 600; color: #0F172A; outline: none;" onfocus="this.style.borderColor='#FFC81A'" onblur="this.style.borderColor='#CBD5E1'">
+          </div>
+
+          {{-- Preview & Upload --}}
+          <div style="margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 8px;">
+              <span>Upload TTD Proktor Transparan</span>
+              <span style="font-size: 10.5px; font-weight: 700; color: #7E22CE; background: #F3E8FF; padding: 2px 8px; border-radius: 10px;">PNG / WebP Transparan</span>
+            </label>
+
+            <div class="fcc-dropzone" id="dropzone-proktor" style="position: relative; background: #F8FAFC; border: 2.5px dashed #CBD5E1; border-radius: 14px; padding: 20px 16px; text-align: center; cursor: pointer; transition: all 0.2s ease-in-out; overflow: hidden;">
+              <input type="file" name="proktor_ttd" accept="image/png,image/webp,image/jpeg,image/svg+xml" id="input-proktor" onchange="handleFileSelect(this, 'proktor')" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
+
+              <div id="dropzone-content-proktor">
+                @if($ttd->proktor_ttd)
+                  <div style="margin-bottom: 12px; background: repeating-conic-gradient(#E2E8F0 0% 25%, #FFF 0% 50%) 50% / 16px 16px; border-radius: 10px; padding: 14px; border: 1.5px solid #CBD5E1; display: inline-flex; align-items: center; justify-content: center; min-width: 160px; max-width: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                    <img src="{{ asset('storage/' . $ttd->proktor_ttd) }}" id="preview-img-proktor" style="max-height: 80px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
+                  </div>
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                    <div style="font-size: 12px; font-weight: 800; color: #7E22CE; background: #F3E8FF; border: 1px solid #D8B4FE; padding: 4px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>TTD Proktor Terpasang</span>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 700; color: #64748B; margin-top: 4px;">Drag & drop file baru ke sini atau <u>klik untuk mengganti</u></span>
+                  </div>
+                @else
+                  <div style="padding: 12px 8px;">
+                    <div class="drop-icon" style="width: 48px; height: 48px; background: #F3E8FF; border: 2px solid #9333EA; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; color: #7E22CE; transition: transform 0.2s;">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <div style="font-size: 13px; font-weight: 800; color: #1E293B;">Drag & Drop file TTD di sini</div>
+                    <div style="font-size: 11.5px; color: #64748B; margin-top: 4px; font-weight: 600;">atau <span style="color: #9333EA; text-decoration: underline; font-weight: 800;">klik untuk memilih file</span></div>
+                    <div style="font-size: 10.5px; color: #94A3B8; margin-top: 8px; font-weight: 700;">Format: PNG, WebP, JPG (Max 2MB)</div>
+                  </div>
+                @endif
+              </div>
+            </div>
+          </div>
+        </div>
+
+        @if($ttd->proktor_ttd)
+          <div style="margin-top: 14px; text-align: right;">
+            <button type="button" onclick="confirmDelete('{{ route('admin.tanda-tangan.destroy', 'proktor') }}', 'TTD Proktor Ujian')" style="background: #FEE2E2; color: #DC2626; border: 1.5px solid #FCA5A5; font-size: 11.5px; font-weight: 800; padding: 6px 12px; border-radius: 8px; cursor: pointer;">
+              Hapus Gambar TTD
+            </button>
+          </div>
+        @endif
+      </div>
+
     </div>
   </form>
 </div>
@@ -358,8 +455,22 @@ function confirmDelete(url, title) {
   }
 }
 
+// Function to dynamically filter TTD cards by category
+function switchTtdCategory(cat) {
+  const cards = document.querySelectorAll('.ttd-card-group');
+  cards.forEach(card => {
+    if (cat === 'all' || card.dataset.category === cat) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
 // Drag & Drop event handlers
 document.addEventListener('DOMContentLoaded', function() {
+  switchTtdCategory('sertifikat');
+
   document.querySelectorAll('.fcc-dropzone').forEach(dropzone => {
     const input = dropzone.querySelector('input[type="file"]');
     if (!input) return;

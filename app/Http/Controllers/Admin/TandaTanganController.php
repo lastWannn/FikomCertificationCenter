@@ -38,6 +38,11 @@ class TandaTanganController extends Controller
             'bendahara_jabatan' => 'required|string|max:100',
             'bendahara_nip'     => 'nullable|string|max:50',
             'bendahara_ttd'     => 'nullable|image|mimes:png,jpg,jpeg,webp,svg|max:2048',
+
+            'proktor_nama'      => 'required|string|max:150',
+            'proktor_jabatan'   => 'required|string|max:100',
+            'proktor_nip'       => 'nullable|string|max:50',
+            'proktor_ttd'       => 'nullable|image|mimes:png,jpg,jpeg,webp,svg|max:2048',
         ], [
             'dekan_nama.required'     => 'Nama Dekan wajib diisi.',
             'dekan_jabatan.required'  => 'Jabatan Dekan wajib diisi.',
@@ -53,6 +58,11 @@ class TandaTanganController extends Controller
             'bendahara_jabatan.required' => 'Jabatan Bendahara/Keuangan wajib diisi.',
             'bendahara_ttd.image'     => 'File TTD/Stempel Invoice harus berupa gambar (PNG/JPG/WebP/SVG).',
             'bendahara_ttd.max'       => 'Ukuran file TTD/Stempel Invoice maksimal 2MB.',
+
+            'proktor_nama.required'   => 'Nama Proktor Ujian wajib diisi.',
+            'proktor_jabatan.required'=> 'Jabatan Proktor Ujian wajib diisi.',
+            'proktor_ttd.image'       => 'File TTD Proktor Ujian harus berupa gambar (PNG/JPG/WebP/SVG).',
+            'proktor_ttd.max'         => 'Ukuran file TTD Proktor Ujian maksimal 2MB.',
         ]);
 
         $ttd = TandaTangan::getAktif();
@@ -69,19 +79,28 @@ class TandaTanganController extends Controller
         $ttd->bendahara_jabatan = $request->bendahara_jabatan;
         $ttd->bendahara_nip     = $request->bendahara_nip;
 
-        // Handle upload file TTD Dekan (Otomatis hapus background putih & simpan file baru tanpa merusak arsip lama)
+        $ttd->proktor_nama      = $request->proktor_nama;
+        $ttd->proktor_jabatan   = $request->proktor_jabatan;
+        $ttd->proktor_nip       = $request->proktor_nip;
+
+        // Handle upload file TTD Dekan
         if ($request->hasFile('dekan_ttd')) {
             $ttd->dekan_ttd = \App\Helpers\SignatureHelper::processTransparent($request->file('dekan_ttd'), 'tanda-tangan');
         }
 
-        // Handle upload file TTD Ketua Unit (Otomatis hapus background putih & simpan file baru tanpa merusak arsip lama)
+        // Handle upload file TTD Ketua Unit
         if ($request->hasFile('ketua_ttd')) {
             $ttd->ketua_ttd = \App\Helpers\SignatureHelper::processTransparent($request->file('ketua_ttd'), 'tanda-tangan');
         }
 
-        // Handle upload file TTD/Stempel Bendahara (Otomatis hapus background putih & simpan file baru tanpa merusak arsip lama)
+        // Handle upload file TTD/Stempel Bendahara
         if ($request->hasFile('bendahara_ttd')) {
             $ttd->bendahara_ttd = \App\Helpers\SignatureHelper::processTransparent($request->file('bendahara_ttd'), 'tanda-tangan');
+        }
+
+        // Handle upload file TTD Proktor Ujian
+        if ($request->hasFile('proktor_ttd')) {
+            $ttd->proktor_ttd = \App\Helpers\SignatureHelper::processTransparent($request->file('proktor_ttd'), 'tanda-tangan');
         }
 
         $ttd->save();
@@ -90,7 +109,7 @@ class TandaTanganController extends Controller
     }
 
     /**
-     * Hapus gambar TTD aktif (dekan / ketua / bendahara) dari pengaturan aktif
+     * Hapus gambar TTD aktif (dekan / ketua / bendahara / proktor) dari pengaturan aktif
      */
     public function destroy($type)
     {
@@ -112,6 +131,12 @@ class TandaTanganController extends Controller
             $ttd->bendahara_ttd = null;
             $ttd->save();
             return redirect()->back()->with('success', 'File Tanda Tangan / Stempel Bendahara Invoice berhasil dikosongkan dari pengaturan aktif.');
+        }
+
+        if ($type === 'proktor' && $ttd->proktor_ttd) {
+            $ttd->proktor_ttd = null;
+            $ttd->save();
+            return redirect()->back()->with('success', 'File Tanda Tangan Proktor Ujian berhasil dikosongkan dari pengaturan aktif.');
         }
 
         return redirect()->back()->with('error', 'Gagal menghapus file tanda tangan.');

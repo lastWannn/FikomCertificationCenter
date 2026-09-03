@@ -100,7 +100,7 @@ class CetakController extends Controller
 
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.cetak.presensi-pdf', compact('kegiatan'))
-                ->setPaper('a4', 'portrait');
+                ->setPaper('a4', 'landscape');
             return $pdf->stream("presensi-{$kegiatan->id}.pdf");
         }
 
