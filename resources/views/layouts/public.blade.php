@@ -107,6 +107,9 @@ window.addEventListener('resize', function() {
 });
 </script>
 
+{{-- ═══ PUBLIC LAYOUT FLEX WRAPPER (FULL-HEIGHT 100VH) ═════════════════ --}}
+<div style="display:flex;flex-direction:column;min-height:100vh;background:#131218;color:#FFFFFF;overflow-x:hidden;">
+
 {{-- ═══ NAVBAR ══════════════════════════════════════════════════ --}}
 <nav id="fcc-nav" role="navigation" aria-label="Navigasi utama" style="position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;padding:0 24px;gap:16px;background:#131218;border-bottom:2px solid #1E1D26;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
     <div style="max-width:1200px;margin:0 auto;width:100%;padding:0 24px;
@@ -356,10 +359,12 @@ document.addEventListener('DOMContentLoaded', function () {
 @endif
 
 {{-- Page Content --}}
-@yield('page-content')
+<main style="flex:1 0 auto;padding-top:64px;display:flex;flex-direction:column;width:100%;">
+    @yield('page-content')
+</main>
 
 {{-- ═══ FOOTER — High-Contrast Dark & Yellow (Selaras Seksi Landing Page) ═══════════════════════════════════════ --}}
-<footer style="background:#131218;border-top:3px solid #FFC81A;position:relative;z-index:20;overflow:hidden;">
+<footer style="margin-top:auto;background:#131218;border-top:3px solid #FFC81A;position:relative;z-index:20;overflow:hidden;">
     {{-- Ambient Background Glow --}}
     <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:140px;background:radial-gradient(ellipse,rgba(255,200,26,.06),transparent 70%);pointer-events:none;"></div>
 
@@ -502,6 +507,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     </div>
 </footer>
+</div>
 
 {{-- ═══ MODAL LOGIN & REGISTER ════════════════════════════════════ --}}
 <div id="fcc-auth-modal" style="position:fixed;inset:0;background:rgba(14,13,20,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);">
