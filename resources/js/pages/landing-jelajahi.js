@@ -13,7 +13,9 @@
 
         if (judul$) judul$.textContent = judul;
         if (form$) {
-            form$.action = `/peserta/daftar/${kegiatanId}`;
+            const baseUrl = form$.dataset.baseUrl || (window.APP_URL ? window.APP_URL.replace(/\/$/, '') + '/peserta/daftar' : '/peserta/daftar');
+            const cleanBase = baseUrl.replace(/\/$/, '');
+            form$.action = `${cleanBase}/${kegiatanId}`;
             
             // Reset submit button state
             const btn = form$.querySelector('button[type="submit"]');
