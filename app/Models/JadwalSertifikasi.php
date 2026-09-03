@@ -11,4 +11,10 @@ class JadwalSertifikasi extends Model {
     public function kegiatanSertifikasi(){ return $this->hasOne(KegiatanSertifikasi::class); }
     public function kegiatan()          { return $this->hasOneThrough(Kegiatan::class,KegiatanSertifikasi::class,'jadwal_sertifikasi_id','id','id','kegiatan_id'); }
     public function getMasihDapatDidaftarAttribute(): bool { return now()->lte($this->tgl_batas_daftar); }
+
+    public function getNamaDisplayAttribute(): string 
+    {
+        $nama = trim($this->nama_kegiatan ?? '');
+        return !empty($nama) ? $nama : ($this->sertifikasi?->judul ?? '-');
+    }
 }

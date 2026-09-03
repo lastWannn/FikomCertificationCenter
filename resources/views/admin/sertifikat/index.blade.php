@@ -96,13 +96,13 @@
                     </label>
                     <select id="kegiatan_select" name="kegiatan_id" class="fcc-input" required style="font-size:13px;height:42px;padding:0 12px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;font-weight:700;width:100%;">
                         <option value="" data-has-latar="0">-- Pilih Kegiatan --</option>
-                        @foreach($kegiatan as $k)
-                        <option value="{{ $k->id }}"
-                                data-latar="{{ $k->latar_url }}"
-                                data-has-latar="{{ $k->has_latar ? '1' : '0' }}"
-                                data-judul="{{ $k->judul }}"
-                                {{ session('uploaded_kegiatan_id') == $k->id ? 'selected' : '' }}>
-                            {{ Str::limit($k->judul, 42) }} {{ $k->has_latar ? ' (✅ Latar Ready)' : ' (⚠️ Belum Ada Latar)' }}
+                        @foreach($masterGroups as $group)
+                        <option value="{{ $group['id'] }}"
+                                data-latar="{{ $group['latar_url'] }}"
+                                data-has-latar="{{ $group['has_latar'] ? '1' : '0' }}"
+                                data-judul="{{ $group['judul'] }}"
+                                {{ (string)session('uploaded_kegiatan_id') === (string)$group['id'] ? 'selected' : '' }}>
+                            {{ Str::limit($group['judul'], 50) }} ({{ count($group['jadwal_list']) }} Batch) {{ $group['has_latar'] ? ' (✅ Latar Ready)' : ' (⚠️ Belum Ada Latar)' }}
                         </option>
                         @endforeach
                     </select>
@@ -229,10 +229,10 @@
                             
                             {{-- Quick Tools Per Master --}}
                             <div style="display:flex;align-items:center;gap:6px;">
-                                <a href="{{ route('admin.sertifikat.preview-sample', $group['utama']) }}" target="_blank" title="Lihat Hasil PDF Sampel" style="padding:3.5px 8px;font-size:10.5px;font-weight:800;color:#1E40AF;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                                <a href="{{ route('admin.sertifikat.preview-sample', $group['id']) }}" target="_blank" title="Lihat Hasil PDF Sampel" style="padding:3.5px 8px;font-size:10.5px;font-weight:800;color:#1E40AF;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
                                     👁️ Sample
                                 </a>
-                                <a href="{{ route('admin.sertifikat.layout-editor', $group['utama']) }}" title="Edit Tata Letak & Font PDF" style="padding:3.5px 8px;font-size:10.5px;font-weight:800;color:#131218;background:#FFC81A;border:1px solid #131218;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                                <a href="{{ route('admin.sertifikat.layout-editor', $group['id']) }}" title="Edit Tata Letak & Font PDF" style="padding:3.5px 8px;font-size:10.5px;font-weight:800;color:#131218;background:#FFC81A;border:1px solid #131218;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
                                     🎨 Layout
                                 </a>
                             </div>
@@ -555,9 +555,9 @@
 
                 <select name="filter_kegiatan" class="fcc-input" style="font-size:12px;height:38px;padding:0 10px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;font-weight:600;max-width:180px;">
                     <option value="">-- Semua Kegiatan --</option>
-                    @foreach($kegiatan as $k)
-                    <option value="{{ $k->id }}" {{ request('filter_kegiatan') == $k->id ? 'selected' : '' }}>
-                        {{ Str::limit($k->judul, 28) }}
+                    @foreach($masterGroups as $group)
+                    <option value="{{ $group['id'] }}" {{ request('filter_kegiatan') == $group['id'] ? 'selected' : '' }}>
+                        {{ Str::limit($group['judul'], 30) }}
                     </option>
                     @endforeach
                 </select>

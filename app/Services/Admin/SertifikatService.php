@@ -19,24 +19,25 @@ class SertifikatService
         $gambarLatarPath = $sertifikat->gambar_latar ?? $kegiatan?->nama_latar;
         $bgSrc = null;
 
-        if (empty($gambarLatarPath) || !file_exists(public_path('storage/' . $gambarLatarPath))) {
-            $defaultLatar = 'latar-sertifikat/LfPQPcpLb5uKPx2YELbIUgQuIhxbnViaBBACTWv5.webp';
-            if (file_exists(storage_path('app/public/' . $defaultLatar))) {
-                $gambarLatarPath = $defaultLatar;
-            }
-        }
-
+        $realPath = null;
         if (!empty($gambarLatarPath)) {
             $realPath = public_path('storage/' . $gambarLatarPath);
             if (!file_exists($realPath)) {
                 $realPath = storage_path('app/public/' . $gambarLatarPath);
             }
-
-            if (file_exists($realPath) && is_file($realPath)) {
-                $type = pathinfo($realPath, PATHINFO_EXTENSION);
-                $mimeType = $type === 'svg' ? 'svg+xml' : ($type === 'webp' ? 'webp' : $type);
-                $bgSrc = 'data:image/' . $mimeType . ';base64,' . base64_encode(file_get_contents($realPath));
+            if (!file_exists($realPath)) {
+                $realPath = public_path($gambarLatarPath);
             }
+        }
+
+        if (empty($realPath) || !file_exists($realPath)) {
+            $realPath = public_path('images/latarsertifikat_default.webp');
+        }
+
+        if (file_exists($realPath) && is_file($realPath)) {
+            $type = pathinfo($realPath, PATHINFO_EXTENSION);
+            $mimeType = $type === 'svg' ? 'svg+xml' : ($type === 'webp' ? 'webp' : $type);
+            $bgSrc = 'data:image/' . $mimeType . ';base64,' . base64_encode(file_get_contents($realPath));
         }
 
         return [
@@ -64,21 +65,58 @@ class SertifikatService
 
         File::put($outputDir . DIRECTORY_SEPARATOR . $fileName, $pdf->output());
 
-        $sertifikat->forceFill([
-            'file_sertifikat' => 'sertifikat-cetak/' . $fileName,
-        ])->save();
+        if ($sertifikat->exists) {
+            $sertifikat->forceFill([
+                'file_sertifikat' => 'sertifikat-cetak/' . $fileName,
+            ])->save();
+        }
     }
 
-    public function uploadLatar(int $kegiatanId, UploadedFile $file): string
+    public function uploadLatar(string|int $kegiatanId, UploadedFile $file): string
     {
         $path = \App\Helpers\ImageHelper::compressToWebp($file, 'latar-sertifikat', 90, 2480);
-        $target = Kegiatan::findOrFail($kegiatanId);
-        $targetJudul = trim($target->judul);
 
-        // Sync background template across all batch/schedule records with matching title
-        $matching = Kegiatan::all()->filter(fn($k) => trim($k->judul) === $targetJudul);
-        foreach ($matching as $k) {
-            $k->update(['nama_latar' => $path]);
+        if (is_string($kegiatanId) && str_starts_with($kegiatanId, 'pelatihan_')) {
+            $id = (int) str_replace('pelatihan_', '', $kegiatanId);
+            $pel = \App\Models\Pelatihan::find($id);
+            if ($pel) {
+                $pel->update(['nama_latar' => $path]);
+                $matching = Kegiatan::all()->filter(fn($k) => $k->kegiatanPelatihan?->jadwalPelatihan?->pelatihan_id == $id);
+                foreach ($matching as $k) {
+                    $k->update(['nama_latar' => $path]);
+                }
+            }
+            return $path;
+        }
+
+        if (is_string($kegiatanId) && str_starts_with($kegiatanId, 'sertifikasi_')) {
+            $id = (int) str_replace('sertifikasi_', '', $kegiatanId);
+            $ser = \App\Models\Sertifikasi::find($id);
+            if ($ser) {
+                $ser->update(['nama_latar' => $path]);
+                $matching = Kegiatan::all()->filter(fn($k) => $k->kegiatanSertifikasi?->jadwalSertifikasi?->sertifikasi_id == $id);
+                foreach ($matching as $k) {
+                    $k->update(['nama_latar' => $path]);
+                }
+            }
+            return $path;
+        }
+
+        $target = Kegiatan::find($kegiatanId);
+        if ($target) {
+            $targetJudul = trim($target->detail?->judul ?? $target->judul);
+
+            if ($target->jenis_kegiatan === 'pelatihan' && $target->kegiatanPelatihan?->jadwalPelatihan?->pelatihan) {
+                $target->kegiatanPelatihan->jadwalPelatihan->pelatihan->update(['nama_latar' => $path]);
+            } elseif ($target->jenis_kegiatan === 'sertifikasi' && $target->kegiatanSertifikasi?->jadwalSertifikasi?->sertifikasi) {
+                $target->kegiatanSertifikasi->jadwalSertifikasi->sertifikasi->update(['nama_latar' => $path]);
+            }
+
+            // Sync background template across all batch/schedule records with matching title
+            $matching = Kegiatan::all()->filter(fn($k) => trim($k->detail?->judul ?? $k->judul) === $targetJudul);
+            foreach ($matching as $k) {
+                $k->update(['nama_latar' => $path]);
+            }
         }
         return $path;
     }
