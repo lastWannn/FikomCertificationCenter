@@ -1,0 +1,79 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-B5ICB1NQ.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DDVYZ32A.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/pages/admin-dashboard.js": {
+    "file": "assets/admin-dashboard-CKn1Fjyw.js",
+    "name": "admin-dashboard",
+    "src": "resources/js/pages/admin-dashboard.js",
+    "isEntry": true
+  },
+  "resources/js/pages/admin-kategori.js": {
+    "file": "assets/admin-kategori-B6VEgOhr.js",
+    "name": "admin-kategori",
+    "src": "resources/js/pages/admin-kategori.js",
+    "isEntry": true
+  },
+  "resources/js/pages/admin-pelatihan-form.js": {
+    "file": "assets/admin-pelatihan-form-DiLthKHE.js",
+    "name": "admin-pelatihan-form",
+    "src": "resources/js/pages/admin-pelatihan-form.js",
+    "isEntry": true
+  },
+  "resources/js/pages/admin-pengguna.js": {
+    "file": "assets/admin-pengguna-Dk6Lsx7l.js",
+    "name": "admin-pengguna",
+    "src": "resources/js/pages/admin-pengguna.js",
+    "isEntry": true
+  },
+  "resources/js/pages/admin-qr.js": {
+    "file": "assets/admin-qr-etvKNtR1.js",
+    "name": "admin-qr",
+    "src": "resources/js/pages/admin-qr.js",
+    "isEntry": true
+  },
+  "resources/js/pages/auth-login.js": {
+    "file": "assets/auth-login-Dm77SWeJ.js",
+    "name": "auth-login",
+    "src": "resources/js/pages/auth-login.js",
+    "isEntry": true
+  },
+  "resources/js/pages/landing-index.js": {
+    "file": "assets/landing-index-3K0ai1EQ.js",
+    "name": "landing-index",
+    "src": "resources/js/pages/landing-index.js",
+    "isEntry": true
+  },
+  "resources/js/pages/landing-jelajahi.js": {
+    "file": "assets/landing-jelajahi-Dfx8ZCsG.js",
+    "name": "landing-jelajahi",
+    "src": "resources/js/pages/landing-jelajahi.js",
+    "isEntry": true
+  },
+  "resources/js/pages/landing-pendaftaran.js": {
+    "file": "assets/landing-pendaftaran-KDhnFYaE.js",
+    "name": "landing-pendaftaran",
+    "src": "resources/js/pages/landing-pendaftaran.js",
+    "isEntry": true
+  },
+  "resources/js/pages/landing-search.js": {
+    "file": "assets/landing-search-l7eoqV0t.js",
+    "name": "landing-search",
+    "src": "resources/js/pages/landing-search.js",
+    "isEntry": true
+  },
+  "resources/js/pages/peserta-pembayaran.js": {
+    "file": "assets/peserta-pembayaran-l0sNRNKZ.js",
+    "name": "peserta-pembayaran",
+    "src": "resources/js/pages/peserta-pembayaran.js",
+    "isEntry": true
+  }
+}
