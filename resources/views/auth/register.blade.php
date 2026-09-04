@@ -239,7 +239,15 @@
     }
 </style>
 
-@php $activeTab = 'register'; @endphp
+@php 
+    $activeTab = 'register';
+    $authKontak = \App\Models\Kontak::aktif();
+    $authTelp = $authKontak?->telepon_dengan_nama ?? ($authKontak->telepon ?? '(0411) 455 855');
+    $authAlamat = $authKontak->alamat ?? 'Makassar, Sulawesi Selatan, Indonesia';
+    $authEmail = $authKontak->email ?? 'fcc@fikom.umi.ac.id';
+    $authWaUrl = $authKontak?->wa_url;
+    $authMailtoUrl = $authKontak?->mailto_url ?? ('mailto:' . $authEmail);
+@endphp
 
 <div class="fcc-auth-page-wrap">
     
@@ -281,7 +289,7 @@
                 </div>
             </div>
 
-            {{-- Bottom Contact Feature List (Structured & Compact) --}}
+            {{-- Bottom Contact Feature List (Structured & Dynamic) --}}
             <div class="fcc-auth-contacts-wrap" style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
                 <div class="fcc-contact-card">
                     <div class="fcc-contact-icon-bg">
@@ -289,7 +297,11 @@
                     </div>
                     <div>
                         <span style="display:block;font-size:9.5px;font-weight:800;color:#FFC81A;text-transform:uppercase;letter-spacing:0.5px;">Layanan Telepon / Hotline</span>
-                        <span style="font-size:12.5px;font-weight:700;color:#FFFFFF;">(0411) 455 855</span>
+                        @if($authWaUrl)
+                            <a href="{{ $authWaUrl }}" target="_blank" rel="noopener noreferrer" style="font-size:12.5px;font-weight:700;color:#FFFFFF;text-decoration:none;" onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#FFFFFF'">{{ $authTelp }}</a>
+                        @else
+                            <span style="font-size:12.5px;font-weight:700;color:#FFFFFF;">{{ $authTelp }}</span>
+                        @endif
                     </div>
                 </div>
 
@@ -299,7 +311,7 @@
                     </div>
                     <div>
                         <span style="display:block;font-size:9.5px;font-weight:800;color:#FFC81A;text-transform:uppercase;letter-spacing:0.5px;">Lokasi Kampus</span>
-                        <span style="font-size:12.5px;font-weight:700;color:#FFFFFF;">Makassar, Sulawesi Selatan, Indonesia</span>
+                        <span style="font-size:12.5px;font-weight:700;color:#FFFFFF;">{{ $authAlamat }}</span>
                     </div>
                 </div>
 
@@ -309,7 +321,7 @@
                     </div>
                     <div>
                         <span style="display:block;font-size:9.5px;font-weight:800;color:#FFC81A;text-transform:uppercase;letter-spacing:0.5px;">Email Resmi Support</span>
-                        <span style="font-size:12.5px;font-weight:700;color:#FFFFFF;">fcc@fikom.umi.ac.id</span>
+                        <a href="{{ $authMailtoUrl }}" style="font-size:12.5px;font-weight:700;color:#FFFFFF;text-decoration:none;" onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#FFFFFF'">{{ $authEmail }}</a>
                     </div>
                 </div>
             </div>
@@ -583,12 +595,9 @@
             <button id="btnVerify" type="submit" class="fcc-dark-pill-btn" style="width:100%;justify-content:center;background:#FFC81A;color:#131218;margin-bottom:12px;">
                 Verifikasi &amp; Masuk
             </button>
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;margin-top:14px;padding-top:14px;border-top:1px dashed rgba(255,255,255,0.15);">
-                <span id="reg-otp-timer-wrap" style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;">
-                    Kirim ulang dalam <strong id="reg-otp-timer-count" style="color:#FFC81A;font-family:monospace;font-size:14px;letter-spacing:1px;">01:00</strong>
-                </span>
-                <button type="button" id="reg-btn-resend-otp" onclick="resendRegisterOtpAjax()" style="display:none;background:none;border:none;color:#FFC81A;font-size:13.5px;font-weight:900;cursor:pointer;padding:4px 8px;text-decoration:underline;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                    Kirim Ulang Kode OTP
+            <div style="display:flex;align-items:center;justify-content:center;margin-top:14px;padding-top:14px;border-top:1px dashed rgba(255,255,255,0.15);">
+                <button type="button" id="reg-btn-resend-otp" onclick="resendRegisterOtpAjax()" disabled style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:13.5px;font-weight:600;cursor:default;opacity:0.85;padding:4px 8px;transition:all 0.2s;">
+                    Kirim ulang dalam <span id="reg-otp-timer-count" style="color:#FFC81A;font-family:monospace;font-weight:900;letter-spacing:0.5px;">01:00</span>
                 </button>
             </div>
         </form>
@@ -667,12 +676,37 @@ window.handleRegisterFormSubmit = async function(e) {
     if (e) e.preventDefault();
     const form = document.getElementById('registerForm');
     if (!form) return;
+
+    const emailInp = form.querySelector('input[name="email"]');
+    const pwInp = document.getElementById('reg-pw-inp');
+    const pwConfirmInp = document.getElementById('reg-pw-confirm-inp');
+    const errorContainer = document.getElementById('registerErrorAlert');
+    if (errorContainer) errorContainer.style.display = 'none';
+
+    // Quick client validation
+    if (pwInp && pwConfirmInp && pwInp.value !== pwConfirmInp.value) {
+        if (errorContainer) {
+            errorContainer.innerHTML = 'Password dan konfirmasi password tidak cocok.';
+            errorContainer.style.display = 'block';
+        }
+        return;
+    }
+
+    const email = emailInp?.value || '';
+
+    // Buka Modal OTP Secara Instan dalam 1x Klik
+    if (email) {
+        document.getElementById('otpEmailDisplay').innerText = email;
+        document.getElementById('otpEmailInput').value = email;
+        document.getElementById('otpModal').style.display = 'flex';
+        if (typeof startRegisterOtpCountdown === 'function') startRegisterOtpCountdown(60);
+        const firstBox = document.querySelector('.otp-box');
+        if (firstBox) firstBox.focus();
+    }
+
     const btn = document.getElementById('btnSubmit');
     const oriText = btn ? btn.innerHTML : '';
-    if (btn) {
-        btn.innerHTML = '<span style="display:flex;align-items:center;gap:8px;">Memproses...</span>';
-        btn.disabled = true;
-    }
+    if (btn) btn.disabled = true;
 
     try {
         const formData = new FormData(form);
@@ -690,35 +724,38 @@ window.handleRegisterFormSubmit = async function(e) {
             data = await res.json();
         } catch(jsonErr) {}
 
-        const errorContainer = document.getElementById('registerErrorAlert');
-        if (errorContainer) errorContainer.style.display = 'none';
-
         if (data.require_otp) {
-            document.getElementById('otpEmailDisplay').innerText = data.email;
-            document.getElementById('otpEmailInput').value = data.email;
-            document.getElementById('otpModal').style.display = 'flex';
-            if (typeof startRegisterOtpCountdown === 'function') startRegisterOtpCountdown(60);
-            const firstBox = document.querySelector('.otp-box');
-            if (firstBox) firstBox.focus();
-        } else if (data.errors) {
-            const msg = Object.values(data.errors).flat().join('<br>');
-            if (errorContainer) {
-                errorContainer.innerHTML = msg;
-                errorContainer.style.display = 'block';
-            } else {
-                alert(Object.values(data.errors).flat().join('\n'));
-            }
-        } else if (data.message) {
-            if (errorContainer) {
-                errorContainer.innerHTML = data.message;
-                errorContainer.style.display = 'block';
-            } else {
-                alert(data.message);
+            if (data.email) {
+                document.getElementById('otpEmailDisplay').innerText = data.email;
+                document.getElementById('otpEmailInput').value = data.email;
             }
         } else {
-            alert('Gagal memproses pendaftaran. Silakan periksa kembali data Anda.');
+            // Jika ada error validasi di server (e.g. email sudah terdaftar), tutup modal & tampilkan error
+            document.getElementById('otpModal').style.display = 'none';
+            if (typeof regOtpTimerInterval !== 'undefined' && regOtpTimerInterval) clearInterval(regOtpTimerInterval);
+
+            if (data.errors) {
+                const msg = Object.values(data.errors).flat().join('<br>');
+                if (errorContainer) {
+                    errorContainer.innerHTML = msg;
+                    errorContainer.style.display = 'block';
+                } else {
+                    alert(Object.values(data.errors).flat().join('\n'));
+                }
+            } else if (data.message) {
+                if (errorContainer) {
+                    errorContainer.innerHTML = data.message;
+                    errorContainer.style.display = 'block';
+                } else {
+                    alert(data.message);
+                }
+            } else {
+                alert('Gagal memproses pendaftaran. Silakan periksa kembali data Anda.');
+            }
         }
     } catch (err) {
+        document.getElementById('otpModal').style.display = 'none';
+        if (typeof regOtpTimerInterval !== 'undefined' && regOtpTimerInterval) clearInterval(regOtpTimerInterval);
         alert('Terjadi kesalahan koneksi/sistem: ' + (err.message || err));
     } finally {
         if (btn) {
@@ -794,19 +831,24 @@ window.handleRegisterFormSubmit = async function(e) {
 let regOtpTimerInterval = null;
 window.startRegisterOtpCountdown = function(seconds = 60) {
     let rem = seconds;
-    const countEl = document.getElementById('reg-otp-timer-count');
-    const wrapEl = document.getElementById('reg-otp-timer-wrap');
     const btnResend = document.getElementById('reg-btn-resend-otp');
 
     if (regOtpTimerInterval) clearInterval(regOtpTimerInterval);
 
-    if (wrapEl) wrapEl.style.display = 'inline';
-    if (btnResend) btnResend.style.display = 'none';
+    if (btnResend) {
+        btnResend.disabled = true;
+        btnResend.style.cursor = 'default';
+        btnResend.style.opacity = '0.85';
+        btnResend.style.color = 'rgba(255,255,255,0.7)';
+        btnResend.style.textDecoration = 'none';
+    }
 
     const updateDisplay = () => {
         const m = String(Math.floor(rem / 60)).padStart(2, '0');
         const s = String(rem % 60).padStart(2, '0');
-        if (countEl) countEl.innerText = `${m}:${s}`;
+        if (btnResend) {
+            btnResend.innerHTML = `Kirim ulang dalam <span id="reg-otp-timer-count" style="color:#FFC81A;font-family:monospace;font-weight:900;letter-spacing:0.5px;">${m}:${s}</span>`;
+        }
     };
 
     updateDisplay();
@@ -814,8 +856,14 @@ window.startRegisterOtpCountdown = function(seconds = 60) {
         rem--;
         if (rem <= 0) {
             clearInterval(regOtpTimerInterval);
-            if (wrapEl) wrapEl.style.display = 'none';
-            if (btnResend) btnResend.style.display = 'inline';
+            if (btnResend) {
+                btnResend.disabled = false;
+                btnResend.style.cursor = 'pointer';
+                btnResend.style.opacity = '1';
+                btnResend.style.color = '#FFC81A';
+                btnResend.style.textDecoration = 'underline';
+                btnResend.innerText = 'Kirim Ulang Kode OTP';
+            }
         } else {
             updateDisplay();
         }
@@ -829,9 +877,14 @@ window.resendRegisterOtpAjax = async function() {
 
     if (!email) return;
 
-    if (btnResend) {
-        btnResend.innerText = 'Mengirim...';
-        btnResend.disabled = true;
+    // LANGSUNG RESET TIMER & TAMPILKAN STATUS SECARA INSTAN (0ms)
+    if (typeof startRegisterOtpCountdown === 'function') {
+        startRegisterOtpCountdown(60);
+    }
+    if (errorContainer) {
+        errorContainer.style.color = '#FFC81A';
+        errorContainer.innerText = 'Mengirim kode OTP baru ke email Anda...';
+        errorContainer.style.display = 'block';
     }
 
     try {
@@ -854,12 +907,19 @@ window.resendRegisterOtpAjax = async function() {
                 errorContainer.innerText = data.message || 'Kode OTP baru telah dikirim.';
                 errorContainer.style.display = 'block';
             }
-            startRegisterOtpCountdown(60);
         } else {
             if (errorContainer) {
                 errorContainer.style.color = '#EF4444';
                 errorContainer.innerText = data.message || 'Gagal mengirim ulang OTP.';
                 errorContainer.style.display = 'block';
+            }
+            if (btnResend) {
+                btnResend.disabled = false;
+                btnResend.style.cursor = 'pointer';
+                btnResend.style.opacity = '1';
+                btnResend.style.color = '#FFC81A';
+                btnResend.style.textDecoration = 'underline';
+                btnResend.innerText = 'Kirim Ulang Kode OTP';
             }
         }
     } catch (err) {
@@ -868,10 +928,13 @@ window.resendRegisterOtpAjax = async function() {
             errorContainer.innerText = 'Terjadi kesalahan jaringan.';
             errorContainer.style.display = 'block';
         }
-    } finally {
         if (btnResend) {
-            btnResend.innerText = 'Kirim Ulang Kode OTP';
             btnResend.disabled = false;
+            btnResend.style.cursor = 'pointer';
+            btnResend.style.opacity = '1';
+            btnResend.style.color = '#FFC81A';
+            btnResend.style.textDecoration = 'underline';
+            btnResend.innerText = 'Kirim Ulang Kode OTP';
         }
     }
 };
@@ -883,7 +946,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('otpEmailDisplay').innerText = email;
         document.getElementById('otpEmailInput').value = email;
         document.getElementById('otpModal').style.display = 'flex';
-        startRegisterOtpCountdown(60);
+        if (typeof startRegisterOtpCountdown === 'function') startRegisterOtpCountdown(60);
         const firstBox = document.querySelector('.otp-box');
         if (firstBox) firstBox.focus();
     }
