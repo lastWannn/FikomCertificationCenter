@@ -198,9 +198,14 @@ document.addEventListener('livewire:initialized', () => {
                                 @include('components.icon',['name'=>'edit-2','size'=>13])
                                 Edit
                             </button>
-                            <button wire:click="delete('{{ $ins->hashid }}')"
-                                    wire:confirm="Hapus instruktur {{ $ins->nama }}? Data ini tidak bisa dikembalikan."
-                                    wire:loading.attr="disabled"
+                            <button type="button"
+                                    onclick="fccConfirm({
+                                        title: 'Hapus Instruktur',
+                                        msg: 'Apakah Anda yakin ingin menghapus instruktur {{ addslashes($ins->nama) }}? Data ini tidak bisa dikembalikan.',
+                                        danger: true,
+                                        btnText: 'Ya, Hapus Instruktur',
+                                        onConfirm: function() { $wire.delete('{{ $ins->hashid }}'); }
+                                    })"
                                     style="color:#EF4444;font-size:12px;font-weight:700;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s;"
                                     onmouseover="this.style.background='rgba(239,68,68,.08)'"
                                     onmouseout="this.style.background='none'">
