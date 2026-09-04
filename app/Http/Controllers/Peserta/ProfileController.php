@@ -56,11 +56,12 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => true,
                 'require_otp' => false,
+                'redirect' => route('peserta.dashboard'),
                 'message' => 'Profil berhasil diperbarui.'
             ]);
         }
 
-        return back()->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->route('peserta.dashboard')->with('success', 'Profil berhasil diperbarui.');
     }
 
     public function verifyEmailOtp(Request $request)

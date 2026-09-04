@@ -61,7 +61,7 @@ class SystemEmailCommand extends Command
                 case 'kontak':
                     $pesan = PesanMasuk::find($id);
                     if ($pesan) {
-                        $tujuanEmail = env('MAIL_USERNAME') ?: (env('MAIL_FROM_ADDRESS') ?: 'riswangnb@gmail.com');
+                        $tujuanEmail = env('MAIL_USERNAME') ?: (env('MAIL_FROM_ADDRESS') ?: 'fikom.iclabs@umi.ac.id');
                         if ($tujuanEmail) {
                             Mail::raw(
                                 "PESAN MASUK BARU DARI HUBUNGI KAMI\n" .

@@ -85,4 +85,58 @@ class RegisterController extends Controller
         return redirect()->route('peserta.dashboard')
             ->with('success', 'Verifikasi berhasil! Selamat datang, '.$peserta->nama.'.');
     }
+
+    public function resendOtp(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'string', new \App\Rules\ValidEmailAddress()],
+        ]);
+
+        $email = $request->email;
+        $peserta = \App\Models\Peserta::where('email', $email)->first();
+
+        if (!$peserta) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Email tidak terdaftar.'], 404);
+            }
+            return back()->with('error', 'Email tidak terdaftar.');
+        }
+
+        if (!is_null($peserta->email_verified_at)) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Email Anda sudah terverifikasi. Silakan masuk.'], 422);
+            }
+            return back()->with('info', 'Email Anda sudah terverifikasi. Silakan masuk.');
+        }
+
+        $latestOtp = \App\Models\OtpCode::where('email', $email)
+            ->where('type', 'register')
+            ->latest()
+            ->first();
+
+        if ($latestOtp && $latestOtp->created_at->gt(now()->subSeconds(60))) {
+            $secondsLeft = 60 - now()->diffInSeconds($latestOtp->created_at);
+            $msg = "Harap tunggu {$secondsLeft} detik sebelum meminta kode OTP baru.";
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $msg], 429);
+            }
+            return back()->with('error', $msg);
+        }
+
+        $this->otpService->generateAndSend($email, 'register');
+
+        $msg = "Kode OTP 4 digit baru telah dikirim ulang ke {$email}.";
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $msg
+            ]);
+        }
+
+        return back()
+            ->with('require_otp', true)
+            ->with('email', $email)
+            ->with('success', $msg);
+    }
 }

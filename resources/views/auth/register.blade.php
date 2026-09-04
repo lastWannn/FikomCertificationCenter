@@ -323,12 +323,7 @@
                 {{-- SLIDE 1: LOGIN FORM --}}
                 <div class="fcc-slide-item">
                     <div>
-                        <div style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
-                            <a href="{{ route('landing.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#131218;font-size:12px;font-weight:900;text-decoration:none;background:rgba(19,18,24,0.08);padding:4px 12px;border-radius:100px;transition:background 0.2s;" onmouseover="this.style.background='rgba(19,18,24,0.15)';" onmouseout="this.style.background='rgba(19,18,24,0.08)';">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                                <span>Beranda</span>
-                            </a>
-                        </div>
+
                         <div style="margin-bottom:16px;">
                             <h2 style="color:#131218;font-size:24px;font-weight:900;margin:0 0 4px;letter-spacing:-0.5px;">Masuk Akun</h2>
                             <p style="color:rgba(19,18,24,0.65);font-size:13px;margin:0;font-weight:600;">
@@ -419,12 +414,7 @@
                 {{-- SLIDE 2: REGISTER FORM --}}
                 <div class="fcc-slide-item">
                     <div>
-                        <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
-                            <a href="{{ route('landing.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#131218;font-size:12px;font-weight:900;text-decoration:none;background:rgba(19,18,24,0.08);padding:4px 12px;border-radius:100px;transition:background 0.2s;" onmouseover="this.style.background='rgba(19,18,24,0.15)';" onmouseout="this.style.background='rgba(19,18,24,0.08)';">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                                <span>Beranda</span>
-                            </a>
-                        </div>
+
                         <div style="margin-bottom:10px;">
                             <h2 style="color:#131218;font-size:22px;font-weight:900;margin:0 0 3px;letter-spacing:-0.5px;">Buat Akun Peserta</h2>
                             <p style="color:rgba(19,18,24,0.65);font-size:12.5px;margin:0;font-weight:600;">
@@ -590,9 +580,17 @@
             <input type="hidden" name="otp" id="finalOtp">
             <div id="otpError" style="color:#EF4444;font-size:13px;margin-bottom:18px;display:none;font-weight:700;"></div>
             
-            <button id="btnVerify" type="submit" class="fcc-dark-pill-btn" style="width:100%;justify-content:center;background:#FFC81A;color:#131218;">
+            <button id="btnVerify" type="submit" class="fcc-dark-pill-btn" style="width:100%;justify-content:center;background:#FFC81A;color:#131218;margin-bottom:12px;">
                 Verifikasi &amp; Masuk
             </button>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;margin-top:14px;padding-top:14px;border-top:1px dashed rgba(255,255,255,0.15);">
+                <span id="reg-otp-timer-wrap" style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;">
+                    Kirim ulang dalam <strong id="reg-otp-timer-count" style="color:#FFC81A;font-family:monospace;font-size:14px;letter-spacing:1px;">01:00</strong>
+                </span>
+                <button type="button" id="reg-btn-resend-otp" onclick="resendRegisterOtpAjax()" style="display:none;background:none;border:none;color:#FFC81A;font-size:13.5px;font-weight:900;cursor:pointer;padding:4px 8px;text-decoration:underline;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    Kirim Ulang Kode OTP
+                </button>
+            </div>
         </form>
     </div>
 </div>
@@ -636,17 +634,20 @@ window.switchAuthSlide = function(target) {
     const headLogin = document.getElementById('left-login-text');
     const headReg = document.getElementById('left-register-text');
 
+    const registerUrl = "{{ route('auth.register') }}";
+    const loginUrl = "{{ route('auth.login') }}";
+
     if (target === 'register') {
         if (track) track.style.transform = 'translate3d(-50%, 0, 0)';
         if (headLogin) headLogin.className = 'fcc-headline-panel fcc-headline-inactive-up';
         if (headReg) headReg.className = 'fcc-headline-panel fcc-headline-active';
-        window.history.pushState(null, '', '/daftar');
+        window.history.pushState(null, '', registerUrl);
         document.title = 'Daftar Akun — FIKOM Certification Center';
     } else {
         if (track) track.style.transform = 'translate3d(0, 0, 0)';
         if (headReg) headReg.className = 'fcc-headline-panel fcc-headline-inactive-down';
         if (headLogin) headLogin.className = 'fcc-headline-panel fcc-headline-active';
-        window.history.pushState(null, '', '/masuk');
+        window.history.pushState(null, '', loginUrl);
         document.title = 'Masuk — FIKOM Certification Center';
     }
 };
@@ -696,6 +697,7 @@ window.handleRegisterFormSubmit = async function(e) {
             document.getElementById('otpEmailDisplay').innerText = data.email;
             document.getElementById('otpEmailInput').value = data.email;
             document.getElementById('otpModal').style.display = 'flex';
+            if (typeof startRegisterOtpCountdown === 'function') startRegisterOtpCountdown(60);
             const firstBox = document.querySelector('.otp-box');
             if (firstBox) firstBox.focus();
         } else if (data.errors) {
@@ -771,7 +773,7 @@ window.handleRegisterFormSubmit = async function(e) {
                 const data = await res.json();
                 
                 if (data.success) {
-                    window.location.href = data.redirect || '/peserta/dashboard';
+                    window.location.href = data.redirect || "{{ route('peserta.dashboard') }}";
                 } else if (data.errors) {
                     document.getElementById('otpError').innerText = data.errors.otp ? data.errors.otp[0] : 'Kode tidak valid.';
                     document.getElementById('otpError').style.display = 'block';
@@ -789,6 +791,91 @@ window.handleRegisterFormSubmit = async function(e) {
     }
 })();
 
+let regOtpTimerInterval = null;
+window.startRegisterOtpCountdown = function(seconds = 60) {
+    let rem = seconds;
+    const countEl = document.getElementById('reg-otp-timer-count');
+    const wrapEl = document.getElementById('reg-otp-timer-wrap');
+    const btnResend = document.getElementById('reg-btn-resend-otp');
+
+    if (regOtpTimerInterval) clearInterval(regOtpTimerInterval);
+
+    if (wrapEl) wrapEl.style.display = 'inline';
+    if (btnResend) btnResend.style.display = 'none';
+
+    const updateDisplay = () => {
+        const m = String(Math.floor(rem / 60)).padStart(2, '0');
+        const s = String(rem % 60).padStart(2, '0');
+        if (countEl) countEl.innerText = `${m}:${s}`;
+    };
+
+    updateDisplay();
+    regOtpTimerInterval = setInterval(() => {
+        rem--;
+        if (rem <= 0) {
+            clearInterval(regOtpTimerInterval);
+            if (wrapEl) wrapEl.style.display = 'none';
+            if (btnResend) btnResend.style.display = 'inline';
+        } else {
+            updateDisplay();
+        }
+    }, 1000);
+};
+
+window.resendRegisterOtpAjax = async function() {
+    const email = document.getElementById('otpEmailInput')?.value;
+    const btnResend = document.getElementById('reg-btn-resend-otp');
+    const errorContainer = document.getElementById('otpError');
+
+    if (!email) return;
+
+    if (btnResend) {
+        btnResend.innerText = 'Mengirim...';
+        btnResend.disabled = true;
+    }
+
+    try {
+        const res = await fetch("{{ route('auth.register.resend-otp') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email: email })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            if (errorContainer) {
+                errorContainer.style.color = '#10B981';
+                errorContainer.innerText = data.message || 'Kode OTP baru telah dikirim.';
+                errorContainer.style.display = 'block';
+            }
+            startRegisterOtpCountdown(60);
+        } else {
+            if (errorContainer) {
+                errorContainer.style.color = '#EF4444';
+                errorContainer.innerText = data.message || 'Gagal mengirim ulang OTP.';
+                errorContainer.style.display = 'block';
+            }
+        }
+    } catch (err) {
+        if (errorContainer) {
+            errorContainer.style.color = '#EF4444';
+            errorContainer.innerText = 'Terjadi kesalahan jaringan.';
+            errorContainer.style.display = 'block';
+        }
+    } finally {
+        if (btnResend) {
+            btnResend.innerText = 'Kirim Ulang Kode OTP';
+            btnResend.disabled = false;
+        }
+    }
+};
+
 @if(session('require_otp'))
 document.addEventListener('DOMContentLoaded', function() {
     const email = "{{ session('email') }}";
@@ -796,6 +883,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('otpEmailDisplay').innerText = email;
         document.getElementById('otpEmailInput').value = email;
         document.getElementById('otpModal').style.display = 'flex';
+        startRegisterOtpCountdown(60);
         const firstBox = document.querySelector('.otp-box');
         if (firstBox) firstBox.focus();
     }

@@ -626,17 +626,20 @@ window.switchAuthSlide = function(target) {
     const headLogin = document.getElementById('left-login-text');
     const headReg = document.getElementById('left-register-text');
 
+    const registerUrl = "{{ route('auth.register') }}";
+    const loginUrl = "{{ route('auth.login') }}";
+
     if (target === 'register') {
         if (track) track.style.transform = 'translate3d(-50%, 0, 0)';
         if (headLogin) headLogin.className = 'fcc-headline-panel fcc-headline-inactive-up';
         if (headReg) headReg.className = 'fcc-headline-panel fcc-headline-active';
-        window.history.pushState(null, '', '/daftar');
+        window.history.pushState(null, '', registerUrl);
         document.title = 'Daftar Akun — FIKOM Certification Center';
     } else {
         if (track) track.style.transform = 'translate3d(0, 0, 0)';
         if (headReg) headReg.className = 'fcc-headline-panel fcc-headline-inactive-down';
         if (headLogin) headLogin.className = 'fcc-headline-panel fcc-headline-active';
-        window.history.pushState(null, '', '/masuk');
+        window.history.pushState(null, '', loginUrl);
         document.title = 'Masuk — FIKOM Certification Center';
     }
 };
@@ -761,7 +764,7 @@ window.handleRegisterFormSubmit = async function(e) {
                 const data = await res.json();
                 
                 if (data.success) {
-                    window.location.href = data.redirect || '/peserta/dashboard';
+                    window.location.href = data.redirect || "{{ route('peserta.dashboard') }}";
                 } else if (data.errors) {
                     document.getElementById('otpError').innerText = data.errors.otp ? data.errors.otp[0] : 'Kode tidak valid.';
                     document.getElementById('otpError').style.display = 'block';
