@@ -45,7 +45,7 @@ class GoogleController extends Controller
                 $peserta = Peserta::create([
                     'nama'              => $googleUser->getName() ?? 'Peserta Google',
                     'email'             => $googleUser->getEmail(),
-                    'no_hp'             => '08' . rand(100000000, 999999999),
+                    'no_hp'             => null,
                     'kelamin'           => 'L',
                     'password'          => Hash::make(Str::random(16)),
                     'status_akun'       => 'aktif',

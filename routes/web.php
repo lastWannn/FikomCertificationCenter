@@ -80,6 +80,7 @@ Route::middleware('guest.fcc')->group(function () {
     Route::get('/daftar',         [RegisterController::class,'showRegister'])->name('auth.register');
     Route::post('/daftar',        [RegisterController::class,'register'])->middleware('throttle:10,1')->name('auth.register.post');
     Route::post('/daftar/verify', [RegisterController::class,'verifyOtp'])->middleware('throttle:10,1')->name('auth.register.verify');
+    Route::post('/daftar/resend-otp', [RegisterController::class,'resendOtp'])->middleware('throttle:5,1')->name('auth.register.resend-otp');
 
     // Google OAuth Routes
     Route::get('/auth/google',          [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
