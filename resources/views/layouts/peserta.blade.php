@@ -86,8 +86,10 @@
     /* Mobile & Tablet (< 1024px) */
     /* sm:show helper */
     .fcc-sm-show { display: none !important; }
+    .fcc-sidebar-mobile-close { display: none !important; }
 
     @media (max-width: 1023px) {
+        .fcc-sidebar-mobile-close { display: flex !important; }
         .fcc-peserta-sidebar {
             position: fixed !important;
             top: 0;
@@ -156,8 +158,8 @@
                 <p style="margin:0;color:#FFF;font-weight:900;font-size:13px;">Portal Peserta</p>
                 <p style="margin:0;color:#FFC81A;font-size:9px;letter-spacing:2px;text-transform:uppercase;">Certification Center</p>
             </div>
-            {{-- Mobile Close Button --}}
-            <button type="button" data-close-sidebar style="margin-left:auto;background:none;border:none;color:#FFF;cursor:pointer;padding:6px;display:flex;align-items:center;border-radius:8px;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
+            {{-- Mobile Close Button (Hanya tampil di mobile/tablet < 1024px) --}}
+            <button type="button" data-close-sidebar class="fcc-sidebar-mobile-close" style="margin-left:auto;background:none;border:none;color:#FFF;cursor:pointer;padding:6px;align-items:center;border-radius:8px;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'" title="Tutup Sidebar">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
