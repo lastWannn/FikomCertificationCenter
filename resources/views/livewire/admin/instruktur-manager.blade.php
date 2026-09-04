@@ -204,7 +204,7 @@ document.addEventListener('livewire:initialized', () => {
                                         msg: 'Apakah Anda yakin ingin menghapus instruktur {{ addslashes($ins->nama) }}? Data ini tidak bisa dikembalikan.',
                                         danger: true,
                                         btnText: 'Ya, Hapus Instruktur',
-                                        onConfirm: function() { $wire.delete('{{ $ins->hashid }}'); }
+                                        onConfirm: function() { @this.delete('{{ $ins->hashid }}'); }
                                     })"
                                     style="color:#EF4444;font-size:12px;font-weight:700;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s;"
                                     onmouseover="this.style.background='rgba(239,68,68,.08)'"

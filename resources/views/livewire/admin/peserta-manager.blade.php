@@ -173,7 +173,7 @@
                     msg: 'Apakah Anda yakin ingin menghapus akun peserta \'{{ addslashes($p->nama) }}\'?',
                     danger: true,
                     btnText: 'Ya, Hapus Akun',
-                    onConfirm: function() { $wire.deletePeserta({{ $p->id }}); }
+                    onConfirm: function() { @this.deletePeserta({{ $p->id }}); }
                 })" style="background:#FEF2F2;border:1px solid #FCA5A5;color:#DC2626;padding:6px 10px;border-radius:8px;font-size:11.5px;font-weight:800;cursor:pointer;transition:all .18s;" title="Hapus Akun Peserta">
                   Hapus
                 </button>
