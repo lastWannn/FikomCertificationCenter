@@ -336,7 +336,7 @@
                 @include('components.icon',['name'=>'x','size'=>16])
             </button>
         </div>
-        <form id="daftar-form" method="POST" style="padding:22px 24px;">
+        <form id="daftar-form" data-base-url="{{ url('/peserta/daftar') }}" method="POST" style="padding:22px 24px;">
             @csrf
             <div id="biaya-section"></div>
             <button type="submit" class="fcc-btn-gold" style="width:100%;justify-content:center;padding:12px;font-size:15px;">

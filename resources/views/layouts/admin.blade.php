@@ -1,12 +1,137 @@
 @extends('layouts.app')
 @section('content')
-<div style="display:flex;height:100vh;overflow:hidden;background:#F7F8FA;font-family:'Inter',sans-serif;">
+<style>
+    .fcc-admin-layout {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+        background: #F7F8FA;
+        font-family: 'Inter', sans-serif;
+        position: relative;
+    }
+
+    /* Desktop Sidebar (Default) */
+    .fcc-admin-sidebar {
+        width: 256px;
+        min-width: 256px;
+        height: 100vh;
+        background: #131218;
+        border-right: 1px solid rgba(255, 200, 26, 0.12);
+        display: flex;
+        flex-direction: column;
+        transition: width .26s cubic-bezier(.4, 0, .2, 1), min-width .26s cubic-bezier(.4, 0, .2, 1), transform .26s cubic-bezier(.4, 0, .2, 1);
+        z-index: 100;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    /* Desktop Collapsed State (>= 1024px) */
+    .fcc-admin-sidebar.collapsed {
+        width: 68px !important;
+        min-width: 68px !important;
+    }
+    .fcc-admin-sidebar.collapsed #sb-brand,
+    .fcc-admin-sidebar.collapsed .sb-lbl,
+    .fcc-admin-sidebar.collapsed .sb-section-label,
+    .fcc-admin-sidebar.collapsed .sb-chevron,
+    .fcc-admin-sidebar.collapsed .sb-children {
+        display: none !important;
+    }
+    .fcc-admin-sidebar.collapsed .sidebar-link {
+        justify-content: center !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 6px !important;
+        margin-right: 6px !important;
+    }
+    .fcc-admin-sidebar.collapsed #sb-logo {
+        justify-content: center !important;
+        padding: 18px 0 !important;
+    }
+    .fcc-admin-sidebar.collapsed .logout-btn {
+        justify-content: center !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* Backdrop */
+    .fcc-admin-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(19, 18, 24, 0.65);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 999;
+        transition: opacity 0.25s ease;
+    }
+
+    /* Mobile Close Button (Hidden on Desktop >= 1024px) */
+    .fcc-admin-sidebar-mobile-close {
+        display: none !important;
+    }
+
+    /* Mobile & Tablet (< 1024px) */
+    @media (max-width: 1023px) {
+        .fcc-admin-sidebar-mobile-close {
+            display: flex !important;
+        }
+        #sidebar.fcc-admin-sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            height: 100dvh !important;
+            max-height: 100vh !important;
+            width: 270px !important;
+            min-width: 270px !important;
+            transform: translateX(-100%) !important;
+            box-shadow: 0 0 32px rgba(0, 0, 0, 0.55) !important;
+            z-index: 1000 !important;
+            transition: transform .28s cubic-bezier(.4, 0, .2, 1) !important;
+        }
+        #sidebar.fcc-admin-sidebar.mobile-open {
+            transform: translateX(0) !important;
+        }
+        #sidebar-backdrop.fcc-admin-backdrop {
+            display: none !important;
+            position: fixed !important;
+            inset: 0 !important;
+            background: rgba(19, 18, 24, 0.65) !important;
+            backdrop-filter: blur(4px) !important;
+            -webkit-backdrop-filter: blur(4px) !important;
+            z-index: 999 !important;
+            transition: opacity 0.25s ease !important;
+        }
+        #sidebar-backdrop.fcc-admin-backdrop.mobile-open {
+            display: block !important;
+        }
+        .fcc-admin-header {
+            padding: 0 14px !important;
+            gap: 10px !important;
+        }
+        .fcc-admin-header-userinfo {
+            display: none !important;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .fcc-admin-backdrop {
+            display: none !important;
+        }
+        .fcc-admin-sidebar-mobile-close {
+            display: none !important;
+        }
+    }
+</style>
+
+<div class="fcc-admin-layout">
+
+  {{-- ═══ MOBILE BACKDROP OVERLAY ════════════════════════════════ --}}
+  <div id="sidebar-backdrop" class="fcc-admin-backdrop" onclick="closeAdminSidebarDrawer()"></div>
 
   {{-- ═══ SIDEBAR ══════════════════════════════════════════════ --}}
-  <aside id="sidebar" wire:persist="sidebar" style="width:256px;min-width:256px;height:100vh;background:#131218;
-      border-right:1px solid rgba(255,200,26,.12);display:flex;flex-direction:column;
-      transition:width .26s cubic-bezier(.4,0,.2,1),min-width .26s cubic-bezier(.4,0,.2,1);
-      z-index:100;flex-shrink:0;overflow:hidden;">
+  <aside id="sidebar" wire:persist="sidebar" class="fcc-admin-sidebar">
 
     {{-- Logo --}}
     <div id="sb-logo" style="padding:18px 16px;border-bottom:1px solid rgba(255,200,26,.1);
@@ -16,6 +141,12 @@
         <p style="margin:0;color:#FFF;font-weight:900;font-size:12.5px;">FCC Admin</p>
         <p style="margin:0;color:#FFC81A;font-size:8px;letter-spacing:2px;text-transform:uppercase;">Certification Center</p>
       </div>
+      {{-- Mobile Close Button (Hanya tampil di mobile/tablet < 1024px, HIDDEN di desktop) --}}
+      <button type="button" data-close-admin-sidebar class="fcc-admin-sidebar-mobile-close"
+              style="margin-left:auto;background:none;border:none;color:#FFF;cursor:pointer;padding:6px;align-items:center;border-radius:8px;transition:background .2s;"
+              onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'" title="Tutup Sidebar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
 
     {{-- Navigation --}}
@@ -210,14 +341,15 @@
   <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;">
 
     {{-- Header --}}
-    <header style="height:62px;background:#FFF;border-bottom:1px solid #E2E4EB;
+    <header class="fcc-admin-header" style="height:62px;background:#FFF;border-bottom:1px solid #E2E4EB;
         display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;
         box-shadow:0 1px 0 #E2E4EB;">
-      <button id="sb-toggle" onclick="toggleSidebar()"
+      <button id="sb-toggle" type="button" onclick="toggleAdminSidebar(event)"
           style="background:none;border:1.5px solid #E2E4EB;color:#9CA3B0;
                  padding:6px 8px;border-radius:8px;display:flex;cursor:pointer;transition:all .18s;"
           onmouseover="this.style.borderColor='#FFC81A';this.style.color='#131218'"
-          onmouseout="this.style.borderColor='#E2E4EB';this.style.color='#9CA3B0'">
+          onmouseout="this.style.borderColor='#E2E4EB';this.style.color='#9CA3B0'"
+          title="Toggle Menu">
         <svg id="sb-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
         </svg>
@@ -251,17 +383,17 @@
       <a href="{{ route('admin.profile') }}"
          style="display:flex;align-items:center;gap:10px;background:#F7F8FA;
                 border:1.5px solid #E2E4EB;border-radius:10px;padding:5px 12px 5px 5px;
-                text-decoration:none;transition:border-color .18s;"
+                text-decoration:none;transition:border-color .18s;flex-shrink:0;"
          onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor='#E2E4EB'">
         <div style="width:30px;height:30px;border-radius:8px;background:#131218;
-            display:flex;align-items:center;justify-content:center;">
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFC81A" stroke-width="2.5">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
           </svg>
         </div>
-        <div>
-          <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">{{ auth('admin')->user()->nama ?? 'Admin' }}</p>
-          <p style="margin:0;font-size:10px;color:#FFC81A;font-weight:600;">{{ auth('admin')->user()?->role_label ?? 'Admin' }}</p>
+        <div class="fcc-admin-header-userinfo">
+          <p style="margin:0;font-size:13px;font-weight:700;color:#131218;white-space:nowrap;">{{ auth('admin')->user()->nama ?? 'Admin' }}</p>
+          <p style="margin:0;font-size:10px;color:#FFC81A;font-weight:600;white-space:nowrap;">{{ auth('admin')->user()?->role_label ?? 'Admin' }}</p>
         </div>
       </a>
     </header>
@@ -441,6 +573,107 @@ setTimeout(() => {
 
     document.addEventListener('livewire:navigated', restoreSidebarScroll);
     document.addEventListener('DOMContentLoaded', restoreSidebarScroll);
+})();
+
+// Admin Sidebar Responsive Drawer & Toggle Controller
+(function() {
+    function getSidebar() { return document.getElementById('sidebar'); }
+    function getBackdrop() { return document.getElementById('sidebar-backdrop'); }
+    function isMobile() {
+        return (window.innerWidth < 1024) || (window.matchMedia && window.matchMedia('(max-width: 1023px)').matches);
+    }
+
+    function openAdminDrawer() {
+        const sb = getSidebar();
+        const bd = getBackdrop();
+        if (sb) {
+            sb.classList.remove('collapsed');
+            sb.classList.add('mobile-open');
+        }
+        if (bd) {
+            bd.classList.add('mobile-open');
+        }
+        if (isMobile()) {
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeAdminDrawer() {
+        const sb = getSidebar();
+        const bd = getBackdrop();
+        if (sb) {
+            sb.classList.remove('mobile-open');
+        }
+        if (bd) {
+            bd.classList.remove('mobile-open');
+        }
+        document.body.style.overflow = '';
+    }
+
+    let isToggling = false;
+    function toggleAdminSidebar(e) {
+        if (e) {
+            if (e.preventDefault && e.cancelable) e.preventDefault();
+            if (e.stopPropagation) e.stopPropagation();
+        }
+        if (isToggling) return;
+        isToggling = true;
+        setTimeout(function() { isToggling = false; }, 300);
+
+        const sb = getSidebar();
+        if (!sb) return;
+
+        if (isMobile()) {
+            if (sb.classList.contains('mobile-open')) {
+                closeAdminDrawer();
+            } else {
+                openAdminDrawer();
+            }
+        } else {
+            sb.classList.toggle('collapsed');
+            sb.classList.remove('mobile-open');
+            sb.style.width = '';
+            sb.style.minWidth = '';
+        }
+    }
+
+    window.toggleSidebar = toggleAdminSidebar;
+    window.toggleAdminSidebar = toggleAdminSidebar;
+    window.closeAdminSidebarDrawer = closeAdminDrawer;
+    window.closeSidebarMobile = closeAdminDrawer;
+
+    // Delegate click handlers for backdrop, close button, and nav links
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('[data-close-admin-sidebar]')) {
+            if (e.cancelable) e.preventDefault();
+            closeAdminDrawer();
+            return;
+        }
+
+        if (e.target.closest('#sidebar-backdrop')) {
+            if (e.cancelable) e.preventDefault();
+            closeAdminDrawer();
+            return;
+        }
+
+        if (isMobile() && e.target.closest('#sidebar a')) {
+            const link = e.target.closest('#sidebar a');
+            const href = link.getAttribute('href');
+            if (href && href !== 'javascript:void(0)' && !href.startsWith('#')) {
+                closeAdminDrawer();
+            }
+        }
+    });
+
+    window.addEventListener('resize', function() {
+        if (!isMobile()) {
+            closeAdminDrawer();
+        }
+    });
+
+    document.addEventListener('livewire:navigated', function() {
+        closeAdminDrawer();
+    });
 })();
 </script>
 @endpush

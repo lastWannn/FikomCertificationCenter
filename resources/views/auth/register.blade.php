@@ -239,7 +239,15 @@
     }
 </style>
 
-@php $activeTab = 'register'; @endphp
+@php 
+    $activeTab = 'register';
+    $authKontak = \App\Models\Kontak::aktif();
+    $authTelp = $authKontak?->telepon_dengan_nama ?? ($authKontak->telepon ?? '(0411) 455 855');
+    $authAlamat = $authKontak->alamat ?? 'Makassar, Sulawesi Selatan, Indonesia';
+    $authEmail = $authKontak->email ?? 'fcc@fikom.umi.ac.id';
+    $authWaUrl = $authKontak?->wa_url;
+    $authMailtoUrl = $authKontak?->mailto_url ?? ('mailto:' . $authEmail);
+@endphp
 
 <div class="fcc-auth-page-wrap">
     
@@ -281,7 +289,7 @@
                 </div>
             </div>
 
-            {{-- Bottom Contact Feature List (Structured & Compact) --}}
+            {{-- Bottom Contact Feature List (Structured & Dynamic) --}}
             <div class="fcc-auth-contacts-wrap" style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
                 <div class="fcc-contact-card">
                     <div class="fcc-contact-icon-bg">
@@ -289,7 +297,11 @@
                     </div>
                     <div>
                         <span style="display:block;font-size:9.5px;font-weight:800;color:#FFC81A;text-transform:uppercase;letter-spacing:0.5px;">Layanan Telepon / Hotline</span>
-                        <span style="font-size:12.5px;font-weight:700;color:#FFFFFF;">(0411) 455 855</span>
+                        @if($authWaUrl)
+                            <a href="{{ $authWaUrl }}" target="_blank" rel="noopener noreferrer" style="font-size:12.5px;font-weight:700;color:#FFFFFF;text-decoration:none;" onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#FFFFFF'">{{ $authTelp }}</a>
+                        @else
+                            <span style="font-size:12.5px;font-weight:700;color:#FFFFFF;">{{ $authTelp }}</span>
+                        @endif
                     </div>
                 </div>
 
@@ -299,7 +311,7 @@
                     </div>
                     <div>
                         <span style="display:block;font-size:9.5px;font-weight:800;color:#FFC81A;text-transform:uppercase;letter-spacing:0.5px;">Lokasi Kampus</span>
-                        <span style="font-size:12.5px;font-weight:700;color:#FFFFFF;">Makassar, Sulawesi Selatan, Indonesia</span>
+                        <span style="font-size:12.5px;font-weight:700;color:#FFFFFF;">{{ $authAlamat }}</span>
                     </div>
                 </div>
 
@@ -309,7 +321,7 @@
                     </div>
                     <div>
                         <span style="display:block;font-size:9.5px;font-weight:800;color:#FFC81A;text-transform:uppercase;letter-spacing:0.5px;">Email Resmi Support</span>
-                        <span style="font-size:12.5px;font-weight:700;color:#FFFFFF;">fcc@fikom.umi.ac.id</span>
+                        <a href="{{ $authMailtoUrl }}" style="font-size:12.5px;font-weight:700;color:#FFFFFF;text-decoration:none;" onmouseover="this.style.color='#FFC81A'" onmouseout="this.style.color='#FFFFFF'">{{ $authEmail }}</a>
                     </div>
                 </div>
             </div>
@@ -323,12 +335,7 @@
                 {{-- SLIDE 1: LOGIN FORM --}}
                 <div class="fcc-slide-item">
                     <div>
-                        <div style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
-                            <a href="{{ route('landing.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#131218;font-size:12px;font-weight:900;text-decoration:none;background:rgba(19,18,24,0.08);padding:4px 12px;border-radius:100px;transition:background 0.2s;" onmouseover="this.style.background='rgba(19,18,24,0.15)';" onmouseout="this.style.background='rgba(19,18,24,0.08)';">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                                <span>Beranda</span>
-                            </a>
-                        </div>
+
                         <div style="margin-bottom:16px;">
                             <h2 style="color:#131218;font-size:24px;font-weight:900;margin:0 0 4px;letter-spacing:-0.5px;">Masuk Akun</h2>
                             <p style="color:rgba(19,18,24,0.65);font-size:13px;margin:0;font-weight:600;">
@@ -419,12 +426,7 @@
                 {{-- SLIDE 2: REGISTER FORM --}}
                 <div class="fcc-slide-item">
                     <div>
-                        <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
-                            <a href="{{ route('landing.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#131218;font-size:12px;font-weight:900;text-decoration:none;background:rgba(19,18,24,0.08);padding:4px 12px;border-radius:100px;transition:background 0.2s;" onmouseover="this.style.background='rgba(19,18,24,0.15)';" onmouseout="this.style.background='rgba(19,18,24,0.08)';">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                                <span>Beranda</span>
-                            </a>
-                        </div>
+
                         <div style="margin-bottom:10px;">
                             <h2 style="color:#131218;font-size:22px;font-weight:900;margin:0 0 3px;letter-spacing:-0.5px;">Buat Akun Peserta</h2>
                             <p style="color:rgba(19,18,24,0.65);font-size:12.5px;margin:0;font-weight:600;">
@@ -590,9 +592,14 @@
             <input type="hidden" name="otp" id="finalOtp">
             <div id="otpError" style="color:#EF4444;font-size:13px;margin-bottom:18px;display:none;font-weight:700;"></div>
             
-            <button id="btnVerify" type="submit" class="fcc-dark-pill-btn" style="width:100%;justify-content:center;background:#FFC81A;color:#131218;">
+            <button id="btnVerify" type="submit" class="fcc-dark-pill-btn" style="width:100%;justify-content:center;background:#FFC81A;color:#131218;margin-bottom:12px;">
                 Verifikasi &amp; Masuk
             </button>
+            <div style="display:flex;align-items:center;justify-content:center;margin-top:14px;padding-top:14px;border-top:1px dashed rgba(255,255,255,0.15);">
+                <button type="button" id="reg-btn-resend-otp" onclick="resendRegisterOtpAjax()" disabled style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:13.5px;font-weight:600;cursor:default;opacity:0.85;padding:4px 8px;transition:all 0.2s;">
+                    Kirim ulang dalam <span id="reg-otp-timer-count" style="color:#FFC81A;font-family:monospace;font-weight:900;letter-spacing:0.5px;">01:00</span>
+                </button>
+            </div>
         </form>
     </div>
 </div>
@@ -636,17 +643,20 @@ window.switchAuthSlide = function(target) {
     const headLogin = document.getElementById('left-login-text');
     const headReg = document.getElementById('left-register-text');
 
+    const registerUrl = "{{ route('auth.register') }}";
+    const loginUrl = "{{ route('auth.login') }}";
+
     if (target === 'register') {
         if (track) track.style.transform = 'translate3d(-50%, 0, 0)';
         if (headLogin) headLogin.className = 'fcc-headline-panel fcc-headline-inactive-up';
         if (headReg) headReg.className = 'fcc-headline-panel fcc-headline-active';
-        window.history.pushState(null, '', '/daftar');
+        window.history.pushState(null, '', registerUrl);
         document.title = 'Daftar Akun — FIKOM Certification Center';
     } else {
         if (track) track.style.transform = 'translate3d(0, 0, 0)';
         if (headReg) headReg.className = 'fcc-headline-panel fcc-headline-inactive-down';
         if (headLogin) headLogin.className = 'fcc-headline-panel fcc-headline-active';
-        window.history.pushState(null, '', '/masuk');
+        window.history.pushState(null, '', loginUrl);
         document.title = 'Masuk — FIKOM Certification Center';
     }
 };
@@ -666,11 +676,32 @@ window.handleRegisterFormSubmit = async function(e) {
     if (e) e.preventDefault();
     const form = document.getElementById('registerForm');
     if (!form) return;
+
+    const emailInp = form.querySelector('input[name="email"]');
+    const pwInp = document.getElementById('reg-pw-inp');
+    const pwConfirmInp = document.getElementById('reg-pw-confirm-inp');
+    const errorContainer = document.getElementById('registerErrorAlert');
+    if (errorContainer) {
+        errorContainer.style.display = 'none';
+        errorContainer.innerHTML = '';
+    }
+
+    // Quick client validation
+    if (pwInp && pwConfirmInp && pwInp.value !== pwConfirmInp.value) {
+        if (errorContainer) {
+            errorContainer.innerHTML = 'Password dan konfirmasi password tidak cocok.';
+            errorContainer.style.display = 'block';
+        }
+        return;
+    }
+
+    const email = emailInp?.value || '';
+
     const btn = document.getElementById('btnSubmit');
     const oriText = btn ? btn.innerHTML : '';
     if (btn) {
-        btn.innerHTML = '<span style="display:flex;align-items:center;gap:8px;">Memproses...</span>';
         btn.disabled = true;
+        btn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px;"><svg style="animation:spin 1s linear infinite;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path></svg> Mendaftarkan...</span>`;
     }
 
     try {
@@ -689,35 +720,51 @@ window.handleRegisterFormSubmit = async function(e) {
             data = await res.json();
         } catch(jsonErr) {}
 
-        const errorContainer = document.getElementById('registerErrorAlert');
-        if (errorContainer) errorContainer.style.display = 'none';
-
-        if (data.require_otp) {
-            document.getElementById('otpEmailDisplay').innerText = data.email;
-            document.getElementById('otpEmailInput').value = data.email;
+        if (res.ok && data.require_otp) {
+            const targetEmail = data.email || email;
+            document.getElementById('otpEmailDisplay').innerText = targetEmail;
+            document.getElementById('otpEmailInput').value = targetEmail;
             document.getElementById('otpModal').style.display = 'flex';
+            if (typeof startRegisterOtpCountdown === 'function') startRegisterOtpCountdown(60);
             const firstBox = document.querySelector('.otp-box');
-            if (firstBox) firstBox.focus();
-        } else if (data.errors) {
-            const msg = Object.values(data.errors).flat().join('<br>');
-            if (errorContainer) {
-                errorContainer.innerHTML = msg;
-                errorContainer.style.display = 'block';
-            } else {
-                alert(Object.values(data.errors).flat().join('\n'));
-            }
-        } else if (data.message) {
-            if (errorContainer) {
-                errorContainer.innerHTML = data.message;
-                errorContainer.style.display = 'block';
-            } else {
-                alert(data.message);
+            if (firstBox) {
+                firstBox.value = '';
+                firstBox.focus();
             }
         } else {
-            alert('Gagal memproses pendaftaran. Silakan periksa kembali data Anda.');
+            if (data.errors) {
+                const msg = Object.values(data.errors).flat().join('<br>');
+                if (errorContainer) {
+                    errorContainer.innerHTML = msg;
+                    errorContainer.style.display = 'block';
+                } else {
+                    alert(Object.values(data.errors).flat().join('\n'));
+                }
+            } else if (data.message) {
+                if (errorContainer) {
+                    errorContainer.innerHTML = data.message;
+                    errorContainer.style.display = 'block';
+                } else {
+                    alert(data.message);
+                }
+            } else {
+                const msg = 'Gagal memproses pendaftaran. Silakan periksa kembali data Anda.';
+                if (errorContainer) {
+                    errorContainer.innerHTML = msg;
+                    errorContainer.style.display = 'block';
+                } else {
+                    alert(msg);
+                }
+            }
         }
     } catch (err) {
-        alert('Terjadi kesalahan koneksi/sistem: ' + (err.message || err));
+        const msg = 'Terjadi kesalahan koneksi/sistem: ' + (err.message || err);
+        if (errorContainer) {
+            errorContainer.innerHTML = msg;
+            errorContainer.style.display = 'block';
+        } else {
+            alert(msg);
+        }
     } finally {
         if (btn) {
             btn.innerHTML = oriText;
@@ -771,7 +818,7 @@ window.handleRegisterFormSubmit = async function(e) {
                 const data = await res.json();
                 
                 if (data.success) {
-                    window.location.href = data.redirect || '/peserta/dashboard';
+                    window.location.href = data.redirect || "{{ route('peserta.dashboard') }}";
                 } else if (data.errors) {
                     document.getElementById('otpError').innerText = data.errors.otp ? data.errors.otp[0] : 'Kode tidak valid.';
                     document.getElementById('otpError').style.display = 'block';
@@ -789,6 +836,117 @@ window.handleRegisterFormSubmit = async function(e) {
     }
 })();
 
+let regOtpTimerInterval = null;
+window.startRegisterOtpCountdown = function(seconds = 60) {
+    let rem = seconds;
+    const btnResend = document.getElementById('reg-btn-resend-otp');
+
+    if (regOtpTimerInterval) clearInterval(regOtpTimerInterval);
+
+    if (btnResend) {
+        btnResend.disabled = true;
+        btnResend.style.cursor = 'default';
+        btnResend.style.opacity = '0.85';
+        btnResend.style.color = 'rgba(255,255,255,0.7)';
+        btnResend.style.textDecoration = 'none';
+    }
+
+    const updateDisplay = () => {
+        const m = String(Math.floor(rem / 60)).padStart(2, '0');
+        const s = String(rem % 60).padStart(2, '0');
+        if (btnResend) {
+            btnResend.innerHTML = `Kirim ulang dalam <span id="reg-otp-timer-count" style="color:#FFC81A;font-family:monospace;font-weight:900;letter-spacing:0.5px;">${m}:${s}</span>`;
+        }
+    };
+
+    updateDisplay();
+    regOtpTimerInterval = setInterval(() => {
+        rem--;
+        if (rem <= 0) {
+            clearInterval(regOtpTimerInterval);
+            if (btnResend) {
+                btnResend.disabled = false;
+                btnResend.style.cursor = 'pointer';
+                btnResend.style.opacity = '1';
+                btnResend.style.color = '#FFC81A';
+                btnResend.style.textDecoration = 'underline';
+                btnResend.innerText = 'Kirim Ulang Kode OTP';
+            }
+        } else {
+            updateDisplay();
+        }
+    }, 1000);
+};
+
+window.resendRegisterOtpAjax = async function() {
+    const email = document.getElementById('otpEmailInput')?.value;
+    const btnResend = document.getElementById('reg-btn-resend-otp');
+    const errorContainer = document.getElementById('otpError');
+
+    if (!email) return;
+
+    // LANGSUNG RESET TIMER & TAMPILKAN STATUS SECARA INSTAN (0ms)
+    if (typeof startRegisterOtpCountdown === 'function') {
+        startRegisterOtpCountdown(60);
+    }
+    if (errorContainer) {
+        errorContainer.style.color = '#FFC81A';
+        errorContainer.innerText = 'Mengirim kode OTP baru ke email Anda...';
+        errorContainer.style.display = 'block';
+    }
+
+    try {
+        const res = await fetch("{{ route('auth.register.resend-otp') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email: email })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            if (errorContainer) {
+                errorContainer.style.color = '#10B981';
+                errorContainer.innerText = data.message || 'Kode OTP baru telah dikirim.';
+                errorContainer.style.display = 'block';
+            }
+        } else {
+            if (errorContainer) {
+                errorContainer.style.color = '#EF4444';
+                errorContainer.innerText = data.message || 'Gagal mengirim ulang OTP.';
+                errorContainer.style.display = 'block';
+            }
+            if (btnResend) {
+                btnResend.disabled = false;
+                btnResend.style.cursor = 'pointer';
+                btnResend.style.opacity = '1';
+                btnResend.style.color = '#FFC81A';
+                btnResend.style.textDecoration = 'underline';
+                btnResend.innerText = 'Kirim Ulang Kode OTP';
+            }
+        }
+    } catch (err) {
+        if (errorContainer) {
+            errorContainer.style.color = '#EF4444';
+            errorContainer.innerText = 'Terjadi kesalahan jaringan.';
+            errorContainer.style.display = 'block';
+        }
+        if (btnResend) {
+            btnResend.disabled = false;
+            btnResend.style.cursor = 'pointer';
+            btnResend.style.opacity = '1';
+            btnResend.style.color = '#FFC81A';
+            btnResend.style.textDecoration = 'underline';
+            btnResend.innerText = 'Kirim Ulang Kode OTP';
+        }
+    }
+};
+
 @if(session('require_otp'))
 document.addEventListener('DOMContentLoaded', function() {
     const email = "{{ session('email') }}";
@@ -796,6 +954,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('otpEmailDisplay').innerText = email;
         document.getElementById('otpEmailInput').value = email;
         document.getElementById('otpModal').style.display = 'flex';
+        if (typeof startRegisterOtpCountdown === 'function') startRegisterOtpCountdown(60);
         const firstBox = document.querySelector('.otp-box');
         if (firstBox) firstBox.focus();
     }

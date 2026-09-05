@@ -106,17 +106,29 @@ class Pembayaran extends Model
     public static function generateNoKwitansi(): string
     {
         $prefix = 'KWT/FCC/' . now()->format('Ym') . '/';
-        $latest = self::where('no_kwitansi', 'like', "{$prefix}%")
-            ->orderBy('id', 'desc')
-            ->first();
+        
+        $existingList = self::whereNotNull('no_kwitansi')
+            ->where('no_kwitansi', 'like', "{$prefix}%")
+            ->pluck('no_kwitansi');
 
-        if ($latest && preg_match('/(\d+)$/', $latest->no_kwitansi, $matches)) {
-            $next = (int) $matches[1] + 1;
-        } else {
-            $next = 1;
+        $maxSeq = 0;
+        foreach ($existingList as $nk) {
+            if (preg_match('/(\d+)$/', $nk, $matches)) {
+                $num = (int) $matches[1];
+                if ($num > $maxSeq) {
+                    $maxSeq = $num;
+                }
+            }
         }
 
-        return $prefix . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
+        $next = $maxSeq + 1;
+
+        do {
+            $candidate = $prefix . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
+            $next++;
+        } while (self::where('no_kwitansi', $candidate)->exists());
+
+        return $candidate;
     }
 
     /* ── STATUS & EXPIRY ────────────────────────────────────── */
@@ -198,7 +210,10 @@ class Pembayaran extends Model
 
     public function verifikasi(?string $noKwitansi = null): void
     {
-        if (empty(trim($noKwitansi ?? ''))) {
+        $noKwitansi = trim($noKwitansi ?? '');
+
+        // Jika nomor kwitansi kosong ATAU nomor kwitansi yang diinput sudah digunakan pembayaran lain
+        if (empty($noKwitansi) || self::where('no_kwitansi', $noKwitansi)->where('id', '!=', $this->id)->exists()) {
             $noKwitansi = self::generateNoKwitansi();
         }
 

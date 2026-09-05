@@ -340,50 +340,7 @@
 
     </form>
 
-    {{-- ═══ POPUP MODAL UBAH KATA SANDI ══════════════════════════ --}}
-    <div id="password-modal" onclick="if(event.target===this)closePasswordModal()" style="display:{{ $errors->has('password') ? 'flex' : 'none' }};position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
-      <div style="background:#FFFFFF;border-radius:24px;border:2px solid #E5E7EB;max-width:520px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,0.25);overflow:hidden;position:relative;animation:modalPop 0.25s ease-out;">
-        {{-- Modal Header --}}
-        <div style="background:#131218;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span style="background:#FFC81A;color:#131218;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">Keamanan Akun</span>
-            <span style="color:#FFFFFF;font-size:14px;font-weight:900;">Ubah Kata Sandi</span>
-          </div>
-          <button type="button" onclick="closePasswordModal()" style="background:rgba(255,255,255,0.1);border:none;color:#FFFFFF;width:32px;height:32px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;transition:all .18s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">&times;</button>
-        </div>
 
-        {{-- Modal Body --}}
-        <div style="padding:26px 28px;">
-          <p style="font-size:13px;color:#64748B;margin:0 0 20px;font-weight:500;">Masukkan kata sandi baru Anda di bawah ini untuk memperbarui keamanan akun Anda.</p>
-
-          <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
-            <div>
-              <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
-                Kata Sandi Baru *
-              </label>
-              <input type="password" form="profile-form" name="password" placeholder="Minimal 8 karakter" class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
-                     onkeydown="if(event.key==='Enter')event.preventDefault();">
-            </div>
-
-            <div>
-              <label style="font-size:11px;font-weight:900;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">
-                Konfirmasi Kata Sandi Baru *
-              </label>
-              <input type="password" form="profile-form" name="password_confirmation" placeholder="Ulangi kata sandi baru" class="fcc-input" style="height:42px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;"
-                     onkeydown="if(event.key==='Enter')event.preventDefault();">
-            </div>
-          </div>
-
-          <div style="display:flex;gap:12px;justify-content:flex-end;">
-            <button type="button" onclick="closePasswordModal()" style="padding:10px 18px;border-radius:12px;border:1.5px solid #CBD5E1;background:#F1F5F9;color:#131218;font-size:13px;font-weight:800;cursor:pointer;">
-              Batal
-            </button>
-            <button type="submit" form="profile-form" class="fcc-btn-gold" style="padding:10px 22px;border-radius:12px;font-size:13px;font-weight:900;box-shadow:0 4px 12px rgba(255,200,26,0.3);">
-              Simpan Kata Sandi &rarr;
-            </button>
-          </div>
-        </div>
-      </div>
     {{-- ═══ MODAL KHUSUS VERIFIKASI OTP EMAIL BARU ════════════════ --}}
     @php
         $activeOtpHint = $otpHint ?? session('otp_hint');
@@ -481,6 +438,9 @@
         <input type="hidden" name="nama" value="{{ $peserta->nama }}">
         <input type="hidden" name="email" value="{{ $peserta->email }}">
         <input type="hidden" name="no_hp" value="{{ $peserta->no_hp }}">
+        <input type="hidden" name="instansi" value="{{ $peserta->instansi }}">
+        <input type="hidden" name="pekerjaan" value="{{ $peserta->pekerjaan }}">
+        <input type="hidden" name="alamat" value="{{ $peserta->alamat }}">
 
         <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
           <div>

@@ -80,6 +80,7 @@ Route::middleware('guest.fcc')->group(function () {
     Route::get('/daftar',         [RegisterController::class,'showRegister'])->name('auth.register');
     Route::post('/daftar',        [RegisterController::class,'register'])->middleware('throttle:10,1')->name('auth.register.post');
     Route::post('/daftar/verify', [RegisterController::class,'verifyOtp'])->middleware('throttle:10,1')->name('auth.register.verify');
+    Route::post('/daftar/resend-otp', [RegisterController::class,'resendOtp'])->middleware('throttle:5,1')->name('auth.register.resend-otp');
 
     // Google OAuth Routes
     Route::get('/auth/google',          [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
@@ -215,9 +216,9 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
 
     Route::get('sertifikat',                          [AdminSertifikat::class,'index'])->name('sertifikat.index');
     Route::get('sertifikat/{kegiatan}/peserta',       [AdminSertifikat::class,'peserta'])->name('sertifikat.peserta');
-    Route::get('sertifikat/{kegiatan}/preview-sample', [AdminSertifikat::class,'previewSamplePdf'])->name('sertifikat.preview-sample');
-    Route::get('sertifikat/{kegiatan}/layout-editor', [AdminSertifikat::class,'layoutEditor'])->name('sertifikat.layout-editor');
-    Route::post('sertifikat/{kegiatan}/save-layout',  [AdminSertifikat::class,'saveLayout'])->name('sertifikat.save-layout');
+    Route::get('sertifikat/{kegiatanId}/preview-sample', [AdminSertifikat::class,'previewSamplePdf'])->name('sertifikat.preview-sample');
+    Route::get('sertifikat/{kegiatanId}/layout-editor', [AdminSertifikat::class,'layoutEditor'])->name('sertifikat.layout-editor');
+    Route::post('sertifikat/{kegiatanId}/save-layout',  [AdminSertifikat::class,'saveLayout'])->name('sertifikat.save-layout');
     Route::post('sertifikat/upload-latar',            [AdminSertifikat::class,'uploadLatar'])->name('sertifikat.upload-latar');
     Route::post('sertifikat/{pendaftaran}/terbitkan', [AdminSertifikat::class,'terbitkan'])->name('sertifikat.terbitkan');
     Route::post('sertifikat/terbitkan-semua/{kegiatan}', [AdminSertifikat::class,'terbitkanSemua'])->name('sertifikat.terbitkan-semua');

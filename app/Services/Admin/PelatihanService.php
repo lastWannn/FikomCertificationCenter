@@ -74,9 +74,14 @@ class PelatihanService
             $jadwal = \App\Models\JadwalPelatihan::create($jadwalData);
 
             if (isset($data['langsung_aktifkan']) && $data['langsung_aktifkan']) {
+                $targetJudul = trim($pelatihan->judul);
+                $existing = \App\Models\Kegiatan::all()->first(fn($k) => trim($k->detail?->judul ?? $k->judul) === $targetJudul && (!empty($k->nama_latar) || !empty($k->sertifikat_layout)));
+
                 $kegiatan = \App\Models\Kegiatan::create([
-                    'jenis_kegiatan' => 'pelatihan',
-                    'qr_token' => \Illuminate\Support\Str::random(32)
+                    'jenis_kegiatan'    => 'pelatihan',
+                    'qr_token'          => \Illuminate\Support\Str::random(32),
+                    'nama_latar'        => $existing?->nama_latar,
+                    'sertifikat_layout' => $existing?->sertifikat_layout,
                 ]);
                 \App\Models\KegiatanPelatihan::create([
                     'kegiatan_id' => $kegiatan->id,

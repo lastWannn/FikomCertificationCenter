@@ -26,8 +26,14 @@ class OtpService
         // Log OTP untuk kemudahan pengujian lokal
         \Illuminate\Support\Facades\Log::info("Kode OTP untuk [{$email}] : {$otp}");
 
-        // Dispatch email OTP ke background OS process (0 ms latency untuk pengguna)
-        \App\Helpers\AsyncMail::dispatch('otp', $email, "{$otp}|{$type}");
+        // Kirim email OTP langsung (dijamin terkirim di semua web server / cPanel tanpa kendala process kill)
+        try {
+            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\OtpMail($otp, $type));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Gagal mengirim email OTP langsung ke [{$email}]: " . $e->getMessage());
+            // Fallback via AsyncMail jika diperlukan
+            \App\Helpers\AsyncMail::dispatch('otp', $email, "{$otp}:{$type}");
+        }
 
         return $otp;
     }

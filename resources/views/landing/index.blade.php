@@ -35,7 +35,7 @@
 {{-- ══════════════════════════════════════════════════════════════
      HERO SECTION — High-Impact Portal Layout with Background Image
   ══════════════════════════════════════════════════════════════════ --}}
-<section data-hero style="position:relative;overflow:hidden;display:flex;align-items:center;border-bottom:1px solid #1E1D26;background:#131218;">
+<section data-hero style="position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex:1 0 auto;width:100%;min-height:calc(100vh - 64px);padding:60px 0;border-bottom:1px solid #1E1D26;background:#131218;">
     {{-- Hero Background Image (LCP element — loaded as <img> for fastest discovery) --}}
     <img src="{{ asset('images/herosection.webp') }}" alt="" fetchpriority="high" decoding="async" width="1920" height="1080" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"/>
     {{-- Gradient Overlay --}}
