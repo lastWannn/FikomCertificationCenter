@@ -106,14 +106,6 @@ class CetakController extends Controller
 
         return view('admin.cetak.presensi-pdf', compact('kegiatan'));
     }
-
-    /** Cetak Lembar Penilaian */
-    public function lembarPenilaian(Pendaftaran $pendaftaran)
-    {
-        $pendaftaran->load(['peserta', 'kegiatan.kegiatanPelatihan.jadwalPelatihan.pelatihan.materi', 'nilai']);
-        
-        return view('admin.cetak.penilaian-pdf', compact('pendaftaran'));
-    }
 }
 
 

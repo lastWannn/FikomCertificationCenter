@@ -145,8 +145,9 @@
                     <tr style="background:#131218;color:#FFFFFF;">
                         <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">Peserta</th>
                         <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Status Pendaftaran</th>
+                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:150px;">Transkrip Nilai</th>
                         <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">No. Sertifikat</th>
-                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:140px;">Tgl Terbit</th>
+                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:130px;">Tgl Terbit</th>
                         <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;width:240px;">Aksi</th>
                     </tr>
                 </thead>
@@ -173,6 +174,19 @@
                             <span style="font-size:11px;font-weight:800;padding:3px 10px;border-radius:12px;background:{{ $sc[1] }};color:{{ $sc[0] }};border:1px solid {{ $sc[2] }};display:inline-block;">
                                 {{ $sc[3] }}
                             </span>
+                        </td>
+
+                        {{-- Transkrip Nilai --}}
+                        <td style="padding:14px 16px;text-align:center;vertical-align:middle;">
+                            @if($pd->transkrip_nilai)
+                            <a href="{{ $pd->transkrip_url }}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:#EFF6FF;color:#1D4ED8;border:1px solid #93C5FD;font-size:11px;font-weight:800;text-decoration:none;transition:all .15s;" onmouseover="this.style.background='#DBEAFE'" onmouseout="this.style.background='#EFF6FF'">
+                                @include('components.icon',['name'=>'file-text','size'=>13]) Lihat Berkas
+                            </a>
+                            @else
+                            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;font-size:10.5px;font-weight:700;">
+                                @include('components.icon',['name'=>'alert-circle','size'=>12]) Belum Unggah
+                            </span>
+                            @endif
                         </td>
 
                         {{-- No. Sertifikat --}}

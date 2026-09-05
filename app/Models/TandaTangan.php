@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class TandaTangan extends Model
 {
@@ -32,16 +33,30 @@ class TandaTangan extends Model
      */
     public static function getAktif(): self
     {
-        return self::firstOrCreate([], [
+        $payload = [
             'dekan_nama'        => 'Purnawansyah',
             'dekan_jabatan'     => 'DEKAN',
             'ketua_nama'        => "Abdul Rachman Manga'",
             'ketua_jabatan'     => 'KETUA UNIT',
             'bendahara_nama'    => 'Panitia FCC',
             'bendahara_jabatan' => 'BENDAHARA / KEUANGAN',
-            'proktor_nama'      => "Ir. Abdul Rachman Manga', S.Kom., M.T., MTA., MCF",
-            'proktor_jabatan'   => 'PROKTOR UJIAN',
-        ]);
+        ];
+
+        if (Schema::hasTable('tanda_tangan') && Schema::hasColumn('tanda_tangan', 'proktor_nama')) {
+            $payload['proktor_nama']    = "Ir. Abdul Rachman Manga', S.Kom., M.T., MTA., MCF";
+            $payload['proktor_jabatan'] = 'PROKTOR UJIAN';
+        }
+
+        $aktif = self::firstOrCreate([], $payload);
+
+        if (Schema::hasTable('tanda_tangan') && Schema::hasColumn('tanda_tangan', 'proktor_nama') && empty($aktif->proktor_nama)) {
+            $aktif->update([
+                'proktor_nama'    => "Ir. Abdul Rachman Manga', S.Kom., M.T., MTA., MCF",
+                'proktor_jabatan' => 'PROKTOR UJIAN',
+            ]);
+        }
+
+        return $aktif;
     }
 
     public function getDekanTtdUrlAttribute(): ?string

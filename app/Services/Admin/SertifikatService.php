@@ -11,8 +11,10 @@ class SertifikatService
     {
         $sertifikat->loadMissing([
             'pendaftaran.peserta',
-            'pendaftaran.kegiatan.kegiatanPelatihan.jadwalPelatihan',
-            'pendaftaran.kegiatan.kegiatanSertifikasi.jadwalSertifikasi',
+            'pendaftaran.kegiatan.kegiatanPelatihan.jadwalPelatihan.pelatihan.materi',
+            'pendaftaran.kegiatan.kegiatanSertifikasi.jadwalSertifikasi.sertifikasi.materi',
+            'pendaftaran.nilai.materiPelatihan',
+            'pendaftaran.nilai.materiSertifikasi',
         ]);
 
         $kegiatan = $sertifikat->pendaftaran->kegiatan;
@@ -39,9 +41,18 @@ class SertifikatService
             }
         }
 
+        $logoSrc = null;
+        if (file_exists(public_path('images/logo.png'))) {
+            $logoSrc = 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('images/logo.png')));
+        }
+
+        $activeTtd = \App\Models\TandaTangan::first();
+
         return [
             'sertifikat' => $sertifikat,
             'bgSrc' => $bgSrc,
+            'logoSrc' => $logoSrc,
+            'activeTtd' => $activeTtd,
             'tglPelaksanaanFormat' => $kegiatan?->jadwal?->tgl_pelaksanaan?->translatedFormat('d F Y') ?? 'September 12th, 2021',
             'tglTerbitFormat' => $sertifikat->tgl_terbit?->translatedFormat('d F Y') ?? 'September 12th, 2021',
             'layout' => $kegiatan?->layout_settings ?? [],

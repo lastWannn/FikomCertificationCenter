@@ -228,7 +228,6 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
         Route::get('/invoice/{pembayaran}',     [CetakController::class,'invoice'])->name('invoice');
         Route::get('/bukti/{pembayaran}',       [CetakController::class,'buktiPembayaran'])->name('bukti');
         Route::get('/presensi/{kegiatan}',      [CetakController::class,'presensi'])->name('presensi');
-        Route::get('/penilaian/{pendaftaran}',  [CetakController::class,'lembarPenilaian'])->name('penilaian');
     });
 
     /* EXPORT EXCEL */
@@ -301,9 +300,10 @@ Route::middleware('auth.peserta')->prefix('peserta')->name('peserta.')->group(fu
     Route::post('/pembayaran/{pembayaran}/konfirmasi', [PesertaBayar::class,'konfirmasi'])->name('pembayaran.konfirmasi');
     Route::post('/pembayaran/{pembayaran}/request-perpanjangan', [PesertaBayar::class,'requestPerpanjangan'])->name('pembayaran.request-perpanjangan');
     // Sertifikat Peserta
-    Route::get('/sertifikat',                      [PesertaSertifikat::class, 'index'])->name('sertifikat');
-    Route::get('/sertifikat/{sertifikat}/download',[PesertaSertifikat::class, 'download'])->name('sertifikat.download');
-    Route::get('/sertifikat/{sertifikat}/preview', [PesertaSertifikat::class, 'preview'])->name('sertifikat.preview');
+    Route::get('/sertifikat',                                     [PesertaSertifikat::class, 'index'])->name('sertifikat');
+    Route::post('/sertifikat/{pendaftaran}/upload-transkrip',    [PesertaSertifikat::class, 'uploadTranskrip'])->name('sertifikat.upload-transkrip');
+    Route::get('/sertifikat/{sertifikat}/download',               [PesertaSertifikat::class, 'download'])->name('sertifikat.download');
+    Route::get('/sertifikat/{sertifikat}/preview',                [PesertaSertifikat::class, 'preview'])->name('sertifikat.preview');
     // QR Peserta
     Route::get('/qr/{pendaftaran}',      [PesertaQr::class,'show'])->name('qr.show');
     Route::get('/qr/{pendaftaran}/cetak',[PesertaQr::class,'cetak'])->name('qr.cetak');

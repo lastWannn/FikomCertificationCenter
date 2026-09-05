@@ -390,6 +390,10 @@ setTimeout(() => {
             const wrapper = alert.parentElement;
             alert.remove();
             if(wrapper && wrapper.children.length === 0) wrapper.remove();
+        }, 300);
+    });
+}, 3500);
+
 // Auto Scroll & Save/Focus Active Sidebar Item
 (function() {
     function getNav() {

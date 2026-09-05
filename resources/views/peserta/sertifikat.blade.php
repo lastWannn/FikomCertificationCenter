@@ -157,9 +157,13 @@
                         <span style="background:#D1FAE5;color:#047857;border:1px solid #10B981;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:0.5px;">
                             ✔ Sertifikat Resmi Diterbitkan
                         </span>
+                    @elseif(!$pd->transkrip_nilai)
+                        <span style="background:#FEF3C7;color:#D97706;border:1px solid #F59E0B;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:0.5px;">
+                            ⚠️ Wajib Upload Transkrip
+                        </span>
                     @else
-                        <span style="background:#F1F5F9;color:#64748B;border:1px solid #CBD5E1;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:0.5px;">
-                            ⏳ Belum Diterbitkan Admin
+                        <span style="background:#EFF6FF;color:#1D4ED8;border:1px solid #93C5FD;font-size:10.5px;font-weight:900;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:0.5px;">
+                            📄 Transkrip Terunggah
                         </span>
                     @endif
                 </div>
@@ -175,10 +179,22 @@
                         No. Sertifikat: <span class="fcc-sertifikat-card-no" style="font-family:monospace;font-weight:900;color:#131218;background:#F1F5F9;padding:2px 8px;border-radius:6px;border:1px solid #CBD5E1;">{{ $s->nomor_sertifikat }}</span>
                     </p>
                     <p style="font-size:11px;color:#94A3B8;margin:0 0 18px;font-weight:700;">Tgl Terbit: {{ $s->tgl_terbit?->translatedFormat('d F Y') ?? '-' }}</p>
-                @else
-                    <p style="font-size:11px;color:#64748B;margin:0 0 18px;font-weight:600;background:#F8FAFC;padding:8px 10px;border-radius:8px;border:1px solid #E2E8F0;">
-                        ⏳ Panitia/Admin sedang dalam proses verifikasi dan penerbitan sertifikat kegiatan ini.
+                @elseif(!$pd->transkrip_nilai)
+                    <p style="font-size:11.5px;color:#B45309;margin:0 0 18px;font-weight:600;background:#FFFBEB;padding:10px 12px;border-radius:10px;border:1px solid #FDE68A;line-height:1.45;">
+                        📌 Silakan unggah berkas <strong>Transkrip Nilai</strong> Anda terlebih dahulu agar penerbitan sertifikat dapat diproses oleh Admin.
                     </p>
+                @else
+                    <div style="background:#F0FDF4;padding:8px 12px;border-radius:10px;border:1px solid #BBF7D0;margin-bottom:18px;font-size:11.5px;color:#166534;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                        <span style="display:inline-flex;align-items:center;gap:4px;">
+                            @include('components.icon',['name'=>'check-circle','size'=>14,'style'=>'color:#10B981'])
+                            Berkas Siap Diverifikasi
+                        </span>
+                        <div style="display:flex;gap:6px;align-items:center;">
+                            <a href="{{ $pd->transkrip_url }}" target="_blank" style="color:#2563EB;font-weight:800;text-decoration:underline;font-size:11px;">Lihat</a>
+                            <span style="color:#CBD5E1;">|</span>
+                            <button type="button" onclick="openUploadModal('{{ $pd->hashid }}', '{{ addslashes($pd->kegiatan->judul ?? '') }}')" style="background:none;border:none;color:#D97706;font-weight:800;cursor:pointer;padding:0;font-size:11px;text-decoration:underline;">Ganti</button>
+                        </div>
+                    </div>
                 @endif
             </div>
 
@@ -193,8 +209,14 @@
                             🔒 Isi Testimoni untuk Unduh &rarr;
                         </a>
                     @endif
+                @elseif(!$pd->transkrip_nilai)
+                    {{-- Tombol Unggah Transkrip Nilai (Menimpa Menunggu Penerbitan) --}}
+                    <button type="button" onclick="openUploadModal('{{ $pd->hashid }}', '{{ addslashes($pd->kegiatan->judul ?? '') }}')" class="fcc-btn-gold" style="padding:11px 16px;font-size:12.5px;text-decoration:none;justify-content:center;width:100%;border-radius:12px;font-weight:900;box-shadow:0 4px 14px rgba(255,200,26,0.35);display:inline-flex;align-items:center;gap:6px;border:none;cursor:pointer;">
+                        @include('components.icon', ['name' => 'upload', 'size' => 15]) Unggah Transkrip Nilai &rarr;
+                    </button>
                 @else
-                    <span style="display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;font-size:12px;width:100%;border-radius:12px;font-weight:800;background:#F1F5F9;color:#94A3B8;border:1.5px solid #CBD5E1;box-sizing:border-box;">
+                    {{-- Sudah upload transkrip, baru muncul Menunggu Penerbitan oleh Admin --}}
+                    <span style="display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;font-size:12px;width:100%;border-radius:12px;font-weight:800;background:#F1F5F9;color:#64748B;border:1.5px solid #CBD5E1;box-sizing:border-box;">
                         🔒 Menunggu Penerbitan oleh Admin
                     </span>
                 @endif
@@ -204,4 +226,132 @@
     </div>
     @endif
 </div>
+
+{{-- ═══ MODAL UPLOAD TRANSKRIP NILAI ═══════════════════════════════ --}}
+<div id="upload-transkrip-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;">
+    <div style="background:#FFFFFF;border-radius:24px;max-width:480px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.25);border:2px solid #131218;animation:modalZoomIn .2s cubic-bezier(.4,0,.2,1);">
+        {{-- Header Modal --}}
+        <div style="background:#131218;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #FFC81A;">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:10px;background:#FFC81A;display:flex;align-items:center;justify-content:center;color:#131218;flex-shrink:0;">
+                    @include('components.icon', ['name' => 'file-text', 'size' => 20])
+                </div>
+                <div>
+                    <h3 style="margin:0;color:#FFFFFF;font-size:16px;font-weight:900;">Unggah Transkrip Nilai</h3>
+                    <p id="upload-modal-judul" style="margin:2px 0 0;color:rgba(255,255,255,0.7);font-size:11.5px;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></p>
+                </div>
+            </div>
+            <button type="button" onclick="closeUploadModal()" style="background:rgba(255,255,255,0.1);border:none;border-radius:8px;color:#FFF;padding:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                @include('components.icon', ['name' => 'x', 'size' => 18])
+            </button>
+        </div>
+
+        {{-- Form Modal --}}
+        <form id="upload-transkrip-form" method="POST" enctype="multipart/form-data" style="padding:24px;">
+            @csrf
+            
+            <div style="margin-bottom:20px;">
+                <label style="display:block;font-size:13px;font-weight:800;color:#131218;margin-bottom:6px;">Pilih Berkas Transkrip Nilai</label>
+                <p style="margin:0 0 12px;font-size:11.5px;color:#64748B;line-height:1.45;">
+                    Unggah transkrip nilai akademik Anda dalam format <strong>PDF, JPG, JPEG, atau PNG</strong> (Maksimal 5MB). Sistem kami akan <strong>secara otomatis membaca dan mencocokkan nilai Anda</strong> untuk mempercepat proses verifikasi dan penerbitan sertifikat.
+                </p>
+
+                {{-- Custom File Upload Area --}}
+                <div id="file-drop-area" style="border:2px dashed #CBD5E1;border-radius:16px;padding:24px 16px;text-align:center;background:#F8FAFC;cursor:pointer;transition:all .2s;" onclick="document.getElementById('input-file-transkrip').click()" ondragover="event.preventDefault();this.style.borderColor='#FFC81A';this.style.background='#FFFDF5';" ondragleave="this.style.borderColor='#CBD5E1';this.style.background='#F8FAFC';" ondrop="handleFileDrop(event)">
+                    <input type="file" id="input-file-transkrip" name="transkrip_nilai" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleFileSelect(this)" required>
+                    
+                    <div style="width:48px;height:48px;border-radius:14px;background:#FFF;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 10px rgba(0,0,0,0.03);">
+                        @include('components.icon', ['name' => 'upload-cloud', 'size' => 24, 'style' => 'color:#FFC81A'])
+                    </div>
+                    <p id="file-name-display" style="margin:0 0 4px;font-size:13px;font-weight:800;color:#131218;">
+                        Klik untuk memilih berkas transkrip
+                    </p>
+                    <span id="file-size-display" style="font-size:11px;color:#94A3B8;font-weight:600;">
+                        atau seret &amp; lepas file ke sini (PDF/Gambar max 5MB)
+                    </span>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button type="button" onclick="closeUploadModal()" style="padding:10px 18px;font-size:13px;font-weight:800;border-radius:10px;border:1.5px solid #CBD5E1;background:#FFF;color:#64748B;cursor:pointer;">
+                    Batal
+                </button>
+                <button type="submit" id="btn-submit-transkrip" class="fcc-btn-gold" style="padding:10px 22px;font-size:13px;font-weight:900;border-radius:10px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(255,200,26,0.35);">
+                    @include('components.icon', ['name' => 'check', 'size' => 16]) Simpan &amp; Unggah
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+@keyframes modalZoomIn {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+</style>
+
+<script>
+function openUploadModal(hashid, judul) {
+    var modal = document.getElementById('upload-transkrip-modal');
+    var form = document.getElementById('upload-transkrip-form');
+    var judulText = document.getElementById('upload-modal-judul');
+    var nameDisp = document.getElementById('file-name-display');
+    var sizeDisp = document.getElementById('file-size-display');
+    var input = document.getElementById('input-file-transkrip');
+    
+    if (input) input.value = '';
+    if (nameDisp) nameDisp.innerHTML = 'Klik untuk memilih berkas transkrip';
+    if (sizeDisp) sizeDisp.innerHTML = 'atau seret &amp; lepas file ke sini (PDF/Gambar max 5MB)';
+    
+    if (judulText) judulText.innerText = judul;
+    if (form) {
+        form.action = "{{ url('peserta/sertifikat') }}/" + hashid + "/upload-transkrip";
+    }
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeUploadModal() {
+    var modal = document.getElementById('upload-transkrip-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+}
+
+function handleFileSelect(input) {
+    if (input.files && input.files[0]) {
+        showSelectedFileInfo(input.files[0]);
+    }
+}
+
+function handleFileDrop(e) {
+    e.preventDefault();
+    var dropArea = document.getElementById('file-drop-area');
+    if (dropArea) {
+        dropArea.style.borderColor = '#CBD5E1';
+        dropArea.style.background = '#F8FAFC';
+    }
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        var input = document.getElementById('input-file-transkrip');
+        input.files = e.dataTransfer.files;
+        showSelectedFileInfo(e.dataTransfer.files[0]);
+    }
+}
+
+function showSelectedFileInfo(file) {
+    var nameDisp = document.getElementById('file-name-display');
+    var sizeDisp = document.getElementById('file-size-display');
+    if (nameDisp) {
+        nameDisp.innerHTML = '<span style="color:#059669;">📄 ' + file.name + '</span>';
+    }
+    if (sizeDisp) {
+        var sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        sizeDisp.innerHTML = 'Ukuran: <strong>' + sizeMB + ' MB</strong> — Siap diunggah';
+    }
+}
+</script>
 @endsection

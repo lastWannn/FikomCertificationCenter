@@ -10,7 +10,8 @@ class Pendaftaran extends Model {
     protected $fillable = [
         'peserta_id','kegiatan_id','biaya_kegiatan_id',
         'tgl_daftar','status_pendaftaran','status_kehadiran',
-        'qr_token',  // FIX: tambah qr_token
+        'qr_token',
+        'transkrip_nilai',
     ];
     protected $casts = ['tgl_daftar' => 'datetime'];
 
@@ -25,4 +26,13 @@ class Pendaftaran extends Model {
     public function scopeMenungguVerifikasi(Builder $q) { return $q->where('status_pendaftaran','menunggu_verifikasi'); }
     public function getIsTerdaftarAttribute(): bool     { return $this->status_pendaftaran === 'terdaftar'; }
     public function getIsGratisAttribute(): bool        { return is_null($this->biaya_kegiatan_id); }
+
+    public function getTranskripUrlAttribute(): ?string
+    {
+        if (!$this->transkrip_nilai) return null;
+        if (str_starts_with($this->transkrip_nilai, 'http://') || str_starts_with($this->transkrip_nilai, 'https://')) {
+            return $this->transkrip_nilai;
+        }
+        return asset('storage/' . $this->transkrip_nilai);
+    }
 }

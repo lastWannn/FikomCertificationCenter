@@ -138,23 +138,12 @@
                         </td>
                         <td style="padding:14px 20px;text-align:center;vertical-align:middle;">
                             <div style="display:inline-flex;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap;">
-                                @if($belumDimulai)
-                                    <button type="button" disabled style="padding:6px 13px;font-size:12px;font-weight:800;background:#F1F5F9;color:#94A3B8;border:1.5px solid #CBD5E1;border-radius:20px;cursor:not-allowed;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;" title="Pelatihan belum dimulai">
-                                        @include('components.icon',['name'=>'clock','size'=>13]) Belum Dimulai
-                                    </button>
-                                @else
-                                    <button type="button" onclick="openNilaiModal('{{ $item->id }}', '{{ addslashes($item->peserta->nama ?? '') }}', {{ $item->nilai->toJson() }})"
-                                            style="padding:6px 13px;font-size:12px;font-weight:900;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;transition:all .18s;"
-                                            onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-                                        @include('components.icon',['name'=>'edit-3','size'=>13]) Input Nilai
-                                    </button>
-                                @endif
+                                <button type="button" onclick="openNilaiModal('{{ $item->id }}', '{{ addslashes($item->peserta->nama ?? '') }}', {{ $item->nilai->toJson() }}, '{{ $item->transkrip_url }}')"
+                                        style="padding:6px 13px;font-size:12px;font-weight:900;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;transition:all .18s;"
+                                        onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                    @include('components.icon',['name'=>'edit-3','size'=>13]) Input Nilai
+                                </button>
 
-                                <a href="{{ route('admin.cetak.penilaian', $item->hashid) }}" target="_blank"
-                                   style="padding:6px 13px;font-size:12px;font-weight:800;background:#F1F5F9;color:#131218;border:1.5px solid #CBD5E1;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;text-decoration:none;white-space:nowrap;transition:all .18s;"
-                                   onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#131218';this.style.borderColor='#CBD5E1';">
-                                    @include('components.icon',['name'=>'file-text','size'=>13]) Penilaian
-                                </a>
 
                                 @if($item->sertifikat)
                                     <a href="{{ route('admin.cetak.sertifikat', $item->sertifikat->hashid) }}" target="_blank"
@@ -188,79 +177,121 @@
     </div>
 </div>
 
-{{-- MODAL INPUT NILAI (Neo-Brutalist Glassmorphism) --}}
-<div id="nilai-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:560px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;">
+{{-- MODAL INPUT NILAI DENGAN PRATINJAU TRANSKRIP NILAI (Split 2-Column Neo-Brutalist) --}}
+<div id="nilai-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.7);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
+    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:26px 28px;max-width:1040px;width:96%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.35);max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;">
         
         {{-- Close button --}}
         <button type="button" onclick="document.getElementById('nilai-modal').style.display='none'" aria-label="Tutup" style="
-            position:absolute;top:20px;right:20px;width:32px;height:32px;
+            position:absolute;top:18px;right:20px;width:32px;height:32px;
             border:1.5px solid #131218;background:#FFC81A;cursor:pointer;color:#131218;
-            font-size:18px;font-weight:900;line-height:1;border-radius:10px;transition:all .18s;display:flex;align-items:center;justify-content:center;"
+            font-size:18px;font-weight:900;line-height:1;border-radius:10px;transition:all .18s;display:flex;align-items:center;justify-content:center;z-index:10;"
             onmouseover="this.style.transform='rotate(90deg)'"
             onmouseout="this.style.transform='rotate(0deg)'">&#215;</button>
 
-        <div style="margin-bottom:20px;border-bottom:2px solid #E5E7EB;padding-bottom:14px;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-                <span style="background:#131218;color:#FFC81A;font-size:10.5px;font-weight:900;padding:2px 8px;border-radius:6px;">EVALUASI PESERTA</span>
-                <h2 style="font-size:19px;font-weight:900;color:#131218;margin:0;">Input Nilai Peserta</h2>
+        {{-- Modal Header --}}
+        <div style="margin-bottom:18px;border-bottom:2px solid #E5E7EB;padding-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+                <span style="background:#131218;color:#FFC81A;font-size:10.5px;font-weight:900;padding:2px 8px;border-radius:6px;letter-spacing:0.5px;">EVALUASI NILAI</span>
+                <h2 style="font-size:18px;font-weight:900;color:#131218;margin:0;">Input Nilai &amp; Transkrip Peserta</h2>
             </div>
-            <p style="color:#64748B;font-size:12.5px;margin:0;font-weight:500;">Masukkan nilai modul materi untuk <strong id="peserta-name" style="color:#131218;">-</strong></p>
+            <p style="color:#64748B;font-size:12.5px;margin:0;font-weight:500;">Peserta: <strong id="peserta-name" style="color:#131218;font-size:13.5px;">-</strong></p>
         </div>
 
-        <form id="nilai-form" method="POST" action="">
-            @csrf
+        {{-- 2-COLUMN LAYOUT: TRANSCRIPT PREVIEW (LEFT) + MODULE SCORE FORM (RIGHT) --}}
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:22px;align-items:start;">
             
-            @if($jadwal->pelatihan && $jadwal->pelatihan->materi && $jadwal->pelatihan->materi->count() > 0)
-                <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;padding:16px;border-radius:16px;margin-bottom:20px;">
-                    @foreach($jadwal->pelatihan->materi as $index => $mat)
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:{{ $loop->last ? '0' : '12px' }};padding-bottom:{{ $loop->last ? '0' : '12px' }};border-bottom:{{ $loop->last ? 'none' : '1px solid #E2E8F0' }};">
-                        <div style="flex:1;padding-right:12px;">
-                            <p style="margin:0 0 3px;font-size:13.5px;font-weight:900;color:#131218;">{{ $mat->judul_materi }}</p>
-                            <p style="margin:0;font-size:11px;font-weight:700;color:#64748B;">⏱️ {{ $mat->jam_pelajaran }} Jam Pelajaran</p>
-                        </div>
-                        <div style="width:110px;">
-                            <input type="number" name="nilai[{{ $mat->id }}]" id="nilai-input-{{ $mat->id }}" min="0" max="100" placeholder="0 - 100" class="fcc-input" style="padding:9.5px 12px;font-size:14px;font-weight:900;text-align:center;width:100%;border-radius:10px;border:1.5px solid #131218;background:#FFFDF5;">
-                        </div>
-                    </div>
-                    @endforeach
+            {{-- KOLOM KIRI: PRATINJAU TRANSKRIP NILAI USER --}}
+            <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                    <span style="font-size:13px;font-weight:900;color:#131218;display:inline-flex;align-items:center;gap:6px;">
+                        📄 Lembar Transkrip Nilai
+                    </span>
+                    <a id="transkrip-open-tab" href="#" target="_blank" style="display:none;font-size:11.5px;font-weight:800;color:#2563EB;text-decoration:underline;">
+                        Buka di Tab Baru ↗
+                    </a>
                 </div>
-            @else
-                <div style="background:#FEF2F2;border:1.5px solid #FCA5A5;padding:16px;border-radius:14px;margin-bottom:20px;text-align:center;">
-                    <p style="margin:0;color:#EF4444;font-size:13px;font-weight:800;">Pelatihan ini belum memiliki modul materi. Silakan tambahkan materi pelatihan terlebih dahulu.</p>
-                </div>
-            @endif
 
-            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px;">
-                <button type="button" onclick="document.getElementById('nilai-modal').style.display='none'"
-                        style="padding:11px 22px;font-size:13px;font-weight:800;color:#64748B;background:#F1F5F9;border:1.5px solid #CBD5E1;border-radius:30px;cursor:pointer;transition:all .18s;"
-                        onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#CBD5E1';">
-                    Batal
-                </button>
-                <button type="submit"
-                        style="padding:11px 26px;font-size:13.5px;font-weight:900;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:30px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(255,200,26,0.35);transition:all .18s;"
-                        onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';"
-                        {{ (!$jadwal->pelatihan || !$jadwal->pelatihan->materi || $jadwal->pelatihan->materi->count() == 0) ? 'disabled' : '' }}>
-                    @include('components.icon',['name'=>'check','size'=>16]) Simpan Nilai
-                </button>
+                {{-- Box Iframe / Preview --}}
+                <div id="transkrip-frame-wrap" style="height:460px;border-radius:16px;border:1.5px solid #CBD5E1;background:#F8FAFC;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;">
+                    <iframe id="preview-transkrip-pdf" src="" style="display:none;width:100%;height:100%;border:none;"></iframe>
+                    <img id="preview-transkrip-img" src="" style="display:none;max-width:100%;max-height:100%;object-fit:contain;padding:8px;">
+                    
+                    <div id="preview-transkrip-empty" style="display:none;text-align:center;padding:24px;">
+                        <div style="width:48px;height:48px;border-radius:12px;background:#FEF3C7;color:#D97706;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                            @include('components.icon',['name'=>'alert-circle','size'=>24])
+                        </div>
+                        <p style="margin:0 0 4px;font-size:14px;font-weight:900;color:#131218;">Belum Ada Transkrip</p>
+                        <p style="margin:0;font-size:12px;color:#64748B;max-width:240px;line-height:1.4;">Peserta belum mengunggah dokumen transkrip nilai.</p>
+                    </div>
+                </div>
             </div>
-        </form>
+
+            {{-- KOLOM KANAN: FORM INPUT NILAI PER MODUL --}}
+            <div style="display:flex;flex-direction:column;">
+                <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+                    <span style="font-size:13px;font-weight:900;color:#131218;display:inline-flex;align-items:center;gap:6px;">
+                        ✏️ Input Nilai Modul / Materi
+                    </span>
+                    <span id="badge-auto-extract" style="display:none;font-size:11px;font-weight:800;color:#15803D;background:#DCFCE7;border:1px solid #86EFAC;padding:3px 10px;border-radius:12px;">
+                        ✨ Terisi Otomatis dari Transkrip
+                    </span>
+                </div>
+                
+                <form id="nilai-form" method="POST" action="" style="display:flex;flex-direction:column;">
+                    @csrf
+                    
+                    <div style="max-height:390px;overflow-y:auto;padding-right:4px;margin-bottom:18px;">
+                        @if($jadwal->pelatihan && $jadwal->pelatihan->materi && $jadwal->pelatihan->materi->count() > 0)
+                            <div style="background:#F8FAFC;border:1.5px solid #CBD5E1;padding:14px 18px;border-radius:16px;">
+                                @foreach($jadwal->pelatihan->materi as $index => $mat)
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:{{ $loop->last ? '0' : '12px' }};padding-bottom:{{ $loop->last ? '0' : '12px' }};border-bottom:{{ $loop->last ? 'none' : '1px solid #E2E8F0' }};">
+                                    <div style="flex:1;padding-right:12px;">
+                                        <p style="margin:0 0 2px;font-size:13px;font-weight:900;color:#131218;">{{ $mat->judul_materi }}</p>
+                                        <span style="font-size:10.5px;color:#64748B;font-weight:600;">⏱️ {{ $mat->jam_pelajaran }} JP</span>
+                                    </div>
+                                    <div style="width:95px;">
+                                        <input type="number" name="nilai[{{ $mat->id }}]" id="nilai-input-{{ $mat->id }}" min="0" max="100" placeholder="0 - 100" class="fcc-input" style="padding:8px 10px;font-size:14px;font-weight:900;text-align:center;width:100%;border-radius:10px;border:1.5px solid #131218;background:#FFF;">
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div style="background:#FEF2F2;border:1.5px solid #FCA5A5;padding:16px;border-radius:14px;text-align:center;">
+                                <p style="margin:0;color:#EF4444;font-size:13px;font-weight:800;">Pelatihan ini belum memiliki materi.</p>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:10px;border-top:1px solid #E5E7EB;">
+                        <button type="button" onclick="document.getElementById('nilai-modal').style.display='none'"
+                                style="padding:10px 18px;font-size:12.5px;font-weight:800;color:#64748B;background:#F1F5F9;border:1.5px solid #CBD5E1;border-radius:30px;cursor:pointer;transition:all .18s;"
+                                onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#CBD5E1';">
+                            Batal
+                        </button>
+                        <button type="submit"
+                                style="padding:10px 24px;font-size:13px;font-weight:900;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:30px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 14px rgba(255,200,26,0.35);transition:all .18s;"
+                                onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';" {{ (!$jadwal->pelatihan || !$jadwal->pelatihan->materi || $jadwal->pelatihan->materi->count() == 0) ? 'disabled' : '' }}>
+                            @include('components.icon',['name'=>'check','size'=>15]) Simpan Nilai
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    function openNilaiModal(pendaftaranId, namaPeserta, existingNilai) {
+    function openNilaiModal(pendaftaranId, namaPeserta, existingNilai, transkripUrl) {
         document.getElementById('peserta-name').innerText = namaPeserta;
         
-        // Atur URL form action
         const baseUrl = '{{ route('admin.pelatihan.point.index') }}';
         document.getElementById('nilai-form').action = baseUrl + '/{{ $jadwal->id }}/pendaftaran/' + pendaftaranId;
         
-        // Reset input fields
         const inputs = document.querySelectorAll('input[name^="nilai["]');
         inputs.forEach(input => input.value = '');
 
-        // Isi dengan nilai yang sudah ada (jika ada)
+        const autoBadge = document.getElementById('badge-auto-extract');
         if (existingNilai && existingNilai.length > 0) {
             existingNilai.forEach(n => {
                 const input = document.getElementById('nilai-input-' + n.materi_pelatihan_id);
@@ -268,6 +299,38 @@
                     input.value = Math.round(n.nilai);
                 }
             });
+            if (autoBadge) autoBadge.style.display = (transkripUrl && transkripUrl.trim() !== '') ? 'inline-block' : 'none';
+        } else {
+            if (autoBadge) autoBadge.style.display = 'none';
+        }
+
+        // Tampilkan Pratinjau Transkrip Nilai
+        const pdfFrame = document.getElementById('preview-transkrip-pdf');
+        const imgPreview = document.getElementById('preview-transkrip-img');
+        const emptyBox = document.getElementById('preview-transkrip-empty');
+        const openTabBtn = document.getElementById('transkrip-open-tab');
+
+        pdfFrame.style.display = 'none';
+        pdfFrame.src = '';
+        imgPreview.style.display = 'none';
+        imgPreview.src = '';
+        emptyBox.style.display = 'none';
+        openTabBtn.style.display = 'none';
+
+        if (transkripUrl && transkripUrl.trim() !== '') {
+            openTabBtn.href = transkripUrl;
+            openTabBtn.style.display = 'inline-block';
+            
+            const lower = transkripUrl.toLowerCase();
+            if (lower.includes('.pdf')) {
+                pdfFrame.src = transkripUrl;
+                pdfFrame.style.display = 'block';
+            } else {
+                imgPreview.src = transkripUrl;
+                imgPreview.style.display = 'block';
+            }
+        } else {
+            emptyBox.style.display = 'block';
         }
         
         document.getElementById('nilai-modal').style.display = 'flex';

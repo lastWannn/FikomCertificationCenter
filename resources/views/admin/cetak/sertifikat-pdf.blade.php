@@ -18,10 +18,8 @@
   @page { size: 297mm 210mm; margin: 0; }
   html, body {
     width: 297mm;
-    height: 210mm;
     margin: 0;
     padding: 0;
-    overflow: hidden;
     background: #FFFFFF;
     color: #0F172A;
     font-family: Arial, Helvetica, sans-serif;
@@ -34,6 +32,83 @@
     height: 210mm;
     overflow: hidden;
     background: #FFFFFF;
+  }
+  .sheet-page2 {
+    page-break-before: always;
+    background: #FFFFFF;
+    color: #131218;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  .page2-container {
+    width: 215mm;
+    margin: 0 auto;
+    padding-top: 14mm;
+  }
+  .page2-container .logo-header {
+    margin-bottom: 15px;
+  }
+  .page2-container .title-section {
+    margin-bottom: 15px;
+  }
+  .page2-container .title-section h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #131218;
+  }
+  .page2-container .title-section p {
+    margin: 0;
+    font-size: 12px;
+    color: #374151;
+  }
+  .page2-container .participant-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    color: #131218;
+  }
+  .page2-container .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    font-size: 13.5px;
+  }
+  .page2-container .score-table th,
+  .page2-container .score-table td {
+    border-bottom: 1px solid #131218;
+    padding: 7px 10px;
+    text-align: left;
+  }
+  .page2-container .score-table th {
+    font-weight: bold;
+    font-size: 13px;
+  }
+  .page2-container .text-center { text-align: center !important; }
+  .page2-container .text-right { text-align: right !important; }
+  .page2-container .footer-sig-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  .page2-container .footer-sig {
+    width: 50%;
+    vertical-align: top;
+    font-size: 12px;
+    color: #131218;
+  }
+  .page2-container .footer-sig p {
+    margin: 0 0 45px;
+    font-size: 12px;
+    color: #131218;
+    line-height: 1.4;
+  }
+  .page2-container .footer-sig .name {
+    font-weight: bold;
+    font-size: 13px;
+    color: #131218;
   }
   .custom-bg {
     position: absolute;
@@ -325,6 +400,104 @@
       <div class="sig2-name">{{ $ketuaNama }}</div>
       <div class="sig2-role">{{ $ketuaJabatan }}</div>
     </div>
+  </div>
+</div>
+
+{{-- ========================================================================= --}}
+{{-- HALAMAN 2: LEMBAR PENILAIAN / POINT PESERTA                             --}}
+{{-- ========================================================================= --}}
+@php
+    $pendaftaran = $sertifikat->pendaftaran;
+    $isPel = $pendaftaran->kegiatan->jenis_kegiatan === 'pelatihan';
+    if ($isPel) {
+        $jadwal = $pendaftaran->kegiatan->kegiatanPelatihan?->jadwalPelatihan;
+        $program = $jadwal?->pelatihan;
+        $labelProgram = 'POINT PESERTA PELATIHAN';
+        $labelMateri = 'Materi Pelatihan';
+        $materiList = $program?->materi ?? collect();
+    } else {
+        $jadwal = $pendaftaran->kegiatan->kegiatanSertifikasi?->jadwalSertifikasi;
+        $program = $jadwal?->sertifikasi;
+        $labelProgram = 'POINT PESERTA SERTIFIKASI';
+        $labelMateri = 'Modul Sertifikasi / Uji Kompetensi';
+        $materiList = $program?->materi ?? collect();
+    }
+    $tglPelaksanaan = $jadwal?->tgl_pelaksanaan ? \Carbon\Carbon::parse($jadwal->tgl_pelaksanaan)->translatedFormat('d F Y') : '-';
+    $activeTtd = \App\Models\TandaTangan::getAktif();
+    $avgScore = $pendaftaran->nilai->count() > 0 ? round($pendaftaran->nilai->avg('nilai'), 1) : null;
+@endphp
+
+<div class="sheet-page2">
+  <div class="page2-container">
+    <div class="logo-header">
+      @if(!empty($logoSrc))
+        <img src="{{ $logoSrc }}" style="height: 52px; width: auto; object-fit: contain;">
+      @elseif(file_exists(public_path('images/logo.png')))
+        <img src="{{ public_path('images/logo.png') }}" style="height: 52px; width: auto; object-fit: contain;">
+      @else
+        <div style="font-weight: bold; font-size: 14pt; color: #131218;">FCC UMI</div>
+      @endif
+    </div>
+
+    <div class="title-section">
+      <h3>{{ $labelProgram }} <span style="font-weight: normal; color: #6B7280; font-size: 14px; text-transform: none;">FIKOM Certification Center</span></h3>
+      <p>Program: <strong>{{ $program->judul ?? $pendaftaran->kegiatan->judul ?? '-' }}</strong> | Pelaksanaan: {{ $tglPelaksanaan }}</p>
+    </div>
+
+    <div class="participant-name">
+      NAMA PESERTA: {{ $pendaftaran->peserta->nama ?? '-' }}
+    </div>
+
+    <table class="score-table">
+      <thead>
+        <tr>
+          <th style="width: 8%; text-align: center;">No</th>
+          <th>{{ $labelMateri }}</th>
+          <th class="text-center" style="width: 25%;">Point / Nilai</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if($materiList->count() > 0)
+          @foreach($materiList as $index => $mat)
+            @php
+              $nilaiObj = $isPel
+                  ? $pendaftaran->nilai->where('materi_pelatihan_id', $mat->id)->first()
+                  : $pendaftaran->nilai->where('materi_sertifikasi_id', $mat->id)->first();
+              $nilai = $nilaiObj ? $nilaiObj->nilai : null;
+            @endphp
+            <tr>
+              <td style="text-align: center;">{{ $index + 1 }}</td>
+              <td><strong>{{ $mat->judul_materi }}</strong></td>
+              <td class="text-center">{{ $nilai !== null ? round($nilai) : '-' }}</td>
+            </tr>
+          @endforeach
+
+          @if($avgScore !== null)
+          <tr style="background: #F8FAFC; font-weight: bold;">
+            <td colspan="2" style="text-align: right; padding-right: 16px;">RATA-RATA NILAI AKHIR:</td>
+            <td class="text-center">{{ $avgScore }}</td>
+          </tr>
+          @endif
+        @else
+          <tr>
+            <td colspan="3" class="text-center" style="padding: 16px; color: #94A3B8;">Belum ada modul / materi terdaftar untuk kegiatan ini.</td>
+          </tr>
+        @endif
+      </tbody>
+    </table>
+
+    <table class="footer-sig-table">
+      <tr>
+        <td class="footer-sig">
+          <p>Makassar, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>{{ $activeTtd->ketua_jabatan ?? 'Ketua Unit FCC UMI' }}</p>
+          <div class="name">{{ $activeTtd->ketua_nama ?? 'Abdul Rachman Manga\'' }}</div>
+        </td>
+        <td class="footer-sig" style="text-align: right;">
+          <p><br>{{ $activeTtd->proktor_jabatan ?? 'Proktor / Instruktur Ujian' }}</p>
+          <div class="name">{{ $activeTtd->proktor_nama ?? 'Ir. Abdul Rachman Manga\', S.Kom., M.T.' }}</div>
+        </td>
+      </tr>
+    </table>
   </div>
 </div>
 </body>
