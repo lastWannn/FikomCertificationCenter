@@ -681,7 +681,10 @@ window.handleRegisterFormSubmit = async function(e) {
     const pwInp = document.getElementById('reg-pw-inp');
     const pwConfirmInp = document.getElementById('reg-pw-confirm-inp');
     const errorContainer = document.getElementById('registerErrorAlert');
-    if (errorContainer) errorContainer.style.display = 'none';
+    if (errorContainer) {
+        errorContainer.style.display = 'none';
+        errorContainer.innerHTML = '';
+    }
 
     // Quick client validation
     if (pwInp && pwConfirmInp && pwInp.value !== pwConfirmInp.value) {
@@ -694,19 +697,12 @@ window.handleRegisterFormSubmit = async function(e) {
 
     const email = emailInp?.value || '';
 
-    // Buka Modal OTP Secara Instan dalam 1x Klik
-    if (email) {
-        document.getElementById('otpEmailDisplay').innerText = email;
-        document.getElementById('otpEmailInput').value = email;
-        document.getElementById('otpModal').style.display = 'flex';
-        if (typeof startRegisterOtpCountdown === 'function') startRegisterOtpCountdown(60);
-        const firstBox = document.querySelector('.otp-box');
-        if (firstBox) firstBox.focus();
-    }
-
     const btn = document.getElementById('btnSubmit');
     const oriText = btn ? btn.innerHTML : '';
-    if (btn) btn.disabled = true;
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px;"><svg style="animation:spin 1s linear infinite;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path></svg> Mendaftarkan...</span>`;
+    }
 
     try {
         const formData = new FormData(form);
@@ -724,16 +720,18 @@ window.handleRegisterFormSubmit = async function(e) {
             data = await res.json();
         } catch(jsonErr) {}
 
-        if (data.require_otp) {
-            if (data.email) {
-                document.getElementById('otpEmailDisplay').innerText = data.email;
-                document.getElementById('otpEmailInput').value = data.email;
+        if (res.ok && data.require_otp) {
+            const targetEmail = data.email || email;
+            document.getElementById('otpEmailDisplay').innerText = targetEmail;
+            document.getElementById('otpEmailInput').value = targetEmail;
+            document.getElementById('otpModal').style.display = 'flex';
+            if (typeof startRegisterOtpCountdown === 'function') startRegisterOtpCountdown(60);
+            const firstBox = document.querySelector('.otp-box');
+            if (firstBox) {
+                firstBox.value = '';
+                firstBox.focus();
             }
         } else {
-            // Jika ada error validasi di server (e.g. email sudah terdaftar), tutup modal & tampilkan error
-            document.getElementById('otpModal').style.display = 'none';
-            if (typeof regOtpTimerInterval !== 'undefined' && regOtpTimerInterval) clearInterval(regOtpTimerInterval);
-
             if (data.errors) {
                 const msg = Object.values(data.errors).flat().join('<br>');
                 if (errorContainer) {
@@ -750,13 +748,23 @@ window.handleRegisterFormSubmit = async function(e) {
                     alert(data.message);
                 }
             } else {
-                alert('Gagal memproses pendaftaran. Silakan periksa kembali data Anda.');
+                const msg = 'Gagal memproses pendaftaran. Silakan periksa kembali data Anda.';
+                if (errorContainer) {
+                    errorContainer.innerHTML = msg;
+                    errorContainer.style.display = 'block';
+                } else {
+                    alert(msg);
+                }
             }
         }
     } catch (err) {
-        document.getElementById('otpModal').style.display = 'none';
-        if (typeof regOtpTimerInterval !== 'undefined' && regOtpTimerInterval) clearInterval(regOtpTimerInterval);
-        alert('Terjadi kesalahan koneksi/sistem: ' + (err.message || err));
+        const msg = 'Terjadi kesalahan koneksi/sistem: ' + (err.message || err);
+        if (errorContainer) {
+            errorContainer.innerHTML = msg;
+            errorContainer.style.display = 'block';
+        } else {
+            alert(msg);
+        }
     } finally {
         if (btn) {
             btn.innerHTML = oriText;

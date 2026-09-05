@@ -27,7 +27,7 @@ class OtpService
         \Illuminate\Support\Facades\Log::info("Kode OTP untuk [{$email}] : {$otp}");
 
         // Dispatch email OTP ke background OS process (0 ms latency untuk pengguna)
-        \App\Helpers\AsyncMail::dispatch('otp', $email, "{$otp}|{$type}");
+        \App\Helpers\AsyncMail::dispatch('otp', $email, "{$otp}:{$type}");
 
         return $otp;
     }
