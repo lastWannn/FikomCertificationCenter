@@ -50,7 +50,7 @@ class SystemEmailCommand extends Command
                     break;
 
                 case 'otp':
-                    $parts = explode('|', $extra ?? '');
+                    $parts = preg_split('/[:|]/', $extra ?? '');
                     $otp   = $parts[0] ?? '';
                     $tType = $parts[1] ?? 'register';
                     if ($id && $otp) {
