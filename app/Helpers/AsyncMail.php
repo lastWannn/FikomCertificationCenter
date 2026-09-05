@@ -21,10 +21,17 @@ class AsyncMail
             $canPopen  = function_exists('popen') && !in_array('popen', $disabledFunctions, true);
             $canExec   = function_exists('exec') && !in_array('exec', $disabledFunctions, true);
 
-            // Deteksi path binary PHP yang valid (PHP_BINARY lebih akurat daripada sekadar string 'php' pada cPanel/Linux)
-            $phpBinary = defined('PHP_BINARY') && PHP_BINARY && @is_executable(PHP_BINARY)
-                ? PHP_BINARY
-                : 'php';
+            // Deteksi path binary PHP CLI yang valid (hindari memanggil php-fpm/lsphp saat di web server)
+            $phpBinary = 'php';
+            if (defined('PHP_BINDIR') && @is_executable(PHP_BINDIR . '/php')) {
+                $phpBinary = PHP_BINDIR . '/php';
+            } elseif (@is_executable('/usr/bin/php')) {
+                $phpBinary = '/usr/bin/php';
+            } elseif (@is_executable('/usr/local/bin/php')) {
+                $phpBinary = '/usr/local/bin/php';
+            } elseif (defined('PHP_BINARY') && !str_contains(PHP_BINARY, 'fpm') && !str_contains(PHP_BINARY, 'cgi') && @is_executable(PHP_BINARY)) {
+                $phpBinary = PHP_BINARY;
+            }
 
             $artisan  = base_path('artisan');
             $typeArg  = escapeshellarg($type);
