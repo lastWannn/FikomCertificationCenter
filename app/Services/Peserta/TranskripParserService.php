@@ -156,6 +156,12 @@ class TranskripParserService
             if (!empty(trim($text))) {
                 return $text;
             }
+        } elseif (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+            // Engine 1.2: Local Offline Image OCR (tesseract.js via Node)
+            $text = $this->extractImageWithNode($filePath);
+            if (!empty(trim($text))) {
+                return $text;
+            }
         }
 
         // Engine 2: AI Vision Fallback (Gemini Flash) jika berkas gambar atau PDF scan tanpa layer teks
@@ -165,6 +171,55 @@ class TranskripParserService
             if (!empty(trim($aiText))) {
                 return $aiText;
             }
+        }
+
+        return '';
+    }
+
+    /**
+     * Ekstraksi teks gambar (JPG, JPEG, PNG) menggunakan OCR Node.js lokal (tesseract.js).
+     */
+    protected function extractImageWithNode(string $filePath): string
+    {
+        $scriptPath = base_path('resources/scripts/parse_image.cjs');
+        if (!file_exists($scriptPath)) {
+            Log::warning("TranskripParserService: Script OCR gambar {$scriptPath} tidak ditemukan.");
+            return '';
+        }
+
+        // Cek apakah node_modules/tesseract.js terinstall
+        if (!is_dir(base_path('node_modules/tesseract.js')) && !file_exists(base_path('node_modules/tesseract.js/package.json'))) {
+            Log::warning("TranskripParserService: node_modules/tesseract.js belum terinstall. Silakan jalankan 'npm install' di terminal.");
+            return '';
+        }
+
+        $nodePath = $this->findNodeBinary();
+        if (!$nodePath) {
+            Log::warning("TranskripParserService: Node.js tidak ditemukan di sistem untuk OCR gambar.");
+            return '';
+        }
+
+        try {
+            $process = new Process([$nodePath, $scriptPath, $filePath]);
+            $process->setTimeout(30);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                Log::warning("TranskripParserService: Node image OCR script failed: " . $process->getErrorOutput());
+                return '';
+            }
+
+            $output = $process->getOutput();
+            if (preg_match('/\{[\s\S]*\}/', $output, $matches)) {
+                $data = json_decode($matches[0], true);
+                if (isset($data['status']) && $data['status'] === 'success') {
+                    return $data['text'] ?? '';
+                } elseif (!empty($data['message'])) {
+                    Log::warning("TranskripParserService: Image OCR returned error: " . $data['message']);
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning("TranskripParserService: Image OCR execution error: " . $e->getMessage());
         }
 
         return '';
