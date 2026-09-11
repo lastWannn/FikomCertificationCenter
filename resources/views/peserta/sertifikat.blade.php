@@ -251,23 +251,23 @@
             @csrf
             
             <div style="margin-bottom:20px;">
-                <label style="display:block;font-size:13px;font-weight:800;color:#131218;margin-bottom:6px;">Pilih Berkas Transkrip Nilai</label>
+                <label style="display:block;font-size:13px;font-weight:800;color:#131218;margin-bottom:6px;">Pilih Berkas Transkrip Nilai (PDF)</label>
                 <p style="margin:0 0 12px;font-size:11.5px;color:#64748B;line-height:1.45;">
-                    Unggah transkrip nilai akademik Anda dalam format <strong>PDF, JPG, JPEG, atau PNG</strong> (Maksimal 5MB). Sistem kami akan <strong>secara otomatis membaca dan mencocokkan nilai Anda</strong> untuk mempercepat proses verifikasi dan penerbitan sertifikat.
+                    Unggah transkrip nilai akademik / score report Anda dalam format dokumen resmi <strong>PDF</strong> (Maksimal 5MB). Sistem kami akan <strong>secara otomatis membaca dan mencocokkan nilai Anda</strong> untuk mempercepat proses verifikasi dan penerbitan sertifikat.
                 </p>
 
                 {{-- Custom File Upload Area --}}
                 <div id="file-drop-area" style="border:2px dashed #CBD5E1;border-radius:16px;padding:24px 16px;text-align:center;background:#F8FAFC;cursor:pointer;transition:all .2s;" onclick="document.getElementById('input-file-transkrip').click()" ondragover="event.preventDefault();this.style.borderColor='#FFC81A';this.style.background='#FFFDF5';" ondragleave="this.style.borderColor='#CBD5E1';this.style.background='#F8FAFC';" ondrop="handleFileDrop(event)">
-                    <input type="file" id="input-file-transkrip" name="transkrip_nilai" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleFileSelect(this)" required>
+                    <input type="file" id="input-file-transkrip" name="transkrip_nilai" accept=".pdf,application/pdf" style="display:none;" onchange="handleFileSelect(this)" required>
                     
                     <div style="width:48px;height:48px;border-radius:14px;background:#FFF;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 10px rgba(0,0,0,0.03);">
                         @include('components.icon', ['name' => 'upload-cloud', 'size' => 24, 'style' => 'color:#FFC81A'])
                     </div>
                     <p id="file-name-display" style="margin:0 0 4px;font-size:13px;font-weight:800;color:#131218;">
-                        Klik untuk memilih berkas transkrip
+                        Klik untuk memilih berkas transkrip (PDF)
                     </p>
                     <span id="file-size-display" style="font-size:11px;color:#94A3B8;font-weight:600;">
-                        atau seret &amp; lepas file ke sini (PDF/Gambar max 5MB)
+                        atau seret &amp; lepas file ke sini (Format Dokumen PDF max 5MB)
                     </span>
                 </div>
             </div>
@@ -301,8 +301,8 @@ function openUploadModal(hashid, judul) {
     var input = document.getElementById('input-file-transkrip');
     
     if (input) input.value = '';
-    if (nameDisp) nameDisp.innerHTML = 'Klik untuk memilih berkas transkrip';
-    if (sizeDisp) sizeDisp.innerHTML = 'atau seret &amp; lepas file ke sini (PDF/Gambar max 5MB)';
+    if (nameDisp) nameDisp.innerHTML = 'Klik untuk memilih berkas transkrip (PDF)';
+    if (sizeDisp) sizeDisp.innerHTML = 'atau seret &amp; lepas file ke sini (Format Dokumen PDF max 5MB)';
     
     if (judulText) judulText.innerText = judul;
     if (form) {

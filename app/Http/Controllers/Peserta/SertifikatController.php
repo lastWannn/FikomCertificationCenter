@@ -77,11 +77,11 @@ class SertifikatController extends Controller
         }
 
         $request->validate([
-            'transkrip_nilai' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'transkrip_nilai' => 'required|file|mimes:pdf|max:5120',
         ], [
             'transkrip_nilai.required' => 'Silakan pilih berkas transkrip nilai Anda.',
             'transkrip_nilai.file'     => 'Berkas harus berupa file yang valid.',
-            'transkrip_nilai.mimes'    => 'Format berkas harus berupa PDF, JPG, JPEG, atau PNG.',
+            'transkrip_nilai.mimes'    => 'Format berkas harus berupa dokumen resmi PDF (.pdf).',
             'transkrip_nilai.max'      => 'Ukuran berkas transkrip nilai maksimal 5MB.',
         ]);
 

@@ -27,7 +27,17 @@ class TranskripParserService
             ];
         }
 
-        // 1. Ekstraksi teks dari berkas (PDF atau Gambar)
+        $ext = strtolower(pathinfo($absoluteFilePath, PATHINFO_EXTENSION));
+        if ($ext !== 'pdf') {
+            return [
+                'success' => false,
+                'message' => 'Format berkas tidak didukung. Harap unggah dokumen resmi PDF (.pdf).',
+                'matched_count' => 0,
+                'matched' => [],
+            ];
+        }
+
+        // 1. Ekstraksi teks dari berkas PDF
         $text = $this->extractTextFromFile($absoluteFilePath);
 
         if (empty(trim($text))) {
@@ -130,96 +140,33 @@ class TranskripParserService
         return [
             'success'       => count($matchedResults) > 0,
             'message'       => count($matchedResults) > 0
-                ? count($matchedResults) . ' nilai materi berhasil terdeteksi otomatis dari transkrip.'
-                : 'Transkrip terbaca namun nama mata kuliah belum ada yang cocok dengan materi kegiatan.',
+                ? count($matchedResults) . ' nilai materi berhasil terdeteksi otomatis dari transkrip PDF.'
+                : 'Transkrip PDF terbaca namun nama modul belum ada yang cocok dengan materi kegiatan.',
             'matched_count' => count($matchedResults),
             'matched'       => $matchedResults,
         ];
     }
 
     /**
-     * Ekstraksi teks dari berkas (PDF via Node parser / fallback PHP / AI fallback).
+     * Ekstraksi teks dari berkas PDF (Node parser lokal / fallback native PHP).
      */
     public function extractTextFromFile(string $filePath): string
     {
         $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-
-        if ($ext === 'pdf') {
-            // Engine 1: Local High-Speed Node.js Parser (pdf-parse)
-            $text = $this->extractPdfWithNode($filePath);
-            if (!empty(trim($text))) {
-                return $text;
-            }
-
-            // Engine 1.1: Native PHP Stream Fallback
-            $text = $this->extractPdfWithPhpStream($filePath);
-            if (!empty(trim($text))) {
-                return $text;
-            }
-        } elseif (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
-            // Engine 1.2: Local Offline Image OCR (tesseract.js via Node)
-            $text = $this->extractImageWithNode($filePath);
-            if (!empty(trim($text))) {
-                return $text;
-            }
-        }
-
-        // Engine 2: AI Vision Fallback (Gemini Flash) jika berkas gambar atau PDF scan tanpa layer teks
-        $apiKey = env('GEMINI_API_KEY');
-        if (!empty($apiKey)) {
-            $aiText = $this->extractWithGeminiVision($filePath, $apiKey);
-            if (!empty(trim($aiText))) {
-                return $aiText;
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     * Ekstraksi teks gambar (JPG, JPEG, PNG) menggunakan OCR Node.js lokal (tesseract.js).
-     */
-    protected function extractImageWithNode(string $filePath): string
-    {
-        $scriptPath = base_path('resources/scripts/parse_image.cjs');
-        if (!file_exists($scriptPath)) {
-            Log::warning("TranskripParserService: Script OCR gambar {$scriptPath} tidak ditemukan.");
+        if ($ext !== 'pdf') {
             return '';
         }
 
-        // Cek apakah node_modules/tesseract.js terinstall
-        if (!is_dir(base_path('node_modules/tesseract.js')) && !file_exists(base_path('node_modules/tesseract.js/package.json'))) {
-            Log::warning("TranskripParserService: node_modules/tesseract.js belum terinstall. Silakan jalankan 'npm install' di terminal.");
-            return '';
+        // Engine 1: Local High-Speed Node.js Parser (pdf-parse)
+        $text = $this->extractPdfWithNode($filePath);
+        if (!empty(trim($text))) {
+            return $text;
         }
 
-        $nodePath = $this->findNodeBinary();
-        if (!$nodePath) {
-            Log::warning("TranskripParserService: Node.js tidak ditemukan di sistem untuk OCR gambar.");
-            return '';
-        }
-
-        try {
-            $process = new Process([$nodePath, $scriptPath, $filePath]);
-            $process->setTimeout(30);
-            $process->run();
-
-            if (!$process->isSuccessful()) {
-                Log::warning("TranskripParserService: Node image OCR script failed: " . $process->getErrorOutput());
-                return '';
-            }
-
-            $output = $process->getOutput();
-            if (preg_match('/\{[\s\S]*\}/', $output, $matches)) {
-                $data = json_decode($matches[0], true);
-                if (isset($data['status']) && $data['status'] === 'success') {
-                    return $data['text'] ?? '';
-                } elseif (!empty($data['message'])) {
-                    Log::warning("TranskripParserService: Image OCR returned error: " . $data['message']);
-                }
-            }
-        } catch (\Throwable $e) {
-            Log::warning("TranskripParserService: Image OCR execution error: " . $e->getMessage());
+        // Engine 2: Native PHP Stream Fallback
+        $text = $this->extractPdfWithPhpStream($filePath);
+        if (!empty(trim($text))) {
+            return $text;
         }
 
         return '';
