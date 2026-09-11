@@ -49,16 +49,18 @@
         <div class="hero-grid-layout">
             
             {{-- Left Column: Clean Typography & CTAs --}}
-            <div style="max-width:660px;">
+            <div class="hero-left-col" style="max-width:720px;">
 
                 {{-- Headline --}}
-                <h1 style="color:#FFFFFF;font-weight:900;line-height:1.15;letter-spacing:-1px;">
-                    Dapatkan <span style="color:#FFC81A;">Sertifikasi Resmi</span> &amp; Gelar Kompetensi Berstandar Industri
+                <h1 style="color:#FFFFFF;font-weight:900;line-height:1.18;letter-spacing:-0.8px;text-wrap:balance;">
+                    Dapatkan <span style="color:#FFC81A;">Sertifikat Resmi</span><br class="hero-br-desktop"/>
+                    &amp; Gelar Kompetensi Berstandar<br class="hero-br-desktop"/>
+                    Nasional dan Internasional
                 </h1>
 
                 {{-- Subtitle --}}
                 <p style="color:rgba(255,255,255,0.85);max-width:600px;font-size:15px;line-height:1.65;margin-top:14px;">
-                    Platform pelatihan dan sertifikasi kompetensi terpercaya di Fakultas Ilmu Komputer UMI. Raih gelar profesi serta sertifikat resmi berstandar industri yang <strong style="color:#FFF;">berlaku seumur hidup</strong> untuk menunjang karir Anda.
+                    Platform pelatihan dan sertifikasi kompetensi terpercaya di Fakultas Ilmu Komputer UMI. Raih gelar profesi serta sertifikat resmi berstandar nasional dan internasional yang <strong style="color:#FFF;">berlaku seumur hidup</strong> untuk menunjang karir Anda.
                 </p>
 
                 {{-- Action Buttons --}}
@@ -99,7 +101,7 @@
 
                         {{-- Floating Badge 1: Top Right Trust Tag --}}
                         <div class="hero-badge-top">
-                            <span>Standar BNSP &amp; Industri</span>
+                            <span>Standar Nasional dan Internasional</span>
                         </div>
 
                         {{-- Floating Badge 2: Bottom Left Verification Badge --}}
@@ -288,7 +290,7 @@
                 FIKOM Certification Center (FCC) adalah unit pelaksana di bawah Fakultas Ilmu Komputer Universitas Muslim Indonesia yang menyelenggarakan program pelatihan dan sertifikasi kompetensi bagi mahasiswa dan masyarakat umum.
             </p>
             @foreach([
-                'Terakreditasi oleh lembaga sertifikasi nasional (BNSP)',
+                'Terakreditasi oleh lembaga sertifikasi nasional dan internasional',
                 'Kurikulum diperbarui bersama mitra industri setiap semester',
                 'Sertifikat diakui oleh perusahaan dan institusi mitra FCC',
             ] as $item)
@@ -312,7 +314,7 @@
         {{-- Right Feature Cards --}}
         <div class="rr" style="display:flex;flex-direction:column;gap:16px;">
             @foreach([
-                ['award',    'Sertifikasi Berstandar BNSP',  'Program sertifikasi yang diakui secara nasional sesuai standar BNSP dan mitra resmi.'],
+                ['award',    'Sertifikasi Berstandar Nasional dan Internasional',  'Program sertifikasi yang diakui secara resmi sesuai standar nasional dan internasional.'],
                 ['book-open','Kurikulum Berbasis Industri',   'Materi dirancang bersama praktisi dan diselaraskan kebutuhan industri digital terkini.'],
                 ['users',    'Instruktur Berpengalaman',      'Diasuh dosen berpengalaman dan profesional bidang teknologi informasi.'],
             ] as [$ic,$t,$d])
@@ -635,6 +637,12 @@
 </section>
 
 <style>
+    .hero-br-desktop { display: none; }
+    @media (min-width: 1024px) {
+        .hero-br-desktop { display: inline; }
+        .hero-grid-layout { grid-template-columns: 1.25fr 0.75fr !important; gap: 48px !important; }
+        [data-hero] h1 { font-size: clamp(30px, 3.3vw, 44px) !important; line-height: 1.18 !important; }
+    }
     .faq-item.faq-open {
         border-color: #FFC81A !important;
         background: #FFFFFF !important;

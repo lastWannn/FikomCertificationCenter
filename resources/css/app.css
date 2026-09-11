@@ -2037,6 +2037,10 @@ body {
     margin-bottom: 12px;
 }
 
+.hero-br-desktop {
+    display: none;
+}
+
 [data-hero] p {
     font-size: 14px;
     margin-bottom: 20px;
@@ -2436,8 +2440,8 @@ body {
 @media (min-width: 1024px) {
     .hero-grid-layout {
         display: grid;
-        grid-template-columns: 1.15fr 0.85fr;
-        gap: 56px;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 48px;
     }
 
     [data-hero] {
@@ -2446,7 +2450,14 @@ body {
     }
 
     [data-hero] h1 {
-        font-size: clamp(34px, 4.3vw, 56px);
+        font-size: clamp(30px, 3.3vw, 44px);
+        line-height: 1.18;
+        letter-spacing: -0.8px;
+        text-wrap: balance;
+    }
+
+    .hero-br-desktop {
+        display: inline;
     }
 
     .hero-model-section {
