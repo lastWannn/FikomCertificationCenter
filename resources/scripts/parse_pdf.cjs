@@ -3,7 +3,17 @@ console.warn = () => {};
 
 const fs = require('fs');
 const path = require('path');
-const { PDFParse } = require('pdf-parse');
+
+let pkg;
+try {
+    pkg = require('pdf-parse');
+} catch (e) {
+    console.log(JSON.stringify({
+        status: 'error',
+        message: "Module 'pdf-parse' belum terinstall di node_modules. Silakan jalankan 'npm install' di terminal proyek."
+    }));
+    process.exit(1);
+}
 
 async function main() {
     const filePath = process.argv[2];
@@ -20,13 +30,28 @@ async function main() {
 
     try {
         const dataBuffer = fs.readFileSync(resolvedPath);
-        const parser = new PDFParse(new Uint8Array(dataBuffer));
-        const result = await parser.getText();
+        let text = '';
+        let pages = 1;
+
+        if (pkg.PDFParse) {
+            // pdf-parse v2+
+            const parser = new pkg.PDFParse(new Uint8Array(dataBuffer));
+            const result = await parser.getText();
+            text = result.text || '';
+            pages = result.total || 1;
+        } else if (typeof pkg === 'function') {
+            // pdf-parse v1.x
+            const result = await pkg(dataBuffer);
+            text = result.text || '';
+            pages = result.numpages || 1;
+        } else {
+            throw new Error('Format library pdf-parse tidak dikenali.');
+        }
 
         console.log(JSON.stringify({
             status: 'success',
-            text: result.text || '',
-            pages: result.total || 1
+            text: text,
+            pages: pages
         }));
     } catch (err) {
         console.log(JSON.stringify({

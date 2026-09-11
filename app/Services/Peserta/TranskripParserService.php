@@ -177,22 +177,37 @@ class TranskripParserService
     {
         $scriptPath = base_path('resources/scripts/parse_pdf.cjs');
         if (!file_exists($scriptPath)) {
+            Log::warning("TranskripParserService: Script {$scriptPath} tidak ditemukan.");
             return '';
+        }
+
+        // Cek apakah node_modules/pdf-parse terinstall
+        if (!is_dir(base_path('node_modules/pdf-parse')) && !file_exists(base_path('node_modules/pdf-parse/package.json'))) {
+            Log::warning("TranskripParserService: node_modules/pdf-parse belum terinstall di laptop ini. Silakan jalankan 'npm install' di terminal.");
         }
 
         // Cari executable node
         $nodePath = $this->findNodeBinary();
         if (!$nodePath) {
+            Log::warning("TranskripParserService: Node.js tidak ditemukan di sistem.");
             return '';
         }
 
         try {
             $process = new Process([$nodePath, $scriptPath, $filePath]);
-            $process->setTimeout(10);
+            $process->setTimeout(15);
             $process->run();
 
             if (!$process->isSuccessful()) {
-                Log::warning("TranskripParserService: Node script failed: " . $process->getErrorOutput());
+                Log::warning("TranskripParserService: Node script failed (exit code {$process->getExitCode()}): " . $process->getErrorOutput());
+                // Cek jika error output berupa json
+                $out = $process->getOutput();
+                if (preg_match('/\{[\s\S]*\}/', $out, $matches)) {
+                    $errData = json_decode($matches[0], true);
+                    if (!empty($errData['message'])) {
+                        Log::warning("TranskripParserService: Node parser message: " . $errData['message']);
+                    }
+                }
                 return '';
             }
 
@@ -202,6 +217,8 @@ class TranskripParserService
                 $data = json_decode($matches[0], true);
                 if (isset($data['status']) && $data['status'] === 'success') {
                     return $data['text'] ?? '';
+                } elseif (!empty($data['message'])) {
+                    Log::warning("TranskripParserService: Node parser returned error: " . $data['message']);
                 }
             }
         } catch (\Throwable $e) {
@@ -212,16 +229,61 @@ class TranskripParserService
     }
 
     /**
-     * Fallback pencarian path binary Node.js
+     * Fallback pencarian path binary Node.js lintas OS (Windows, Mac, Linux).
      */
     protected function findNodeBinary(): ?string
     {
+        // 1. Coba ExecutableFinder dari Symfony (bawaan Laravel, cek PATH lintas OS secara dinamis)
+        if (class_exists(\Symfony\Component\Process\ExecutableFinder::class)) {
+            $finder = new \Symfony\Component\Process\ExecutableFinder();
+            $node = $finder->find('node');
+            if ($node && (file_exists($node) || is_executable($node))) {
+                return $node;
+            }
+        }
+
+        // 2. Jika sistem operasi adalah Windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $winCandidates = array_filter([
+                'C:\\Program Files\\nodejs\\node.exe',
+                'C:\\Program Files (x86)\\nodejs\\node.exe',
+                getenv('APPDATA') ? getenv('APPDATA') . '\\npm\\node.cmd' : null,
+                getenv('LOCALAPPDATA') ? getenv('LOCALAPPDATA') . '\\Programs\\node\\node.exe' : null,
+            ]);
+
+            foreach ($winCandidates as $cand) {
+                if (file_exists($cand)) {
+                    return $cand;
+                }
+            }
+
+            $where = trim((string)@shell_exec('where node.exe 2>NUL'));
+            if (!empty($where)) {
+                $lines = explode("\n", $where);
+                $first = trim($lines[0]);
+                if (file_exists($first)) {
+                    return $first;
+                }
+            }
+
+            return 'node';
+        }
+
+        // 3. Jika Unix / macOS / Linux
         $candidates = [
-            '/Users/andi.ikhlass/.nvm/versions/node/v20.19.5/bin/node',
             '/usr/local/bin/node',
             '/opt/homebrew/bin/node',
             '/usr/bin/node',
         ];
+
+        // Cari versi Node di direktori NVM user aktif
+        $home = getenv('HOME') ?: ('/Users/' . (getenv('USER') ?: ''));
+        if (!empty($home) && is_dir("$home/.nvm/versions/node")) {
+            $versions = @glob("$home/.nvm/versions/node/*/bin/node");
+            if (!empty($versions)) {
+                $candidates[] = end($versions);
+            }
+        }
 
         foreach ($candidates as $cand) {
             if (file_exists($cand) && is_executable($cand)) {
@@ -229,12 +291,12 @@ class TranskripParserService
             }
         }
 
-        $which = trim((string)shell_exec('which node 2>/dev/null'));
+        $which = trim((string)@shell_exec('which node 2>/dev/null'));
         if (!empty($which) && file_exists($which)) {
             return $which;
         }
 
-        return null;
+        return 'node';
     }
 
     /**
