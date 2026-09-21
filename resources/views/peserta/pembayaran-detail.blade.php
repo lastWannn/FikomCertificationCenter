@@ -590,60 +590,69 @@ function compressAndPreviewImage(file, inputElement) {
         area.style.background = 'rgba(16,185,129,.04)';
     }
 
-    // Load FileReader & Canvas Compression
+    const previewImg = document.getElementById('preview-img');
+    const placeholder = document.getElementById('upload-placeholder');
+
     const reader = new FileReader();
     reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-            // Resize image if max dimension > 1600px
-            const maxDim = 1600;
-            let width = img.width;
-            let height = img.height;
+        // Tampilkan preview foto secara instan
+        if (previewImg) {
+            previewImg.src = e.target.result;
+            previewImg.style.display = 'block';
+        }
+        if (placeholder) placeholder.style.display = 'none';
 
-            if (width > maxDim || height > maxDim) {
-                if (width > height) {
-                    height = Math.round((height * maxDim) / width);
-                    width = maxDim;
-                } else {
-                    width = Math.round((width * maxDim) / height);
-                    height = maxDim;
-                }
-            }
+        // Kompresi latar belakang via Canvas opsional untuk mengoptimalkan ukuran file
+        try {
+            const img = new Image();
+            img.onload = function() {
+                const maxDim = 1600;
+                let width = img.width;
+                let height = img.height;
 
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            canvas.toBlob(function(blob) {
-                if (!blob) return;
-
-                // Create compressed File object (< 500KB)
-                const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
-                    type: 'image/jpeg',
-                    lastModified: Date.now()
-                });
-
-                // Update inputElement.files using DataTransfer
-                if (inputElement) {
-                    const dt = new DataTransfer();
-                    dt.items.add(compressedFile);
-                    inputElement.files = dt.files;
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
                 }
 
-                // Show Preview Image
-                const previewImg = document.getElementById('preview-img');
-                const placeholder = document.getElementById('upload-placeholder');
-                if (previewImg) {
-                    previewImg.src = canvas.toDataURL('image/jpeg', 0.85);
-                    previewImg.style.display = 'block';
-                }
-                if (placeholder) placeholder.style.display = 'none';
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
 
-            }, 'image/jpeg', 0.85);
-        };
-        img.src = e.target.result;
+                canvas.toBlob(function(blob) {
+                    if (!blob) return;
+
+                    try {
+                        const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+
+                        if (inputElement && window.DataTransfer) {
+                            const dt = new DataTransfer();
+                            dt.items.add(compressedFile);
+                            inputElement.files = dt.files;
+                        }
+
+                        if (previewImg) {
+                            previewImg.src = canvas.toDataURL('image/jpeg', 0.85);
+                        }
+                    } catch (err) {
+                        console.warn('DataTransfer tidak didukung browser ini, menggunakan file asli:', err);
+                    }
+                }, 'image/jpeg', 0.85);
+            };
+            img.src = e.target.result;
+        } catch (err) {
+            console.warn('Canvas compression dilewati, menggunakan file asli:', err);
+        }
     };
     reader.readAsDataURL(file);
 }
