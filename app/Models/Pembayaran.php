@@ -255,7 +255,7 @@ class Pembayaran extends Model
     /** Apakah peserta boleh upload bukti? */
     public function bisaUploadBukti(): bool
     {
-        return $this->isAktif()
+        return ($this->isAktif() || $this->status_pembayaran === 'ditolak')
             && $this->status_perpanjangan !== 'menunggu';
     }
 }

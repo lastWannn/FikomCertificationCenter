@@ -2212,12 +2212,12 @@ body {
         opacity: .28;
     }
 
-    [data-hero] > div[style*="linear-gradient"] {
+    .hero-overlay {
         background: radial-gradient(circle at 52% 55%, rgba(255,200,26,.16) 0%, rgba(255,200,26,0) 34%), linear-gradient(180deg, rgba(19,18,24,.78) 0%, rgba(15,14,21,.94) 62%, #131218 100%) !important;
     }
 
-    [data-hero] > div[style*="max-width:1240px"] {
-        padding: 0 20px;
+    .hero-main-container {
+        padding: 0 20px !important;
     }
 
     .hero-grid-layout {
@@ -2329,21 +2329,25 @@ body {
     }
 
     .floating-badge-bottom {
-        bottom: -10px;
-        left: 10px;
-        transform: none;
-        width: auto;
-        max-width: calc(100% - 20px);
-        padding: 8px 10px;
-        border: 1px solid #FFC81A;
-        border-radius: 12px;
-        gap: 8px;
+        bottom: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+        max-width: calc(100% - 24px);
+        padding: 7px 14px;
+        background: rgba(19, 18, 24, 0.95);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1.5px solid #FFC81A;
+        border-radius: 10px;
+        gap: 10px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
 
     .floating-badge-bottom .floating-badge-icon {
-        width: 27px;
-        height: 27px;
-        border-radius: 7px;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
     }
 
     .floating-badge-bottom .floating-badge-icon svg {
@@ -2352,11 +2356,13 @@ body {
     }
 
     .floating-badge-bottom p:first-child {
-        font-size: 10px;
+        font-size: 11px;
+        line-height: 1.15;
     }
 
     .floating-badge-bottom p:last-child {
-        font-size: 9px;
+        font-size: 9.5px;
+        line-height: 1.15;
     }
 }
 

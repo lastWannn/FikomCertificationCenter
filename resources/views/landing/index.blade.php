@@ -39,12 +39,12 @@
     {{-- Hero Background Image (LCP element — loaded as <img> for fastest discovery) --}}
     <img src="{{ asset('images/herosection.webp') }}" alt="" fetchpriority="high" decoding="async" width="1920" height="1080" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"/>
     {{-- Gradient Overlay --}}
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(19,18,24,0.84) 0%, rgba(15,14,21,0.92) 70%, #131218 100%);z-index:1;"></div>
+    <div class="hero-overlay" style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(19,18,24,0.84) 0%, rgba(15,14,21,0.92) 70%, #131218 100%);z-index:1;"></div>
     {{-- Particle Canvas --}}
     <canvas id="hero-particles" style="position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.6;"></canvas>
     
     {{-- Main Content Container --}}
-    <div style="position:relative;z-index:3;max-width:1240px;margin:0 auto;padding:0 24px;width:100%;">
+    <div class="hero-main-container" style="position:relative;z-index:3;max-width:1240px;margin:0 auto;padding:0 24px;width:100%;">
 
         <div class="hero-grid-layout">
             

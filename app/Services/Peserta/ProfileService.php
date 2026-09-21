@@ -12,10 +12,17 @@ class ProfileService
         $payload = collect($data)->only(['nama', 'no_hp', 'alamat', 'instansi', 'pekerjaan'])->toArray();
 
         if (isset($data['foto']) && $data['foto'] instanceof UploadedFile) {
-            if (!empty($peserta->foto) && \Illuminate\Support\Facades\Storage::disk('public')->exists($peserta->foto)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($peserta->foto);
+            try {
+                $newFoto = \App\Helpers\ImageHelper::compressToWebp($data['foto'], 'foto-peserta', 80, 800);
+                if ($newFoto) {
+                    if (!empty($peserta->foto) && \Illuminate\Support\Facades\Storage::disk('public')->exists($peserta->foto)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($peserta->foto);
+                    }
+                    $payload['foto'] = $newFoto;
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error("Gagal mengolah foto profil peserta ID {$peserta->id}: " . $e->getMessage());
             }
-            $payload['foto'] = \App\Helpers\ImageHelper::compressToWebp($data['foto'], 'foto-peserta', 80, 800);
         }
         if (!empty($data['password'])) {
             $payload['password'] = Hash::make($data['password']);
