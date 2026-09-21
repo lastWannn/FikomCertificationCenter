@@ -36,10 +36,6 @@ class PembayaranService
 
         $path = \App\Helpers\ImageHelper::compressToWebp($file, 'bukti-bayar');
 
-        if (!$path) {
-            throw new \RuntimeException('Gagal menyimpan foto bukti transfer. Silakan coba unggah file gambar lain.');
-        }
-
         $pembayaran->update([
             'metode_pembayaran' => $data['metode_pembayaran'],
             'nama_layanan_bank' => $data['nama_layanan_bank'] ?? null,

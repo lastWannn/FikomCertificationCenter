@@ -106,29 +106,17 @@ class Pembayaran extends Model
     public static function generateNoKwitansi(): string
     {
         $prefix = 'KWT/FCC/' . now()->format('Ym') . '/';
-        
-        $existingList = self::whereNotNull('no_kwitansi')
-            ->where('no_kwitansi', 'like', "{$prefix}%")
-            ->pluck('no_kwitansi');
+        $latest = self::where('no_kwitansi', 'like', "{$prefix}%")
+            ->orderBy('id', 'desc')
+            ->first();
 
-        $maxSeq = 0;
-        foreach ($existingList as $nk) {
-            if (preg_match('/(\d+)$/', $nk, $matches)) {
-                $num = (int) $matches[1];
-                if ($num > $maxSeq) {
-                    $maxSeq = $num;
-                }
-            }
+        if ($latest && preg_match('/(\d+)$/', $latest->no_kwitansi, $matches)) {
+            $next = (int) $matches[1] + 1;
+        } else {
+            $next = 1;
         }
 
-        $next = $maxSeq + 1;
-
-        do {
-            $candidate = $prefix . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
-            $next++;
-        } while (self::where('no_kwitansi', $candidate)->exists());
-
-        return $candidate;
+        return $prefix . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
     }
 
     /* ── STATUS & EXPIRY ────────────────────────────────────── */
@@ -210,10 +198,7 @@ class Pembayaran extends Model
 
     public function verifikasi(?string $noKwitansi = null): void
     {
-        $noKwitansi = trim($noKwitansi ?? '');
-
-        // Jika nomor kwitansi kosong ATAU nomor kwitansi yang diinput sudah digunakan pembayaran lain
-        if (empty($noKwitansi) || self::where('no_kwitansi', $noKwitansi)->where('id', '!=', $this->id)->exists()) {
+        if (empty(trim($noKwitansi ?? ''))) {
             $noKwitansi = self::generateNoKwitansi();
         }
 
@@ -255,7 +240,7 @@ class Pembayaran extends Model
     /** Apakah peserta boleh upload bukti? */
     public function bisaUploadBukti(): bool
     {
-        return ($this->isAktif() || $this->status_pembayaran === 'ditolak')
+        return $this->isAktif()
             && $this->status_perpanjangan !== 'menunggu';
     }
 }

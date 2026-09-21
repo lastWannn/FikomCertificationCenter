@@ -33,7 +33,6 @@ class UpdateProfilePesertaRequest extends FormRequest {
             'foto.max'           => 'Ukuran foto profil maksimal adalah 10 MB.',
             'foto.image'         => 'File foto harus berupa gambar valid (JPG, PNG, WebP).',
             'foto.mimes'         => 'Format foto harus berupa JPEG, JPG, PNG, WebP, GIF, atau BMP.',
-            'foto.uploaded'      => 'File foto gagal diunggah. Ukuran file kemungkinan melebihi batas maksimal server (PHP upload_max_filesize) atau file terlalu besar.',
         ];
     }
 }

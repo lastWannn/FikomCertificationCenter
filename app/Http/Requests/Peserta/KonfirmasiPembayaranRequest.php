@@ -27,7 +27,6 @@ class KonfirmasiPembayaranRequest extends FormRequest
             'bukti_bayar.image'    => 'Bukti transfer harus berupa file gambar.',
             'bukti_bayar.mimes'    => 'Format gambar yang didukung: JPG, JPEG, PNG, WebP.',
             'bukti_bayar.max'      => 'Ukuran foto maksimal 5MB.',
-            'bukti_bayar.uploaded' => 'File bukti transfer gagal diunggah. Ukuran file kemungkinan melebihi batas maksimal server (PHP upload_max_filesize) atau file terlalu besar.',
             'tgl_transfer.before_or_equal' => 'Tanggal transfer tidak boleh di masa depan.',
         ];
     }

@@ -27,56 +27,40 @@ class ProfileController extends Controller
     }
 
     public function update(UpdateProfilePesertaRequest $request) {
-        try {
-            $data = $request->validated();
-            if ($request->hasFile('foto')) $data['foto'] = $request->file('foto');
-            
-            $result = $this->service->update(Auth::guard('peserta')->user(), $data);
+        $data = $request->validated();
+        if ($request->hasFile('foto')) $data['foto'] = $request->file('foto');
+        
+        $result = $this->service->update(Auth::guard('peserta')->user(), $data);
 
-            if ($result['emailChanged']) {
-                $this->otpService->generateAndSend($result['newEmail'], 'change_email');
+        if ($result['emailChanged']) {
+            $this->otpService->generateAndSend($result['newEmail'], 'change_email');
 
-                $infoMsg = "Profil diperbarui! Kode OTP 4-digit telah dikirimkan ke email baru Anda ({$result['newEmail']}). Masukkan kode OTP untuk menyelesaikan pergantian email.";
-
-                if ($request->ajax() || $request->wantsJson()) {
-                    return response()->json([
-                        'success'     => true,
-                        'require_otp' => true,
-                        'new_email'   => $result['newEmail'],
-                        'message'     => $infoMsg
-                    ]);
-                }
-
-                return back()
-                    ->with('require_otp_change_email', true)
-                    ->with('pending_email', $result['newEmail'])
-                    ->with('info', $infoMsg);
-            }
+            $infoMsg = "Profil diperbarui! Kode OTP 4-digit telah dikirimkan ke email baru Anda ({$result['newEmail']}). Masukkan kode OTP untuk menyelesaikan pergantian email.";
 
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
-                    'success' => true,
-                    'require_otp' => false,
-                    'redirect' => route('peserta.dashboard'),
-                    'message' => 'Profil berhasil diperbarui.'
+                    'success'     => true,
+                    'require_otp' => true,
+                    'new_email'   => $result['newEmail'],
+                    'message'     => $infoMsg
                 ]);
             }
 
-            return redirect()->route('peserta.dashboard')->with('success', 'Profil berhasil diperbarui.');
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error("Error saat memperbarui profil peserta: " . $e->getMessage(), [
-                'exception' => $e
-            ]);
-
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Terjadi kesalahan pada server saat memperbarui profil. Silakan coba beberapa saat lagi.'
-                ], 500);
-            }
-
-            return back()->withInput()->with('error', 'Terjadi kesalahan saat memperbarui profil: ' . $e->getMessage());
+            return back()
+                ->with('require_otp_change_email', true)
+                ->with('pending_email', $result['newEmail'])
+                ->with('info', $infoMsg);
         }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'require_otp' => false,
+                'message' => 'Profil berhasil diperbarui.'
+            ]);
+        }
+
+        return back()->with('success', 'Profil berhasil diperbarui.');
     }
 
     public function verifyEmailOtp(Request $request)
