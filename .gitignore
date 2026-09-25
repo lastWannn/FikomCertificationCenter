@@ -37,3 +37,5 @@ Thumbs.db
 .history/
 .env.*
 !.env.example
+/storage/fonts/*
+!/storage/fonts/.gitignore
