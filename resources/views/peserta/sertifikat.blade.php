@@ -215,10 +215,13 @@
                         @include('components.icon', ['name' => 'upload', 'size' => 15]) Unggah Transkrip Nilai &rarr;
                     </button>
                 @else
-                    {{-- Sudah upload transkrip, baru muncul Menunggu Penerbitan oleh Admin --}}
+                    {{-- Sudah upload transkrip, tampilkan status menunggu dan tombol ganti/unggah ulang yang jelas --}}
                     <span style="display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;font-size:12px;width:100%;border-radius:12px;font-weight:800;background:#F1F5F9;color:#64748B;border:1.5px solid #CBD5E1;box-sizing:border-box;">
                         🔒 Menunggu Penerbitan oleh Admin
                     </span>
+                    <button type="button" onclick="openUploadModal('{{ $pd->hashid }}', '{{ addslashes($pd->kegiatan->judul ?? '') }}')" style="margin-top:8px;padding:9px 14px;font-size:11.5px;font-weight:800;width:100%;border-radius:10px;border:1.5px solid #CBD5E1;background:#FFFFFF;color:#131218;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .18s;" onmouseover="this.style.background='#FFFDF5';this.style.borderColor='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#FFFFFF';this.style.borderColor='#CBD5E1';this.style.color='#131218';">
+                        @include('components.icon', ['name' => 'upload', 'size' => 13]) Ganti / Unggah Ulang Transkrip
+                    </button>
                 @endif
             </div>
         </div>

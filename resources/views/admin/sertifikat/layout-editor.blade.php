@@ -355,9 +355,17 @@
     white-space: nowrap !important;
   }
 
-  .cert-overlay #sig1-role,
+  .cert-overlay #sig1-role {
+    margin-top: var(--sig1-line-gap, 1mm) !important;
+  }
   .cert-overlay #sig2-role {
-    margin-top: 0 !important;
+    margin-top: var(--sig2-line-gap, 1mm) !important;
+  }
+  .cert-overlay #sig1-img-wrap {
+    margin-bottom: var(--sig1-img-gap, 2mm) !important;
+  }
+  .cert-overlay #sig2-img-wrap {
+    margin-bottom: var(--sig2-img-gap, 2mm) !important;
   }
 
   .cert-overlay #text-desc-line1,
@@ -542,9 +550,9 @@
             {{-- 6. SIG 1 (DEKAN - KIRI) --}}
             <div class="drag-element" id="el-sig1" onclick="selectElement('sig1')" style="text-align:center;">
               <div class="drag-badge" id="badge-sig1">6. Dekan (Kiri)</div>
-              <div style="height: 44px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 4px;">
+              <div id="sig1-img-wrap" style="height: {{ ($layout['sig1']['sig_height'] ?? 60) + 4 }}px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: {{ $layout['sig1']['img_gap'] ?? 0 }}mm;">
                 @if($editorTtd->dekan_ttd_url)
-                  <img src="{{ $editorTtd->dekan_ttd_url }}" style="height: 42px; max-width: 100%; object-fit: contain; pointer-events: none;">
+                  <img id="sig1-img" src="{{ $editorTtd->dekan_ttd_url }}" style="height: {{ $layout['sig1']['sig_height'] ?? 60 }}px; max-width: 100%; object-fit: contain; pointer-events: none;">
                 @else
                   <div style="font-size: 10px; font-style: italic; color: #94A3B8; border: 1px dashed #CBD5E1; padding: 2px 10px; border-radius: 4px; background: rgba(241,245,249,0.7); pointer-events: none;">
                     [ Tanda Tangan Dekan ]
@@ -552,15 +560,15 @@
                 @endif
               </div>
               <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#0F172A;" id="sig1-name">{{ $editorTtd->dekan_nama }}</div>
-              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;letter-spacing:1.5px;margin-top:1px;" id="sig1-role">{{ $editorTtd->dekan_jabatan }}</div>
+              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;letter-spacing:1.5px;margin-top:{{ $layout['sig1']['line_gap'] ?? 1 }}mm;" id="sig1-role">{{ $editorTtd->dekan_jabatan }}</div>
             </div>
 
             {{-- 7. SIG 2 (KETUA UNIT - KANAN) --}}
             <div class="drag-element" id="el-sig2" onclick="selectElement('sig2')" style="text-align:center;">
               <div class="drag-badge" id="badge-sig2">7. Ketua Unit (Kanan)</div>
-              <div style="height: 44px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 4px;">
+              <div id="sig2-img-wrap" style="height: {{ ($layout['sig2']['sig_height'] ?? 70) + 4 }}px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: {{ $layout['sig2']['img_gap'] ?? 0 }}mm;">
                 @if($editorTtd->ketua_ttd_url)
-                  <img src="{{ $editorTtd->ketua_ttd_url }}" style="height: 42px; max-width: 100%; object-fit: contain; pointer-events: none;">
+                  <img id="sig2-img" src="{{ $editorTtd->ketua_ttd_url }}" style="height: {{ $layout['sig2']['sig_height'] ?? 70 }}px; max-width: 100%; object-fit: contain; pointer-events: none;">
                 @else
                   <div style="font-size: 10px; font-style: italic; color: #94A3B8; border: 1px dashed #CBD5E1; padding: 2px 10px; border-radius: 4px; background: rgba(241,245,249,0.7); pointer-events: none;">
                     [ Tanda Tangan Ketua ]
@@ -568,7 +576,7 @@
                 @endif
               </div>
               <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#0F172A;" id="sig2-name">{{ $editorTtd->ketua_nama }}</div>
-              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;letter-spacing:1.5px;margin-top:1px;" id="sig2-role">{{ $editorTtd->ketua_jabatan }}</div>
+              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;letter-spacing:1.5px;margin-top:{{ $layout['sig2']['line_gap'] ?? 0.5 }}mm;" id="sig2-role">{{ $editorTtd->ketua_jabatan }}</div>
             </div>
 
           </div>
@@ -680,13 +688,40 @@
 
       <div class="ctrl-group" id="group-line-height" style="display:none;">
         <div class="ctrl-label">
-          <span>Jarak Spasi Antarbaris</span>
+          <span id="label-line-height">Jarak Spasi Antarbaris</span>
           <div style="display:flex;align-items:center;gap:4px;">
             <input type="number" id="num-line-height" min="0" max="15" step="0.5" onchange="onNumInputChange('line_gap', this.value)" style="width:64px;padding:2px 6px;font-size:11.5px;font-weight:900;color:#B45309;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;text-align:right;">
             <span style="font-size:11px;font-weight:800;color:#B45309;">mm</span>
           </div>
         </div>
         <input type="range" id="input-line-height" min="0" max="15" step="0.5" oninput="updateActiveElementFromInputs()" style="width:100%;accent-color:#FFC81A;">
+        <span id="help-line-height" style="font-size:10.5px;color:#64748B;margin-top:3px;display:none;"></span>
+      </div>
+
+      {{-- 6. UKURAN GAMBAR TANDA TANGAN (SIG1 & SIG2) --}}
+      <div class="ctrl-group" id="group-sig-height" style="display:none;">
+        <div class="ctrl-label">
+          <span>Ukuran Gambar Tanda Tangan</span>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <input type="number" id="num-sig-height" min="20" max="120" step="1" onchange="onNumInputChange('sig_height', this.value)" style="width:64px;padding:2px 6px;font-size:11.5px;font-weight:900;color:#B45309;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;text-align:right;">
+            <span style="font-size:11px;font-weight:800;color:#B45309;">px</span>
+          </div>
+        </div>
+        <input type="range" id="input-sig-height" min="20" max="120" step="1" oninput="updateActiveElementFromInputs()" style="width:100%;accent-color:#FFC81A;">
+        <span style="font-size:10.5px;color:#64748B;margin-top:3px;display:block;">Atur tinggi gambar tanda tangan digital (piksel).</span>
+      </div>
+
+      {{-- 7. JARAK TANDA TANGAN KE NAMA (SIG1 & SIG2) --}}
+      <div class="ctrl-group" id="group-sig-img-gap" style="display:none;">
+        <div class="ctrl-label">
+          <span>Jarak Tanda Tangan ke Nama</span>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <input type="number" id="num-sig-img-gap" min="0" max="25" step="0.5" onchange="onNumInputChange('img_gap', this.value)" style="width:64px;padding:2px 6px;font-size:11.5px;font-weight:900;color:#B45309;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;text-align:right;">
+            <span style="font-size:11px;font-weight:800;color:#B45309;">mm</span>
+          </div>
+        </div>
+        <input type="range" id="input-sig-img-gap" min="0" max="25" step="0.5" oninput="updateActiveElementFromInputs()" style="width:100%;accent-color:#FFC81A;">
+        <span style="font-size:10.5px;color:#64748B;margin-top:3px;display:block;">Atur jarak spasi vertikal antara gambar tanda tangan dan teks nama.</span>
       </div>
     </div>
 
@@ -698,26 +733,32 @@
 
 <script>
   const defaultLayout = {
-    title:    { top: 36, left: 0, font_size: 32, font_family: 'Times New Roman' },
-    subtitle: { top: 48, left: 0, font_size: 11, font_family: 'Montserrat' },
-    label:    { top: 63, left: 0, font_size: 8.5, font_family: 'Arial' },
-    name:     { top: 71, left: 0, font_size: 36, font_family: 'Allura' },
-    desc:     { top: 109, left: 0, font_size: 10, title_font_size: 14, line_height: 0.9, line_gap: 0, font_family: 'Poppins' },
-    date:     { top: 146, right: 46, font_size: 9.5, font_family: 'Arial' },
-    sig1:     { top: 167.5, left: 60, font_size: 10, font_family: 'Arial' },
-    sig2:     { top: 167.5, right: 46, font_size: 10, font_family: 'Arial' }
+    title:    { top: 37.5, left: 0, font_size: 50, font_family: 'Times New Roman' },
+    subtitle: { top: 57, left: 0, font_size: 24, font_family: 'Arial' },
+    label:    { top: 72, left: 0, font_size: 9.5, font_family: 'Poppins' },
+    name:     { top: 72.5, left: 0, font_size: 60, font_family: 'Allura' },
+    desc:     { top: 110.5, left: 0, font_size: 16.5, title_font_size: 16.5, line_height: 0.9, line_gap: 0, font_family: 'Poppins' },
+    date:     { top: 140.5, right: 60.5, font_size: 9.5, font_family: 'Arial' },
+    sig1:     { top: 150, left: 63, font_size: 10, font_family: 'Arial', sig_height: 60, img_gap: 0, line_gap: 1 },
+    sig2:     { top: 147.5, right: 59.5, font_size: 10, font_family: 'Arial', sig_height: 70, img_gap: 0, line_gap: 0.5 }
   };
 
   let currentLayout = JSON.parse(JSON.stringify(@json($layout))) || defaultLayout;
-  if (!currentLayout.title)    currentLayout.title    = { top: 36, left: 0, font_size: 32, font_family: 'Times New Roman' };
-  if (!currentLayout.subtitle) currentLayout.subtitle = { top: 48, left: 0, font_size: 11, font_family: 'Montserrat' };
-  if (!currentLayout.label)    currentLayout.label    = { top: 63, left: 0, font_size: 8.5, font_family: 'Arial' };
-  if (!currentLayout.name)     currentLayout.name     = { top: 71, left: 0, font_size: 36, font_family: 'Allura' };
-  if (!currentLayout.desc)     currentLayout.desc     = { top: 109, left: 0, font_size: 10, title_font_size: 14, line_height: 0.9, line_gap: 0, font_family: 'Poppins' };
+  if (!currentLayout.title)    currentLayout.title    = { top: 37.5, left: 0, font_size: 50, font_family: 'Times New Roman' };
+  if (!currentLayout.subtitle) currentLayout.subtitle = { top: 57, left: 0, font_size: 24, font_family: 'Arial' };
+  if (!currentLayout.label)    currentLayout.label    = { top: 72, left: 0, font_size: 9.5, font_family: 'Poppins' };
+  if (!currentLayout.name)     currentLayout.name     = { top: 72.5, left: 0, font_size: 60, font_family: 'Allura' };
+  if (!currentLayout.desc)     currentLayout.desc     = { top: 110.5, left: 0, font_size: 16.5, title_font_size: 16.5, line_height: 0.9, line_gap: 0, font_family: 'Poppins' };
   if (!currentLayout.desc.line_height) currentLayout.desc.line_height = 0.9;
   if (currentLayout.desc.line_gap === undefined || currentLayout.desc.line_gap < 0) currentLayout.desc.line_gap = 0;
-  if (!currentLayout.sig1)     currentLayout.sig1     = { top: 167.5, left: 60, font_size: 10, font_family: 'Arial' };
-  if (!currentLayout.sig2)     currentLayout.sig2     = { top: 167.5, right: 46, font_size: 10, font_family: 'Arial' };
+  if (!currentLayout.sig1)     currentLayout.sig1     = { top: 150, left: 63, font_size: 10, font_family: 'Arial', sig_height: 60, img_gap: 0, line_gap: 1 };
+  if (!currentLayout.sig1.sig_height) currentLayout.sig1.sig_height = 60;
+  if (currentLayout.sig1.img_gap === undefined) currentLayout.sig1.img_gap = 0;
+  if (currentLayout.sig1.line_gap === undefined) currentLayout.sig1.line_gap = 1;
+  if (!currentLayout.sig2)     currentLayout.sig2     = { top: 147.5, right: 59.5, font_size: 10, font_family: 'Arial', sig_height: 70, img_gap: 0, line_gap: 0.5 };
+  if (!currentLayout.sig2.sig_height) currentLayout.sig2.sig_height = 70;
+  if (currentLayout.sig2.img_gap === undefined) currentLayout.sig2.img_gap = 0;
+  if (currentLayout.sig2.line_gap === undefined) currentLayout.sig2.line_gap = 0.5;
 
   let activeElementKey = 'title';
   let currentStep = 0.5;
@@ -758,6 +799,7 @@
     if (key === 'title') return 'Times New Roman';
     if (key === 'name') return 'Allura';
     if (key === 'desc') return 'Poppins';
+    if (key === 'label') return 'Poppins';
     return 'Arial';
   }
 
@@ -923,6 +965,15 @@
     const sig1Role = document.getElementById('sig1-role');
     sig1Role.style.fontSize = '8.5pt';
     sig1Role.style.fontFamily = sig1Font;
+    const sig1H = currentLayout.sig1.sig_height || 48;
+    const sig1ImgGap = (currentLayout.sig1.img_gap !== undefined) ? currentLayout.sig1.img_gap : 2;
+    const sig1LineGap = (currentLayout.sig1.line_gap !== undefined) ? currentLayout.sig1.line_gap : 1;
+    sig1El.style.setProperty('--sig1-img-gap', sig1ImgGap + 'mm');
+    sig1El.style.setProperty('--sig1-line-gap', sig1LineGap + 'mm');
+    const sig1Img = document.getElementById('sig1-img');
+    const sig1Wrap = document.getElementById('sig1-img-wrap');
+    if (sig1Img) sig1Img.style.height = sig1H + 'px';
+    if (sig1Wrap) sig1Wrap.style.height = (sig1H + 4) + 'px';
 
     // 7. Sig2 (Ketua Unit Kanan - matching 68mm width in PDF)
     const sig2El = document.getElementById('el-sig2');
@@ -936,6 +987,15 @@
     const sig2Role = document.getElementById('sig2-role');
     sig2Role.style.fontSize = '8.5pt';
     sig2Role.style.fontFamily = sig2Font;
+    const sig2H = currentLayout.sig2.sig_height || 48;
+    const sig2ImgGap = (currentLayout.sig2.img_gap !== undefined) ? currentLayout.sig2.img_gap : 2;
+    const sig2LineGap = (currentLayout.sig2.line_gap !== undefined) ? currentLayout.sig2.line_gap : 1;
+    sig2El.style.setProperty('--sig2-img-gap', sig2ImgGap + 'mm');
+    sig2El.style.setProperty('--sig2-line-gap', sig2LineGap + 'mm');
+    const sig2Img = document.getElementById('sig2-img');
+    const sig2Wrap = document.getElementById('sig2-img-wrap');
+    if (sig2Img) sig2Img.style.height = sig2H + 'px';
+    if (sig2Wrap) sig2Wrap.style.height = (sig2H + 4) + 'px';
 
     updateHUD();
   }
@@ -944,7 +1004,14 @@
     const data = currentLayout[activeElementKey];
     document.getElementById('hud-name').textContent = elementNames[activeElementKey] || activeElementKey.toUpperCase();
     document.getElementById('hud-top').textContent = data.top + ' mm';
-    document.getElementById('hud-font').textContent = data.font_size + ' pt';
+    if (activeElementKey === 'sig1' || activeElementKey === 'sig2') {
+      const sH = data.sig_height || 48;
+      const iG = (data.img_gap !== undefined) ? data.img_gap : 2;
+      const lG = (data.line_gap !== undefined) ? data.line_gap : 1;
+      document.getElementById('hud-font').textContent = data.font_size + ' pt (TTD: ' + sH + ' px, Spasi: ' + iG + 'mm / ' + lG + 'mm)';
+    } else {
+      document.getElementById('hud-font').textContent = data.font_size + ' pt';
+    }
 
     const offsetWrap = document.getElementById('hud-offset-wrapper');
     offsetWrap.style.display = 'inline';
@@ -1013,18 +1080,61 @@
 
     const groupTitleFont = document.getElementById('group-title-font');
     const groupLineHeight = document.getElementById('group-line-height');
+    const labelLineHeight = document.getElementById('label-line-height');
+    const helpLineHeight = document.getElementById('help-line-height');
+    const groupSigHeight = document.getElementById('group-sig-height');
+    const groupSigImgGap = document.getElementById('group-sig-img-gap');
+
     if (key === 'desc') {
       groupTitleFont.style.display = 'block';
-      if (groupLineHeight) groupLineHeight.style.display = 'block';
+      if (groupLineHeight) {
+        groupLineHeight.style.display = 'block';
+        if (labelLineHeight) labelLineHeight.textContent = 'Jarak Spasi Antarbaris Paragraf';
+        if (helpLineHeight) {
+          helpLineHeight.textContent = 'Jarak vertikal antar baris kalimat deskripsi.';
+          helpLineHeight.style.display = 'block';
+        }
+      }
       const val = data.title_font_size || 14;
       document.getElementById('input-title-font').value = val;
       document.getElementById('num-title-font').value = val;
       const lineGapVal = data.line_gap || 0;
       document.getElementById('input-line-height').value = lineGapVal;
       document.getElementById('num-line-height').value = lineGapVal;
+    } else if (key === 'sig1' || key === 'sig2') {
+      groupTitleFont.style.display = 'none';
+      if (groupLineHeight) {
+        groupLineHeight.style.display = 'block';
+        if (labelLineHeight) labelLineHeight.textContent = 'Jarak Nama ke Jabatan';
+        if (helpLineHeight) {
+          helpLineHeight.textContent = 'Jarak spasi baris antara nama dan baris teks jabatan.';
+          helpLineHeight.style.display = 'block';
+        }
+        const lineGapVal = (data.line_gap !== undefined) ? data.line_gap : 1;
+        document.getElementById('input-line-height').value = lineGapVal;
+        document.getElementById('num-line-height').value = lineGapVal;
+      }
     } else {
       groupTitleFont.style.display = 'none';
       if (groupLineHeight) groupLineHeight.style.display = 'none';
+    }
+
+    if (key === 'sig1' || key === 'sig2') {
+      if (groupSigHeight) {
+        groupSigHeight.style.display = 'block';
+        const sH = data.sig_height || 48;
+        document.getElementById('input-sig-height').value = sH;
+        document.getElementById('num-sig-height').value = sH;
+      }
+      if (groupSigImgGap) {
+        groupSigImgGap.style.display = 'block';
+        const iG = (data.img_gap !== undefined) ? data.img_gap : 2;
+        document.getElementById('input-sig-img-gap').value = iG;
+        document.getElementById('num-sig-img-gap').value = iG;
+      }
+    } else {
+      if (groupSigHeight) groupSigHeight.style.display = 'none';
+      if (groupSigImgGap) groupSigImgGap.style.display = 'none';
     }
 
     updateHUD();
@@ -1069,6 +1179,27 @@
       data.line_height = 0.9;
     }
 
+    if (activeElementKey === 'sig1' || activeElementKey === 'sig2') {
+      const sigHeightInput = document.getElementById('input-sig-height');
+      if (sigHeightInput) {
+        const sigHVal = parseFloat(sigHeightInput.value) || 48;
+        data.sig_height = sigHVal;
+        document.getElementById('num-sig-height').value = sigHVal;
+      }
+      const sigImgGapInput = document.getElementById('input-sig-img-gap');
+      if (sigImgGapInput) {
+        const sigIGVal = parseFloat(sigImgGapInput.value);
+        data.img_gap = isNaN(sigIGVal) ? 2 : sigIGVal;
+        document.getElementById('num-sig-img-gap').value = data.img_gap;
+      }
+      const lineGapInput = document.getElementById('input-line-height');
+      if (lineGapInput) {
+        const lineGapVal = parseFloat(lineGapInput.value);
+        data.line_gap = isNaN(lineGapVal) ? 1 : lineGapVal;
+        document.getElementById('num-line-height').value = data.line_gap;
+      }
+    }
+
     renderLayoutOnCanvas();
   }
 
@@ -1088,6 +1219,10 @@
       document.getElementById('input-subtitle-font').value = val;
     } else if (type === 'line_gap') {
       document.getElementById('input-line-height').value = val;
+    } else if (type === 'sig_height') {
+      document.getElementById('input-sig-height').value = val;
+    } else if (type === 'img_gap') {
+      document.getElementById('input-sig-img-gap').value = val;
     }
     updateActiveElementFromInputs();
   }

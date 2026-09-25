@@ -229,14 +229,28 @@
 
             {{-- KOLOM KANAN: FORM INPUT NILAI PER MODUL --}}
             <div style="display:flex;flex-direction:column;">
-                <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+                <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
                     <span style="font-size:13px;font-weight:900;color:#131218;display:inline-flex;align-items:center;gap:6px;">
                         ✏️ Input Nilai Modul / Materi
                     </span>
-                    <span id="badge-auto-extract" style="display:none;font-size:11px;font-weight:800;color:#15803D;background:#DCFCE7;border:1px solid #86EFAC;padding:3px 10px;border-radius:12px;">
-                        ✨ Terisi Otomatis dari Transkrip
-                    </span>
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <span id="badge-auto-extract" style="display:none;font-size:11px;font-weight:800;color:#15803D;background:#DCFCE7;border:1px solid #86EFAC;padding:3px 10px;border-radius:12px;">
+                            ✨ Terisi Otomatis dari Transkrip
+                        </span>
+                        <button type="button" id="btn-rescan-transkrip" onclick="triggerRescanTranskrip()"
+                                style="display:none;align-items:center;gap:6px;font-size:11px;font-weight:900;color:#131218;background:#FFC81A;border:1.5px solid #131218;border-radius:12px;padding:3.5px 11px;cursor:pointer;transition:all .18s;box-shadow:0 2px 6px rgba(0,0,0,0.06);"
+                                onmouseover="this.style.background='#F5B700';this.style.transform='translateY(-1px)';" 
+                                onmouseout="this.style.background='#FFC81A';this.style.transform='translateY(0)';"
+                                title="Pindai ulang transkrip untuk memperbarui nilai materi secara otomatis">
+                            <span id="rescan-spinner" style="display:none;animation:fcc-spin 1s linear infinite;">🔄</span>
+                            <span id="rescan-icon">⚡</span>
+                            <span id="rescan-text">Scan Ulang Transkrip</span>
+                        </button>
+                    </div>
                 </div>
+
+                {{-- Alert Banner Feedback --}}
+                <div id="rescan-alert-banner" style="display:none;margin-bottom:12px;padding:10px 14px;border-radius:12px;font-size:12px;font-weight:700;line-height:1.4;"></div>
                 
                 <form id="nilai-form" method="POST" action="" style="display:flex;flex-direction:column;">
                     @csrf
@@ -251,7 +265,7 @@
                                         <span style="font-size:10.5px;color:#64748B;font-weight:600;">⏱️ {{ $mat->jam_pelajaran }} JP</span>
                                     </div>
                                     <div style="width:95px;">
-                                        <input type="number" name="nilai[{{ $mat->id }}]" id="nilai-input-{{ $mat->id }}" min="0" max="100" placeholder="0 - 100" class="fcc-input" style="padding:8px 10px;font-size:14px;font-weight:900;text-align:center;width:100%;border-radius:10px;border:1.5px solid #131218;background:#FFF;">
+                                        <input type="number" name="nilai[{{ $mat->id }}]" id="nilai-input-{{ $mat->id }}" min="0" max="100" placeholder="0 - 100" class="fcc-input" style="padding:8px 10px;font-size:14px;font-weight:900;text-align:center;width:100%;border-radius:10px;border:1.5px solid #131218;background:#FFF;transition:all 0.3s ease;">
                                     </div>
                                 </div>
                                 @endforeach
@@ -281,25 +295,59 @@
     </div>
 </div>
 
+<style>
+    @keyframes fcc-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
 <script>
+    let currentNilaiPendaftaranId = null;
+
     function openNilaiModal(pendaftaranId, namaPeserta, existingNilai, transkripUrl) {
+        currentNilaiPendaftaranId = pendaftaranId;
         document.getElementById('peserta-name').innerText = namaPeserta;
         
         const baseUrl = '{{ route('admin.pelatihan.point.index') }}';
         document.getElementById('nilai-form').action = baseUrl + '/{{ $jadwal->id }}/pendaftaran/' + pendaftaranId;
         
         const inputs = document.querySelectorAll('input[name^="nilai["]');
-        inputs.forEach(input => input.value = '');
+        inputs.forEach(input => {
+            input.value = '';
+            input.style.borderColor = '#131218';
+            input.style.backgroundColor = '#FFF';
+            input.style.boxShadow = 'none';
+        });
 
         const autoBadge = document.getElementById('badge-auto-extract');
+        const rescanBtn = document.getElementById('btn-rescan-transkrip');
+        const alertBanner = document.getElementById('rescan-alert-banner');
+
+        if (alertBanner) {
+            alertBanner.style.display = 'none';
+            alertBanner.innerHTML = '';
+        }
+
+        const hasTranskrip = (transkripUrl && transkripUrl.trim() !== '');
+
+        if (rescanBtn) {
+            rescanBtn.style.display = hasTranskrip ? 'inline-flex' : 'none';
+        }
+
         if (existingNilai && existingNilai.length > 0) {
+            let countFilled = 0;
             existingNilai.forEach(n => {
                 const input = document.getElementById('nilai-input-' + n.materi_pelatihan_id);
-                if (input) {
+                if (input && n.nilai !== null && n.nilai !== undefined) {
                     input.value = Math.round(n.nilai);
+                    countFilled++;
                 }
             });
-            if (autoBadge) autoBadge.style.display = (transkripUrl && transkripUrl.trim() !== '') ? 'inline-block' : 'none';
+            if (autoBadge) {
+                autoBadge.style.display = hasTranskrip ? 'inline-block' : 'none';
+                autoBadge.innerText = '✨ ' + countFilled + ' Nilai Terisi';
+            }
         } else {
             if (autoBadge) autoBadge.style.display = 'none';
         }
@@ -317,7 +365,7 @@
         emptyBox.style.display = 'none';
         openTabBtn.style.display = 'none';
 
-        if (transkripUrl && transkripUrl.trim() !== '') {
+        if (hasTranskrip) {
             openTabBtn.href = transkripUrl;
             openTabBtn.style.display = 'inline-block';
             
@@ -334,6 +382,120 @@
         }
         
         document.getElementById('nilai-modal').style.display = 'flex';
+    }
+
+    function triggerRescanTranskrip() {
+        if (!currentNilaiPendaftaranId) {
+            alert('Data pendaftaran tidak valid.');
+            return;
+        }
+
+        const btn = document.getElementById('btn-rescan-transkrip');
+        const spinner = document.getElementById('rescan-spinner');
+        const icon = document.getElementById('rescan-icon');
+        const text = document.getElementById('rescan-text');
+        const banner = document.getElementById('rescan-alert-banner');
+        const autoBadge = document.getElementById('badge-auto-extract');
+
+        // Set Loading state
+        btn.disabled = true;
+        btn.style.opacity = '0.75';
+        btn.style.cursor = 'not-allowed';
+        if (spinner) spinner.style.display = 'inline-block';
+        if (icon) icon.style.display = 'none';
+        if (text) text.innerText = 'Memindai PDF...';
+
+        if (banner) {
+            banner.style.display = 'block';
+            banner.style.background = '#EFF6FF';
+            banner.style.color = '#1D4ED8';
+            banner.style.border = '1.5px solid #93C5FD';
+            banner.innerHTML = '⏳ <strong>Sedang memindai transkrip nilai...</strong> Sistem membaca nama modul dan mengekstrak nilai.';
+        }
+
+        const csrfToken = document.querySelector('#nilai-form input[name="_token"]')?.value 
+            || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+        const url = '{{ url('admin/pendaftaran') }}/' + currentNilaiPendaftaranId + '/rescan-transkrip';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        })
+        .then(async response => {
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || 'Gagal memindai ulang transkrip nilai.');
+            }
+            return data;
+        })
+        .then(data => {
+            if (data.success && data.nilai && data.nilai.length > 0) {
+                let populatedCount = 0;
+                data.nilai.forEach(n => {
+                    const matId = n.materi_pelatihan_id || n.materi_sertifikasi_id;
+                    const input = document.getElementById('nilai-input-' + matId);
+                    if (input && n.nilai !== null && n.nilai !== undefined) {
+                        input.value = Math.round(n.nilai);
+
+                        // Flash highlight effect
+                        input.style.borderColor = '#16A34A';
+                        input.style.backgroundColor = '#DCFCE7';
+                        input.style.boxShadow = '0 0 0 3px rgba(22, 163, 74, 0.25)';
+                        setTimeout(() => {
+                            input.style.borderColor = '#131218';
+                            input.style.backgroundColor = '#FFF';
+                            input.style.boxShadow = 'none';
+                        }, 2500);
+
+                        populatedCount++;
+                    }
+                });
+
+                if (autoBadge) {
+                    autoBadge.style.display = 'inline-block';
+                    autoBadge.innerText = '✨ ' + (data.matched_count || populatedCount) + ' Nilai Terdeteksi';
+                }
+
+                if (banner) {
+                    banner.style.display = 'block';
+                    banner.style.background = '#ECFDF5';
+                    banner.style.color = '#065F46';
+                    banner.style.border = '1.5px solid #10B981';
+                    banner.innerHTML = '✅ <strong>Scan Berhasil!</strong> ' + (data.message || (populatedCount + ' nilai modul berhasil disinkronkan ke form input.'));
+                }
+            } else {
+                if (banner) {
+                    banner.style.display = 'block';
+                    banner.style.background = '#FFFBEB';
+                    banner.style.color = '#92400E';
+                    banner.style.border = '1.5px solid #FCD34D';
+                    banner.innerHTML = '⚠️ <strong>Hasil Pemindaian:</strong> ' + (data.message || 'Transkrip berhasil dibaca, namun belum ada materi yang cocok. Anda dapat memasukkan nilai secara manual.');
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Scan transkrip error:', err);
+            if (banner) {
+                banner.style.display = 'block';
+                banner.style.background = '#FEF2F2';
+                banner.style.color = '#991B1B';
+                banner.style.border = '1.5px solid #F87171';
+                banner.innerHTML = '❌ <strong>Gagal memindai:</strong> ' + err.message;
+            }
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+            if (spinner) spinner.style.display = 'none';
+            if (icon) icon.style.display = 'inline-block';
+            if (text) text.innerText = 'Scan Ulang Transkrip';
+        });
     }
 </script>
 @endsection

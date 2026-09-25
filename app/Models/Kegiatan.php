@@ -18,14 +18,14 @@ class Kegiatan extends Model {
     public function getLayoutSettingsAttribute(): array
     {
         $default = [
-            'title'    => ['top' => 36, 'left' => 0, 'font_size' => 32, 'font_family' => 'Times New Roman'],
-            'subtitle' => ['top' => 48, 'left' => 0, 'font_size' => 11, 'font_family' => 'Montserrat'],
-            'label' => ['top' => 63, 'left' => 0, 'font_size' => 8.5, 'font_family' => 'Arial'],
-            'name'  => ['top' => 71, 'left' => 0, 'font_size' => 36, 'font_family' => 'Great Vibes'],
-            'desc'  => ['top' => 109, 'left' => 0, 'font_size' => 10, 'title_font_size' => 14, 'line_height' => 0.9, 'line_gap' => 0, 'font_family' => 'Poppins'],
-            'date'  => ['top' => 146, 'right' => 46, 'font_size' => 9.5, 'font_family' => 'Arial'],
-            'sig1'  => ['top' => 167.5, 'left' => 60, 'font_size' => 10, 'font_family' => 'Arial'],
-            'sig2'  => ['top' => 167.5, 'right' => 46, 'font_size' => 10, 'font_family' => 'Arial'],
+            'title'    => ['top' => 37.5, 'left' => 0,  'font_size' => 50,   'font_family' => 'Times New Roman'],
+            'subtitle' => ['top' => 57,   'left' => 0,  'font_size' => 24,   'font_family' => 'Arial'],
+            'label'    => ['top' => 72,   'left' => 0,  'font_size' => 9.5,  'font_family' => 'Poppins'],
+            'name'     => ['top' => 72.5, 'left' => 0,  'font_size' => 60,   'font_family' => 'Allura'],
+            'desc'     => ['top' => 110.5,'left' => 0,  'font_size' => 16.5, 'title_font_size' => 16.5, 'line_height' => 0.9, 'line_gap' => 0, 'font_family' => 'Poppins'],
+            'date'     => ['top' => 140.5,'right' => 60.5,'font_size' => 9.5,'font_family' => 'Arial'],
+            'sig1'     => ['top' => 150,  'left' => 63, 'font_size' => 10,   'font_family' => 'Arial', 'sig_height' => 60, 'img_gap' => 0, 'line_gap' => 1],
+            'sig2'     => ['top' => 147.5,'right' => 59.5,'font_size' => 10, 'font_family' => 'Arial', 'sig_height' => 70, 'img_gap' => 0, 'line_gap' => 0.5],
         ];
 
         if (empty($this->sertifikat_layout)) {

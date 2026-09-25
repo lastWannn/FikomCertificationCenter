@@ -35,6 +35,7 @@ class SertifikatController extends Controller
             });
 
             return [
+                'id'              => $utama->id,
                 'judul'           => $judul,
                 'utama'           => $utama,
                 'has_latar'       => $utama->has_latar,
@@ -90,7 +91,29 @@ class SertifikatController extends Controller
             return back()->with('error', 'Belum ada data sertifikat/peserta untuk melakukan preview layout PDF.');
         }
 
-        return (new CetakController())->sertifikat($sample);
+        $service = app(\App\Services\Admin\SertifikatService::class);
+        $viewData = $service->buildPdfViewData($sample);
+        $viewData['layout'] = $kegiatan->layout_settings;
+
+        if (!empty($kegiatan->nama_latar)) {
+            $realPath = public_path('storage/' . $kegiatan->nama_latar);
+            if (!file_exists($realPath)) {
+                $realPath = storage_path('app/public/' . $kegiatan->nama_latar);
+            }
+            if (file_exists($realPath) && is_file($realPath)) {
+                $type = pathinfo($realPath, PATHINFO_EXTENSION);
+                $mimeType = $type === 'svg' ? 'svg+xml' : ($type === 'webp' ? 'webp' : $type);
+                $viewData['bgSrc'] = 'data:image/' . $mimeType . ';base64,' . base64_encode(file_get_contents($realPath));
+            }
+        }
+
+        $pdf = app('dompdf.wrapper')
+            ->setPaper('a4', 'landscape')
+            ->setOption('isRemoteEnabled', true)
+            ->setOption('isHtml5ParserEnabled', true)
+            ->loadView('admin.cetak.sertifikat-pdf', $viewData);
+
+        return $pdf->stream("sample-sertifikat-{$kegiatan->id}.pdf");
     }
     public function peserta(Kegiatan $kegiatan) {
         $kegiatan->load(['kegiatanPelatihan.jadwalPelatihan.pelatihan','kegiatanSertifikasi.jadwalSertifikasi.sertifikasi']);

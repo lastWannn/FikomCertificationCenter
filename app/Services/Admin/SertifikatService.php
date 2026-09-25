@@ -7,12 +7,15 @@ use Illuminate\Support\Facades\File;
 
 class SertifikatService
 {
+    protected static array $bgSrcCache = [];
+
     public function buildPdfViewData(Sertifikat $sertifikat): array
     {
         $sertifikat->loadMissing([
             'pendaftaran.peserta',
-            'pendaftaran.kegiatan.kegiatanPelatihan.jadwalPelatihan',
-            'pendaftaran.kegiatan.kegiatanSertifikasi.jadwalSertifikasi',
+            'pendaftaran.nilai',
+            'pendaftaran.kegiatan.kegiatanPelatihan.jadwalPelatihan.pelatihan.materi',
+            'pendaftaran.kegiatan.kegiatanSertifikasi.jadwalSertifikasi.sertifikasi.materi',
         ]);
 
         $kegiatan = $sertifikat->pendaftaran->kegiatan;
@@ -33,9 +36,14 @@ class SertifikatService
             }
 
             if (file_exists($realPath) && is_file($realPath)) {
-                $type = pathinfo($realPath, PATHINFO_EXTENSION);
-                $mimeType = $type === 'svg' ? 'svg+xml' : ($type === 'webp' ? 'webp' : $type);
-                $bgSrc = 'data:image/' . $mimeType . ';base64,' . base64_encode(file_get_contents($realPath));
+                if (isset(self::$bgSrcCache[$realPath])) {
+                    $bgSrc = self::$bgSrcCache[$realPath];
+                } else {
+                    $type = pathinfo($realPath, PATHINFO_EXTENSION);
+                    $mimeType = $type === 'svg' ? 'svg+xml' : ($type === 'webp' ? 'webp' : $type);
+                    $bgSrc = 'data:image/' . $mimeType . ';base64,' . base64_encode(file_get_contents($realPath));
+                    self::$bgSrcCache[$realPath] = $bgSrc;
+                }
             }
         }
 
@@ -50,6 +58,8 @@ class SertifikatService
 
     public function regeneratePdf(Sertifikat $sertifikat): void
     {
+        @set_time_limit(120);
+
         $safeNomor = str_replace(['/', '\\'], '-', $sertifikat->nomor_sertifikat);
         $fileName = "sertifikat-{$safeNomor}.pdf";
         $outputDir = storage_path('app/public/sertifikat-cetak');
@@ -79,6 +89,12 @@ class SertifikatService
         $matching = Kegiatan::all()->filter(fn($k) => trim($k->judul) === $targetJudul);
         foreach ($matching as $k) {
             $k->update(['nama_latar' => $path]);
+
+            Sertifikat::whereHas('pendaftaran', fn($q) => $q->where('kegiatan_id', $k->id))
+                ->update([
+                    'gambar_latar' => $path,
+                    'file_sertifikat' => null,
+                ]);
         }
         return $path;
     }
@@ -108,13 +124,13 @@ class SertifikatService
 
         $count = 0;
         foreach ($pendaftaran as $pd) {
-            $cert = Sertifikat::create([
+            Sertifikat::create([
                 'pendaftaran_id'   => $pd->id,
                 'nomor_sertifikat' => Sertifikat::generateNomor($pd->kegiatan_id, $pd->id),
                 'tgl_terbit'       => $tglTerbit,
                 'gambar_latar'     => $pd->kegiatan->nama_latar,
+                'file_sertifikat'  => null, // On-Demand: PDF digenerate otomatis saat dilihat/diunduh
             ]);
-            $this->regeneratePdf($cert);
             $count++;
         }
         return $count;

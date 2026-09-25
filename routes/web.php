@@ -72,6 +72,11 @@ Route::post('/hubungi-kami', [LandingController::class,'kontakPost'])->name('lan
 // Search API (AJAX)
 Route::get('/api/search',    [LandingController::class,'search'])->name('landing.search');
 
+// Verifikasi Publik Sertifikat (Akses QR Code / Scan Kamera HP)
+Route::get('/verifikasi/sertifikat/{identifier}',     [LandingController::class, 'verifikasiSertifikat'])->name('sertifikat.verifikasi');
+Route::get('/verifikasi/sertifikat/{identifier}/pdf', [LandingController::class, 'unduhSertifikatVerifikasi'])->name('sertifikat.verifikasi.pdf');
+Route::get('/sertifikat/verify/{identifier}',         [LandingController::class, 'verifikasiSertifikat']);
+
 /* ── AUTH ────────────────────────────────────────────────────── */
 Route::middleware('guest.fcc')->group(function () {
     Route::get('/masuk',          [LoginController::class,'showLogin'])->name('auth.login');
@@ -213,12 +218,13 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     Route::get('nilai/{pendaftaran}',                 [NilaiController::class,'show'])->name('nilai.show');
     Route::post('nilai/{pendaftaran}',                [NilaiController::class,'store'])->name('nilai.store');
     Route::put('nilai/{nilai}',                       [NilaiController::class,'update'])->name('nilai.update');
+    Route::post('pendaftaran/{pendaftaran}/rescan-transkrip', [NilaiController::class,'rescanTranskrip'])->name('pendaftaran.rescan-transkrip');
 
     Route::get('sertifikat',                          [AdminSertifikat::class,'index'])->name('sertifikat.index');
     Route::get('sertifikat/{kegiatan}/peserta',       [AdminSertifikat::class,'peserta'])->name('sertifikat.peserta');
-    Route::get('sertifikat/{kegiatanId}/preview-sample', [AdminSertifikat::class,'previewSamplePdf'])->name('sertifikat.preview-sample');
-    Route::get('sertifikat/{kegiatanId}/layout-editor', [AdminSertifikat::class,'layoutEditor'])->name('sertifikat.layout-editor');
-    Route::post('sertifikat/{kegiatanId}/save-layout',  [AdminSertifikat::class,'saveLayout'])->name('sertifikat.save-layout');
+    Route::get('sertifikat/{kegiatan}/preview-sample', [AdminSertifikat::class,'previewSamplePdf'])->name('sertifikat.preview-sample');
+    Route::get('sertifikat/{kegiatan}/layout-editor', [AdminSertifikat::class,'layoutEditor'])->name('sertifikat.layout-editor');
+    Route::post('sertifikat/{kegiatan}/save-layout',  [AdminSertifikat::class,'saveLayout'])->name('sertifikat.save-layout');
     Route::post('sertifikat/upload-latar',            [AdminSertifikat::class,'uploadLatar'])->name('sertifikat.upload-latar');
     Route::post('sertifikat/{pendaftaran}/terbitkan', [AdminSertifikat::class,'terbitkan'])->name('sertifikat.terbitkan');
     Route::post('sertifikat/terbitkan-semua/{kegiatan}', [AdminSertifikat::class,'terbitkanSemua'])->name('sertifikat.terbitkan-semua');

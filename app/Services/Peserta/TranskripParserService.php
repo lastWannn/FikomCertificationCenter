@@ -183,48 +183,59 @@ class TranskripParserService
             return '';
         }
 
-        // Cek apakah node_modules/pdf-parse terinstall
-        if (!is_dir(base_path('node_modules/pdf-parse')) && !file_exists(base_path('node_modules/pdf-parse/package.json'))) {
-            Log::warning("TranskripParserService: node_modules/pdf-parse belum terinstall di laptop ini. Silakan jalankan 'npm install' di terminal.");
-        }
-
         // Cari executable node
-        $nodePath = $this->findNodeBinary();
-        if (!$nodePath) {
-            Log::warning("TranskripParserService: Node.js tidak ditemukan di sistem.");
-            return '';
-        }
+        $nodePath = $this->findNodeBinary() ?: 'node';
 
+        // 1. Eksekusi langsung via shell_exec / exec
+        // (Paling stabil & kompatibel di Windows, mencegah bug proc_open CSPRNG pada Node.js 22/24)
         try {
-            $process = new Process([$nodePath, $scriptPath, $filePath]);
-            $process->setTimeout(15);
-            $process->run();
+            $escapedNode = (str_contains($nodePath, ' ') && !str_starts_with($nodePath, '"')) ? "\"{$nodePath}\"" : $nodePath;
+            $escapedScript = "\"{$scriptPath}\"";
+            $escapedFile = "\"{$filePath}\"";
 
-            if (!$process->isSuccessful()) {
-                Log::warning("TranskripParserService: Node script failed (exit code {$process->getExitCode()}): " . $process->getErrorOutput());
-                // Cek jika error output berupa json
-                $out = $process->getOutput();
-                if (preg_match('/\{[\s\S]*\}/', $out, $matches)) {
-                    $errData = json_decode($matches[0], true);
-                    if (!empty($errData['message'])) {
-                        Log::warning("TranskripParserService: Node parser message: " . $errData['message']);
-                    }
-                }
-                return '';
-            }
+            $cmd = "{$escapedNode} {$escapedScript} {$escapedFile} 2>&1";
+            $output = @shell_exec($cmd);
 
-            $output = $process->getOutput();
-            // Ambil bagian JSON dari output
-            if (preg_match('/\{[\s\S]*\}/', $output, $matches)) {
+            if ($output && preg_match('/\{[\s\S]*\}/', $output, $matches)) {
                 $data = json_decode($matches[0], true);
-                if (isset($data['status']) && $data['status'] === 'success') {
-                    return $data['text'] ?? '';
+                if (isset($data['status']) && $data['status'] === 'success' && !empty($data['text'])) {
+                    Log::info("TranskripParserService: Berhasil mengekstrak teks via shell_exec (" . strlen($data['text']) . " karakter)");
+                    return $data['text'];
                 } elseif (!empty($data['message'])) {
-                    Log::warning("TranskripParserService: Node parser returned error: " . $data['message']);
+                    Log::warning("TranskripParserService: Node parser returned message: " . $data['message']);
                 }
             }
         } catch (\Throwable $e) {
-            Log::warning("TranskripParserService: Node execution error: " . $e->getMessage());
+            Log::warning("TranskripParserService: shell_exec error: " . $e->getMessage());
+        }
+
+        // 2. Fallback via Symfony Process jika shell_exec tidak menghasilkan teks
+        try {
+            $env = array_filter([
+                'SystemRoot' => getenv('SystemRoot') ?: 'C:\\Windows',
+                'WINDIR'     => getenv('WINDIR') ?: 'C:\\Windows',
+                'PATH'       => getenv('PATH') ?: '',
+                'TEMP'       => getenv('TEMP') ?: 'C:\\Windows\\Temp',
+                'TMP'        => getenv('TMP') ?: 'C:\\Windows\\Temp',
+            ]);
+
+            $process = new Process([$nodePath, $scriptPath, $filePath], null, $env);
+            $process->setTimeout(15);
+            $process->run();
+
+            if ($process->isSuccessful()) {
+                $output = $process->getOutput();
+                if (preg_match('/\{[\s\S]*\}/', $output, $matches)) {
+                    $data = json_decode($matches[0], true);
+                    if (isset($data['status']) && $data['status'] === 'success') {
+                        return $data['text'] ?? '';
+                    }
+                }
+            } else {
+                Log::warning("TranskripParserService: Process fallback failed (exit code {$process->getExitCode()}): " . $process->getErrorOutput());
+            }
+        } catch (\Throwable $e) {
+            Log::warning("TranskripParserService: Process fallback error: " . $e->getMessage());
         }
 
         return '';
@@ -603,40 +614,50 @@ class TranskripParserService
      */
     protected function extractScoreFromLine(string $line): ?float
     {
-        // 1. Bersihkan kata-kata pengganggu (SKS, semester, kode mk, bobot gpa 0-4)
         $cleanLine = $line;
-        
-        // Hapus pola SKS, misal: "3 SKS", "4 sks", "3sks"
-        $cleanLine = preg_replace('/\b\d+\s*sks\b/i', ' ', $cleanLine);
-        // Hapus pola semester, misal: "Semester 4", "Sem 3"
-        $cleanLine = preg_replace('/\bsem(?:ester)?\s*\d+\b/i', ' ', $cleanLine);
-        // Hapus pola tahun, misal: "2023/2024"
-        $cleanLine = preg_replace('/\b20\d{2}\/20\d{2}\b/', ' ', $cleanLine);
 
-        // 2. Cari nilai angka eksplisit (prioritas angka puluhan 50–100, atau desimal)
-        // Pola angka 0 - 100
+        // 1. Hapus nomor urut di awal baris (misal: "1.", "56.", "12)", "01 -")
+        $cleanLine = preg_replace('/^\s*\d{1,3}[\.\)\s\-]+/i', ' ', $cleanLine);
+
+        // 2. Hapus kode mata kuliah umum (misal: "IF-201", "TIF201", "CS101", "KOM 302")
+        $cleanLine = preg_replace('/\b[A-Za-z]{2,5}\s*[-_]?\s*\d{2,5}[A-Za-z]?\b/i', ' ', $cleanLine);
+
+        // 3. Hapus pola SKS & Semester (misal: "3 SKS", "4 sks", "Semester 4", "Sem 3")
+        $cleanLine = preg_replace('/\b\d+\s*sks\b/i', ' ', $cleanLine);
+        $cleanLine = preg_replace('/\bsem(?:ester)?\s*\d+\b/i', ' ', $cleanLine);
+
+        // 4. Hapus pola tahun akademik (misal: "2023/2024", "2024-2025")
+        $cleanLine = preg_replace('/\b20\d{2}[\/\-]20\d{2}\b/', ' ', $cleanLine);
+
+        // 5. Hapus angka bobot IPK (misal: 4.00, 3.75, 3.50, 3.00, 2.75, 2.00, 1.00)
+        $cleanLine = preg_replace('/\b[0-4]\.[0-9]{1,2}\b/', ' ', $cleanLine);
+
+        // 6. Cari angka nilai eksplisit
         if (preg_match_all('/\b(100|[1-9]?[0-9](?:\.[0-9]+)?)\b/', $cleanLine, $numMatches)) {
             $candidates = array_map('floatval', $numMatches[1]);
 
-            // Prioritaskan angka bernilai 50 - 100 (nilai ujian/akhir standar Indonesia)
-            foreach ($candidates as $val) {
+            // Pada transkrip akademik, nilai biasanya berada di kolom belakang/paling kanan
+            // Periksa dari kandidat paling belakang terlebih dahulu
+            $reversed = array_reverse($candidates);
+
+            // Prioritas 1: Rentang nilai standar ujian (50 - 100)
+            foreach ($reversed as $val) {
                 if ($val >= 50 && $val <= 100) {
                     return $val;
                 }
             }
 
-            // Jika tidak ada di rentang 50-100, ambil angka valid pertama yang bukan 0 (misal 1-49)
-            foreach ($candidates as $val) {
-                // Abaikan jika hanya angka satuan 1-4 yang kemungkinan adalah bobot IPK (misal 4.00, 3.50)
-                if ($val > 4.0 && $val <= 100) {
+            // Prioritas 2: Rentang 10 - 49 (nilai remedial/rendah)
+            foreach ($reversed as $val) {
+                if ($val >= 10 && $val < 50) {
                     return $val;
                 }
             }
         }
 
-        // 3. Jika tidak ada angka eksplisit, cari nilai huruf mutu akademik (A, A+, A-, B+, B, dst.)
-        if (preg_match('/\b([A-E][+-]?)(?!\w)/', $cleanLine, $gradeMatch)) {
-            $grade = strtoupper(trim($gradeMatch[1]));
+        // 7. Jika tidak ada angka eksplisit, cari nilai huruf mutu akademik (A, A+, A-, AB, B+, B, BC, C+, C, D, E)
+        if (preg_match('/\b([A-E][+-]?|[A-C][\/]?[B-D])(?!\w)/i', $cleanLine, $gradeMatch)) {
+            $grade = strtoupper(str_replace('/', '', trim($gradeMatch[1])));
             return $this->convertGradeToNumber($grade);
         }
 
@@ -649,16 +670,17 @@ class TranskripParserService
     protected function convertGradeToNumber(string $grade): ?float
     {
         return match ($grade) {
-            'A+', 'A' => 90.0,
-            'A-'      => 85.0,
-            'B+'      => 80.0,
-            'B'       => 75.0,
-            'B-'      => 70.0,
-            'C+'      => 65.0,
-            'C'       => 60.0,
-            'D'       => 50.0,
-            'E'       => 0.0,
-            default   => null,
+            'A+', 'A'           => 90.0,
+            'A-', 'AB', 'A/B'   => 85.0,
+            'B+'                => 80.0,
+            'B'                 => 75.0,
+            'B-', 'BC', 'B/C'   => 70.0,
+            'C+'                => 65.0,
+            'C'                 => 60.0,
+            'C-', 'CD', 'C/D'   => 55.0,
+            'D'                 => 50.0,
+            'E'                 => 0.0,
+            default             => null,
         };
     }
 

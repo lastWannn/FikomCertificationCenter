@@ -39,4 +39,48 @@ class NilaiController extends Controller
         $this->service->update($nilai, $r->nilai, $r->keterangan);
         return back()->with('success','Nilai diperbarui.');
     }
+
+    /**
+     * Memindai ulang transkrip nilai PDF secara on-demand via AJAX request
+     */
+    public function rescanTranskrip(Pendaftaran $pendaftaran)
+    {
+        if (empty($pendaftaran->transkrip_nilai)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Peserta belum mengunggah dokumen transkrip nilai.',
+            ], 400);
+        }
+
+        $filePath = null;
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($pendaftaran->transkrip_nilai)) {
+            $filePath = \Illuminate\Support\Facades\Storage::disk('public')->path($pendaftaran->transkrip_nilai);
+        } elseif (file_exists(storage_path('app/public/' . $pendaftaran->transkrip_nilai))) {
+            $filePath = storage_path('app/public/' . $pendaftaran->transkrip_nilai);
+        } elseif (file_exists(public_path('storage/' . $pendaftaran->transkrip_nilai))) {
+            $filePath = public_path('storage/' . $pendaftaran->transkrip_nilai);
+        }
+
+        if (!$filePath || !file_exists($filePath)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Berkas transkrip nilai tidak ditemukan pada server penyimpanan.',
+            ], 404);
+        }
+
+        $result = app(\App\Services\Peserta\TranskripParserService::class)->parseAndPopulateNilai(
+            $pendaftaran,
+            $filePath
+        );
+
+        $pendaftaran->load('nilai');
+
+        return response()->json([
+            'success'       => $result['success'] ?? false,
+            'message'       => $result['message'] ?? 'Pemindaian selesai.',
+            'matched_count' => $result['matched_count'] ?? 0,
+            'matched'       => $result['matched'] ?? [],
+            'nilai'         => $pendaftaran->nilai,
+        ]);
+    }
 }

@@ -1053,30 +1053,63 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!input.files || input.files.length === 0) return;
             const file = input.files[0];
             
-            // 1. Extension Validation
+            // 1. Extension & MIME Validation
             const accept = input.getAttribute('accept');
             if (accept) {
                 const fileName = file.name.toLowerCase();
-                const fileExt = '.' + fileName.split('.').pop();
+                const fileExt = fileName.lastIndexOf('.') !== -1 ? fileName.substring(fileName.lastIndexOf('.')) : '';
+                const fileMime = (file.type || '').toLowerCase();
                 let allowed = false;
-                const acceptTypes = accept.split(',').map(t => t.trim());
+                const acceptTypes = accept.split(',').map(t => t.trim().toLowerCase());
+
+                const mimeExtMap = {
+                    'image/png': ['.png'],
+                    'image/jpeg': ['.jpg', '.jpeg'],
+                    'image/jpg': ['.jpg', '.jpeg'],
+                    'image/webp': ['.webp'],
+                    'image/gif': ['.gif'],
+                    'image/svg+xml': ['.svg'],
+                    'application/pdf': ['.pdf'],
+                    'application/msword': ['.doc'],
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+                    'application/vnd.ms-excel': ['.xls'],
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
+                };
                 
                 for (let type of acceptTypes) {
-                    if (type === 'image/*') {
-                        if (['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'].includes(fileExt)) {
+                    if (!type) continue;
+
+                    // Match by exact MIME type
+                    if (fileMime && (fileMime === type || (type === 'image/jpg' && fileMime === 'image/jpeg'))) {
+                        allowed = true;
+                        break;
+                    }
+
+                    // Match by Wildcard (e.g. image/*)
+                    if (type.endsWith('/*')) {
+                        const mainType = type.split('/')[0];
+                        if (fileMime && fileMime.startsWith(mainType + '/')) {
                             allowed = true;
                             break;
                         }
-                    } else if (type.startsWith('.')) {
+                        if (mainType === 'image' && ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'].includes(fileExt)) {
+                            allowed = true;
+                            break;
+                        }
+                    }
+
+                    // Match by Extension (e.g. .png, .jpg)
+                    if (type.startsWith('.')) {
                         if (type === fileExt) {
                             allowed = true;
                             break;
                         }
-                    } else if (type === 'application/pdf') {
-                        if (fileExt === '.pdf') {
-                            allowed = true;
-                            break;
-                        }
+                    }
+
+                    // Match MIME type definition against file extension
+                    if (mimeExtMap[type] && mimeExtMap[type].includes(fileExt)) {
+                        allowed = true;
+                        break;
                     }
                 }
                 
@@ -1094,7 +1127,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (input.name === 'file_materi') {
                 maxBytes = 20 * 1024 * 1024; // 20MB
                 sizeText = '20 MB';
-            } else if (input.name === 'bukti_bayar') {
+            } else if (input.name === 'bukti_bayar' || input.name === 'latar' || input.name === 'transkrip_nilai') {
                 maxBytes = 5 * 1024 * 1024; // 5MB
                 sizeText = '5 MB';
             } else if (input.name === 'berita_acara') {

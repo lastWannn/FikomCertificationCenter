@@ -64,7 +64,7 @@ class SertifikatController extends Controller
 
     public function preview(Sertifikat $sertifikat)
     {
-        return redirect()->route('peserta.sertifikat');
+        return redirect()->route('sertifikat.verifikasi', $sertifikat->hashid ?? $sertifikat->id);
     }
 
     public function uploadTranskrip(Request $request, Pendaftaran $pendaftaran)

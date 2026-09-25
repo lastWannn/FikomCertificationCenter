@@ -285,4 +285,88 @@ class LandingController extends Controller
 
         return view('landing.search', compact('kegiatan','q'));
     }
+
+    /**
+     * Halaman Publik Verifikasi Keabsahan Sertifikat (Akses Hasil Scan Barcode/QR Code HP)
+     */
+    public function verifikasiSertifikat($identifier)
+    {
+        $sertifikat = \App\Models\Sertifikat::findByHashid($identifier);
+
+        if (!$sertifikat) {
+            $cleanNomor = str_replace('-', '/', $identifier);
+            $sertifikat = \App\Models\Sertifikat::where('nomor_sertifikat', $identifier)
+                ->orWhere('nomor_sertifikat', $cleanNomor)
+                ->first();
+        }
+
+        if (!$sertifikat && is_numeric($identifier)) {
+            $sertifikat = \App\Models\Sertifikat::find($identifier);
+        }
+
+        if (!$sertifikat) {
+            return view('landing.verifikasi-sertifikat', [
+                'sertifikat' => null,
+                'identifier' => $identifier,
+            ]);
+        }
+
+        $sertifikat->loadMissing([
+            'pendaftaran.peserta',
+            'pendaftaran.nilai',
+            'pendaftaran.kegiatan.kegiatanPelatihan.jadwalPelatihan.pelatihan.materi',
+            'pendaftaran.kegiatan.kegiatanSertifikasi.jadwalSertifikasi.sertifikasi.materi',
+        ]);
+
+        return view('landing.verifikasi-sertifikat', compact('sertifikat'));
+    }
+
+    /**
+     * Unduh / Tampilkan Berkas PDF Sertifikat Asli untuk Verifikasi Publik
+     */
+    public function unduhSertifikatVerifikasi($identifier)
+    {
+        $sertifikat = \App\Models\Sertifikat::findByHashid($identifier);
+
+        if (!$sertifikat) {
+            $cleanNomor = str_replace('-', '/', $identifier);
+            $sertifikat = \App\Models\Sertifikat::where('nomor_sertifikat', $identifier)
+                ->orWhere('nomor_sertifikat', $cleanNomor)
+                ->first();
+        }
+
+        if (!$sertifikat && is_numeric($identifier)) {
+            $sertifikat = \App\Models\Sertifikat::find($identifier);
+        }
+
+        if (!$sertifikat) {
+            abort(404, 'Sertifikat tidak ditemukan.');
+        }
+
+        $safeNomor = str_replace(['/', '\\'], '-', $sertifikat->nomor_sertifikat);
+        $filePath = null;
+
+        if (!empty($sertifikat->file_sertifikat)) {
+            $filePath = storage_path('app/public/' . $sertifikat->file_sertifikat);
+            if (!file_exists($filePath)) {
+                $filePath = public_path('storage/' . $sertifikat->file_sertifikat);
+            }
+        }
+
+        if (!$filePath || !file_exists($filePath)) {
+            $service = app(\App\Services\Admin\SertifikatService::class);
+            $service->regeneratePdf($sertifikat);
+            $sertifikat->refresh();
+            $filePath = storage_path('app/public/' . $sertifikat->file_sertifikat);
+        }
+
+        if ($filePath && file_exists($filePath)) {
+            return response()->file($filePath, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="sertifikat-' . $safeNomor . '.pdf"'
+            ]);
+        }
+
+        abort(404, 'Berkas PDF sertifikat tidak ditemukan.');
+    }
 }
