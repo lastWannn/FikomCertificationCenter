@@ -27,7 +27,17 @@ class TranskripParserService
             ];
         }
 
-        // 1. Ekstraksi teks dari berkas (PDF atau Gambar)
+        $ext = strtolower(pathinfo($absoluteFilePath, PATHINFO_EXTENSION));
+        if ($ext !== 'pdf') {
+            return [
+                'success' => false,
+                'message' => 'Format berkas tidak didukung. Harap unggah dokumen resmi PDF (.pdf).',
+                'matched_count' => 0,
+                'matched' => [],
+            ];
+        }
+
+        // 1. Ekstraksi teks dari berkas PDF
         $text = $this->extractTextFromFile($absoluteFilePath);
 
         if (empty(trim($text))) {
@@ -130,41 +140,33 @@ class TranskripParserService
         return [
             'success'       => count($matchedResults) > 0,
             'message'       => count($matchedResults) > 0
-                ? count($matchedResults) . ' nilai materi berhasil terdeteksi otomatis dari transkrip.'
-                : 'Transkrip terbaca namun nama mata kuliah belum ada yang cocok dengan materi kegiatan.',
+                ? count($matchedResults) . ' nilai materi berhasil terdeteksi otomatis dari transkrip PDF.'
+                : 'Transkrip PDF terbaca namun nama modul belum ada yang cocok dengan materi kegiatan.',
             'matched_count' => count($matchedResults),
             'matched'       => $matchedResults,
         ];
     }
 
     /**
-     * Ekstraksi teks dari berkas (PDF via Node parser / fallback PHP / AI fallback).
+     * Ekstraksi teks dari berkas PDF (Node parser lokal / fallback native PHP).
      */
     public function extractTextFromFile(string $filePath): string
     {
         $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-
-        if ($ext === 'pdf') {
-            // Engine 1: Local High-Speed Node.js Parser (pdf-parse)
-            $text = $this->extractPdfWithNode($filePath);
-            if (!empty(trim($text))) {
-                return $text;
-            }
-
-            // Engine 1.1: Native PHP Stream Fallback
-            $text = $this->extractPdfWithPhpStream($filePath);
-            if (!empty(trim($text))) {
-                return $text;
-            }
+        if ($ext !== 'pdf') {
+            return '';
         }
 
-        // Engine 2: AI Vision Fallback (Gemini Flash) jika berkas gambar atau PDF scan tanpa layer teks
-        $apiKey = env('GEMINI_API_KEY');
-        if (!empty($apiKey)) {
-            $aiText = $this->extractWithGeminiVision($filePath, $apiKey);
-            if (!empty(trim($aiText))) {
-                return $aiText;
-            }
+        // Engine 1: Local High-Speed Node.js Parser (pdf-parse)
+        $text = $this->extractPdfWithNode($filePath);
+        if (!empty(trim($text))) {
+            return $text;
+        }
+
+        // Engine 2: Native PHP Stream Fallback
+        $text = $this->extractPdfWithPhpStream($filePath);
+        if (!empty(trim($text))) {
+            return $text;
         }
 
         return '';
@@ -177,22 +179,37 @@ class TranskripParserService
     {
         $scriptPath = base_path('resources/scripts/parse_pdf.cjs');
         if (!file_exists($scriptPath)) {
+            Log::warning("TranskripParserService: Script {$scriptPath} tidak ditemukan.");
             return '';
+        }
+
+        // Cek apakah node_modules/pdf-parse terinstall
+        if (!is_dir(base_path('node_modules/pdf-parse')) && !file_exists(base_path('node_modules/pdf-parse/package.json'))) {
+            Log::warning("TranskripParserService: node_modules/pdf-parse belum terinstall di laptop ini. Silakan jalankan 'npm install' di terminal.");
         }
 
         // Cari executable node
         $nodePath = $this->findNodeBinary();
         if (!$nodePath) {
+            Log::warning("TranskripParserService: Node.js tidak ditemukan di sistem.");
             return '';
         }
 
         try {
             $process = new Process([$nodePath, $scriptPath, $filePath]);
-            $process->setTimeout(10);
+            $process->setTimeout(15);
             $process->run();
 
             if (!$process->isSuccessful()) {
-                Log::warning("TranskripParserService: Node script failed: " . $process->getErrorOutput());
+                Log::warning("TranskripParserService: Node script failed (exit code {$process->getExitCode()}): " . $process->getErrorOutput());
+                // Cek jika error output berupa json
+                $out = $process->getOutput();
+                if (preg_match('/\{[\s\S]*\}/', $out, $matches)) {
+                    $errData = json_decode($matches[0], true);
+                    if (!empty($errData['message'])) {
+                        Log::warning("TranskripParserService: Node parser message: " . $errData['message']);
+                    }
+                }
                 return '';
             }
 
@@ -202,6 +219,8 @@ class TranskripParserService
                 $data = json_decode($matches[0], true);
                 if (isset($data['status']) && $data['status'] === 'success') {
                     return $data['text'] ?? '';
+                } elseif (!empty($data['message'])) {
+                    Log::warning("TranskripParserService: Node parser returned error: " . $data['message']);
                 }
             }
         } catch (\Throwable $e) {
@@ -212,16 +231,61 @@ class TranskripParserService
     }
 
     /**
-     * Fallback pencarian path binary Node.js
+     * Fallback pencarian path binary Node.js lintas OS (Windows, Mac, Linux).
      */
     protected function findNodeBinary(): ?string
     {
+        // 1. Coba ExecutableFinder dari Symfony (bawaan Laravel, cek PATH lintas OS secara dinamis)
+        if (class_exists(\Symfony\Component\Process\ExecutableFinder::class)) {
+            $finder = new \Symfony\Component\Process\ExecutableFinder();
+            $node = $finder->find('node');
+            if ($node && (file_exists($node) || is_executable($node))) {
+                return $node;
+            }
+        }
+
+        // 2. Jika sistem operasi adalah Windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $winCandidates = array_filter([
+                'C:\\Program Files\\nodejs\\node.exe',
+                'C:\\Program Files (x86)\\nodejs\\node.exe',
+                getenv('APPDATA') ? getenv('APPDATA') . '\\npm\\node.cmd' : null,
+                getenv('LOCALAPPDATA') ? getenv('LOCALAPPDATA') . '\\Programs\\node\\node.exe' : null,
+            ]);
+
+            foreach ($winCandidates as $cand) {
+                if (file_exists($cand)) {
+                    return $cand;
+                }
+            }
+
+            $where = trim((string)@shell_exec('where node.exe 2>NUL'));
+            if (!empty($where)) {
+                $lines = explode("\n", $where);
+                $first = trim($lines[0]);
+                if (file_exists($first)) {
+                    return $first;
+                }
+            }
+
+            return 'node';
+        }
+
+        // 3. Jika Unix / macOS / Linux
         $candidates = [
-            '/Users/andi.ikhlass/.nvm/versions/node/v20.19.5/bin/node',
             '/usr/local/bin/node',
             '/opt/homebrew/bin/node',
             '/usr/bin/node',
         ];
+
+        // Cari versi Node di direktori NVM user aktif
+        $home = getenv('HOME') ?: ('/Users/' . (getenv('USER') ?: ''));
+        if (!empty($home) && is_dir("$home/.nvm/versions/node")) {
+            $versions = @glob("$home/.nvm/versions/node/*/bin/node");
+            if (!empty($versions)) {
+                $candidates[] = end($versions);
+            }
+        }
 
         foreach ($candidates as $cand) {
             if (file_exists($cand) && is_executable($cand)) {
@@ -229,12 +293,12 @@ class TranskripParserService
             }
         }
 
-        $which = trim((string)shell_exec('which node 2>/dev/null'));
+        $which = trim((string)@shell_exec('which node 2>/dev/null'));
         if (!empty($which) && file_exists($which)) {
             return $which;
         }
 
-        return null;
+        return 'node';
     }
 
     /**
