@@ -50,7 +50,7 @@ class SystemEmailCommand extends Command
                     break;
 
                 case 'otp':
-                    $parts = preg_split('/[:|]/', $extra ?? '');
+                    $parts = explode('|', $extra ?? '');
                     $otp   = $parts[0] ?? '';
                     $tType = $parts[1] ?? 'register';
                     if ($id && $otp) {
@@ -61,7 +61,7 @@ class SystemEmailCommand extends Command
                 case 'kontak':
                     $pesan = PesanMasuk::find($id);
                     if ($pesan) {
-                        $tujuanEmail = env('MAIL_USERNAME') ?: (env('MAIL_FROM_ADDRESS') ?: 'fikom.iclabs@umi.ac.id');
+                        $tujuanEmail = env('MAIL_USERNAME') ?: (env('MAIL_FROM_ADDRESS') ?: 'riswangnb@gmail.com');
                         if ($tujuanEmail) {
                             Mail::raw(
                                 "PESAN MASUK BARU DARI HUBUNGI KAMI\n" .

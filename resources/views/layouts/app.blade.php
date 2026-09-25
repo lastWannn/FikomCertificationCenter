@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
-    <meta name="description" content="@yield('meta-description','FIKOM Certification Center UMI Makassar — Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya. Dapatkan sertifikasi resmi berstandar BNSP dan industri.')"/>
+    <meta name="description" content="@yield('meta-description','FIKOM Certification Center UMI Makassar — Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya. Dapatkan sertifikasi resmi berstandar nasional dan internasional.')"/>
     <meta name="theme-color" content="#131218"/>
     <title>@yield('title','FCC') — FIKOM Certification Center UMI</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}"/>
@@ -13,7 +13,7 @@
     {{-- Open Graph / WhatsApp / Facebook / LinkedIn Link Preview Meta Tags --}}
     @php
         $defaultOgTitle = View::hasSection('title') ? View::getSection('title') . ' — FIKOM Certification Center UMI' : 'FIKOM Certification Center UMI Makassar';
-        $defaultOgDesc  = View::hasSection('meta-description') ? View::getSection('meta-description') : 'FIKOM Certification Center UMI Makassar — Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya. Dapatkan sertifikasi resmi berstandar BNSP dan industri.';
+        $defaultOgDesc  = View::hasSection('meta-description') ? View::getSection('meta-description') : 'FIKOM Certification Center UMI Makassar — Platform pelatihan dan sertifikasi kompetensi teknologi terpercaya. Dapatkan sertifikasi resmi berstandar nasional dan internasional.';
         $defaultOgImage = asset('images/og-preview.webp');
     @endphp
     <meta property="og:type" content="website"/>

@@ -203,6 +203,13 @@
     </div>
     @endif
 
+    @if(session('error'))
+    <div style="background:#FEF2F2;border:2px solid #EF4444;border-radius:14px;padding:14px 20px;margin-bottom:22px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 14px rgba(239,68,68,0.12);">
+        @include('components.icon',['name'=>'alert-triangle','size'=>20,'style'=>'color:#DC2626;flex-shrink:0'])
+        <p style="margin:0;font-size:13.5px;font-weight:800;color:#991B1B;">{{ session('error') }}</p>
+    </div>
+    @endif
+
     @if($errors->any())
     <div style="background:#FEF2F2;border:2px solid #EF4444;border-radius:14px;padding:16px 20px;margin-bottom:22px;">
         <p style="margin:0 0 6px;font-size:13.5px;font-weight:900;color:#DC2626;">Terdapat kesalahan pada input:</p>

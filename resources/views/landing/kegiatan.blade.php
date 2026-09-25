@@ -1,6 +1,6 @@
 @extends('layouts.public')
 @section('title','Program Pelatihan & Sertifikasi')
-@section('meta-description', 'Jelajahi program pelatihan dan sertifikasi kompetensi teknologi informasi berstandar BNSP dan industri di FIKOM Certification Center UMI Makassar.')
+@section('meta-description', 'Jelajahi program pelatihan dan sertifikasi kompetensi teknologi informasi berstandar nasional dan internasional di FIKOM Certification Center UMI Makassar.')
 @section('page-content')
 <div class="page-content-wrap" style="background:#131218; min-height: calc(100vh - 100px);">
     {{-- Page Header --}}
