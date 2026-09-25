@@ -1,0 +1,1 @@
+(function(){function i(){const e=document.getElementById("gambar-input"),t=document.getElementById("gambar-preview");!e||!t||e.addEventListener("change",()=>{const n=e.files[0];if(!n)return;const c=URL.createObjectURL(n);t.src=c,t.style.display="block"})}document.addEventListener("DOMContentLoaded",i)})();

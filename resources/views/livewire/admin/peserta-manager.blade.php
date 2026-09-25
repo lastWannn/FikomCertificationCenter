@@ -68,8 +68,8 @@
           <option value="nonaktif">Nonaktif</option>
         </select>
 
-        @if($search || $status)
-        <button type="button" wire:click="$set('search', ''); $set('status', '')" style="padding:6px 12px;font-size:12px;height:36px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;background:#FEF2F2;border:1.5px solid #FCA5A5;color:#EF4444;border-radius:10px;font-weight:800;transition:all .18s;" title="Reset Filter">
+        @if($search || $status || $perPage != 15)
+        <button type="button" wire:click="$set('search', ''); $set('status', ''); $set('perPage', 15)" style="padding:6px 12px;font-size:12px;height:36px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;background:#FEF2F2;border:1.5px solid #FCA5A5;color:#EF4444;border-radius:10px;font-weight:800;transition:all .18s;" title="Reset Filter">
           ✕ Reset
         </button>
         @endif
@@ -196,10 +196,19 @@
       </table>
     </div>
 
-    @if($peserta->hasPages())
-    <div style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;">
-      {{ $peserta->links() }}
+    <div style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <div>
+        <select wire:model.live="perPage" class="fcc-input" style="width:auto;font-size:12.5px;height:34px;padding:0 10px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;font-weight:700;cursor:pointer;color:#131218;outline:none;" title="Jumlah data per halaman">
+          <option value="10">10 / hal</option>
+          <option value="15">15 / hal</option>
+          <option value="25">25 / hal</option>
+          <option value="50">50 / hal</option>
+          <option value="100">100 / hal</option>
+        </select>
+      </div>
+      <div>
+        {{ $peserta->links('vendor.pagination.default') }}
+      </div>
     </div>
-    @endif
   </div>
 </div>

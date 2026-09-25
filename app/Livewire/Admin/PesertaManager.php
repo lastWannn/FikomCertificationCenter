@@ -13,12 +13,14 @@ class PesertaManager extends Component
 
     public string $search = '';
     public string $status = '';
+    public int $perPage = 15;
     public ?string $message = null;
     public ?string $messageType = 'success';
 
     protected $queryString = [
-        'search' => ['except' => ''],
-        'status' => ['except' => ''],
+        'search'  => ['except' => ''],
+        'status'  => ['except' => ''],
+        'perPage' => ['except' => 15],
     ];
 
     public function updatingSearch(): void
@@ -29,6 +31,16 @@ class PesertaManager extends Component
     public function updatingStatus(): void
     {
         $this->resetPage();
+    }
+
+    public function updatingPerPage(): void
+    {
+        $this->resetPage();
+    }
+
+    public function paginationView(): string
+    {
+        return 'vendor.pagination.default';
     }
 
     public function toggleStatus(int $pesertaId, string $newStatus): void
@@ -90,7 +102,7 @@ class PesertaManager extends Component
             })
             ->latest();
 
-        $pesertaList = $query->paginate(15);
+        $pesertaList = $query->paginate($this->perPage);
 
         $stats = [
             'total'            => Peserta::count(),
