@@ -478,25 +478,30 @@ $perpStatus = $pembayaran->status_perpanjangan;
             @elseif($pembayaran->bukti_bayar)
             {{-- BUKTI TRANSFER SUDAH DIKIRIM --}}
             <div class="fcc-card" style="padding:28px;margin-bottom:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
-                <h3 style="font-size:16px;font-weight:900;color:#131218;margin:0 0 16px;display:flex;align-items:center;gap:10px;">
-                    @include('components.icon',['name'=>'image','size'=>18,'style'=>'color:#059669'])
-                    Foto Bukti Transfer Terkirim
-                </h3>
-                <div style="background:#F8FAFC;border-radius:14px;padding:14px;text-align:center;border:1.5px solid #E2E8F0;margin-bottom:18px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+                    <h3 style="font-size:16px;font-weight:900;color:#131218;margin:0;display:flex;align-items:center;gap:10px;">
+                        @include('components.icon',['name'=>'image','size'=>18,'style'=>'color:#059669'])
+                        Foto Bukti Transfer Terkirim
+                    </h3>
+                    <button type="button" onclick="openPaymentLightbox('{{ asset('storage/'.$pembayaran->bukti_bayar) }}')" class="fcc-btn-outline-dark" style="padding:6px 12px;font-size:12px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+                        @include('components.icon',['name'=>'eye','size'=>13]) Perbesar Foto
+                    </button>
+                </div>
+                <div class="proof-preview-frame" style="background:#0B0E14;border-radius:14px;padding:12px;text-align:center;border:1.5px solid #1E293B;margin-bottom:18px;position:relative;cursor:zoom-in;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 2px 10px rgba(0,0,0,0.5);" onclick="openPaymentLightbox('{{ asset('storage/'.$pembayaran->bukti_bayar) }}')" title="Klik untuk memperbesar bukti transfer">
                     <img src="{{ asset('storage/'.$pembayaran->bukti_bayar) }}"
-                         style="max-width:100%;border-radius:10px;max-height:340px;object-fit:contain;border:1.5px solid #CBD5E1;"
+                         style="max-width:100%;border-radius:8px;max-height:340px;object-fit:contain;"
                          alt="Bukti Transfer">
                 </div>
-                <div class="form-grid-2col">
+                <div style="background:#F8FAFC;border-radius:12px;border:1px solid #E2E8F0;padding:6px 14px;">
                     @foreach([
                         ['Nama Pengirim',$pembayaran->nama_pengirim],
                         ['Tgl Transfer', optional($pembayaran->tgl_transfer)->format('d M Y').' '.$pembayaran->jam_transfer],
                         ['Metode Pembayaran',$pembayaran->metode_pembayaran],
                     ] as [$l,$v])
                     @if($v)
-                    <div style="padding:10px;background:#F8FAFC;border-radius:10px;border:1px solid #E2E8F0;">
-                        <p style="color:#64748B;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin:0 0 2px">{{ $l }}</p>
-                        <p style="color:#131218;font-size:13.5px;font-weight:800;margin:0">{{ $v }}</p>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid #F1F5F9;font-size:12.5px;">
+                        <span style="color:#64748B;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;">{{ $l }}</span>
+                        <span style="color:#131218;font-size:13px;font-weight:800;">{{ $v }}</span>
                     </div>
                     @endif
                     @endforeach
@@ -552,6 +557,34 @@ $perpStatus = $pembayaran->status_perpanjangan;
         </div>
 
     </div>{{-- end grid --}}
+</div>
+
+{{-- ── INTERACTIVE LIGHTBOX MODAL ──────────────────────────────── --}}
+<div id="fcc-payment-lightbox" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(10,11,16,0.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);flex-direction:column;padding:16px;box-sizing:border-box;overflow:hidden;" onclick="handleLightboxBackdropClick(event)">
+    <div style="width:100%;max-width:1200px;margin:0 auto 12px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:#FFFFFF;flex-shrink:0;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:34px;height:34px;border-radius:8px;background:rgba(255,200,26,0.15);border:1px solid rgba(255,200,26,0.4);display:flex;align-items:center;justify-content:center;color:#FFC81A;">
+                @include('components.icon',['name'=>'image','size'=>16])
+            </div>
+            <div>
+                <h4 style="font-size:14px;font-weight:800;margin:0;color:#FFFFFF;">Foto Bukti Transfer Pembayaran</h4>
+                <p style="font-size:11.5px;color:#94A3B8;margin:0;">{{ $pembayaran->kode_pembayaran }} &bull; {{ $pembayaran->nama_pengirim ?: $pembayaran->pendaftaran->peserta->nama }}</p>
+            </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;">
+            <a id="lightbox-tab-link" href="#" target="_blank" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#FFF;height:38px;padding:0 12px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                @include('components.icon',['name'=>'download','size'=>13]) Buka Ukuran Asli
+            </a>
+            <button type="button" onclick="closePaymentLightbox()" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#EF4444;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:900;">
+                &times;
+            </button>
+        </div>
+    </div>
+
+    <div id="lb-viewport" style="flex:1;width:100%;display:flex;align-items:center;justify-content:center;overflow:auto;position:relative;user-select:none;">
+        <img id="lightbox-preview-img" src="" style="max-width:90vw;max-height:85vh;border-radius:12px;box-shadow:0 25px 60px rgba(0,0,0,0.9);object-fit:contain;" alt="Bukti Transfer Perbesar" onclick="event.stopPropagation()">
+    </div>
 </div>
 
 @endsection
@@ -714,5 +747,49 @@ function handleDrop(e) {
     const inp = document.getElementById('bukti-input');
     compressAndPreviewImage(file, inp);
 }
+
+/* Lightbox Modal Logic */
+let currentZoom = 1;
+let currentRotation = 0;
+let isDragging = false;
+let startX, startY, scrollLeft, scrollTop;
+
+function openPaymentLightbox(src) {
+    const modal = document.getElementById('fcc-payment-lightbox');
+    const img = document.getElementById('lightbox-preview-img');
+    const tabLink = document.getElementById('lightbox-tab-link');
+    if (!modal || !img) return;
+
+    img.src = src;
+    if (tabLink) tabLink.href = src;
+    currentZoom = 1;
+    currentRotation = 0;
+    applyImageTransform();
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closePaymentLightbox() {
+    const modal = document.getElementById('fcc-payment-lightbox');
+    if (!modal) return;
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function handleLightboxBackdropClick(e) {
+    if (e.target.id === 'fcc-payment-lightbox' || e.target.id === 'lb-viewport') {
+        closePaymentLightbox();
+    }
+}
+
+document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('fcc-payment-lightbox');
+    if (!modal || modal.style.display !== 'flex') return;
+
+    if (e.key === 'Escape') {
+        closePaymentLightbox();
+    }
+});
 </script>
 @endpush

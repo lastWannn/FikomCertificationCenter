@@ -740,7 +740,7 @@
         </td>
         <td class="p2-title-col">
           <h1 class="p2-doc-title">Transkrip Nilai</h1>
-          <p class="p2-doc-sub">FIKOM Certification Center &bull; Universitas Muslim Indonesia</p>
+          <p class="p2-doc-sub">FIKOM Certification Center</p>
         </td>
       </tr>
     </table>
