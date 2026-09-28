@@ -69,8 +69,8 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 760px;
-    margin-bottom: 18px;
+    max-width: 840px;
+    margin: 0 auto 18px;
     padding-bottom: 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     flex-wrap: wrap;
@@ -81,7 +81,7 @@
     background: rgba(255, 200, 26, 0.08);
     border: 1px solid rgba(255, 200, 26, 0.25);
     border-radius: 8px;
-    padding: 4px 12px;
+    padding: 5px 14px;
     font-size: 11px;
     font-weight: 700;
     color: #FFC81A;
@@ -92,11 +92,10 @@
 
   .canvas-wrapper-outer {
     width: 100%;
-    max-width: 760px;
+    max-width: 840px;
     margin: 0 auto;
     position: relative;
     aspect-ratio: 297 / 210;
-    transition: max-width .25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* Aspect Ratio A4 Landscape 297mm x 210mm = 1.41428 */
@@ -115,14 +114,14 @@
     user-select: none;
   }
 
-  /* Match object-fit cover with DomPDF / Cetak PDF */
+  /* Match exact dimensions with DomPDF / Cetak PDF without cropping */
   .cert-bg-img {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: fill;
     background: #FFFFFF;
     pointer-events: none;
     z-index: 0;
@@ -154,20 +153,21 @@
   .drag-element {
     position: absolute;
     cursor: grab;
-    border: 1px dashed transparent;
+    outline: 1.5px dashed transparent;
+    outline-offset: 1px;
     border-radius: 4px;
     padding: 0;
-    transition: border-color .15s, box-shadow .15s, background .15s;
+    transition: outline-color .15s, box-shadow .15s, background .15s;
     box-sizing: border-box;
   }
 
   .drag-element:hover {
-    border-color: rgba(255, 200, 26, 0.6);
-    background: rgba(255, 200, 26, 0.05);
+    outline-color: rgba(255, 200, 26, 0.6);
+    background: rgba(255, 200, 26, 0.04);
   }
 
   .drag-element.active {
-    border: 1.5px solid #FFC81A;
+    outline: 1.5px solid #FFC81A;
     background: rgba(255, 200, 26, 0.08);
     box-shadow: 0 0 14px rgba(255, 200, 26, 0.35);
     cursor: grabbing;
@@ -183,6 +183,7 @@
     background: #FFC81A;
     border-radius: 50%;
     box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    z-index: 5;
   }
   .drag-element.active::before { top: -3px; left: -3px; }
   .drag-element.active::after { bottom: -3px; right: -3px; }
@@ -225,24 +226,6 @@
   .cert-canvas-container.hide-all-badges .drag-badge {
     opacity: 0 !important;
     visibility: hidden !important;
-  }
-
-  /* Zoom Control Buttons */
-  .zoom-btn {
-    padding: 5px 12px;
-    font-size: 11.5px;
-    font-weight: 800;
-    background: rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.7);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all .18s ease;
-  }
-  .zoom-btn.active, .zoom-btn:hover {
-    background: #FFC81A;
-    color: #131218;
-    border-color: #FFC81A;
   }
 
   /* ═══ CONTROL PANEL CARDS ════════════════════════════════════ */
@@ -344,35 +327,48 @@
   }
 
   .cert-overlay #text-title,
+  .cert-overlay #text-subtitle,
   .cert-overlay #text-label,
   .cert-overlay #text-name,
-  .cert-overlay #text-date,
   .cert-overlay #sig1-name,
   .cert-overlay #sig1-role,
   .cert-overlay #sig2-name,
   .cert-overlay #sig2-role {
     line-height: 1 !important;
     white-space: nowrap !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .cert-overlay #text-date {
+    line-height: 1.35 !important;
+    white-space: normal !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .cert-overlay #sig1-role {
     margin-top: var(--sig1-line-gap, 1mm) !important;
   }
   .cert-overlay #sig2-role {
-    margin-top: var(--sig2-line-gap, 1mm) !important;
+    margin-top: var(--sig2-line-gap, 0.5mm) !important;
   }
   .cert-overlay #sig1-img-wrap {
-    margin-bottom: var(--sig1-img-gap, 2mm) !important;
+    margin-bottom: var(--sig1-img-gap, 0mm) !important;
+    line-height: 0 !important;
+    font-size: 0 !important;
   }
   .cert-overlay #sig2-img-wrap {
-    margin-bottom: var(--sig2-img-gap, 2mm) !important;
+    margin-bottom: var(--sig2-img-gap, 0mm) !important;
+    line-height: 0 !important;
+    font-size: 0 !important;
   }
 
   .cert-overlay #text-desc-line1,
   .cert-overlay #text-desc-title,
   .cert-overlay #text-desc-line2,
   .cert-overlay #text-desc-date {
-    line-height: var(--desc-line-height, 0.9) !important;
+    line-height: var(--desc-line-height, 1.15) !important;
     white-space: nowrap !important;
     margin-top: 0 !important;
   }
@@ -415,7 +411,7 @@
         Salin Layout Kegiatan Lain
       </button>
 
-      <a href="{{ route('admin.sertifikat.preview-sample', $kegiatan->id) }}" target="_blank" class="fcc-btn-outline-light" style="padding:9.5px 18px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+      <a href="{{ route('admin.sertifikat.preview-sample', $kegiatan->id) }}?t={{ time() }}" id="btn-live-preview" target="_blank" class="fcc-btn-outline-light" style="padding:9.5px 18px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         Live PDF Sample
       </a>
@@ -438,36 +434,34 @@
     {{-- LEFT CANVAS AREA --}}
     <div class="canvas-card">
       <div class="canvas-toolbar">
-        <div style="display:flex;align-items:center;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <span style="font-size:12px;font-weight:800;color:#FFC81A;display:flex;align-items:center;gap:6px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
             A4 LANDSCAPE (297 × 210 mm)
           </span>
 
+          <span style="background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(52,211,153,0.3);font-size:11px;font-weight:800;padding:3px 9px;border-radius:12px;display:inline-flex;align-items:center;gap:5px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#34D399;"></span> Skala Tetap 1:1 Sesuai Sertifikat
+          </span>
+
           {{-- Label visibility mode switch --}}
-          <button onclick="cycleBadgeMode()" id="btn-badge-toggle" style="background:rgba(255,200,26,0.12);border:1px solid rgba(255,200,26,0.3);color:#FFC81A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:14px;cursor:pointer;transition:all .15s;">
+          <button type="button" onclick="cycleBadgeMode()" id="btn-badge-toggle" style="background:rgba(255,200,26,0.12);border:1px solid rgba(255,200,26,0.3);color:#FFC81A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:14px;cursor:pointer;transition:all .15s;">
             🏷️ Label: Saat Disorot
           </button>
 
-          <button onclick="toggleCenterGuide()" id="btn-guide-toggle" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);font-size:11px;font-weight:700;padding:4px 10px;border-radius:14px;cursor:pointer;transition:all .15s;">
+          <button type="button" onclick="toggleCenterGuide()" id="btn-guide-toggle" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);font-size:11px;font-weight:700;padding:4px 10px;border-radius:14px;cursor:pointer;transition:all .15s;">
             Garis Tengah: OFF
           </button>
         </div>
 
         <div style="display:flex;align-items:center;gap:12px;">
           <div class="canvas-hud" id="hud-display">
-            <span>ELEMEN: <strong id="hud-name" style="color:#FFF;">1. JUDUL</strong></span>
+            <span>ELEMEN: <strong id="hud-name" style="color:#FFF;">1. JUDUL (SERTIFIKAT)</strong></span>
             <span>|</span>
-            <span>TOP: <strong id="hud-top" style="color:#FFF;">40 mm</strong></span>
-            <span id="hud-offset-wrapper" style="display:none;">| <span id="hud-offset-label">RIGHT</span>: <strong id="hud-offset-val" style="color:#FFF;">46 mm</strong></span>
+            <span>TOP: <strong id="hud-top" style="color:#FFF;">37.5 mm</strong></span>
+            <span id="hud-offset-wrapper" style="display:none;">| <span id="hud-offset-label">OFFSET X</span>: <strong id="hud-offset-val" style="color:#FFF;">0 mm (Tengah)</strong></span>
             <span>|</span>
-            <span>FONT: <strong id="hud-font" style="color:#FFF;">32 pt</strong></span>
-          </div>
-
-          <div style="display:flex;align-items:center;gap:4px;">
-            <button class="zoom-btn" onclick="setCanvasZoom('620px', this)">620px</button>
-            <button class="zoom-btn active" onclick="setCanvasZoom('760px', this)">760px</button>
-            <button class="zoom-btn" onclick="setCanvasZoom('880px', this)">880px</button>
+            <span>FONT: <strong id="hud-font" style="color:#FFF;">50 pt</strong></span>
           </div>
         </div>
       </div>
@@ -487,96 +481,96 @@
           <div class="cert-overlay" id="canvas-overlay">
 
             {{-- 1. TITLE (SERTIFIKAT) --}}
-            <div class="drag-element" id="el-title" onclick="selectElement('title')" style="width:100%;text-align:center;">
+            <div class="drag-element" id="el-title" onclick="selectElement('title')" style="width:297mm;text-align:center;">
               <div class="drag-badge" id="badge-title">1. Judul</div>
-              <div id="text-title" style="font-family:'Times New Roman', Georgia, serif;font-weight:bold;letter-spacing:5px;color:#000;text-transform:uppercase;line-height:1;">
+              <div id="text-title" style="font-family:'Times New Roman', Georgia, serif;font-size:50pt;font-weight:bold;letter-spacing:5px;color:#000000;text-transform:uppercase;line-height:1;white-space:nowrap;margin:0;">
                 SERTIFIKAT
               </div>
             </div>
 
             {{-- 2. SUBTITLE (PENGHARGAAN) --}}
-            <div class="drag-element" id="el-subtitle" onclick="selectElement('subtitle')" style="width:100%;text-align:center;">
+            <div class="drag-element" id="el-subtitle" onclick="selectElement('subtitle')" style="width:297mm;text-align:center;">
               <div class="drag-badge" id="badge-subtitle">2. Sub-Judul</div>
-              <div id="text-subtitle" style="font-family:'Montserrat', Arial, sans-serif;font-weight:900;letter-spacing:6px;color:#B45309;text-transform:uppercase;line-height:1;">
+              <div id="text-subtitle" style="font-family:Arial, Helvetica, sans-serif;font-size:24pt;font-weight:bold;letter-spacing:5px;color:#B45309;text-transform:uppercase;line-height:1;white-space:nowrap;margin:0;">
                 PENGHARGAAN
               </div>
             </div>
 
-            {{-- 2. LABEL (DIBERIKAN KEPADA) --}}
-            <div class="drag-element" id="el-label" onclick="selectElement('label')" style="width:100%;text-align:center;">
-              <div class="drag-badge" id="badge-label">2. Label Subtitle</div>
-              <div id="text-label" style="font-family:Arial, Helvetica, sans-serif;font-weight:800;letter-spacing:1px;color:#333;text-transform:uppercase;">
+            {{-- 3. LABEL (DIBERIKAN KEPADA) --}}
+            <div class="drag-element" id="el-label" onclick="selectElement('label')" style="width:297mm;text-align:center;">
+              <div class="drag-badge" id="badge-label">3. Label Subtitle</div>
+              <div id="text-label" style="font-family:'Poppins', Arial, sans-serif;font-size:9.5pt;font-weight:bold;letter-spacing:1.5px;color:#333333;text-transform:uppercase;line-height:1;white-space:nowrap;margin:0;">
                 DIBERIKAN KEPADA
               </div>
             </div>
 
-            {{-- 3. NAME (NAMA PESERTA) --}}
-            <div class="drag-element" id="el-name" onclick="selectElement('name')" style="width:100%;text-align:center;">
-              <div class="drag-badge" id="badge-name">3. Nama Peserta</div>
-              <div id="text-name" style="font-family:'Great Vibes', 'Brush Script MT', cursive, serif;color:#0F172A;line-height:1.1;">
-                {{ $dummySertifikat->pendaftaran->peserta->nama ?? 'M. Rizwan.' }}
+            {{-- 4. NAME (NAMA PESERTA) --}}
+            <div class="drag-element" id="el-name" onclick="selectElement('name')" style="width:297mm;text-align:center;">
+              <div class="drag-badge" id="badge-name">4. Nama Peserta</div>
+              <div id="text-name" style="font-family:'Allura', 'Great Vibes', cursive, serif;font-size:60pt;font-weight:normal;color:#0F172A;line-height:1;white-space:nowrap;margin:0;">
+                {{ \Illuminate\Support\Str::title(mb_strtolower($dummySertifikat->pendaftaran->peserta->nama ?? 'M. Rizwan')) }}
               </div>
             </div>
 
-            {{-- 4. DESC (DESKRIPSI KEGIATAN) --}}
-            <div class="drag-element" id="el-desc" onclick="selectElement('desc')" style="width:100%;text-align:center;">
-              <div class="drag-badge" id="badge-desc">4. Deskripsi &amp; Kegiatan</div>
-              <div id="text-desc-line1" style="font-family:Arial, Helvetica, sans-serif;color:#475569;font-weight:500;">
+            {{-- 5. DESC (DESKRIPSI KEGIATAN) --}}
+            <div class="drag-element" id="el-desc" onclick="selectElement('desc')" style="width:297mm;text-align:center;">
+              <div class="drag-badge" id="badge-desc">5. Deskripsi &amp; Kegiatan</div>
+              <div id="text-desc-line1" style="font-family:'Poppins', Arial, sans-serif;font-size:16.5pt;color:#475569;font-weight:normal;line-height:1.15;white-space:nowrap;margin:0;">
                 atas partisipasi sebagai peserta dalam kegiatan
               </div>
-              <div id="text-desc-title" style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;">
+              <div id="text-desc-title" style="font-family:'Poppins', Arial, sans-serif;font-size:16.5pt;font-weight:bold;color:#B45309;line-height:1.15;white-space:nowrap;margin:0;">
                 “{{ $kegiatan->judul }}”
               </div>
-              <div id="text-desc-line2" style="font-family:Arial, Helvetica, sans-serif;color:#475569;font-weight:500;">
+              <div id="text-desc-line2" style="font-family:'Poppins', Arial, sans-serif;font-size:16.5pt;color:#475569;font-weight:normal;line-height:1.15;white-space:nowrap;margin:0;">
                 yang dilaksanakan pada
               </div>
-              <div id="text-desc-date" style="font-family:Arial, Helvetica, sans-serif;font-weight:800;color:#0F172A;">
-                {{ $kegiatan->jadwal?->tgl_pelaksanaan?->translatedFormat('d F Y') ?? '12 September 2026' }}
+              <div id="text-desc-date" style="font-family:'Poppins', Arial, sans-serif;font-size:10.5pt;font-weight:bold;color:#0F172A;line-height:1.15;white-space:nowrap;margin:0;">
+                {{ $kegiatan->jadwal?->tgl_pelaksanaan?->translatedFormat('d F Y') ?? now()->translatedFormat('d F Y') }}
               </div>
             </div>
 
-            {{-- 5. DATE (LOKASI & TANGGAL TERBIT) --}}
-            <div class="drag-element" id="el-date" onclick="selectElement('date')" style="text-align:center;">
-              <div class="drag-badge" id="badge-date">5. Lokasi &amp; Tgl</div>
-              <div id="text-date" style="font-family:Arial, Helvetica, sans-serif;font-weight:700;color:#0F172A;line-height:1.35;">
+            {{-- 6. DATE (LOKASI & TANGGAL TERBIT) --}}
+            <div class="drag-element" id="el-date" onclick="selectElement('date')" style="width:68mm;text-align:center;">
+              <div class="drag-badge" id="badge-date">6. Lokasi &amp; Tgl</div>
+              <div id="text-date" style="font-family:Arial, Helvetica, sans-serif;font-size:9.5pt;font-weight:bold;color:#0F172A;line-height:1.35;white-space:normal;margin:0;">
                 Makassar,<br>
-                <strong>12 September 2026</strong>
+                <strong>{{ now()->translatedFormat('d F Y') }}</strong>
               </div>
             </div>
 
             @php
               $editorTtd = \App\Models\TandaTangan::getAktif();
             @endphp
-            {{-- 6. SIG 1 (DEKAN - KIRI) --}}
-            <div class="drag-element" id="el-sig1" onclick="selectElement('sig1')" style="text-align:center;">
-              <div class="drag-badge" id="badge-sig1">6. Dekan (Kiri)</div>
-              <div id="sig1-img-wrap" style="height: {{ ($layout['sig1']['sig_height'] ?? 60) + 4 }}px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: {{ $layout['sig1']['img_gap'] ?? 0 }}mm;">
+            {{-- 7. SIG 1 (DEKAN - KIRI) --}}
+            <div class="drag-element" id="el-sig1" onclick="selectElement('sig1')" style="width:68mm;text-align:center;">
+              <div class="drag-badge" id="badge-sig1">7. Dekan (Kiri)</div>
+              <div id="sig1-img-wrap" style="height: {{ ($layout['sig1']['sig_height'] ?? 60) + 4 }}px; text-align: center; line-height: 0; font-size: 0; margin-bottom: {{ $layout['sig1']['img_gap'] ?? 0 }}mm;">
                 @if($editorTtd->dekan_ttd_url)
-                  <img id="sig1-img" src="{{ $editorTtd->dekan_ttd_url }}" style="height: {{ $layout['sig1']['sig_height'] ?? 60 }}px; max-width: 100%; object-fit: contain; pointer-events: none;">
+                  <img id="sig1-img" src="{{ $editorTtd->dekan_ttd_url }}" style="height: {{ $layout['sig1']['sig_height'] ?? 60 }}px; max-width: 100%; object-fit: contain; pointer-events: none; display: inline-block; vertical-align: middle;">
                 @else
-                  <div style="font-size: 10px; font-style: italic; color: #94A3B8; border: 1px dashed #CBD5E1; padding: 2px 10px; border-radius: 4px; background: rgba(241,245,249,0.7); pointer-events: none;">
+                  <div style="font-size: 10px; font-style: italic; color: #94A3B8; border: 1px dashed #CBD5E1; padding: 2px 10px; border-radius: 4px; background: rgba(241,245,249,0.7); pointer-events: none; display: inline-block; line-height: 1.2;">
                     [ Tanda Tangan Dekan ]
                   </div>
                 @endif
               </div>
-              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#0F172A;" id="sig1-name">{{ $editorTtd->dekan_nama }}</div>
-              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;letter-spacing:1.5px;margin-top:{{ $layout['sig1']['line_gap'] ?? 1 }}mm;" id="sig1-role">{{ $editorTtd->dekan_jabatan }}</div>
+              <div style="font-family:Arial, Helvetica, sans-serif;font-size:10pt;font-weight:bold;color:#0F172A;line-height:1;white-space:nowrap;margin:0;" id="sig1-name">{{ $editorTtd->dekan_nama }}</div>
+              <div style="font-family:Arial, Helvetica, sans-serif;font-size:8.5pt;font-weight:bold;color:#B45309;letter-spacing:1.5px;text-transform:uppercase;margin-top:{{ $layout['sig1']['line_gap'] ?? 1 }}mm;line-height:1;white-space:nowrap;" id="sig1-role">{{ $editorTtd->dekan_jabatan }}</div>
             </div>
 
-            {{-- 7. SIG 2 (KETUA UNIT - KANAN) --}}
-            <div class="drag-element" id="el-sig2" onclick="selectElement('sig2')" style="text-align:center;">
-              <div class="drag-badge" id="badge-sig2">7. Ketua Unit (Kanan)</div>
-              <div id="sig2-img-wrap" style="height: {{ ($layout['sig2']['sig_height'] ?? 70) + 4 }}px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: {{ $layout['sig2']['img_gap'] ?? 0 }}mm;">
+            {{-- 8. SIG 2 (KETUA UNIT - KANAN) --}}
+            <div class="drag-element" id="el-sig2" onclick="selectElement('sig2')" style="width:68mm;text-align:center;">
+              <div class="drag-badge" id="badge-sig2">8. Ketua Unit (Kanan)</div>
+              <div id="sig2-img-wrap" style="height: {{ ($layout['sig2']['sig_height'] ?? 70) + 4 }}px; text-align: center; line-height: 0; font-size: 0; margin-bottom: {{ $layout['sig2']['img_gap'] ?? 0 }}mm;">
                 @if($editorTtd->ketua_ttd_url)
-                  <img id="sig2-img" src="{{ $editorTtd->ketua_ttd_url }}" style="height: {{ $layout['sig2']['sig_height'] ?? 70 }}px; max-width: 100%; object-fit: contain; pointer-events: none;">
+                  <img id="sig2-img" src="{{ $editorTtd->ketua_ttd_url }}" style="height: {{ $layout['sig2']['sig_height'] ?? 70 }}px; max-width: 100%; object-fit: contain; pointer-events: none; display: inline-block; vertical-align: middle;">
                 @else
-                  <div style="font-size: 10px; font-style: italic; color: #94A3B8; border: 1px dashed #CBD5E1; padding: 2px 10px; border-radius: 4px; background: rgba(241,245,249,0.7); pointer-events: none;">
+                  <div style="font-size: 10px; font-style: italic; color: #94A3B8; border: 1px dashed #CBD5E1; padding: 2px 10px; border-radius: 4px; background: rgba(241,245,249,0.7); pointer-events: none; display: inline-block; line-height: 1.2;">
                     [ Tanda Tangan Ketua ]
                   </div>
                 @endif
               </div>
-              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#0F172A;" id="sig2-name">{{ $editorTtd->ketua_nama }}</div>
-              <div style="font-family:Arial, Helvetica, sans-serif;font-weight:900;color:#B45309;letter-spacing:1.5px;margin-top:{{ $layout['sig2']['line_gap'] ?? 0.5 }}mm;" id="sig2-role">{{ $editorTtd->ketua_jabatan }}</div>
+              <div style="font-family:Arial, Helvetica, sans-serif;font-size:10pt;font-weight:bold;color:#0F172A;line-height:1;white-space:nowrap;margin:0;" id="sig2-name">{{ $editorTtd->ketua_nama }}</div>
+              <div style="font-family:Arial, Helvetica, sans-serif;font-size:8.5pt;font-weight:bold;color:#B45309;letter-spacing:1.5px;text-transform:uppercase;margin-top:{{ $layout['sig2']['line_gap'] ?? 0.5 }}mm;line-height:1;white-space:nowrap;" id="sig2-role">{{ $editorTtd->ketua_jabatan }}</div>
             </div>
 
           </div>
@@ -735,30 +729,31 @@
   const defaultLayout = {
     title:    { top: 37.5, left: 0, font_size: 50, font_family: 'Times New Roman' },
     subtitle: { top: 57, left: 0, font_size: 24, font_family: 'Arial' },
-    label:    { top: 72, left: 0, font_size: 9.5, font_family: 'Poppins' },
-    name:     { top: 72.5, left: 0, font_size: 60, font_family: 'Allura' },
-    desc:     { top: 110.5, left: 0, font_size: 16.5, title_font_size: 16.5, line_height: 0.9, line_gap: 0, font_family: 'Poppins' },
+    label:    { top: 73.5, left: 4, font_size: 9.5, font_family: 'Poppins' },
+    name:     { top: 82, left: 0, font_size: 60, font_family: 'Allura' },
+    desc:     { top: 110.5, left: 6.5, font_size: 18.5, title_font_size: 21, line_height: 1.15, line_gap: 1, font_family: 'Poppins' },
     date:     { top: 140.5, right: 60.5, font_size: 9.5, font_family: 'Arial' },
-    sig1:     { top: 150, left: 63, font_size: 10, font_family: 'Arial', sig_height: 60, img_gap: 0, line_gap: 1 },
-    sig2:     { top: 147.5, right: 59.5, font_size: 10, font_family: 'Arial', sig_height: 70, img_gap: 0, line_gap: 0.5 }
+    sig1:     { top: 151, left: 66.5, font_size: 10, font_family: 'Arial', sig_height: 60, img_gap: 0, line_gap: 1 },
+    sig2:     { top: 148.6, right: 56, font_size: 10, font_family: 'Arial', sig_height: 70, img_gap: 0, line_gap: 0.5 }
   };
 
   let currentLayout = JSON.parse(JSON.stringify(@json($layout))) || defaultLayout;
   if (!currentLayout.title)    currentLayout.title    = { top: 37.5, left: 0, font_size: 50, font_family: 'Times New Roman' };
   if (!currentLayout.subtitle) currentLayout.subtitle = { top: 57, left: 0, font_size: 24, font_family: 'Arial' };
-  if (!currentLayout.label)    currentLayout.label    = { top: 72, left: 0, font_size: 9.5, font_family: 'Poppins' };
-  if (!currentLayout.name)     currentLayout.name     = { top: 72.5, left: 0, font_size: 60, font_family: 'Allura' };
-  if (!currentLayout.desc)     currentLayout.desc     = { top: 110.5, left: 0, font_size: 16.5, title_font_size: 16.5, line_height: 0.9, line_gap: 0, font_family: 'Poppins' };
-  if (!currentLayout.desc.line_height) currentLayout.desc.line_height = 0.9;
-  if (currentLayout.desc.line_gap === undefined || currentLayout.desc.line_gap < 0) currentLayout.desc.line_gap = 0;
-  if (!currentLayout.sig1)     currentLayout.sig1     = { top: 150, left: 63, font_size: 10, font_family: 'Arial', sig_height: 60, img_gap: 0, line_gap: 1 };
+  if (!currentLayout.label)    currentLayout.label    = { top: 73.5, left: 4, font_size: 9.5, font_family: 'Poppins' };
+  if (!currentLayout.name)     currentLayout.name     = { top: 82, left: 0, font_size: 60, font_family: 'Allura' };
+  if (!currentLayout.desc)     currentLayout.desc     = { top: 110.5, left: 6.5, font_size: 18.5, title_font_size: 21, line_height: 1.15, line_gap: 1, font_family: 'Poppins' };
+  if (!currentLayout.desc.line_height || currentLayout.desc.line_height < 1.15) currentLayout.desc.line_height = 1.15;
+  if (currentLayout.desc.line_gap === undefined || currentLayout.desc.line_gap < 0) currentLayout.desc.line_gap = 1;
+  if (!currentLayout.sig1)     currentLayout.sig1     = { top: 151, left: 66.5, font_size: 10, font_family: 'Arial', sig_height: 60, img_gap: 0, line_gap: 1 };
   if (!currentLayout.sig1.sig_height) currentLayout.sig1.sig_height = 60;
   if (currentLayout.sig1.img_gap === undefined) currentLayout.sig1.img_gap = 0;
   if (currentLayout.sig1.line_gap === undefined) currentLayout.sig1.line_gap = 1;
-  if (!currentLayout.sig2)     currentLayout.sig2     = { top: 147.5, right: 59.5, font_size: 10, font_family: 'Arial', sig_height: 70, img_gap: 0, line_gap: 0.5 };
+  if (!currentLayout.sig2)     currentLayout.sig2     = { top: 148.6, right: 56, font_size: 10, font_family: 'Arial', sig_height: 70, img_gap: 0, line_gap: 0.5 };
   if (!currentLayout.sig2.sig_height) currentLayout.sig2.sig_height = 70;
   if (currentLayout.sig2.img_gap === undefined) currentLayout.sig2.img_gap = 0;
   if (currentLayout.sig2.line_gap === undefined) currentLayout.sig2.line_gap = 0.5;
+
 
   let activeElementKey = 'title';
   let currentStep = 0.5;
@@ -865,26 +860,22 @@
     if (activePill) activePill.classList.add('active');
   }
 
-  function setCanvasZoom(sizePx, btnEl) {
-    document.getElementById('canvas-outer').style.maxWidth = sizePx;
-    document.querySelectorAll('.zoom-btn').forEach(b => b.classList.remove('active'));
-    btnEl.classList.add('active');
-    setTimeout(renderLayoutOnCanvas, 120);
-  }
-
   function renderLayoutOnCanvas() {
     const canvas = document.getElementById('cert-canvas');
     if (!canvas) return;
 
     const viewport = canvas.parentElement;
     const cssPxPerMm = 96 / 25.4;
-    const canvasScale = viewport.clientWidth / (TOTAL_WIDTH_MM * cssPxPerMm);
+    const canvasScale = canvas.offsetWidth > 0 
+      ? (viewport.clientWidth / canvas.offsetWidth)
+      : (viewport.clientWidth / (TOTAL_WIDTH_MM * cssPxPerMm));
     canvas.style.transform = `scale(${canvasScale})`;
 
     // 1. Title
     const titleEl = document.getElementById('el-title');
     titleEl.style.top = currentLayout.title.top + 'mm';
     titleEl.style.left = (currentLayout.title.left || 0) + 'mm';
+    titleEl.style.right = 'auto';
     titleEl.style.width = TOTAL_WIDTH_MM + 'mm';
     titleEl.style.marginLeft = '0px';
     const titleText = document.getElementById('text-title');
@@ -894,69 +885,75 @@
     // 2. Subtitle (PENGHARGAAN)
     const subtitleEl = document.getElementById('el-subtitle');
     if (subtitleEl) {
-      subtitleEl.style.top = (currentLayout.subtitle?.top || 48) + 'mm';
-      subtitleEl.style.left = (currentLayout.subtitle?.left || 0) + 'mm';
+      subtitleEl.style.top = (currentLayout.subtitle?.top ?? 57) + 'mm';
+      subtitleEl.style.left = (currentLayout.subtitle?.left ?? 0) + 'mm';
+      subtitleEl.style.right = 'auto';
       subtitleEl.style.width = TOTAL_WIDTH_MM + 'mm';
       subtitleEl.style.marginLeft = '0px';
       const subtitleText = document.getElementById('text-subtitle');
       if (subtitleText) {
-        subtitleText.style.fontSize = (currentLayout.subtitle?.font_size || 11) + 'pt';
-        subtitleText.style.fontFamily = getFontCss(currentLayout.subtitle?.font_family || 'Montserrat');
+        subtitleText.style.fontSize = (currentLayout.subtitle?.font_size ?? 24) + 'pt';
+        subtitleText.style.fontFamily = getFontCss(currentLayout.subtitle?.font_family || 'Arial');
       }
     }
 
-    // 2. Label
+    // 3. Label (DIBERIKAN KEPADA)
     const labelEl = document.getElementById('el-label');
     labelEl.style.top = currentLayout.label.top + 'mm';
     labelEl.style.left = (currentLayout.label.left || 0) + 'mm';
+    labelEl.style.right = 'auto';
     labelEl.style.width = TOTAL_WIDTH_MM + 'mm';
     labelEl.style.marginLeft = '0px';
     const labelText = document.getElementById('text-label');
     labelText.style.fontSize = currentLayout.label.font_size + 'pt';
-    labelText.style.fontFamily = getFontCss(currentLayout.label.font_family || 'Arial');
+    labelText.style.fontFamily = getFontCss(currentLayout.label.font_family || 'Poppins');
 
-    // 3. Name
+    // 4. Name
     const nameEl = document.getElementById('el-name');
     nameEl.style.top = currentLayout.name.top + 'mm';
     nameEl.style.left = (currentLayout.name.left || 0) + 'mm';
+    nameEl.style.right = 'auto';
     nameEl.style.width = TOTAL_WIDTH_MM + 'mm';
     nameEl.style.marginLeft = '0px';
     const nameText = document.getElementById('text-name');
     nameText.style.fontSize = currentLayout.name.font_size + 'pt';
     nameText.style.fontFamily = getFontCss(currentLayout.name.font_family || 'Allura');
 
-    // 4. Desc
+    // 5. Desc
     const descEl = document.getElementById('el-desc');
     descEl.style.top = currentLayout.desc.top + 'mm';
     descEl.style.left = (currentLayout.desc.left || 0) + 'mm';
+    descEl.style.right = 'auto';
     descEl.style.width = TOTAL_WIDTH_MM + 'mm';
     descEl.style.marginLeft = '0px';
-    const descFont = getFontCss(currentLayout.desc.font_family || 'Arial');
-    const descLineHeight = currentLayout.desc.line_height || 0.9;
+    const descFont = getFontCss(currentLayout.desc.font_family || 'Poppins');
+    const descLineHeight = Math.max(1.15, parseFloat(currentLayout.desc.line_height) || 1.15);
     descEl.style.setProperty('--desc-line-height', descLineHeight);
     descEl.style.setProperty('--desc-line-gap', (currentLayout.desc.line_gap || 0) + 'mm');
     document.getElementById('text-desc-line1').style.fontSize = currentLayout.desc.font_size + 'pt';
     document.getElementById('text-desc-line1').style.fontFamily = descFont;
     document.getElementById('text-desc-line2').style.fontSize = currentLayout.desc.font_size + 'pt';
     document.getElementById('text-desc-line2').style.fontFamily = descFont;
-    document.getElementById('text-desc-title').style.fontSize = currentLayout.desc.title_font_size + 'pt';
+    document.getElementById('text-desc-title').style.fontSize = (currentLayout.desc.title_font_size || currentLayout.desc.font_size || 16.5) + 'pt';
     document.getElementById('text-desc-title').style.fontFamily = descFont;
-    document.getElementById('text-desc-date').style.fontSize = '11pt';
+    document.getElementById('text-desc-date').style.fontSize = '10.5pt';
     document.getElementById('text-desc-date').style.fontFamily = descFont;
 
-    // 5. Date (matching 68mm width in PDF)
+    // 6. Date (matching 68mm width in PDF)
     const dateEl = document.getElementById('el-date');
     dateEl.style.top = currentLayout.date.top + 'mm';
-    dateEl.style.right = currentLayout.date.right + 'mm';
+    dateEl.style.left = 'auto';
+    dateEl.style.right = ((currentLayout.date.right !== undefined) ? currentLayout.date.right : 60.5) + 'mm';
     dateEl.style.width = '68mm';
     const dateText = document.getElementById('text-date');
     dateText.style.fontSize = currentLayout.date.font_size + 'pt';
     dateText.style.fontFamily = getFontCss(currentLayout.date.font_family || 'Arial');
 
-    // 6. Sig1 (Dekan Kiri - matching 68mm width in PDF)
+    // 7. Sig1 (Dekan Kiri - matching 68mm width in PDF)
     const sig1El = document.getElementById('el-sig1');
     sig1El.style.top = currentLayout.sig1.top + 'mm';
-    sig1El.style.left = currentLayout.sig1.left + 'mm';
+    sig1El.style.right = 'auto';
+    sig1El.style.left = ((currentLayout.sig1.left !== undefined) ? currentLayout.sig1.left : 63) + 'mm';
     sig1El.style.width = '68mm';
     const sig1Font = getFontCss(currentLayout.sig1.font_family || 'Arial');
     const sig1Name = document.getElementById('sig1-name');
@@ -965,8 +962,8 @@
     const sig1Role = document.getElementById('sig1-role');
     sig1Role.style.fontSize = '8.5pt';
     sig1Role.style.fontFamily = sig1Font;
-    const sig1H = currentLayout.sig1.sig_height || 48;
-    const sig1ImgGap = (currentLayout.sig1.img_gap !== undefined) ? currentLayout.sig1.img_gap : 2;
+    const sig1H = currentLayout.sig1.sig_height || 60;
+    const sig1ImgGap = (currentLayout.sig1.img_gap !== undefined) ? currentLayout.sig1.img_gap : 0;
     const sig1LineGap = (currentLayout.sig1.line_gap !== undefined) ? currentLayout.sig1.line_gap : 1;
     sig1El.style.setProperty('--sig1-img-gap', sig1ImgGap + 'mm');
     sig1El.style.setProperty('--sig1-line-gap', sig1LineGap + 'mm');
@@ -975,10 +972,11 @@
     if (sig1Img) sig1Img.style.height = sig1H + 'px';
     if (sig1Wrap) sig1Wrap.style.height = (sig1H + 4) + 'px';
 
-    // 7. Sig2 (Ketua Unit Kanan - matching 68mm width in PDF)
+    // 8. Sig2 (Ketua Unit Kanan - matching 68mm width in PDF)
     const sig2El = document.getElementById('el-sig2');
     sig2El.style.top = currentLayout.sig2.top + 'mm';
-    sig2El.style.right = currentLayout.sig2.right + 'mm';
+    sig2El.style.left = 'auto';
+    sig2El.style.right = ((currentLayout.sig2.right !== undefined) ? currentLayout.sig2.right : 59.5) + 'mm';
     sig2El.style.width = '68mm';
     const sig2Font = getFontCss(currentLayout.sig2.font_family || 'Arial');
     const sig2Name = document.getElementById('sig2-name');
@@ -987,9 +985,9 @@
     const sig2Role = document.getElementById('sig2-role');
     sig2Role.style.fontSize = '8.5pt';
     sig2Role.style.fontFamily = sig2Font;
-    const sig2H = currentLayout.sig2.sig_height || 48;
-    const sig2ImgGap = (currentLayout.sig2.img_gap !== undefined) ? currentLayout.sig2.img_gap : 2;
-    const sig2LineGap = (currentLayout.sig2.line_gap !== undefined) ? currentLayout.sig2.line_gap : 1;
+    const sig2H = currentLayout.sig2.sig_height || 70;
+    const sig2ImgGap = (currentLayout.sig2.img_gap !== undefined) ? currentLayout.sig2.img_gap : 0;
+    const sig2LineGap = (currentLayout.sig2.line_gap !== undefined) ? currentLayout.sig2.line_gap : 0.5;
     sig2El.style.setProperty('--sig2-img-gap', sig2ImgGap + 'mm');
     sig2El.style.setProperty('--sig2-line-gap', sig2LineGap + 'mm');
     const sig2Img = document.getElementById('sig2-img');
@@ -1002,12 +1000,13 @@
 
   function updateHUD() {
     const data = currentLayout[activeElementKey];
+    if (!data) return;
     document.getElementById('hud-name').textContent = elementNames[activeElementKey] || activeElementKey.toUpperCase();
     document.getElementById('hud-top').textContent = data.top + ' mm';
     if (activeElementKey === 'sig1' || activeElementKey === 'sig2') {
-      const sH = data.sig_height || 48;
-      const iG = (data.img_gap !== undefined) ? data.img_gap : 2;
-      const lG = (data.line_gap !== undefined) ? data.line_gap : 1;
+      const sH = data.sig_height || (activeElementKey === 'sig1' ? 60 : 70);
+      const iG = (data.img_gap !== undefined) ? data.img_gap : 0;
+      const lG = (data.line_gap !== undefined) ? data.line_gap : (activeElementKey === 'sig1' ? 1 : 0.5);
       document.getElementById('hud-font').textContent = data.font_size + ' pt (TTD: ' + sH + ' px, Spasi: ' + iG + 'mm / ' + lG + 'mm)';
     } else {
       document.getElementById('hud-font').textContent = data.font_size + ' pt';
@@ -1018,10 +1017,11 @@
 
     if (activeElementKey === 'date' || activeElementKey === 'sig2') {
       document.getElementById('hud-offset-label').textContent = 'RIGHT';
-      document.getElementById('hud-offset-val').textContent = (data.right || 46) + ' mm';
+      const defR = activeElementKey === 'date' ? 60.5 : 59.5;
+      document.getElementById('hud-offset-val').textContent = ((data.right !== undefined) ? data.right : defR) + ' mm';
     } else if (activeElementKey === 'sig1') {
       document.getElementById('hud-offset-label').textContent = 'LEFT';
-      document.getElementById('hud-offset-val').textContent = (data.left || 60) + ' mm';
+      document.getElementById('hud-offset-val').textContent = ((data.left !== undefined) ? data.left : 63) + ' mm';
     } else {
       const offX = data.left || 0;
       document.getElementById('hud-offset-label').textContent = 'OFFSET X';
@@ -1056,7 +1056,8 @@
       labelOffsetName.textContent = 'Posisi Horizontal (Kanan)';
       inputOffset.min = 0; inputOffset.max = 220;
       numOffset.min = 0; numOffset.max = 220;
-      const val = data.right || 46;
+      const defR = key === 'date' ? 60.5 : 59.5;
+      const val = (data.right !== undefined) ? data.right : defR;
       inputOffset.value = val;
       numOffset.value = val;
       if (btnCenterOffset) btnCenterOffset.style.display = 'none';
@@ -1064,7 +1065,7 @@
       labelOffsetName.textContent = 'Posisi Horizontal (Kiri)';
       inputOffset.min = 0; inputOffset.max = 220;
       numOffset.min = 0; numOffset.max = 220;
-      const val = data.left || 60;
+      const val = (data.left !== undefined) ? data.left : 63;
       inputOffset.value = val;
       numOffset.value = val;
       if (btnCenterOffset) btnCenterOffset.style.display = 'none';
@@ -1095,7 +1096,7 @@
           helpLineHeight.style.display = 'block';
         }
       }
-      const val = data.title_font_size || 14;
+      const val = data.title_font_size || 16.5;
       document.getElementById('input-title-font').value = val;
       document.getElementById('num-title-font').value = val;
       const lineGapVal = data.line_gap || 0;
@@ -1110,7 +1111,8 @@
           helpLineHeight.textContent = 'Jarak spasi baris antara nama dan baris teks jabatan.';
           helpLineHeight.style.display = 'block';
         }
-        const lineGapVal = (data.line_gap !== undefined) ? data.line_gap : 1;
+        const defaultLineGap = key === 'sig1' ? 1 : 0.5;
+        const lineGapVal = (data.line_gap !== undefined) ? data.line_gap : defaultLineGap;
         document.getElementById('input-line-height').value = lineGapVal;
         document.getElementById('num-line-height').value = lineGapVal;
       }
@@ -1122,13 +1124,14 @@
     if (key === 'sig1' || key === 'sig2') {
       if (groupSigHeight) {
         groupSigHeight.style.display = 'block';
-        const sH = data.sig_height || 48;
+        const defaultH = key === 'sig1' ? 60 : 70;
+        const sH = data.sig_height || defaultH;
         document.getElementById('input-sig-height').value = sH;
         document.getElementById('num-sig-height').value = sH;
       }
       if (groupSigImgGap) {
         groupSigImgGap.style.display = 'block';
-        const iG = (data.img_gap !== undefined) ? data.img_gap : 2;
+        const iG = (data.img_gap !== undefined) ? data.img_gap : 0;
         document.getElementById('input-sig-img-gap').value = iG;
         document.getElementById('num-sig-img-gap').value = iG;
       }
@@ -1176,26 +1179,28 @@
       const lineGapVal = parseFloat(document.getElementById('input-line-height').value);
       data.line_gap = lineGapVal;
       document.getElementById('num-line-height').value = lineGapVal;
-      data.line_height = 0.9;
+      data.line_height = 1.15;
     }
 
     if (activeElementKey === 'sig1' || activeElementKey === 'sig2') {
+      const defaultH = activeElementKey === 'sig1' ? 60 : 70;
+      const defaultLineGap = activeElementKey === 'sig1' ? 1 : 0.5;
       const sigHeightInput = document.getElementById('input-sig-height');
       if (sigHeightInput) {
-        const sigHVal = parseFloat(sigHeightInput.value) || 48;
+        const sigHVal = parseFloat(sigHeightInput.value) || defaultH;
         data.sig_height = sigHVal;
         document.getElementById('num-sig-height').value = sigHVal;
       }
       const sigImgGapInput = document.getElementById('input-sig-img-gap');
       if (sigImgGapInput) {
         const sigIGVal = parseFloat(sigImgGapInput.value);
-        data.img_gap = isNaN(sigIGVal) ? 2 : sigIGVal;
+        data.img_gap = isNaN(sigIGVal) ? 0 : sigIGVal;
         document.getElementById('num-sig-img-gap').value = data.img_gap;
       }
       const lineGapInput = document.getElementById('input-line-height');
       if (lineGapInput) {
         const lineGapVal = parseFloat(lineGapInput.value);
-        data.line_gap = isNaN(lineGapVal) ? 1 : lineGapVal;
+        data.line_gap = isNaN(lineGapVal) ? defaultLineGap : lineGapVal;
         document.getElementById('num-line-height').value = data.line_gap;
       }
     }
@@ -1232,9 +1237,12 @@
     data.top = Math.max(0, Math.min(195, Math.round((data.top + dy) * 10) / 10));
 
     if (activeElementKey === 'date' || activeElementKey === 'sig2') {
-      data.right = Math.max(0, Math.min(220, Math.round(((data.right || 46) - dx) * 10) / 10));
+      const defR = activeElementKey === 'date' ? 60.5 : 59.5;
+      const curRight = (data.right !== undefined) ? data.right : defR;
+      data.right = Math.max(0, Math.min(220, Math.round((curRight - dx) * 10) / 10));
     } else if (activeElementKey === 'sig1') {
-      data.left = Math.max(0, Math.min(220, Math.round(((data.left || 60) + dx) * 10) / 10));
+      const curLeft = (data.left !== undefined) ? data.left : 63;
+      data.left = Math.max(0, Math.min(220, Math.round((curLeft + dx) * 10) / 10));
     } else {
       data.left = Math.max(-100, Math.min(100, Math.round(((data.left || 0) + dx) * 10) / 10));
     }
@@ -1272,6 +1280,10 @@
       btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Simpan Koordinat';
       if (data.success) {
         showToast(data.message, 'success');
+        const prevBtn = document.getElementById('btn-live-preview');
+        if (prevBtn) {
+          prevBtn.href = "{{ route('admin.sertifikat.preview-sample', $kegiatan->id) }}?t=" + Date.now();
+        }
       } else {
         showToast('Gagal menyimpan koordinat.', 'error');
       }
@@ -1301,8 +1313,9 @@
         dragStartY = e.clientY;
         dragStartX = e.clientX;
         elementStartTop = currentLayout[key].top;
-        elementStartRight = currentLayout[key].right || 46;
-        elementStartLeft = currentLayout[key].left || 0;
+        const defR = key === 'date' ? 60.5 : 59.5;
+        elementStartRight = (currentLayout[key].right !== undefined) ? currentLayout[key].right : defR;
+        elementStartLeft = (currentLayout[key].left !== undefined) ? currentLayout[key].left : (key === 'sig1' ? 63 : 0);
 
         el.classList.add('active');
         e.preventDefault();

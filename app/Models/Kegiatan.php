@@ -18,21 +18,25 @@ class Kegiatan extends Model {
     public function getLayoutSettingsAttribute(): array
     {
         $default = [
-            'title'    => ['top' => 37.5, 'left' => 0,  'font_size' => 50,   'font_family' => 'Times New Roman'],
-            'subtitle' => ['top' => 57,   'left' => 0,  'font_size' => 24,   'font_family' => 'Arial'],
-            'label'    => ['top' => 72,   'left' => 0,  'font_size' => 9.5,  'font_family' => 'Poppins'],
-            'name'     => ['top' => 72.5, 'left' => 0,  'font_size' => 60,   'font_family' => 'Allura'],
-            'desc'     => ['top' => 110.5,'left' => 0,  'font_size' => 16.5, 'title_font_size' => 16.5, 'line_height' => 0.9, 'line_gap' => 0, 'font_family' => 'Poppins'],
-            'date'     => ['top' => 140.5,'right' => 60.5,'font_size' => 9.5,'font_family' => 'Arial'],
-            'sig1'     => ['top' => 150,  'left' => 63, 'font_size' => 10,   'font_family' => 'Arial', 'sig_height' => 60, 'img_gap' => 0, 'line_gap' => 1],
-            'sig2'     => ['top' => 147.5,'right' => 59.5,'font_size' => 10, 'font_family' => 'Arial', 'sig_height' => 70, 'img_gap' => 0, 'line_gap' => 0.5],
+            'title'    => ['top' => 37.5, 'left' => 0,    'font_size' => 50,   'font_family' => 'Times New Roman'],
+            'subtitle' => ['top' => 57,   'left' => 0,    'font_size' => 24,   'font_family' => 'Arial'],
+            'label'    => ['top' => 73.5, 'left' => 4,    'font_size' => 9.5,  'font_family' => 'Poppins'],
+            'name'     => ['top' => 82,   'left' => 0,    'font_size' => 60,   'font_family' => 'Allura'],
+            'desc'     => ['top' => 110.5,'left' => 6.5,  'font_size' => 18.5, 'title_font_size' => 21, 'line_height' => 1.15, 'line_gap' => 1, 'font_family' => 'Poppins'],
+            'date'     => ['top' => 140.5,'right' => 60.5,'font_size' => 9.5,  'font_family' => 'Arial'],
+            'sig1'     => ['top' => 151,  'left' => 66.5, 'font_size' => 10,   'font_family' => 'Arial', 'sig_height' => 60, 'img_gap' => 0, 'line_gap' => 1],
+            'sig2'     => ['top' => 148.6,'right' => 56,  'font_size' => 10,   'font_family' => 'Arial', 'sig_height' => 70, 'img_gap' => 0, 'line_gap' => 0.5],
         ];
+
 
         if (empty($this->sertifikat_layout)) {
             return $default;
         }
 
         $merged = array_replace_recursive($default, $this->sertifikat_layout);
+        if (empty($merged['desc']['line_height']) || (float)$merged['desc']['line_height'] < 1.15) {
+            $merged['desc']['line_height'] = 1.15;
+        }
         if (isset($merged['desc']['line_gap']) && (float)$merged['desc']['line_gap'] < 0) {
             $merged['desc']['line_gap'] = 0;
         }

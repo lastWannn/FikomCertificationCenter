@@ -42,9 +42,13 @@ trait HasHashid
      * Hashid dari ID model ini.
      * Accessor: $model->hashid
      */
-    public function getHashidAttribute(): string
+    public function getHashidAttribute(): ?string
     {
-        return $this->encodeHashid($this->getKey());
+        $key = $this->getKey();
+        if ($key === null) {
+            return null;
+        }
+        return $this->encodeHashid((int)$key);
     }
 
     /**

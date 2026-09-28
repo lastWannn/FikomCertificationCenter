@@ -11,18 +11,30 @@ class CetakController extends Controller
     public function sertifikat(Sertifikat $sertifikat)
     {
         $safeNomor = str_replace(['/', '\\'], '-', $sertifikat->nomor_sertifikat);
+        $kegiatan = $sertifikat->pendaftaran?->kegiatan;
+        $kegiatanUpdated = $kegiatan ? $kegiatan->updated_at?->timestamp : 0;
+        $forceFresh = request()->has('fresh') || request()->has('regenerate');
 
-        // 1. Check if pre-rendered PDF already exists in static storage
-        if (!empty($sertifikat->file_sertifikat)) {
+        // 1. Check if pre-rendered PDF already exists in static storage and is not stale
+        if (!empty($sertifikat->file_sertifikat) && !$forceFresh) {
             $filePath = storage_path('app/public/' . $sertifikat->file_sertifikat);
             if (!file_exists($filePath)) {
                 $filePath = public_path('storage/' . $sertifikat->file_sertifikat);
             }
             if (file_exists($filePath) && is_file($filePath)) {
-                return response()->file($filePath, [
-                    'Content-Type' => 'application/pdf',
-                    'Content-Disposition' => 'inline; filename="sertifikat-' . $safeNomor . '.pdf"'
-                ]);
+                $fileMtime = filemtime($filePath);
+                if ($kegiatanUpdated && $fileMtime < $kegiatanUpdated) {
+                    @unlink($filePath);
+                    $sertifikat->update(['file_sertifikat' => null]);
+                } else {
+                    return response()->file($filePath, [
+                        'Content-Type' => 'application/pdf',
+                        'Content-Disposition' => 'inline; filename="sertifikat-' . $safeNomor . '.pdf"',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                    ]);
+                }
             }
         }
 
@@ -36,7 +48,10 @@ class CetakController extends Controller
             if (file_exists($filePath) && is_file($filePath)) {
                 return response()->file($filePath, [
                     'Content-Type' => 'application/pdf',
-                    'Content-Disposition' => 'inline; filename="sertifikat-' . $safeNomor . '.pdf"'
+                    'Content-Disposition' => 'inline; filename="sertifikat-' . $safeNomor . '.pdf"',
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Pragma' => 'no-cache',
+                    'Expires' => '0',
                 ]);
             }
         }
@@ -46,11 +61,17 @@ class CetakController extends Controller
         if (class_exists(\Barryvdh\DomPDF\PDF::class)) {
             $pdf = app('dompdf.wrapper')
                 ->setPaper('a4', 'landscape')
-                ->setOption('isRemoteEnabled', true)
+                ->setOption('isRemoteEnabled', false)
                 ->setOption('isHtml5ParserEnabled', true);
 
             $pdf->loadView('admin.cetak.sertifikat-pdf', $viewData);
-            return $pdf->stream("sertifikat-{$safeNomor}.pdf");
+            return response($pdf->output(), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="sertifikat-' . $safeNomor . '.pdf"',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+            ]);
         }
         return view('admin.cetak.sertifikat-pdf', $viewData);
     }

@@ -79,16 +79,34 @@ class SertifikatController extends Controller
     }
 
     public function previewSamplePdf(Kegiatan $kegiatan) {
+        $kegiatan->loadMissing(['kegiatanPelatihan.jadwalPelatihan.pelatihan.materi', 'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi.materi']);
         $targetJudul = trim($kegiatan->judul);
         $matchingIds = Kegiatan::all()->filter(fn($k) => trim($k->judul) === $targetJudul)->pluck('id');
-        $sample = Sertifikat::whereHas('pendaftaran', fn($q) => $q->whereIn('kegiatan_id', $matchingIds))->first();
+        $sample = Sertifikat::whereHas('pendaftaran', fn($q) => $q->whereIn('kegiatan_id', $matchingIds))->with('pendaftaran.peserta')->first();
 
         if (!$sample) {
-            $sample = Sertifikat::first();
-        }
+            $pendaftaran = Pendaftaran::whereIn('kegiatan_id', $matchingIds)->with(['peserta', 'kegiatan', 'nilai'])->first();
+            if (!$pendaftaran) {
+                $dummyPeserta = new \App\Models\Peserta([
+                    'nama' => 'M. Rizwan',
+                    'email' => 'peserta@fikom.umi.ac.id'
+                ]);
+                $pendaftaran = new Pendaftaran([
+                    'kegiatan_id' => $kegiatan->id,
+                    'status_pendaftaran' => 'terdaftar',
+                ]);
+                $pendaftaran->setRelation('peserta', $dummyPeserta);
+                $pendaftaran->setRelation('kegiatan', $kegiatan);
+                $pendaftaran->setRelation('nilai', collect());
+            }
 
-        if (!$sample) {
-            return back()->with('error', 'Belum ada data sertifikat/peserta untuk melakukan preview layout PDF.');
+            $sample = new Sertifikat([
+                'nomor_sertifikat' => 'FCC/' . date('Y') . '/' . str_pad($kegiatan->id, 3, '0', STR_PAD_LEFT) . '/001',
+                'tgl_terbit' => now(),
+                'gambar_latar' => $kegiatan->nama_latar,
+            ]);
+            $sample->id = 1;
+            $sample->setRelation('pendaftaran', $pendaftaran);
         }
 
         $service = app(\App\Services\Admin\SertifikatService::class);
@@ -101,19 +119,23 @@ class SertifikatController extends Controller
                 $realPath = storage_path('app/public/' . $kegiatan->nama_latar);
             }
             if (file_exists($realPath) && is_file($realPath)) {
-                $type = pathinfo($realPath, PATHINFO_EXTENSION);
-                $mimeType = $type === 'svg' ? 'svg+xml' : ($type === 'webp' ? 'webp' : $type);
-                $viewData['bgSrc'] = 'data:image/' . $mimeType . ';base64,' . base64_encode(file_get_contents($realPath));
+                $viewData['bgSrc'] = $service->getOptimizedPdfBackground($realPath);
             }
         }
 
         $pdf = app('dompdf.wrapper')
             ->setPaper('a4', 'landscape')
-            ->setOption('isRemoteEnabled', true)
+            ->setOption('isRemoteEnabled', false)
             ->setOption('isHtml5ParserEnabled', true)
             ->loadView('admin.cetak.sertifikat-pdf', $viewData);
 
-        return $pdf->stream("sample-sertifikat-{$kegiatan->id}.pdf");
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="sample-sertifikat-' . $kegiatan->id . '.pdf"',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+        ]);
     }
     public function peserta(Kegiatan $kegiatan) {
         $kegiatan->load(['kegiatanPelatihan.jadwalPelatihan.pelatihan','kegiatanSertifikasi.jadwalSertifikasi.sertifikasi']);
@@ -204,9 +226,18 @@ class SertifikatController extends Controller
         $matching = Kegiatan::all()->filter(fn($k) => trim($k->judul) === $targetJudul);
         foreach ($matching as $k) {
             $k->update(['sertifikat_layout' => $r->layout]);
+            $k->touch();
 
-            Sertifikat::whereHas('pendaftaran', fn($q) => $q->where('kegiatan_id', $k->id))
-                ->update(['file_sertifikat' => null]);
+            $existingSertifikats = Sertifikat::whereHas('pendaftaran', fn($q) => $q->where('kegiatan_id', $k->id))->get();
+            foreach ($existingSertifikats as $s) {
+                if (!empty($s->file_sertifikat)) {
+                    $p1 = storage_path('app/public/' . $s->file_sertifikat);
+                    $p2 = public_path('storage/' . $s->file_sertifikat);
+                    if (file_exists($p1) && is_file($p1)) @unlink($p1);
+                    if (file_exists($p2) && is_file($p2)) @unlink($p2);
+                }
+                $s->update(['file_sertifikat' => null]);
+            }
         }
 
         if ($r->wantsJson()) {

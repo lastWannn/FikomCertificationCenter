@@ -36,8 +36,58 @@
         if (!empty($font)) return "'{$font}', {$fallback}";
         return $fallback;
     };
+
+    // Include all custom fonts so Dompdf can render any font chosen in the editor
+    $activeFonts = $customFonts;
+
+    // Font baseline shift calibrations between Dompdf and standard browser engines (mm per pt)
+    $fontDeltasPerPt = [
+      'Great Vibes'      => 0.1328,
+      'Allura'           => 0.1498,
+      'Alex Brush'       => 0.1410,
+      'Dancing Script'   => 0.0815,
+      'Cinzel'           => 0.1363,
+      'Playfair Display' => 0.0920,
+      'Times New Roman'  => -0.0160,
+      'Georgia'          => -0.0160,
+      'Poppins'          => 0.1658,
+      'Arial'            => -0.0160,
+      'Inter'            => 0.0713,
+      'Montserrat'       => 0.0787,
+      'Roboto'           => 0.0640,
+    ];
+
+    // 1. Label calibration
+    $labelFont = $layout['label']['font_family'] ?? 'Poppins';
+    $labelFontSize = (float)($layout['label']['font_size'] ?? 9.5);
+    $labelDelta = ($fontDeltasPerPt[$labelFont] ?? 0.1658) * $labelFontSize;
+    $calibratedLabelTop = ((float)($layout['label']['top'] ?? 73.5)) - $labelDelta;
+
+    // 2. Recipient Name calibration
+    $nameFont = $layout['name']['font_family'] ?? 'Allura';
+    $nameFontSize = (float)($layout['name']['font_size'] ?? 60);
+    $nameDelta = ($fontDeltasPerPt[$nameFont] ?? 0.1498) * $nameFontSize;
+    $calibratedNameTop = ((float)($layout['name']['top'] ?? 82)) - $nameDelta;
+
+    // 3. Description & Course Title calibration
+    $descFont = $layout['desc']['font_family'] ?? 'Poppins';
+    $descFontSize = (float)($layout['desc']['font_size'] ?? 18.5);
+    $descTitleFontSize = (float)($layout['desc']['title_font_size'] ?? 21);
+    $descLineHeight = max(1.15, (float)($layout['desc']['line_height'] ?? 1.15));
+    $descLineGap = max(0, (float)($layout['desc']['line_gap'] ?? 1));
+
+    // Poppins initial line baseline in Dompdf sits (0.2152 mm * font_size) lower than browser
+    $descTopDelta = ($descFont === 'Poppins' ? 0.2152 : ($fontDeltasPerPt[$descFont] ?? 0.1658)) * $descFontSize;
+    $calibratedDescTop = ((float)($layout['desc']['top'] ?? 110.5)) - $descTopDelta;
+
+    // Line heights in mm matching browser line box: (font_size_pt * 25.4 / 72 * line_height)
+    $descLine1HeightMm = ($descFontSize * 25.4 / 72) * $descLineHeight;
+    $descTitleHeightMm = ($descTitleFontSize * 25.4 / 72) * $descLineHeight;
+    $descDateHeightMm  = (10.5 * 25.4 / 72) * 1.15;
   @endphp
-  @foreach ($customFonts as $fontName => $fontFile)
+
+
+  @foreach ($activeFonts as $fontName => $fontFile)
     @php $fontLocalPath = str_replace('\\', '/', public_path('fonts/' . $fontFile)); @endphp
     @font-face {
       font-family: '{{ $fontName }}';
@@ -251,7 +301,7 @@
     left: 0;
     width: 297mm;
     height: 210mm;
-    object-fit: cover;
+    object-fit: fill;
     z-index: 0;
   }
   .overlay-content {
@@ -304,70 +354,89 @@
   /* 2. Label DIBERIKAN KEPADA */
   .label-block {
     position: absolute;
-    top: {{ $layout['label']['top'] ?? 72 }}mm;
-    left: {{ $layout['label']['left'] ?? 0 }}mm;
+    top: {{ round($calibratedLabelTop, 2) }}mm;
+    left: {{ $layout['label']['left'] ?? 4 }}mm;
     width: 297mm;
     text-align: center;
   }
   .given-to-label {
-    font-family: {!! $getFontFamilyCss($layout['label']['font_family'] ?? 'Poppins', 'Arial, Helvetica, sans-serif') !!};
-    font-size: {{ $layout['label']['font_size'] ?? 9.5 }}pt;
+    font-family: {!! $getFontFamilyCss($labelFont, 'Arial, Helvetica, sans-serif') !!};
+    font-size: {{ $labelFontSize }}pt;
     font-weight: bold;
     letter-spacing: 1.5px;
     color: #333333;
     text-transform: uppercase;
     margin: 0;
+    line-height: 1;
+    white-space: nowrap;
+    padding: 0;
   }
 
   /* 3. Nama Peserta */
   .name-block {
     position: absolute;
-    top: {{ $layout['name']['top'] ?? 72.5 }}mm;
+    top: {{ round($calibratedNameTop, 2) }}mm;
     left: {{ $layout['name']['left'] ?? 0 }}mm;
     width: 297mm;
     text-align: center;
   }
   .recipient-name {
-    font-family: {!! $getFontFamilyCss($layout['name']['font_family'] ?? 'Allura', "'Allura', 'Great Vibes', cursive, serif") !!};
-    font-size: {{ $layout['name']['font_size'] ?? 60 }}pt;
+    font-family: {!! $getFontFamilyCss($nameFont, "'Allura', 'Great Vibes', cursive, serif") !!};
+    font-size: {{ $nameFontSize }}pt;
     font-weight: normal;
     color: #0F172A;
     margin: 0;
-    line-height: 1.1;
+    line-height: 1;
+    white-space: nowrap;
+    padding: 0;
   }
 
   /* 4. Deskripsi Partisipasi & Nama Kegiatan */
   .desc-block {
     position: absolute;
-    top: {{ $layout['desc']['top'] ?? 110.5 }}mm;
-    left: {{ $layout['desc']['left'] ?? 0 }}mm;
+    top: {{ round($calibratedDescTop, 2) }}mm;
+    left: {{ $layout['desc']['left'] ?? 6.5 }}mm;
     width: 297mm;
     text-align: center;
   }
   .desc-line {
-    font-family: {!! $getFontFamilyCss($layout['desc']['font_family'] ?? 'Poppins', 'Arial, Helvetica, sans-serif') !!};
-    font-size: {{ $layout['desc']['font_size'] ?? 16.5 }}pt;
+    font-family: {!! $getFontFamilyCss($descFont, 'Arial, Helvetica, sans-serif') !!};
+    font-size: {{ $descFontSize }}pt;
     color: #475569;
     font-weight: normal;
-    margin: 0 0 {{ max(0, (float)($layout['desc']['line_gap'] ?? 0)) }}mm 0;
-    line-height: {{ $layout['desc']['line_height'] ?? 0.9 }};
+    height: {{ round($descLine1HeightMm, 2) }}mm;
+    margin: 0 0 {{ $descLineGap }}mm 0;
+    line-height: {{ $descLineHeight }};
+    white-space: nowrap;
+    padding: 0;
   }
   .course-title {
-    font-family: {!! $getFontFamilyCss($layout['desc']['font_family'] ?? 'Poppins', 'Arial, Helvetica, sans-serif') !!};
-    font-size: {{ $layout['desc']['title_font_size'] ?? 16.5 }}pt;
+    font-family: {!! $getFontFamilyCss($descFont, 'Arial, Helvetica, sans-serif') !!};
+    font-size: {{ $descTitleFontSize }}pt;
     font-weight: bold;
     color: #B45309;
-    margin: 0 0 {{ max(0, (float)($layout['desc']['line_gap'] ?? 0)) }}mm 0;
-    line-height: {{ $layout['desc']['line_height'] ?? 0.9 }};
+    height: {{ round($descTitleHeightMm, 2) }}mm;
+    margin: 0 0 {{ $descLineGap }}mm 0;
+    line-height: {{ $descLineHeight }};
+    white-space: nowrap;
+    padding: 0;
+  }
+  .desc-line3 {
+    margin: 0 0 {{ round($descLineGap + 1.38, 2) }}mm 0 !important;
   }
   .course-date {
-    font-family: {!! $getFontFamilyCss($layout['desc']['font_family'] ?? 'Poppins', 'Arial, Helvetica, sans-serif') !!};
+    font-family: {!! $getFontFamilyCss($descFont, 'Arial, Helvetica, sans-serif') !!};
     font-size: 10.5pt;
     font-weight: bold;
     color: #0F172A;
+    height: {{ round($descDateHeightMm, 2) }}mm;
     margin: 0;
-    line-height: {{ $layout['desc']['line_height'] ?? 0.9 }};
+    line-height: 1.15;
+    white-space: nowrap;
+    padding: 0;
   }
+
+
 
   /* 5. Lokasi & Tanggal Terbit */
   .date-block {
@@ -386,8 +455,8 @@
   /* 6a. Penandatangan Kiri (Dekan) */
   .sig1-block {
     position: absolute;
-    top: {{ $layout['sig1']['top'] ?? 150 }}mm;
-    left: {{ $layout['sig1']['left'] ?? 63 }}mm;
+    top: {{ $layout['sig1']['top'] ?? 151 }}mm;
+    left: {{ $layout['sig1']['left'] ?? 66.5 }}mm;
     width: 68mm;
     text-align: center;
   }
@@ -410,11 +479,12 @@
   /* 6b. Penandatangan Kanan (Ketua Unit) */
   .sig2-block {
     position: absolute;
-    top: {{ $layout['sig2']['top'] ?? 147.5 }}mm;
-    right: {{ $layout['sig2']['right'] ?? 59.5 }}mm;
+    top: {{ $layout['sig2']['top'] ?? 148.6 }}mm;
+    right: {{ $layout['sig2']['right'] ?? 56 }}mm;
     width: 68mm;
     text-align: center;
   }
+
   .sig2-name {
     font-family: {!! $getFontFamilyCss($layout['sig2']['font_family'] ?? 'Arial', 'Arial, Helvetica, sans-serif') !!};
     font-size: {{ $layout['sig2']['font_size'] ?? 10 }}pt;
@@ -432,20 +502,44 @@
   }
 
   .cert-title,
+  .cert-subtitle,
   .given-to-label,
-  .date-block,
   .sig1-name,
+  .sig2-name {
+    line-height: 1;
+    white-space: nowrap;
+    margin: 0;
+    padding: 0;
+  }
+
+  .recipient-name {
+    line-height: 1;
+    white-space: nowrap;
+    margin: 0;
+    padding: 0;
+  }
+
+  .date-block {
+    line-height: 1.35;
+    white-space: normal;
+    margin: 0;
+    padding: 0;
+  }
+
   .sig1-role,
-  .sig2-name,
   .sig2-role {
     line-height: 1;
     white-space: nowrap;
+    padding: 0;
   }
 
   .desc-line,
   .course-title,
   .course-date {
+    line-height: 1.15;
     white-space: nowrap;
+    margin-top: 0;
+    padding: 0;
   }
 </style>
 </head>
@@ -459,7 +553,7 @@
 
   <div class="overlay-content">
     <div class="title-block">
-      <h1 class="cert-title">SERTIFIKAT</h1>
+      <div class="cert-title">SERTIFIKAT</div>
     </div>
 
     <div class="subtitle-block">
@@ -477,7 +571,8 @@
     <div class="desc-block">
       <div class="desc-line">atas partisipasi sebagai peserta dalam kegiatan</div>
       <div class="course-title">“{{ $sertifikat->pendaftaran->kegiatan->judul }}”</div>
-      <div class="desc-line">yang dilaksanakan pada</div>
+      <div class="desc-line desc-line3">yang dilaksanakan pada</div>
+
       <div class="course-date">{{ $tglPelaksanaanFormat ?? ($sertifikat->pendaftaran->kegiatan->jadwal?->tgl_pelaksanaan?->translatedFormat('d F Y') ?? '-') }}</div>
     </div>
 
@@ -510,8 +605,22 @@
           $ketuaTtd = $activeTtd->ketua_ttd;
       }
 
-      $dekanTtdSrc = ($dekanTtd && file_exists(public_path('storage/' . $dekanTtd))) ? public_path('storage/' . $dekanTtd) : null;
-      $ketuaTtdSrc = ($ketuaTtd && file_exists(public_path('storage/' . $ketuaTtd))) ? public_path('storage/' . $ketuaTtd) : null;
+      $resolveImgBase64 = function(?string $relPath): ?string {
+          if (empty($relPath)) return null;
+          $fullPath = public_path('storage/' . $relPath);
+          if (!file_exists($fullPath)) {
+              $fullPath = storage_path('app/public/' . $relPath);
+          }
+          if (file_exists($fullPath) && is_file($fullPath)) {
+              $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+              $mime = $ext === 'png' ? 'image/png' : ($ext === 'webp' ? 'image/webp' : ($ext === 'svg' ? 'image/svg+xml' : 'image/jpeg'));
+              return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($fullPath));
+          }
+          return null;
+      };
+
+      $dekanTtdSrc = $resolveImgBase64($dekanTtd);
+      $ketuaTtdSrc = $resolveImgBase64($ketuaTtd);
       $sig1Height = (int)($layout['sig1']['sig_height'] ?? 60);
       $sig2Height = (int)($layout['sig2']['sig_height'] ?? 70);
       $sig1ImgGap = max(0, (float)($layout['sig1']['img_gap'] ?? 0));
@@ -520,7 +629,7 @@
 
     {{-- Penandatangan Kiri (Dekan) --}}
     <div class="sig1-block">
-      <div style="height: {{ $sig1Height + 4 }}px; margin-bottom: {{ $sig1ImgGap }}mm;">
+      <div style="height: {{ $sig1Height + 4 }}px; margin-bottom: {{ $sig1ImgGap }}mm; line-height: 0; font-size: 0; text-align: center;">
         @if($dekanTtdSrc)
           <img src="{{ $dekanTtdSrc }}" style="height: {{ $sig1Height }}px; max-width: 100%; object-fit: contain;">
         @endif
@@ -531,7 +640,7 @@
 
     {{-- Penandatangan Kanan (Ketua Unit) --}}
     <div class="sig2-block">
-      <div style="height: {{ $sig2Height + 4 }}px; margin-bottom: {{ $sig2ImgGap }}mm;">
+      <div style="height: {{ $sig2Height + 4 }}px; margin-bottom: {{ $sig2ImgGap }}mm; line-height: 0; font-size: 0; text-align: center;">
         @if($ketuaTtdSrc)
           <img src="{{ $ketuaTtdSrc }}" style="height: {{ $sig2Height }}px; max-width: 100%; object-fit: contain;">
         @endif
@@ -570,16 +679,12 @@
     $p2KetuaNama = $snap['ketua_nama'] ?? $activeTtd->ketua_nama;
     $p2KetuaJabatan = $snap['ketua_jabatan'] ?? $activeTtd->ketua_jabatan;
     $p2KetuaTtd = $snap['ketua_ttd'] ?? $activeTtd->ketua_ttd;
-    $p2KetuaTtdSrc = ($p2KetuaTtd && file_exists(public_path('storage/' . $p2KetuaTtd)))
-        ? 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('storage/' . $p2KetuaTtd)))
-        : null;
+    $p2KetuaTtdSrc = $resolveImgBase64($p2KetuaTtd);
 
     $p2ProktorNama = $snap['proktor_nama'] ?? $activeTtd->proktor_nama;
     $p2ProktorJabatan = $snap['proktor_jabatan'] ?? $activeTtd->proktor_jabatan;
     $p2ProktorTtd = $snap['proktor_ttd'] ?? $activeTtd->proktor_ttd;
-    $p2ProktorTtdSrc = ($p2ProktorTtd && file_exists(public_path('storage/' . $p2ProktorTtd)))
-        ? 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('storage/' . $p2ProktorTtd)))
-        : null;
+    $p2ProktorTtdSrc = $resolveImgBase64($p2ProktorTtd);
 
     // Logos in base64
     $p2LogoUmiSrc = file_exists(public_path('images/logo_umi.webp'))
