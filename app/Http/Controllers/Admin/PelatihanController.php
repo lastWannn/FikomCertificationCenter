@@ -10,9 +10,10 @@ class PelatihanController extends Controller
 {
     public function __construct(private PelatihanService $service) {}
 
-    public function index() {
+    public function index(\Illuminate\Http\Request $r) {
+        $perPage = in_array((int)$r->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$r->get('per_page') : 10;
         return view('admin.pelatihan.tambah.index', [
-            'pelatihan'  => Pelatihan::with(['kategori'])->paginate(10),
+            'pelatihan'  => Pelatihan::with(['kategori'])->withCount(['jadwal', 'materi'])->latest()->paginate($perPage),
             'kategori'   => Kategori::all(),
             'pelatihanList' => Pelatihan::all(),
         ]);
@@ -45,9 +46,14 @@ class PelatihanController extends Controller
         return redirect()->route('admin.pelatihan.index')
             ->with('success', 'Pelatihan berhasil ditambahkan.');
     }
-    public function show(Pelatihan $pelatihan) {
-        $pelatihan->load(['materi', 'jadwal.kegiatanPelatihan.kegiatan']);
-        return view('admin.pelatihan.show', compact('pelatihan'));
+    public function show(Pelatihan $pelatihan, \Illuminate\Http\Request $r) {
+        $pelatihan->load(['materi']);
+        $perPage = in_array((int)$r->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$r->get('per_page') : 10;
+        $jadwal = $pelatihan->jadwal()
+            ->with(['kegiatanPelatihan.kegiatan.biaya'])
+            ->orderBy('tgl_pelaksanaan', 'desc')
+            ->paginate($perPage);
+        return view('admin.pelatihan.show', compact('pelatihan', 'jadwal'));
     }
     public function edit(Pelatihan $pelatihan) {
         return view('admin.pelatihan.edit', array_merge(compact('pelatihan'), [

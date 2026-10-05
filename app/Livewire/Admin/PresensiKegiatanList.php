@@ -12,11 +12,23 @@ class PresensiKegiatanList extends Component
 
     public string $q = '';
     public string $jenis = '';
+    public int $perPage = 10;
 
     protected $queryString = [
-        'q'     => ['except' => ''],
-        'jenis' => ['except' => ''],
+        'q'       => ['except' => ''],
+        'jenis'   => ['except' => ''],
+        'perPage' => ['except' => 10],
     ];
+
+    public function updatingPerPage(): void
+    {
+        $this->resetPage();
+    }
+
+    public function paginationView(): string
+    {
+        return 'vendor.pagination.default';
+    }
 
     public function updatingQ(): void
     {
@@ -56,7 +68,7 @@ class PresensiKegiatanList extends Component
             });
         }
 
-        $kegiatanList = $query->orderBy('created_at', 'desc')->paginate(10);
+        $kegiatanList = $query->orderBy('created_at', 'desc')->paginate($this->perPage);
 
         return view('livewire.admin.presensi-kegiatan-list', [
             'kegiatanList' => $kegiatanList,

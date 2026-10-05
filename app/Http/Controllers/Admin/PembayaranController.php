@@ -58,7 +58,8 @@ class PembayaranController extends Controller
             $q->where('status_perpanjangan', 'menunggu');
         }
 
-        $pembayaran               = $q->paginate(15)->withQueryString();
+        $perPage = in_array((int)$r->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$r->get('per_page') : 10;
+        $pembayaran               = $q->paginate($perPage)->withQueryString();
         $countPerpanjanganPending = Pembayaran::where('status_perpanjangan', 'menunggu')->count();
         $countMenungguVerifikasi  = Pembayaran::where('status_pembayaran', 'menunggu_verifikasi')->count();
 

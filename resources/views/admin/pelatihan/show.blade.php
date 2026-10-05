@@ -36,10 +36,10 @@
     <div>
       <div class="fcc-card" style="padding:0;overflow:hidden;">
         <div style="padding:14px 18px;border-bottom:1px solid #E2E4EB;display:flex;justify-content:space-between;align-items:center;">
-          <p style="margin:0;font-size:14px;font-weight:800;color:#131218;">Jadwal ({{ $pelatihan->jadwal->count() }})</p>
+          <p style="margin:0;font-size:14px;font-weight:800;color:#131218;">Jadwal ({{ $jadwal->total() }})</p>
           <button type="button" onclick="openJadwalModal()" style="font-size:12px;color:#FFC81A;font-weight:800;background:#131218;padding:4px 12px;border-radius:14px;border:none;cursor:pointer;">+ Tambah Jadwal</button>
         </div>
-        @forelse($pelatihan->jadwal as $j)
+        @forelse($jadwal as $j)
         @php $kp = $j->kegiatanPelatihan; @endphp
         <div style="padding:12px 18px;border-top:1px solid #F0F1F5;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -273,6 +273,26 @@
           Belum ada jadwal pelaksanaan. <button type="button" onclick="openJadwalModal()" style="color:#FFC81A;background:none;border:none;font-weight:800;cursor:pointer;padding:0;">Tambah batch jadwal &rarr;</button>
         </div>
         @endforelse
+
+        <div style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <form method="GET" action="{{ url()->current() }}" style="margin:0;">
+            <select name="per_page" onchange="this.form.submit()" class="fcc-input" style="width:auto;font-size:12.5px;height:34px;padding:0 10px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;font-weight:700;cursor:pointer;color:#131218;outline:none;" title="Jumlah data per halaman">
+                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 / hal</option>
+                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 / hal</option>
+                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 / hal</option>
+                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 / hal</option>
+                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100 / hal</option>
+            </select>
+            </form>
+            <span style="font-size:12px;color:#64748B;font-weight:600;">
+              Menampilkan {{ $jadwal->firstItem() ?? 0 }}–{{ $jadwal->lastItem() ?? 0 }} dari {{ $jadwal->total() }} data
+            </span>
+          </div>
+          <div>
+            {{ $jadwal->withQueryString()->links() }}
+          </div>
+        </div>
       </div>
     </div>
 

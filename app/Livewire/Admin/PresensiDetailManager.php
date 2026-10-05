@@ -14,12 +14,24 @@ class PresensiDetailManager extends Component
     public Kegiatan $kegiatan;
     public string $search = '';
     public string $statusFilter = '';
+    public int $perPage = 10;
     public ?string $toastMessage = null;
 
     protected $queryString = [
         'search'       => ['except' => ''],
         'statusFilter' => ['except' => ''],
+        'perPage'      => ['except' => 10],
     ];
+
+    public function updatingPerPage(): void
+    {
+        $this->resetPage();
+    }
+
+    public function paginationView(): string
+    {
+        return 'vendor.pagination.default';
+    }
 
     public function mount(Kegiatan $kegiatan): void
     {
@@ -84,7 +96,7 @@ class PresensiDetailManager extends Component
             $query->where('status_kehadiran', $this->statusFilter);
         }
 
-        $pendaftaranList = $query->paginate(20);
+        $pendaftaranList = $query->paginate($this->perPage);
 
         $counts = [
             'total'       => Pendaftaran::where('kegiatan_id', $this->kegiatan->id)->where('status_pendaftaran', 'terdaftar')->count(),

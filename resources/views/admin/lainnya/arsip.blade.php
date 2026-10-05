@@ -1,11 +1,11 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 @section('title','Arsip Kegiatan')
 @section('page-title','Arsip Kegiatan')
 
 @section('page-content')
 <div style="padding:24px;position:relative;">
 
-    {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
+    {{-- â•â•â• SKELETON LOADING OVERLAY â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     <style>
       @keyframes skeletonShimmer {
         0% { background-position: -200% 0; }
@@ -160,11 +160,24 @@
                 </tbody>
             </table>
         </div>
-        @if($arsip->hasPages())
-        <div style="padding:14px 20px;border-top:2px solid #E5E7EB;background:#FFFFFF;">
-            {{ $arsip->withQueryString()->links() }}
+        <div style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <form method="GET" action="{{ url()->current() }}" style="margin:0;"><select name="per_page" onchange="this.form.submit()" class="fcc-input" style="width:auto;font-size:12.5px;height:34px;padding:0 10px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;font-weight:700;cursor:pointer;color:#131218;outline:none;" title="Jumlah data per halaman">
+                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 / hal</option>
+                    <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 / hal</option>
+                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 / hal</option>
+                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 / hal</option>
+                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100 / hal</option>
+                </select>
+                </form>
+                <span style="font-size:12px;color:#64748B;font-weight:600;">
+                    Menampilkan {{ $arsip->firstItem() ?? 0 }}â€“{{ $arsip->lastItem() ?? 0 }} dari {{ $arsip->total() }} data
+                </span>
+            </div>
+            <div>
+                {{ $arsip->withQueryString()->links('vendor.pagination.custom') }}
+            </div>
         </div>
-        @endif
     </div>
 
 </div>

@@ -11,11 +11,12 @@ class JadwalSertifikasiController extends Controller
     public function __construct(private JadwalSertifikasiService $service) {}
 
     public function index(\Illuminate\Http\Request $r) {
+        $perPage = in_array((int)$r->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$r->get('per_page') : 10;
         return view('admin.jadwal.sertifikasi', [
             'sertifikasi' => Sertifikasi::with('kategori')->get(),
             'jadwal'      => JadwalSertifikasi::with(['sertifikasi.kategori','kegiatanSertifikasi.kegiatan'])
                 ->when($r->sertifikasi_id, fn($q) => $q->where('sertifikasi_id',$r->sertifikasi_id))
-                ->orderBy('tgl_pelaksanaan','desc')->paginate(15),
+                ->orderBy('tgl_pelaksanaan','desc')->paginate($perPage),
         ]);
     }
     public function create(Sertifikasi $sertifikasi) {

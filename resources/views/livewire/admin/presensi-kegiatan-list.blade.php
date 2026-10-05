@@ -185,10 +185,22 @@
             </table>
         </div>
 
-        @if($kegiatanList->hasPages())
-        <div style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;">
-            {{ $kegiatanList->links() }}
+        <div style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <select wire:model.live="perPage" class="fcc-input" style="width:auto;font-size:12.5px;height:34px;padding:0 10px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;font-weight:700;cursor:pointer;color:#131218;outline:none;" title="Jumlah data per halaman">
+                    <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 / hal</option>
+                    <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15 / hal</option>
+                    <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 / hal</option>
+                    <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 / hal</option>
+                    <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100 / hal</option>
+                </select>
+                <span style="font-size:12px;color:#64748B;font-weight:600;">
+                    Menampilkan {{ $kegiatanList->firstItem() ?? 0 }}–{{ $kegiatanList->lastItem() ?? 0 }} dari {{ $kegiatanList->total() }} data
+                </span>
+            </div>
+            <div>
+                {{ $kegiatanList->links('vendor.pagination.default') }}
+            </div>
         </div>
-        @endif
     </div>
 </div>

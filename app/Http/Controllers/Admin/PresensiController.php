@@ -32,7 +32,8 @@ class PresensiController extends Controller
             });
         }
 
-        $kegiatanList = $query->orderBy('created_at', 'desc')->paginate(10);
+        $perPage = in_array((int)$request->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$request->get('per_page') : 10;
+        $kegiatanList = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
         return view('admin.lainnya.presensi', compact('kegiatanList'));
     }
@@ -40,17 +41,18 @@ class PresensiController extends Controller
     /**
      * Tampilkan daftar peserta per kegiatan tertentu.
      */
-    public function show(Kegiatan $kegiatan)
+    public function show(Kegiatan $kegiatan, Request $request)
     {
         $kegiatan->load([
             'kegiatanPelatihan.jadwalPelatihan.pelatihan',
             'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi'
         ]);
 
+        $perPage = in_array((int)$request->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$request->get('per_page') : 10;
         $pendaftaran = Pendaftaran::where('kegiatan_id', $kegiatan->id)
             ->where('status_pendaftaran', 'terdaftar')
             ->with('peserta')
-            ->paginate(20);
+            ->paginate($perPage);
 
         return view('admin.lainnya.presensi-detail', compact('kegiatan', 'pendaftaran'));
     }

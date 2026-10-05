@@ -11,11 +11,12 @@ class JadwalPelatihanController extends Controller
     public function __construct(private JadwalPelatihanService $service) {}
 
     public function index(\Illuminate\Http\Request $r) {
+        $perPage = in_array((int)$r->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$r->get('per_page') : 10;
         return view('admin.jadwal.pelatihan', [
             'pelatihan' => Pelatihan::with(['kategori'])->get(),
             'jadwal'    => JadwalPelatihan::with(['pelatihan','kegiatanPelatihan.kegiatan'])
                 ->when($r->pelatihan_id, fn($q) => $q->where('pelatihan_id',$r->pelatihan_id))
-                ->orderBy('tgl_pelaksanaan','desc')->paginate(15),
+                ->orderBy('tgl_pelaksanaan','desc')->paginate($perPage),
         ]);
     }
     public function create(Pelatihan $pelatihan) {

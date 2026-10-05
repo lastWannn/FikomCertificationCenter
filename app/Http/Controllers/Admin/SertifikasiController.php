@@ -10,10 +10,11 @@ class SertifikasiController extends Controller
 {
     public function __construct(private SertifikasiService $service) {}
 
-    public function index()
+    public function index(\Illuminate\Http\Request $r)
     {
+        $perPage = in_array((int)$r->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$r->get('per_page') : 10;
         return view('admin.sertifikasi.index', [
-            'sertifikasi' => Sertifikasi::with('kategori')->paginate(10),
+            'sertifikasi' => Sertifikasi::with('kategori')->withCount(['jadwal', 'materi'])->latest()->paginate($perPage),
             'kategori'    => Kategori::all(),
         ]);
     }
@@ -48,12 +49,15 @@ class SertifikasiController extends Controller
             ->with('success', 'Sertifikasi berhasil ditambahkan.');
     }
 
-    public function show(Sertifikasi $sertifikasi)
+    public function show(Sertifikasi $sertifikasi, \Illuminate\Http\Request $r)
     {
-        $sertifikasi->load(['materi', 'jadwal.kegiatanSertifikasi.kegiatan']);
-        return view('admin.sertifikasi.show', [
-            'sertifikasi' => $sertifikasi
-        ]);
+        $sertifikasi->load(['materi']);
+        $perPage = in_array((int)$r->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$r->get('per_page') : 10;
+        $jadwal = $sertifikasi->jadwal()
+            ->with(['kegiatanSertifikasi.kegiatan.biaya'])
+            ->orderBy('tgl_pelaksanaan', 'desc')
+            ->paginate($perPage);
+        return view('admin.sertifikasi.show', compact('sertifikasi', 'jadwal'));
     }
 
     public function edit(Sertifikasi $sertifikasi)

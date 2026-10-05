@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 @section('title','Jadwal Sertifikasi')
 @section('page-title','Jadwal Sertifikasi')
 @section('page-content')
 <div style="padding:24px;position:relative;">
 
-  {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
+  {{-- â•â•â• SKELETON LOADING OVERLAY â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
   <style>
     @keyframes skeletonShimmer {
       0% { background-position: -200% 0; }
@@ -47,7 +47,7 @@
   </script>
   <form method="GET" style="display:flex;gap:10px;align-items:center;margin-bottom:18px;">
     <select name="sertifikasi_id" class="fcc-input" style="width:auto;min-width:220px;" onchange="this.form.submit()">
-      <option value="">— Semua Program Sertifikasi —</option>
+      <option value="">â€” Semua Program Sertifikasi â€”</option>
       @foreach($sertifikasi as $s)
       <option value="{{ $s->id }}" {{ request('sertifikasi_id')==$s->id?'selected':'' }}>{{ $s->judul }}</option>
       @endforeach
@@ -82,7 +82,7 @@
           </td>
           <td style="padding:12px 14px;">
             <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">{{ $j->tgl_pelaksanaan->format('d M Y') }}</p>
-            <p style="margin:2px 0 0;font-size:11px;color:#9CA3B0;">{{ $j->jam_mulai }} – {{ $j->jam_selesai }}</p>
+            <p style="margin:2px 0 0;font-size:11px;color:#9CA3B0;">{{ $j->jam_mulai }} â€“ {{ $j->jam_selesai }}</p>
           </td>
           <td style="padding:12px 14px;font-size:13px;font-weight:700;color:#131218;">
             {{ $hasK ? $k->terisi.'/'.$j->kuota_peserta : '0/'.$j->kuota_peserta }}
@@ -120,7 +120,28 @@
         @endforelse
       </tbody>
     </table>
-    @if($jadwal->hasPages())<div style="padding:12px 16px;border-top:1px solid #E2E4EB;">{{ $jadwal->withQueryString()->links() }}</div>@endif
+    <div style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <form method="GET" action="{{ url()->current() }}" style="margin:0;">
+          @if(request()->filled('sertifikasi_id'))
+            <input type="hidden" name="sertifikasi_id" value="{{ request('sertifikasi_id') }}">
+          @endif
+        <select name="per_page" onchange="this.form.submit()" class="fcc-input" style="width:auto;font-size:12.5px;height:34px;padding:0 10px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;font-weight:700;cursor:pointer;color:#131218;outline:none;" title="Jumlah data per halaman">
+          <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 / hal</option>
+          <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 / hal</option>
+          <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 / hal</option>
+          <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 / hal</option>
+          <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100 / hal</option>
+        </select>
+        </form>
+        <span style="font-size:12px;color:#64748B;font-weight:600;">
+          Menampilkan {{ $jadwal->firstItem() ?? 0 }}â€“{{ $jadwal->lastItem() ?? 0 }} dari {{ $jadwal->total() }} data
+        </span>
+      </div>
+      <div>
+        {{ $jadwal->withQueryString()->links() }}
+      </div>
+    </div>
   </div>
 </div>
 @endsection

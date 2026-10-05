@@ -1,4 +1,4 @@
-@if ($paginator->hasPages())
+@if ($paginator->total() > 0)
     <nav role="navigation" aria-label="Pagination Navigation" style="display:inline-flex;align-items:center;gap:6px;vertical-align:middle;margin:0;padding:0;" wire:key="paginator-nav-{{ $paginator->getPageName() }}">
         {{-- Previous Page Link --}}
         <button type="button"

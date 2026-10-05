@@ -127,8 +127,8 @@
                         <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">Kode</th>
                         <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Program Sertifikasi</th>
                         <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Kategori</th>
-                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Status Modul &amp; Jadwal</th>
-                        <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">Aksi</th>
+                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;white-space:nowrap;">Status Modul &amp; Jadwal</th>
+                        <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;white-space:nowrap;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -167,15 +167,37 @@
                             </span>
                         </td>
 
-                        {{-- Modul & Jadwal Stats --}}
-                        <td style="padding:14px 16px;vertical-align:middle;">
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                <span style="font-size:11px;font-weight:800;color:#131218;background:#FFFDF5;border:1px solid #FFC81A;padding:3px 9px;border-radius:8px;">
-                                    📅 {{ $s->jadwal()->count() }} Jadwal
-                                </span>
-                                <span style="font-size:11px;font-weight:800;color:#3B82F6;background:#EFF6FF;border:1px solid #93C5FD;padding:3px 9px;border-radius:8px;">
-                                    📚 {{ $s->materi()->count() }} Materi
-                                </span>
+                        {{-- Modul & Jadwal Stats (Compact Capsule) --}}
+                        <td style="padding:14px 16px;vertical-align:middle;white-space:nowrap;">
+                            @php
+                                $cntJadwal = $s->jadwal_count ?? $s->jadwal()->count();
+                                $cntMateri = $s->materi_count ?? $s->materi()->count();
+                            @endphp
+                            <div style="display:inline-flex;align-items:center;gap:4px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;padding:3px 6px;white-space:nowrap;" title="{{ $cntJadwal }} Jadwal, {{ $cntMateri }} Modul">
+                                {{-- Jadwal Pill --}}
+                                @if($cntJadwal > 0)
+                                    <span style="display:inline-flex;align-items:center;gap:3.5px;font-size:11px;font-weight:800;color:#131218;background:#FFFDF5;border:1px solid #FFC81A;padding:2px 7px;border-radius:6px;line-height:1.2;">
+                                        <span style="font-size:10.5px;">📅</span> {{ $cntJadwal }} <span style="font-size:9.5px;color:#78350F;font-weight:700;">Jadwal</span>
+                                    </span>
+                                @else
+                                    <span style="display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:#94A3B8;padding:2px 6px;line-height:1.2;">
+                                        <span style="font-size:10.5px;opacity:0.6;">📅</span> 0 <span style="font-size:9.5px;">Jadwal</span>
+                                    </span>
+                                @endif
+
+                                {{-- Divider --}}
+                                <span style="width:1px;height:12px;background:#CBD5E1;margin:0 1px;"></span>
+
+                                {{-- Modul Pill --}}
+                                @if($cntMateri > 0)
+                                    <span style="display:inline-flex;align-items:center;gap:3.5px;font-size:11px;font-weight:800;color:#1D4ED8;background:#EFF6FF;border:1px solid #93C5FD;padding:2px 7px;border-radius:6px;line-height:1.2;">
+                                        <span style="font-size:10.5px;">📚</span> {{ $cntMateri }} <span style="font-size:9.5px;color:#1E40AF;font-weight:700;">Modul</span>
+                                    </span>
+                                @else
+                                    <span style="display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:#94A3B8;padding:2px 6px;line-height:1.2;">
+                                        <span style="font-size:10.5px;opacity:0.6;">📚</span> 0 <span style="font-size:9.5px;">Modul</span>
+                                    </span>
+                                @endif
                             </div>
                         </td>
 
@@ -222,11 +244,25 @@
                 </tbody>
             </table>
         </div>
-        @if($sertifikasi->hasPages())
-        <div style="padding:16px 24px;border-top:1px solid #F1F5F9;">
-            {{ $sertifikasi->links() }}
+        <div style="padding:14px 20px;border-top:1.5px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <form method="GET" action="{{ url()->current() }}" style="margin:0;">
+                <select name="per_page" onchange="this.form.submit()" class="fcc-input" style="width:auto;font-size:12.5px;height:34px;padding:0 10px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;font-weight:700;cursor:pointer;color:#131218;outline:none;" title="Jumlah data per halaman">
+                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 / hal</option>
+                    <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 / hal</option>
+                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 / hal</option>
+                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 / hal</option>
+                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100 / hal</option>
+                </select>
+                </form>
+                <span style="font-size:12px;color:#64748B;font-weight:600;">
+                    Menampilkan {{ $sertifikasi->firstItem() ?? 0 }}–{{ $sertifikasi->lastItem() ?? 0 }} dari {{ $sertifikasi->total() }} data
+                </span>
+            </div>
+            <div>
+                {{ $sertifikasi->withQueryString()->links() }}
+            </div>
         </div>
-        @endif
     </div>
 </div>
 

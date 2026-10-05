@@ -13,14 +13,14 @@ class PesertaManager extends Component
 
     public string $search = '';
     public string $status = '';
-    public int $perPage = 15;
+    public int $perPage = 10;
     public ?string $message = null;
     public ?string $messageType = 'success';
 
     protected $queryString = [
         'search'  => ['except' => ''],
         'status'  => ['except' => ''],
-        'perPage' => ['except' => 15],
+        'perPage' => ['except' => 10],
     ];
 
     public function updatingSearch(): void

@@ -14,12 +14,24 @@ class PembayaranManager extends Component
     public string $q = '';
     public string $status = '';
     public string $jenis = '';
+    public int $perPage = 10;
 
     protected $queryString = [
-        'q'      => ['except' => ''],
-        'status' => ['except' => ''],
-        'jenis'  => ['except' => ''],
+        'q'       => ['except' => ''],
+        'status'  => ['except' => ''],
+        'jenis'   => ['except' => ''],
+        'perPage' => ['except' => 10],
     ];
+
+    public function updatingPerPage(): void
+    {
+        $this->resetPage();
+    }
+
+    public function paginationView(): string
+    {
+        return 'vendor.pagination.default';
+    }
 
     public function updatingQ(): void
     {
@@ -81,7 +93,7 @@ class PembayaranManager extends Component
             });
         }
 
-        $pembayaranList = $query->paginate(15);
+        $pembayaranList = $query->paginate($this->perPage);
 
         $counts = [
             'total'               => Pembayaran::count(),

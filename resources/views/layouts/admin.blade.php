@@ -167,8 +167,10 @@
       </script>
       @php
       $currentRoute = Route::currentRouteName();
-      function sbActive(string $prefix): bool {
-          return str_starts_with(Route::currentRouteName() ?? '', $prefix);
+      if (!function_exists('sbActive')) {
+          function sbActive(string $prefix): bool {
+              return str_starts_with(Route::currentRouteName() ?? '', $prefix);
+          }
       }
       $menuGroups = [
           [
@@ -179,20 +181,22 @@
                       'route'    => 'admin.pelatihan.index',
                       'icon'     => 'book-open',
                       'label'    => 'Pelatihan',
+                      'no_wire'  => true,
                       'children' => [
-                          ['route'=>'admin.pelatihan.index',             'label'=>'Tambah Pelatihan'],
-                          ['route'=>'admin.materi.index',                'label'=>'Materi Pelatihan'],
-                          ['route'=>'admin.pelatihan.point.index',       'label'=>'Point Peserta Pelatihan'],
+                          ['route'=>'admin.pelatihan.index',             'label'=>'Tambah Pelatihan', 'no_wire'=>true],
+                          ['route'=>'admin.materi.index',                'label'=>'Materi Pelatihan', 'no_wire'=>true],
+                          ['route'=>'admin.pelatihan.point.index',       'label'=>'Point Peserta Pelatihan', 'no_wire'=>true],
                       ]
                   ],
                   [
                       'route'    => 'admin.sertifikasi.index',
                       'icon'     => 'award',
                       'label'    => 'Sertifikasi',
+                      'no_wire'  => true,
                       'children' => [
-                          ['route'=>'admin.sertifikasi.index',           'label'=>'Tambah Sertifikasi'],
-                          ['route'=>'admin.sertifikasi.materi.index',    'label'=>'Materi Sertifikasi'],
-                          ['route'=>'admin.sertifikasi.point.index',     'label'=>'Point Peserta Sertifikasi'],
+                          ['route'=>'admin.sertifikasi.index',           'label'=>'Tambah Sertifikasi', 'no_wire'=>true],
+                          ['route'=>'admin.sertifikasi.materi.index',    'label'=>'Materi Sertifikasi', 'no_wire'=>true],
+                          ['route'=>'admin.sertifikasi.point.index',     'label'=>'Point Peserta Sertifikasi', 'no_wire'=>true],
                       ]
                   ],
               ],
@@ -200,8 +204,8 @@
           [
               'label' => 'KEGIATAN',
               'items' => [
-                  ['route'=>'admin.kegiatan.index',      'icon'=>'zap',              'label'=>'Kegiatan Aktif'],
-                  ['route'=>'admin.arsip.index',         'icon'=>'archive',          'label'=>'Arsip Kegiatan'],
+                  ['route'=>'admin.kegiatan.index',      'icon'=>'zap',              'label'=>'Kegiatan Aktif', 'no_wire'=>true],
+                  ['route'=>'admin.arsip.index',         'icon'=>'archive',          'label'=>'Arsip Kegiatan', 'no_wire'=>true],
               ],
           ],
           [

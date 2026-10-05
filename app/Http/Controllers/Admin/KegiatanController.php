@@ -34,7 +34,8 @@ class KegiatanController extends Controller
             $q->visibleToPublic()->doesntHave('arsip');
         })->count();
 
-        $kegiatan = $query->paginate(12);
+        $perPage = in_array((int)$r->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$r->get('per_page') : 10;
+        $kegiatan = $query->paginate($perPage);
         return view('admin.kegiatan.index', compact(
             'kegiatan',
             'totalAktif',

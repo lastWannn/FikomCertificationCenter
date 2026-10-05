@@ -10,12 +10,13 @@ class ArsipController extends Controller
 {
     public function __construct(private ArsipService $service) {}
 
-    public function index()
+    public function index(\Illuminate\Http\Request $r)
     {
         $this->service->autoArchiveCompleted();
+        $perPage = in_array((int)$r->get('per_page'), [10, 15, 25, 50, 100]) ? (int)$r->get('per_page') : 10;
 
         return view('admin.lainnya.arsip', [
-            'arsip' => ArsipKegiatan::with('kegiatan')->paginate(10)
+            'arsip' => ArsipKegiatan::with('kegiatan')->latest()->paginate($perPage)
         ]);
     }
 
