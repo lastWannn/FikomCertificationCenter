@@ -135,8 +135,8 @@ class LaporanController extends Controller
             ->pluck('total', 'jenis_kegiatan')
             ->toArray();
 
-        // 4. Top Kegiatan Terfavorit (10 Kegiatan)
-        $perKegiatan = Kegiatan::with([
+        // 4. Top Kegiatan Terfavorit (Dikelompokkan Berdasarkan Nama Kegiatan Induk, Akumulasi Pendaftar)
+        $allKegiatan = Kegiatan::with([
             'kegiatanPelatihan.jadwalPelatihan.pelatihan',
             'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
         ])
@@ -145,9 +145,31 @@ class LaporanController extends Controller
               ->when($bulan, fn($b) => $b->whereMonth('created_at', $bulan));
         }])
         ->when($jenisKegiatan, fn($q) => $q->where('jenis_kegiatan', $jenisKegiatan))
-        ->orderByDesc('pendaftaran_count')
-        ->limit(10)
         ->get();
+
+        $groupedKegiatan = [];
+        foreach ($allKegiatan as $k) {
+            // Ambil murni nama kegiatan/program induk (abaikan nama jadwal kegiatan)
+            $namaProgram = $k->detail?->judul ?: $k->judul;
+            $jenis       = $k->jenis_kegiatan;
+            $key         = $jenis . '_' . $namaProgram;
+
+            if (!isset($groupedKegiatan[$key])) {
+                $groupedKegiatan[$key] = (object) [
+                    'judul'             => $namaProgram,
+                    'jenis_kegiatan'    => $jenis,
+                    'pendaftaran_count' => 0,
+                ];
+            }
+
+            $groupedKegiatan[$key]->pendaftaran_count += (int) $k->pendaftaran_count;
+        }
+
+        $perKegiatan = collect($groupedKegiatan)
+            ->filter(fn($item) => $item->pendaftaran_count > 0)
+            ->sortByDesc('pendaftaran_count')
+            ->values()
+            ->take(10);
 
         // 5. Transaksi Terbaru / List Ringkasan Laporan Pendaftaran
         $transaksiTerbaru = Pendaftaran::with(['peserta', 'kegiatan', 'biaya', 'pembayaran'])
@@ -167,7 +189,7 @@ class LaporanController extends Controller
             ->count();
         $rateSertifikat = $totalTerverifikasi > 0 ? round(($totalSertifikat / $totalTerverifikasi) * 100, 1) : 0;
 
-        // 7. Option 2: Demografi Peserta (Asal Instansi)
+        // 7. Demografi Peserta Berdasarkan Inputan Instansi Terbanyak (Dinamis)
         $pesertaQuery = Peserta::whereHas('pendaftaran', function($q) use ($tahun, $bulan, $jenisKegiatan) {
             $q->whereYear('created_at', $tahun)
               ->when($bulan, fn($b) => $b->whereMonth('created_at', $bulan))
@@ -175,18 +197,27 @@ class LaporanController extends Controller
         });
 
         $rawInstansi = (clone $pesertaQuery)
-            ->selectRaw('COALESCE(NULLIF(instansi, ""), "Masyarakat Umum") as nama_instansi, COUNT(id) as total')
+            ->selectRaw('TRIM(COALESCE(NULLIF(instansi, ""), "Masyarakat Umum")) as nama_instansi, COUNT(id) as total')
             ->groupBy('nama_instansi')
             ->orderByDesc('total')
-            ->limit(5)
             ->get();
 
-        $demografiInstansi = [
-            'fikom'      => (clone $pesertaQuery)->where(fn($q) => $q->where('instansi', 'LIKE', '%FIKOM%')->orWhere('instansi', 'LIKE', '%Ilmu Komputer%'))->count(),
-            'umi'        => (clone $pesertaQuery)->where('instansi', 'LIKE', '%UMI%')->where('instansi', 'NOT LIKE', '%FIKOM%')->where('instansi', 'NOT LIKE', '%Ilmu Komputer%')->count(),
-            'eksternal'  => (clone $pesertaQuery)->where(fn($q) => $q->whereNotNull('instansi')->where('instansi', '!=', ''))->where('instansi', 'NOT LIKE', '%UMI%')->count(),
-            'umum'       => (clone $pesertaQuery)->where(fn($q) => $q->whereNull('instansi')->orWhere('instansi', ''))->count(),
-        ];
+        $topInstansi = $rawInstansi->take(5);
+        $sisaCount   = $rawInstansi->skip(5)->sum('total');
+
+        $demografiInstansi = [];
+        foreach ($topInstansi as $item) {
+            $demografiInstansi[] = [
+                'label' => $item->nama_instansi,
+                'total' => (int) $item->total,
+            ];
+        }
+        if ($sisaCount > 0) {
+            $demografiInstansi[] = [
+                'label' => 'Instansi Lainnya',
+                'total' => (int) $sisaCount,
+            ];
+        }
 
         // 8. Option 4: Efisiensi Kuota & Keterisian Kelas
         $kegiatansForQuota = Kegiatan::with(['kegiatanPelatihan.jadwalPelatihan', 'kegiatanSertifikasi.jadwalSertifikasi'])

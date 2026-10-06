@@ -426,49 +426,43 @@
     {{-- RIGHT SIDE AREA (~30%) --}}
     <div style="display:flex;flex-direction:column;gap:24px;">
 
-      {{-- Option 2: Demografi & Asal Instansi Peserta Widget --}}
+      {{-- Demografi & Asal Instansi Peserta Widget (Dinamis Berdasarkan Inputan Terbanyak) --}}
       <div class="fcc-card" style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h4 style="margin:0;font-size:15px;font-weight:900;color:#131218;">Demografi Peserta</h4>
-          <span style="font-size:10.5px;font-weight:800;color:#131218;background:#FFC81A;padding:3px 8px;border-radius:6px;border:1px solid #131218;">Instansi</span>
+          <div>
+            <h4 style="margin:0;font-size:15px;font-weight:900;color:#131218;">Demografi Peserta</h4>
+            <p style="margin:2px 0 0;font-size:11px;color:#94A3B8;font-weight:600;">Berdasarkan instansi terbanyak</p>
+          </div>
+          <span style="font-size:10.5px;font-weight:800;color:#131218;background:#FFC81A;padding:3px 8px;border-radius:6px;border:1px solid #131218;">Top Instansi</span>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+        <div style="display:flex;flex-direction:column;gap:10px;">
           @php
-            $totalDemo = max(1, array_sum($summary['demografi']));
-            $demoItems = [
-              ['FIKOM UMI',              $summary['demografi']['fikom'],     '#FFC81A'],
-              ['UMI (Luar FIKOM)',       $summary['demografi']['umi'],       '#131218'],
-              ['Kampus Lain / Eksternal', $summary['demografi']['eksternal'], '#3B82F6'],
-              ['Masyarakat Umum',        $summary['demografi']['umum'],      '#9CA3AF'],
-            ];
+            $colors = ['#FFC81A', '#131218', '#3B82F6', '#10B981', '#8B5CF6', '#94A3B8'];
+            $totalDemo = max(1, collect($summary['demografi'] ?? [])->sum('total'));
           @endphp
-          @foreach($demoItems as [$lbl, $cnt, $bgColor])
-          @php $pct = round(($cnt / $totalDemo) * 100); @endphp
+          @forelse($summary['demografi'] ?? [] as $idx => $demo)
+          @php
+            $cnt = $demo['total'] ?? 0;
+            $lbl = $demo['label'] ?? '-';
+            $bgColor = $colors[$idx % count($colors)];
+            $pct = round(($cnt / $totalDemo) * 100);
+          @endphp
           <div style="background:#F8FAFC;padding:9px 12px;border-radius:10px;border:1px solid #F1F5F9;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:12px;">
-              <span style="font-weight:700;color:#131218;">{{ $lbl }}</span>
+              <span style="font-weight:700;color:#131218;max-width:68%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ $lbl }}">{{ $lbl }}</span>
               <span style="font-weight:900;color:#131218;">{{ $cnt }} <span style="font-size:10.5px;color:#64748B;font-weight:600;">({{ $pct }}%)</span></span>
             </div>
             <div style="height:5px;background:#E5E7EB;border-radius:3px;overflow:hidden;">
               <div style="height:100%;background:{{ $bgColor }};width:{{ $pct }}%;"></div>
             </div>
           </div>
-          @endforeach
-        </div>
-
-        @if(isset($rawInstansi) && $rawInstansi->isNotEmpty())
-        <div style="border-top:1.5px solid #F1F5F9;padding-top:10px;">
-          <p style="margin:0 0 6px;font-size:10.5px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Top 5 Instansi Terbanyak</p>
-          <div style="display:flex;flex-wrap:wrap;gap:4px;">
-            @foreach($rawInstansi as $ri)
-            <span style="font-size:10.5px;font-weight:800;background:#F1F5F9;color:#131218;padding:3px 8px;border-radius:14px;border:1px solid #E2E8F0;">
-              {{ Str::limit($ri->nama_instansi, 20) }}: {{ $ri->total }}
-            </span>
-            @endforeach
+          @empty
+          <div style="text-align:center;padding:20px 10px;color:#94A3B8;font-size:12px;font-weight:600;">
+            Belum ada data pendaftaran pada periode ini.
           </div>
+          @endforelse
         </div>
-        @endif
       </div>
 
       {{-- Doughnut Status Pembayaran Widget --}}

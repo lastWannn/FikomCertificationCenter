@@ -1,11 +1,11 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 @section('title','Arsip Kegiatan')
 @section('page-title','Arsip Kegiatan')
 
 @section('page-content')
 <div style="padding:24px;position:relative;">
 
-    {{-- â•â•â• SKELETON LOADING OVERLAY â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
+    {{-- === SKELETON LOADING OVERLAY === --}}
     <style>
       @keyframes skeletonShimmer {
         0% { background-position: -200% 0; }
@@ -171,7 +171,7 @@
                 </select>
                 </form>
                 <span style="font-size:12px;color:#64748B;font-weight:600;">
-                    Menampilkan {{ $arsip->firstItem() ?? 0 }}â€“{{ $arsip->lastItem() ?? 0 }} dari {{ $arsip->total() }} data
+                    Menampilkan {{ $arsip->firstItem() ?? 0 }} &ndash; {{ $arsip->lastItem() ?? 0 }} dari {{ $arsip->total() }} data
                 </span>
             </div>
             <div>

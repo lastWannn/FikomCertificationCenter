@@ -1,11 +1,11 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 @section('title','Kegiatan Aktif')
 @section('page-title','Kegiatan Aktif')
 
 @section('page-content')
 <div style="padding:24px;position:relative;">
 
-    {{-- â•â•â• SKELETON LOADING OVERLAY â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
+    {{-- === SKELETON LOADING OVERLAY === --}}
     <style>
       @keyframes skeletonShimmer {
         0% { background-position: -200% 0; }
@@ -187,7 +187,10 @@
                                         @endif
 
                                         @if($isPassed)
-                                        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;">âš  Lewat Tanggal</span>
+                                        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;display:inline-flex;align-items:center;gap:3px;">
+                                            @include('components.icon',['name'=>'alert-triangle','size'=>10,'style'=>'color:#D97706;flex-shrink:0;'])
+                                            Lewat Tanggal
+                                        </span>
                                         @endif
                                         @if($k->isFull())
                                         <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#FEE2E2;color:#EF4444;border:1px solid #FCA5A5;">Kuota Penuh</span>
@@ -208,8 +211,9 @@
                         <td style="padding:14px 16px;vertical-align:middle;">
                             <div>
                                 <p style="margin:0;font-size:13px;font-weight:800;color:#131218;">{{ $k->jadwal?->tgl_pelaksanaan?->translatedFormat('d M Y') ?? 'TBA' }}</p>
-                                <p style="margin:2px 0 0;font-size:11.5px;color:#64748B;font-weight:600;">
-                                    â° {{ $k->jadwal?->jam_mulai ? substr($k->jadwal->jam_mulai, 0, 5) : '' }} &ndash; {{ $k->jadwal?->jam_selesai ? substr($k->jadwal->jam_selesai, 0, 5) : '' }}
+                                <p style="margin:2px 0 0;font-size:11.5px;color:#64748B;font-weight:600;display:flex;align-items:center;gap:4px;">
+                                    @include('components.icon',['name'=>'clock','size'=>12,'style'=>'color:#94A3B8;flex-shrink:0;'])
+                                    <span>{{ $k->jadwal?->jam_mulai ? substr($k->jadwal->jam_mulai, 0, 5) : '' }} &ndash; {{ $k->jadwal?->jam_selesai ? substr($k->jadwal->jam_selesai, 0, 5) : '' }}</span>
                                 </p>
                             </div>
                         </td>
@@ -310,7 +314,7 @@
                 </select>
                 </form>
                 <span style="font-size:12px;color:#64748B;font-weight:600;">
-                    Menampilkan {{ $kegiatan->firstItem() ?? 0 }}â€“{{ $kegiatan->lastItem() ?? 0 }} dari {{ $kegiatan->total() }} data
+                    Menampilkan {{ $kegiatan->firstItem() ?? 0 }} &ndash; {{ $kegiatan->lastItem() ?? 0 }} dari {{ $kegiatan->total() }} data
                 </span>
             </div>
             <div>

@@ -1,10 +1,10 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 @section('title','Jadwal Pelatihan')
 @section('page-title','Jadwal Pelatihan')
 @section('page-content')
 <div style="padding:24px;position:relative;">
 
-  {{-- â•â•â• SKELETON LOADING OVERLAY â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
+  {{-- === SKELETON LOADING OVERLAY === --}}
   <style>
     @keyframes skeletonShimmer {
       0% { background-position: -200% 0; }
@@ -52,7 +52,7 @@
   {{-- Filter --}}
   <form method="GET" style="display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap;">
     <select name="pelatihan_id" class="fcc-input" style="width:auto;min-width:220px;" onchange="this.form.submit()">
-      <option value="">â€” Semua Program Pelatihan â€”</option>
+      <option value="">&mdash; Semua Program Pelatihan &mdash;</option>
       @foreach($pelatihan as $p)
       <option value="{{ $p->id }}" {{ request('pelatihan_id')==$p->id?'selected':'' }}>{{ $p->judul }}</option>
       @endforeach
@@ -91,7 +91,7 @@
           </td>
           <td style="padding:12px 14px;">
             <p style="margin:0;font-size:13px;font-weight:700;color:#131218;">{{ $j->tgl_pelaksanaan->format('d M Y') }}</p>
-            <p style="margin:2px 0 0;font-size:11px;color:#9CA3B0;">{{ $j->jam_mulai }} â€“ {{ $j->jam_selesai }}</p>
+            <p style="margin:2px 0 0;font-size:11px;color:#9CA3B0;">{{ $j->jam_mulai }} &ndash; {{ $j->jam_selesai }}</p>
           </td>
           <td style="padding:12px 14px;">
             @if($hasKegiatan)
@@ -163,7 +163,7 @@
         </select>
         </form>
         <span style="font-size:12px;color:#64748B;font-weight:600;">
-          Menampilkan {{ $jadwal->firstItem() ?? 0 }}â€“{{ $jadwal->lastItem() ?? 0 }} dari {{ $jadwal->total() }} data
+          Menampilkan {{ $jadwal->firstItem() ?? 0 }} &ndash; {{ $jadwal->lastItem() ?? 0 }} dari {{ $jadwal->total() }} data
         </span>
       </div>
       <div>
