@@ -3,9 +3,9 @@
 @section('page-title','Manajemen Sertifikat')
 
 @section('page-content')
-<div style="padding:24px;position:relative;">
+<div class="fcc-sert-container">
 
-    {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
+    {{-- ═══ SKELETON LOADING OVERLAY & RESPONSIVE STYLES ═══════════════ --}}
     <style>
       @keyframes skeletonShimmer {
         0% { background-position: -200% 0; }
@@ -20,6 +20,212 @@
       #sertifikat-skeleton-overlay {
         transition: opacity 0.35s ease, visibility 0.35s ease;
       }
+
+      /* Container & Layout */
+      .fcc-sert-container {
+        padding: 24px;
+        position: relative;
+      }
+      .fcc-sert-top-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+      @media (max-width: 1023px) {
+        .fcc-sert-top-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+      }
+      @media (max-width: 639px) {
+        .fcc-sert-container {
+          padding: 12px;
+        }
+      }
+
+      /* Batch Header on Mobile */
+      .fcc-batch-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .fcc-batch-search {
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 8px;
+        border: 1.5px solid #CBD5E1;
+        width: 180px;
+        font-weight: 600;
+      }
+      @media (max-width: 639px) {
+        .fcc-batch-header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .fcc-batch-search {
+          width: 100%;
+        }
+      }
+
+      /* Filter Header */
+      .fcc-sert-filter-header {
+        padding: 18px 24px;
+        border-bottom: 2px solid #E5E7EB;
+        background: #F8FAFC;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+      .fcc-sert-header-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+      .fcc-sert-form {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: nowrap;
+      }
+      .fcc-sert-search-box {
+        position: relative;
+        width: 230px;
+      }
+      .fcc-sert-search-box .fcc-input {
+        width: 100% !important;
+        font-size: 12.5px;
+        height: 38px;
+        padding: 0 12px 0 32px;
+        background: #FFF;
+        border: 1.5px solid #CBD5E1;
+        border-radius: 10px;
+        font-weight: 600;
+        box-sizing: border-box;
+      }
+      .fcc-sert-select-box {
+        width: 190px !important;
+        max-width: 190px !important;
+        font-size: 12px;
+        height: 38px;
+        padding: 0 10px;
+        background: #FFF;
+        border: 1.5px solid #CBD5E1;
+        border-radius: 10px;
+        font-weight: 600;
+        flex-shrink: 0;
+        box-sizing: border-box;
+      }
+      .fcc-sert-form-btn-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      /* iPad & Tablet Responsiveness (640px to 1023px) */
+      @media (max-width: 1023px) and (min-width: 640px) {
+        .fcc-sert-filter-header {
+          padding: 16px 20px;
+          gap: 12px;
+        }
+        .fcc-sert-form {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: nowrap;
+        }
+        .fcc-sert-search-box {
+          flex: 1;
+          min-width: 180px;
+          width: auto;
+        }
+        .fcc-sert-select-box {
+          width: 180px !important;
+          max-width: 200px !important;
+          flex-shrink: 0;
+        }
+        .fcc-sert-form-btn-row {
+          flex-shrink: 0;
+        }
+      }
+
+      /* Mobile Phone Responsiveness (< 640px) */
+      @media (max-width: 639px) {
+        .fcc-sert-filter-header {
+          padding: 14px 16px;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+        }
+        .fcc-sert-form {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
+          width: 100%;
+        }
+        .fcc-sert-search-box {
+          width: 100% !important;
+        }
+        .fcc-sert-select-box {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        .fcc-sert-form-btn-row {
+          display: flex;
+          gap: 8px;
+          width: 100%;
+        }
+        .fcc-sert-form-btn-row button,
+        .fcc-sert-form-btn-row a {
+          flex: 1;
+          justify-content: center;
+          text-align: center;
+        }
+      }
+
+      /* Desktop Table vs Mobile Cards */
+      .fcc-sert-table-wrap {
+        display: block;
+        overflow-x: auto;
+      }
+      .fcc-sert-cards-wrap {
+        display: none;
+        padding: 14px;
+      }
+      @media (max-width: 767px) {
+        .fcc-sert-table-wrap {
+          display: none;
+        }
+        .fcc-sert-cards-wrap {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+      }
+
+      /* Mobile Card Item */
+      .fcc-sert-card-item {
+        background: #FFFFFF;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 14px;
+        padding: 14px 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform .15s ease, border-color .15s ease;
+      }
+      .fcc-sert-card-item:hover {
+        border-color: #FFC81A;
+      }
     </style>
 
     <div id="sertifikat-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px;box-sizing:border-box;pointer-events:none;">
@@ -32,7 +238,7 @@
         </div>
       </div>
       {{-- Top 2 Cards Skeleton --}}
-      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:20px;margin-bottom:24px;">
+      <div class="fcc-sert-top-grid">
         <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
           <div class="fcc-skeleton-box" style="width:60%;height:20px;margin-bottom:16px;"></div>
           <div class="fcc-skeleton-box" style="width:100%;height:50px;border-radius:10px;"></div>
@@ -66,7 +272,7 @@
     {{-- Header & Action Bar --}}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
         <div>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;">
                 <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Penerbitan &amp; Sertifikasi</span>
                 <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0;letter-spacing:-0.02em;">Manajemen Sertifikat</h1>
             </div>
@@ -75,7 +281,7 @@
     </div>
 
     {{-- Top Section: Upload Latar & Quick Actions --}}
-    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(340px, 1fr));gap:20px;margin-bottom:24px;">
+    <div class="fcc-sert-top-grid">
         
         {{-- Card 1: Upload Template Latar --}}
         <div class="fcc-card" style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);position:relative;">
@@ -192,7 +398,7 @@
         {{-- Card 2: Kelola Layout & Penerbitan Sertifikat Per Jadwal --}}
         <div class="fcc-card" style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);display:flex;flex-direction:column;justify-content:space-between;">
             <div>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px;">
+                <div class="fcc-batch-header">
                     <h3 style="font-size:15px;font-weight:900;color:#131218;margin:0;display:flex;align-items:center;gap:8px;">
                         <div style="width:32px;height:32px;border-radius:10px;background:#ECFDF5;border:1.5px solid #10B981;display:flex;align-items:center;justify-content:center;color:#10B981;">
                             @include('components.icon',['name'=>'award','size'=>16])
@@ -201,7 +407,7 @@
                     </h3>
 
                     {{-- Search Input --}}
-                    <input type="text" onkeyup="filterBatchList(this.value)" placeholder="🔍 Cari kegiatan..." style="padding:6px 12px;font-size:12px;border-radius:8px;border:1.5px solid #CBD5E1;width:180px;font-weight:600;">
+                    <input type="text" onkeyup="filterBatchList(this.value)" placeholder="🔍 Cari kegiatan..." class="fcc-batch-search">
                 </div>
 
                 <div style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;padding-right:4px;">
@@ -352,7 +558,7 @@
             }
 
             if (hasLatar && latarUrl) {
-                const editorUrl = "{{ route('admin.sertifikat.layout-editor', ':id') }}".replace(':id', selectedId);
+                const editorUrl = "{{ route('admin.sertifikat.layout-editor', ':id') }}".replace(':id', val);
                 container.innerHTML = `
                     <div style="background:#ECFDF5;border:1.5px solid #10B981;border-radius:14px;padding:14px;position:relative;transition:all .2s;">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
@@ -540,45 +746,48 @@
 
     {{-- Tabel Sertifikat Diterbitkan (Neo-Brutalist) --}}
     <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);position:relative;">
-        <div style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
-            <div style="display:flex;align-items:center;gap:10px;">
+        <div class="fcc-sert-filter-header">
+            <div class="fcc-sert-header-title">
                 <h3 style="margin:0;font-size:16px;font-weight:900;color:#131218;">Daftar Sertifikat Terbit</h3>
                 <span style="font-size:11.5px;font-weight:800;color:#131218;background:#FFC81A;padding:4px 12px;border-radius:20px;border:1px solid #131218;">{{ $sertifikat->total() }} Sertifikat</span>
             </div>
 
             {{-- Search & Filter Form --}}
-            <form method="GET" action="{{ route('admin.sertifikat.index') }}" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                <div style="position:relative;">
-                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama / no. sertifikat..." class="fcc-input" style="font-size:12.5px;height:38px;padding:0 12px 0 32px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;font-weight:600;width:220px;">
+            <form method="GET" action="{{ route('admin.sertifikat.index') }}" class="fcc-sert-form">
+                <div class="fcc-sert-search-box">
+                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama / no. sertifikat..." class="fcc-input">
                     <div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94A3B8;pointer-events:none;">
                         @include('components.icon',['name'=>'search','size'=>14])
                     </div>
                 </div>
 
-                <select name="filter_kegiatan" class="fcc-input" style="font-size:12px;height:38px;padding:0 10px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;font-weight:600;max-width:180px;">
+                <select name="filter_kegiatan" class="fcc-input fcc-sert-select-box">
                     <option value="">-- Semua Kegiatan --</option>
                     @foreach($masterGroups as $group)
                     @php $groupId = $group['id'] ?? $group['utama']?->id; @endphp
                     <option value="{{ $groupId }}" {{ request('filter_kegiatan') == $groupId ? 'selected' : '' }}>
-                        {{ Str::limit($group['judul'], 30) }}
+                        {{ Str::limit($group['judul'], 28) }}
                     </option>
                     @endforeach
                 </select>
 
-                <button type="submit" style="height:38px;padding:0 14px;font-size:12px;font-weight:800;background:#131218;color:#FFC81A;border-radius:10px;border:1.5px solid #131218;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
-                    Cari
-                </button>
+                <div class="fcc-sert-form-btn-row">
+                    <button type="submit" style="height:38px;padding:0 16px;font-size:12px;font-weight:800;background:#131218;color:#FFC81A;border-radius:10px;border:1.5px solid #131218;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap;">
+                        Cari
+                    </button>
 
-                @if(request('q') || request('filter_kegiatan'))
-                <a href="{{ route('admin.sertifikat.index') }}" style="height:38px;padding:0 12px;font-size:12px;font-weight:800;background:#F1F5F9;color:#64748B;border-radius:10px;border:1.5px solid #CBD5E1;text-decoration:none;display:inline-flex;align-items:center;">
-                    Reset
-                </a>
-                @endif
+                    @if(request('q') || request('filter_kegiatan'))
+                    <a href="{{ route('admin.sertifikat.index') }}" style="height:38px;padding:0 14px;font-size:12px;font-weight:800;background:#F1F5F9;color:#64748B;border-radius:10px;border:1.5px solid #CBD5E1;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;">
+                        Reset
+                    </a>
+                    @endif
+                </div>
             </form>
         </div>
 
-        <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;">
+        {{-- Desktop / Tablet Table View (>= 768px) --}}
+        <div class="fcc-sert-table-wrap">
+            <table style="width:100%;min-width:860px;border-collapse:collapse;">
                 <thead>
                     <tr style="background:#131218;color:#FFFFFF;">
                         <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">No. Sertifikat</th>
@@ -639,6 +848,48 @@
             </table>
         </div>
 
+        {{-- Mobile Cards View (< 768px) --}}
+        <div class="fcc-sert-cards-wrap">
+            @forelse($sertifikat as $s)
+            <div class="fcc-sert-card-item">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                    <span style="font-size:11.5px;font-weight:900;color:#FFC81A;background:#131218;padding:3.5px 9px;border-radius:7px;font-family:monospace;letter-spacing:0.5px;border:1px solid #131218;">
+                        {{ $s->nomor_sertifikat }}
+                    </span>
+                    <span style="font-size:11px;color:#64748B;font-weight:700;">
+                        📅 {{ $s->tgl_terbit?->format('d M Y') ?? '-' }}
+                    </span>
+                </div>
+                <div>
+                    <h4 style="margin:0 0 2px;font-size:14px;font-weight:900;color:#131218;">
+                        {{ $s->pendaftaran->peserta->nama ?? '-' }}
+                    </h4>
+                    <p style="margin:0 0 6px;font-size:11.5px;color:#64748B;font-weight:500;">
+                        {{ $s->pendaftaran->peserta->email ?? '-' }}
+                    </p>
+                    <div style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;color:#131218;background:#F1F5F9;padding:3px 8px;border-radius:6px;border:1px solid #CBD5E1;">
+                        @include('components.icon',['name'=>'award','size'=>12])
+                        <span>{{ Str::limit($s->pendaftaran->kegiatan->judul ?? '-', 35) }}</span>
+                    </div>
+                </div>
+                <div style="padding-top:6px;border-top:1px dashed #E2E8F0;">
+                    <a href="{{ route('admin.cetak.sertifikat', $s) }}" target="_blank"
+                       style="width:100%;padding:8px 14px;font-size:12.5px;font-weight:800;background:#131218;color:#FFC81A;border-radius:8px;border:1px solid #131218;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;box-sizing:border-box;">
+                        @include('components.icon',['name'=>'printer','size'=>14]) Lihat PDF Sertifikat
+                    </a>
+                </div>
+            </div>
+            @empty
+            <div style="padding:32px 16px;text-align:center;color:#94A3B8;">
+                <div style="width:48px;height:48px;border-radius:14px;background:#F7F8FA;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                    @include('components.icon',['name'=>'award','size'=>22,'style'=>'color:#9CA3B0'])
+                </div>
+                <p style="font-size:14px;font-weight:800;color:#131218;margin:0 0 4px;">Belum Ada Sertifikat Diterbitkan</p>
+                <p style="font-size:12px;color:#64748B;margin:0;">Sertifikat yang telah diterbitkan untuk peserta akan muncul di sini.</p>
+            </div>
+            @endforelse
+        </div>
+
         {{-- Footer Pagination Bar --}}
         <div style="padding:16px 24px;border-top:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
             <div style="font-size:12.5px;font-weight:700;color:#64748B;">
@@ -648,7 +899,6 @@
                 {{ $sertifikat->links() }}
             </div>
         </div>
-    </div>
     </div>
 </div>
 @endsection

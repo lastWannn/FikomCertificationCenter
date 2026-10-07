@@ -3,9 +3,9 @@
 @section('page-title','Terbitkan Sertifikat Peserta')
 
 @section('page-content')
-<div style="padding:24px;position:relative;">
+<div class="fcc-peserta-container">
 
-    {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
+    {{-- ═══ SKELETON LOADING OVERLAY & RESPONSIVE STYLES ═══════════════ --}}
     <style>
       @keyframes skeletonShimmer {
         0% { background-position: -200% 0; }
@@ -19,6 +19,126 @@
       }
       #sertifikat-peserta-skeleton-overlay {
         transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+
+      /* Container */
+      .fcc-peserta-container {
+        padding: 24px;
+        position: relative;
+      }
+      @media (max-width: 1023px) {
+        .fcc-peserta-container {
+          padding: 18px;
+        }
+      }
+      @media (max-width: 639px) {
+        .fcc-peserta-container {
+          padding: 12px;
+        }
+      }
+
+      /* Header & Form Terbitkan Semua */
+      .fcc-peserta-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .fcc-terbitkan-semua-form {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      @media (max-width: 767px) {
+        .fcc-peserta-header {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 14px;
+        }
+        .fcc-terbitkan-semua-form {
+          width: 100%;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 8px;
+        }
+        .fcc-terbitkan-semua-form input[type="date"] {
+          width: 100% !important;
+        }
+        .fcc-terbitkan-semua-form button {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      /* Latar Status Banner */
+      .fcc-latar-banner {
+        border-radius: 16px;
+        padding: 14px 20px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .fcc-latar-banner-btns {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      @media (max-width: 767px) {
+        .fcc-latar-banner {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 14px;
+        }
+        .fcc-latar-banner-btns {
+          width: 100%;
+        }
+        .fcc-latar-banner-btns a {
+          flex: 1;
+          justify-content: center;
+          text-align: center;
+        }
+      }
+
+      /* Table vs Mobile Cards */
+      .fcc-peserta-table-wrap {
+        display: block;
+        overflow-x: auto;
+      }
+      .fcc-peserta-cards-wrap {
+        display: none;
+        padding: 14px;
+      }
+      @media (max-width: 767px) {
+        .fcc-peserta-table-wrap {
+          display: none;
+        }
+        .fcc-peserta-cards-wrap {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+      }
+
+      /* Mobile Card */
+      .fcc-peserta-card-item {
+        background: #FFFFFF;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 14px;
+        padding: 14px 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform .15s ease, border-color .15s ease;
+      }
+      .fcc-peserta-card-item:hover {
+        border-color: #FFC81A;
       }
     </style>
 
@@ -63,9 +183,9 @@
     </div>
 
     {{-- Header & Terbitkan Semua Form --}}
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
+    <div class="fcc-peserta-header">
         <div>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;">
                 <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">
                   {{ $kegiatan->jadwal?->nama_kegiatan ?: ('Jadwal ' . ($kegiatan->jadwal?->tgl_pelaksanaan?->translatedFormat('d M Y') ?? 'Reguler')) }}
                 </span>
@@ -79,7 +199,7 @@
         {{-- Form Terbitkan Semua --}}
         <form action="{{ route('admin.sertifikat.terbitkan-semua', $kegiatan) }}" method="POST">
             @csrf
-            <div style="display:flex;gap:10px;align-items:center;">
+            <div class="fcc-terbitkan-semua-form">
                 <input type="date" name="tgl_terbit" value="{{ date('Y-m-d') }}" required class="fcc-input" style="width:auto;font-size:12.5px;height:40px;padding:0 12px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:10px;font-weight:700;">
                 <button type="submit" style="padding:10px 18px;font-size:13px;height:40px;display:inline-flex;align-items:center;gap:8px;border-radius:10px;font-weight:800;cursor:pointer;border:1.5px solid #131218;background:#131218;color:#FFC81A;transition:all .18s;"
                         onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';"
@@ -92,43 +212,45 @@
 
     {{-- Background Status Banner --}}
     @if($kegiatan->has_latar)
-    <div style="background:#ECFDF5;border:1.5px solid #10B981;border-radius:16px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 2px 10px rgba(16,185,129,0.08);">
-        <div style="display:flex;align-items:center;gap:14px;">
+    <div class="fcc-latar-banner" style="background:#ECFDF5;border:1.5px solid #10B981;box-shadow:0 2px 10px rgba(16,185,129,0.08);">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
             <div style="position:relative;width:68px;height:46px;border-radius:8px;overflow:hidden;border:1.5px solid #059669;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.1);">
                 <img src="{{ $kegiatan->latar_url }}" alt="Preview Latar" style="width:100%;height:100%;object-fit:cover;">
             </div>
-            <div>
+            <div style="flex:1;min-width:200px;">
                 <span style="font-size:10px;font-weight:900;color:#047857;background:#D1FAE5;padding:2px 8px;border-radius:12px;border:1px solid #10B981;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:2px;">
                     ✅ Template Latar Ready
                 </span>
                 <p style="margin:0;font-size:13px;font-weight:800;color:#064E3B;">Template latar sertifikat kegiatan ini sudah terupload &amp; siap diterbitkan.</p>
             </div>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;">
-            <a href="{{ route('admin.sertifikat.layout-editor', $kegiatan) }}" style="font-size:12px;font-weight:900;color:#FFFFFF;background:#F59E0B;border:1.5px solid #D97706;padding:6px 14px;border-radius:10px;text-decoration:none;box-shadow:0 2px 8px rgba(245,158,11,0.25);">
+        <div class="fcc-latar-banner-btns">
+            <a href="{{ route('admin.sertifikat.layout-editor', $kegiatan) }}" style="font-size:12px;font-weight:900;color:#FFFFFF;background:#F59E0B;border:1.5px solid #D97706;padding:6px 14px;border-radius:10px;text-decoration:none;box-shadow:0 2px 8px rgba(245,158,11,0.25);display:inline-flex;align-items:center;gap:5px;">
                 🎨 Atur Koordinat Teks
             </a>
-            <a href="{{ route('admin.sertifikat.index') }}" style="font-size:12px;font-weight:800;color:#047857;background:#FFFFFF;border:1.5px solid #10B981;padding:6px 14px;border-radius:10px;text-decoration:none;transition:all .15s;" onmouseover="this.style.background='#10B981';this.style.color='#FFF';" onmouseout="this.style.background='#FFF';this.style.color='#047857';">
+            <a href="{{ route('admin.sertifikat.index') }}" style="font-size:12px;font-weight:800;color:#047857;background:#FFFFFF;border:1.5px solid #10B981;padding:6px 14px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;" onmouseover="this.style.background='#10B981';this.style.color='#FFF';" onmouseout="this.style.background='#FFF';this.style.color='#047857';">
                 Ganti Template Latar &rarr;
             </a>
         </div>
     </div>
     @else
-    <div style="background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:16px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 2px 10px rgba(245,158,11,0.08);">
-        <div style="display:flex;align-items:center;gap:14px;">
+    <div class="fcc-latar-banner" style="background:#FFFBEB;border:1.5px solid #F59E0B;box-shadow:0 2px 10px rgba(245,158,11,0.08);">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
             <div style="width:42px;height:42px;border-radius:12px;background:#FEF3C7;border:1.5px solid #F59E0B;display:flex;align-items:center;justify-content:center;color:#D97706;flex-shrink:0;">
                 @include('components.icon',['name'=>'alert-triangle','size'=>20])
             </div>
-            <div>
+            <div style="flex:1;min-width:200px;">
                 <span style="font-size:10px;font-weight:900;color:#B45309;background:#FEF3C7;padding:2px 8px;border-radius:12px;border:1px solid #F59E0B;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:2px;">
                     ⚠️ Perhatian: Belum Ada Latar
                 </span>
                 <p style="margin:0;font-size:13px;font-weight:800;color:#78350F;">Kegiatan ini belum memiliki template latar sertifikat!</p>
             </div>
         </div>
-        <a href="{{ route('admin.sertifikat.index') }}" style="font-size:12.5px;font-weight:900;color:#131218;background:#FFC81A;border:1.5px solid #131218;padding:8px 16px;border-radius:10px;text-decoration:none;box-shadow:0 3px 10px rgba(0,0,0,0.08);display:inline-flex;align-items:center;gap:6px;transition:all .15s;" onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">
-            @include('components.icon',['name'=>'upload','size'=>14]) Upload Latar Sekarang &rarr;
-        </a>
+        <div class="fcc-latar-banner-btns">
+            <a href="{{ route('admin.sertifikat.index') }}" style="font-size:12.5px;font-weight:900;color:#131218;background:#FFC81A;border:1.5px solid #131218;padding:8px 16px;border-radius:10px;text-decoration:none;box-shadow:0 3px 10px rgba(0,0,0,0.08);display:inline-flex;align-items:center;gap:6px;transition:all .15s;" onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">
+                @include('components.icon',['name'=>'upload','size'=>14]) Upload Latar Sekarang &rarr;
+            </a>
+        </div>
     </div>
     @endif
 
@@ -139,8 +261,9 @@
             <span style="font-size:11.5px;font-weight:800;color:#131218;background:#FFC81A;padding:4px 12px;border-radius:20px;border:1px solid #131218;">{{ $pendaftaran->count() }} Peserta</span>
         </div>
 
-        <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;">
+        {{-- Desktop / Tablet Table View (>= 768px) --}}
+        <div class="fcc-peserta-table-wrap">
+            <table style="width:100%;min-width:880px;border-collapse:collapse;">
                 <thead>
                     <tr style="background:#131218;color:#FFFFFF;">
                         <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">Peserta</th>
@@ -229,7 +352,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" style="padding:48px;text-align:center;color:#94A3B8;">
+                        <td colspan="6" style="padding:48px;text-align:center;color:#94A3B8;">
                             <div style="width:52px;height:52px;border-radius:16px;background:#F7F8FA;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
                                 @include('components.icon',['name'=>'users','size'=>24,'style'=>'color:#9CA3B0'])
                             </div>
@@ -240,6 +363,85 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- Mobile Cards View (< 768px) --}}
+        <div class="fcc-peserta-cards-wrap">
+            @forelse($pendaftaran as $pd)
+            @php 
+                $sert = $pd->sertifikat; 
+                $sc = match($pd->status_pendaftaran) {
+                    'terdaftar' => ['#059669', '#ECFDF5', '#A7F3D0', 'Terdaftar'],
+                    'menunggu_verifikasi' => ['#D97706', '#FEF3C7', '#FCD34D', 'Menunggu'],
+                    default => ['#64748B', '#F1F5F9', '#CBD5E1', 'Lainnya']
+                };
+            @endphp
+            <div class="fcc-peserta-card-item">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+                    <div>
+                        <h4 style="margin:0 0 2px;font-size:14px;font-weight:900;color:#131218;">
+                            {{ $pd->peserta->nama }}
+                        </h4>
+                        <p style="margin:0;font-size:11.5px;color:#64748B;font-weight:500;">
+                            {{ $pd->peserta->email }}
+                        </p>
+                    </div>
+                    <span style="font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:12px;background:{{ $sc[1] }};color:{{ $sc[0] }};border:1px solid {{ $sc[2] }};flex-shrink:0;">
+                        {{ $sc[3] }}
+                    </span>
+                </div>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:#F8FAFC;border-radius:10px;border:1px solid #E2E8F0;flex-wrap:wrap;gap:6px;">
+                    <span style="font-size:11px;font-weight:700;color:#64748B;">Transkrip Nilai:</span>
+                    @if($pd->transkrip_nilai)
+                    <a href="{{ $pd->transkrip_url }}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;background:#EFF6FF;color:#1D4ED8;border:1px solid #93C5FD;font-size:10.5px;font-weight:800;text-decoration:none;">
+                        @include('components.icon',['name'=>'file-text','size'=>12]) Lihat Berkas
+                    </a>
+                    @else
+                    <span style="font-size:10.5px;color:#D97706;font-weight:700;">Belum Unggah</span>
+                    @endif
+                </div>
+
+                @if($sert)
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;padding-top:4px;">
+                    <div>
+                        <span style="font-size:11.5px;font-weight:900;color:#FFC81A;background:#131218;padding:3.5px 9px;border-radius:7px;font-family:monospace;letter-spacing:0.5px;border:1px solid #131218;display:inline-block;">
+                            {{ $sert->nomor_sertifikat }}
+                        </span>
+                        <div style="font-size:10.5px;color:#64748B;font-weight:700;margin-top:2px;">
+                            📅 {{ $sert->tgl_terbit?->format('d M Y') ?? '—' }}
+                        </div>
+                    </div>
+                    <a href="{{ route('admin.cetak.sertifikat', $sert) }}" target="_blank"
+                       style="padding:6px 14px;font-size:12px;font-weight:800;background:#FFFFFF;color:#131218;border-radius:8px;border:1.5px solid #131218;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
+                        @include('components.icon',['name'=>'printer','size'=>13]) Lihat PDF
+                    </a>
+                </div>
+                @elseif($pd->status_pendaftaran === 'terdaftar')
+                <div style="padding-top:6px;border-top:1px dashed #E2E8F0;">
+                    <form action="{{ route('admin.sertifikat.terbitkan', $pd) }}" method="POST" style="display:flex;gap:6px;align-items:center;">
+                        @csrf
+                        <input type="date" name="tgl_terbit" value="{{ date('Y-m-d') }}" required class="fcc-input" style="flex:1;font-size:12px;padding:4px 8px;height:36px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;font-weight:600;">
+                        <button type="submit" style="padding:0 14px;height:36px;font-size:12px;font-weight:800;background:#131218;color:#FFC81A;border-radius:8px;border:1px solid #131218;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:4px;">
+                            Terbitkan
+                        </button>
+                    </form>
+                </div>
+                @else
+                <div style="font-size:11.5px;color:#94A3B8;font-weight:600;text-align:right;">
+                    Belum dapat diterbitkan
+                </div>
+                @endif
+            </div>
+            @empty
+            <div style="padding:32px 16px;text-align:center;color:#94A3B8;">
+                <div style="width:48px;height:48px;border-radius:14px;background:#F7F8FA;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                    @include('components.icon',['name'=>'users','size'=>22,'style'=>'color:#9CA3B0'])
+                </div>
+                <p style="font-size:14px;font-weight:800;color:#131218;margin:0 0 4px;">Belum Ada Peserta Terdaftar</p>
+                <p style="font-size:12px;color:#64748B;margin:0;">Peserta yang terdaftar pada kegiatan ini akan muncul di sini untuk diterbitkan sertifikatnya.</p>
+            </div>
+            @endforelse
         </div>
     </div>
 

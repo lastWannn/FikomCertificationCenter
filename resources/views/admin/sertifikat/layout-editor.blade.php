@@ -24,9 +24,25 @@
     gap: 24px;
     align-items: start;
   }
-  @media (max-width: 1180px) {
+  @media (max-width: 1239px) {
     .editor-wrapper {
       grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+
+  /* Responsive Container */
+  .fcc-editor-container {
+    padding: 24px;
+  }
+  @media (max-width: 1023px) {
+    .fcc-editor-container {
+      padding: 18px;
+    }
+  }
+  @media (max-width: 639px) {
+    .fcc-editor-container {
+      padding: 12px;
     }
   }
 
@@ -43,6 +59,40 @@
     flex-wrap: wrap;
     gap: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  }
+  .editor-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 767px) {
+    .editor-header-card {
+      padding: 14px 16px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+    }
+    .editor-header-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+    .editor-header-actions button,
+    .editor-header-actions a {
+      width: 100% !important;
+      padding: 8px 10px !important;
+      font-size: 11.5px !important;
+      justify-content: center !important;
+      text-align: center !important;
+      box-sizing: border-box;
+    }
+  }
+  @media (max-width: 480px) {
+    .editor-header-actions {
+      grid-template-columns: 1fr;
+    }
   }
 
   /* Studio Canvas Environment */
@@ -63,6 +113,12 @@
     position: relative;
     overflow: hidden;
   }
+  @media (max-width: 639px) {
+    .canvas-card {
+      padding: 12px 8px;
+      border-radius: 16px;
+    }
+  }
 
   .canvas-toolbar {
     display: flex;
@@ -75,6 +131,20 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     flex-wrap: wrap;
     gap: 12px;
+  }
+  @media (max-width: 767px) {
+    .canvas-toolbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+    }
+    .canvas-hud {
+      font-size: 10.5px !important;
+      padding: 4px 8px !important;
+      flex-wrap: wrap !important;
+    }
   }
 
   .canvas-hud {
@@ -236,6 +306,12 @@
     padding: 24px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
   }
+  @media (max-width: 639px) {
+    .control-card {
+      padding: 16px 14px;
+      border-radius: 16px;
+    }
+  }
 
   .ctrl-group {
     margin-bottom: 18px;
@@ -380,17 +456,17 @@
   }
 </style>
 
-<div style="padding: 24px;">
+<div class="fcc-editor-container">
 
   {{-- ═══ HEADER BANNER ═════════════════════════════════════════ --}}
   <div class="editor-header-card">
-    <div style="display:flex;align-items:center;gap:14px;">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
       <a href="{{ route('admin.sertifikat.index') }}" class="fcc-btn-outline-light" style="padding:8px 14px;font-size:12.5px;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Kembali
       </a>
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+      <div style="min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;flex-wrap:wrap;">
           <span style="background:rgba(255,200,26,0.15);color:#FFC81A;font-size:10.5px;font-weight:900;padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:0.5px;">
             STUDIO LAYOUT EDITOR
           </span>
@@ -405,7 +481,7 @@
       </div>
     </div>
 
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <div class="editor-header-actions">
       <button type="button" onclick="openCopyLayoutModal()" class="fcc-btn-outline-light" style="padding:9.5px 18px;font-size:13px;background:rgba(255,200,26,0.12);border:1.5px solid rgba(255,200,26,0.35);color:#FFC81A;display:inline-flex;align-items:center;gap:6px;transition:all .15s;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='rgba(255,200,26,0.12)';this.style.color='#FFC81A';">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         Salin Layout Kegiatan Lain
@@ -1430,8 +1506,8 @@
 </script>
 
 {{-- ═══ MODAL SALIN LAYOUT KEGIATAN LAIN ════════════════════════ --}}
-<div id="copy-layout-modal" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(19,18,24,0.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:#131218;border:2px solid #FFC81A;border-radius:20px;padding:28px;max-width:560px;width:100%;color:#FFF;box-shadow:0 24px 64px rgba(0,0,0,0.5);position:relative;">
+<div id="copy-layout-modal" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(19,18,24,0.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#131218;border:2px solid #FFC81A;border-radius:20px;padding:clamp(16px, 4vw, 28px);max-width:560px;width:100%;color:#FFF;box-shadow:0 24px 64px rgba(0,0,0,0.5);position:relative;box-sizing:border-box;">
     
     <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:16px;margin-bottom:20px;">
       <div style="display:flex;align-items:center;gap:12px;">
