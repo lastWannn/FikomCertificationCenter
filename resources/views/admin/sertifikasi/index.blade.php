@@ -31,176 +31,339 @@
         </div>
         <div class="fcc-skeleton-box" style="width:180px;height:40px;border-radius:30px;"></div>
       </div>
-      {{-- 2 Stat Cards Skeleton --}}
-      <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:16px;margin-bottom:24px;">
-        @for($sc=0;$sc<2;$sc++)
-        <div style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;gap:14px;">
-          <div class="fcc-skeleton-box" style="width:44px;height:44px;border-radius:12px;flex-shrink:0;"></div>
-          <div style="flex:1;">
-            <div class="fcc-skeleton-box" style="width:65%;height:12px;margin-bottom:6px;"></div>
-            <div class="fcc-skeleton-box" style="width:40%;height:20px;"></div>
-          </div>
+    {{-- 3 Stat Cards Skeleton --}}
+    <div class="fcc-catalog-stats-grid" style="margin-bottom:24px;">
+      @for($sc=0;$sc<3;$sc++)
+      <div style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;gap:14px;">
+        <div class="fcc-skeleton-box" style="width:44px;height:44px;border-radius:12px;flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div class="fcc-skeleton-box" style="width:65%;height:12px;margin-bottom:6px;"></div>
+          <div class="fcc-skeleton-box" style="width:40%;height:20px;"></div>
         </div>
-        @endfor
       </div>
-      {{-- Table Skeleton --}}
-      <div style="padding:28px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
-        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
-        <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
-        <div class="fcc-skeleton-box" style="width:100%;height:44px;border-radius:10px;"></div>
-      </div>
+      @endfor
     </div>
+    {{-- Table Skeleton --}}
+    <div style="padding:28px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+      <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+      <div class="fcc-skeleton-box" style="width:100%;height:44px;margin-bottom:14px;border-radius:10px;"></div>
+      <div class="fcc-skeleton-box" style="width:100%;height:44px;border-radius:10px;"></div>
+    </div>
+  </div>
 
-    <script>
-      (function() {
-        setTimeout(function() {
-          var sk = document.getElementById('sertifikasi-skeleton-overlay');
-          if (sk) {
-            sk.style.opacity = '0';
-            sk.style.visibility = 'hidden';
-            setTimeout(function() { sk.style.display = 'none'; }, 350);
-          }
-        }, 400);
-      })();
-    </script>
+  <script>
+    (function() {
+      setTimeout(function() {
+        var sk = document.getElementById('sertifikasi-skeleton-overlay');
+        if (sk) {
+          sk.style.opacity = '0';
+          sk.style.visibility = 'hidden';
+          setTimeout(function() { sk.style.display = 'none'; }, 350);
+        }
+      }, 400);
+    })();
+  </script>
 
-    <style>
+  <style>
+    .fcc-catalog-container {
+      padding: 24px;
+      position: relative;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    .fcc-sertifikasi-desktop-table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .fcc-sertifikasi-mobile-list {
+      display: none;
+    }
+
+    /* 3 Stat Cards Grid */
+    .fcc-catalog-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* Kolom Program Sertifikasi TIDAK DI-WRAP di tablet maupun desktop */
+    .fcc-col-program {
+      white-space: nowrap !important;
+      min-width: 260px !important;
+    }
+    .fcc-col-program * {
+      white-space: nowrap !important;
+    }
+
+    /* Kolom Kategori Proporsional, Luas, & Rapi */
+    .fcc-col-kategori {
+      width: 180px !important;
+      min-width: 155px !important;
+      max-width: 220px !important;
+      white-space: normal !important;
+    }
+    .fcc-kategori-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      font-size: 11.5px !important;
+      font-weight: 800 !important;
+      color: #334155 !important;
+      background: #F8FAFC !important;
+      padding: 5px 11px !important;
+      border-radius: 8px !important;
+      border: 1.5px solid #CBD5E1 !important;
+      line-height: 1.35 !important;
+      white-space: normal !important;
+      word-break: normal !important;
+      overflow-wrap: break-word !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      text-align: left !important;
+    }
+
+    /* ═══ TABLET BREAKPOINT (768px – 1023px) ═══ */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .fcc-catalog-container {
+        padding: 18px 16px !important;
+      }
+      .fcc-catalog-stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 12px !important;
+      }
+      .fcc-col-program {
+        white-space: nowrap !important;
+        min-width: 250px !important;
+      }
+      .fcc-col-program * {
+        white-space: nowrap !important;
+      }
+      .fcc-col-kategori {
+        width: 175px !important;
+        min-width: 150px !important;
+        max-width: 210px !important;
+        white-space: normal !important;
+      }
+      .fcc-kategori-badge {
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+        font-size: 11.5px !important;
+        padding: 5px 10px !important;
+        line-height: 1.35 !important;
+      }
+    }
+
+    /* ═══ SMALL TABLET / PHABLET (640px – 767px) ═══ */
+    @media (min-width: 640px) and (max-width: 767px) {
+      .fcc-catalog-container {
+        padding: 16px 14px !important;
+      }
+      .fcc-catalog-stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 10px !important;
+      }
+      .fcc-col-program {
+        white-space: nowrap !important;
+        min-width: 240px !important;
+      }
+      .fcc-col-program * {
+        white-space: nowrap !important;
+      }
+      .fcc-col-kategori {
+        width: 165px !important;
+        min-width: 145px !important;
+        white-space: normal !important;
+      }
+      .fcc-kategori-badge {
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+        font-size: 11px !important;
+        padding: 4px 8px !important;
+        line-height: 1.35 !important;
+      }
+    }
+
+    /* ═══ MOBILE BREAKPOINT (< 640px) ═══ */
+    @media (max-width: 639px) {
+      .fcc-catalog-container {
+        padding: 14px 10px !important;
+      }
       .fcc-sertifikasi-desktop-table {
-        display: block;
+        display: none !important;
       }
       .fcc-sertifikasi-mobile-list {
-        display: none;
+        display: block !important;
       }
-      @media (max-width: 768px) {
-        .fcc-sertifikasi-desktop-table {
-          display: none !important;
-        }
-        .fcc-sertifikasi-mobile-list {
-          display: block !important;
-        }
+      .fcc-catalog-header-btn {
+        width: 100% !important;
+        justify-content: center !important;
       }
-      @media (max-width: 640px) {
-        .fcc-catalog-container { padding: 14px !important; }
-        .fcc-catalog-header-btn { width: 100% !important; justify-content: center !important; }
-        .fcc-pagination-bar { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
-        .fcc-pagination-bar > div { justify-content: center !important; width: 100% !important; }
-        .fcc-create-sertifikasi-card { padding: 20px 16px !important; border-radius: 18px !important; }
-        .fcc-create-sertifikasi-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
-        .fcc-create-sertifikasi-actions { flex-direction: column-reverse !important; gap: 10px !important; }
-        .fcc-create-sertifikasi-actions button { width: 100% !important; justify-content: center !important; }
+      .fcc-catalog-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        margin-bottom: 18px !important;
       }
-    </style>
+      .fcc-catalog-stats-grid > div:last-child {
+        grid-column: span 2 !important;
+      }
+      .fcc-pagination-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+      }
+      .fcc-pagination-bar > div {
+        justify-content: center !important;
+        width: 100% !important;
+      }
+      .fcc-create-sertifikasi-card {
+        padding: 20px 16px !important;
+        border-radius: 18px !important;
+      }
+      .fcc-create-sertifikasi-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      .fcc-create-sertifikasi-actions {
+        flex-direction: column-reverse !important;
+        gap: 10px !important;
+      }
+      .fcc-create-sertifikasi-actions button {
+        width: 100% !important;
+        justify-content: center !important;
+      }
+    }
 
-    {{-- Header & Action Bar --}}
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
-        <div>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-                <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Katalog Master</span>
-                <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0;letter-spacing:-0.02em;">Program Sertifikasi</h1>
-            </div>
-            <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">Kelola master data program sertifikasi, modul materi, dan biaya pendaftaran.</p>
-        </div>
-        <button type="button" class="fcc-catalog-header-btn" onclick="document.getElementById('create-modal').style.display='flex'"
-                style="padding:10px 22px;font-size:13.5px;font-weight:900;background:#FFC81A;color:#131218;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.35);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .18s;"
-                onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-            @include('components.icon',['name'=>'plus','size'=>16]) Tambah Sertifikasi Baru
-        </button>
-    </div>
+    /* ═══ COMPACT MOBILE (< 420px) ═══ */
+    @media (max-width: 419px) {
+      .fcc-catalog-container {
+        padding: 12px 8px !important;
+      }
+      .fcc-catalog-stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+      }
+      .fcc-catalog-stats-grid > div:last-child {
+        grid-column: auto !important;
+      }
+    }
+  </style>
 
-    {{-- Stat Cards Grid --}}
-    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;margin-bottom:24px;">
-        <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
-            <div style="width:44px;height:44px;border-radius:12px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;color:#131218;box-shadow:0 4px 10px rgba(255,200,26,0.25);flex-shrink:0;">
-                @include('components.icon',['name'=>'award','size'=>20])
-            </div>
-            <div>
-                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Total Sertifikasi</p>
-                <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ $sertifikasi->total() }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Program</span></p>
-            </div>
-        </div>
+  {{-- Header & Action Bar --}}
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
+      <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+              <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Katalog Master</span>
+              <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0;letter-spacing:-0.02em;">Program Sertifikasi</h1>
+          </div>
+          <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">Kelola master data program sertifikasi, modul materi, dan biaya pendaftaran.</p>
+      </div>
+      <button type="button" class="fcc-catalog-header-btn" onclick="document.getElementById('create-modal').style.display='flex'"
+              style="padding:10px 22px;font-size:13.5px;font-weight:900;background:#FFC81A;color:#131218;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.35);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .18s;"
+              onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          @include('components.icon',['name'=>'plus','size'=>16]) Tambah Sertifikasi Baru
+      </button>
+  </div>
 
-        <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
-            <div style="width:44px;height:44px;border-radius:12px;background:#EEF2FF;border:1.5px solid #6366F1;display:flex;align-items:center;justify-content:center;color:#6366F1;flex-shrink:0;">
-                @include('components.icon',['name'=>'tag','size'=>20])
-            </div>
-            <div>
-                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Kategori Sertifikasi</p>
-                <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ $kategori->count() }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Kategori</span></p>
-            </div>
-        </div>
+  {{-- Stat Cards Grid --}}
+  <div class="fcc-catalog-stats-grid">
+      <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;color:#131218;box-shadow:0 4px 10px rgba(255,200,26,0.25);flex-shrink:0;">
+              @include('components.icon',['name'=>'award','size'=>20])
+          </div>
+          <div style="min-width:0;">
+              <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Total Sertifikasi</p>
+              <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ $sertifikasi->total() }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Program</span></p>
+          </div>
+      </div>
 
-        <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
-            <div style="width:44px;height:44px;border-radius:12px;background:#ECFDF5;border:1.5px solid #10B981;display:flex;align-items:center;justify-content:center;color:#10B981;flex-shrink:0;">
-                @include('components.icon',['name'=>'calendar','size'=>20])
-            </div>
-            <div>
-                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Jadwal Terdaftar</p>
-                <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ \App\Models\JadwalSertifikasi::count() }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Batch</span></p>
-            </div>
-        </div>
-    </div>
+      <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:#EEF2FF;border:1.5px solid #6366F1;display:flex;align-items:center;justify-content:center;color:#6366F1;flex-shrink:0;">
+              @include('components.icon',['name'=>'tag','size'=>20])
+          </div>
+          <div style="min-width:0;">
+              <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Kategori Sertifikasi</p>
+              <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ $kategori->count() }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Kategori</span></p>
+          </div>
+      </div>
 
-    {{-- Main Neo-Brutalist Table Card --}}
-    <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
-        <div style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;">
-            <h3 style="margin:0;font-size:16px;font-weight:900;color:#131218;">Daftar Master Sertifikasi</h3>
-            <span style="font-size:11.5px;font-weight:800;color:#131218;background:#FFC81A;padding:4px 12px;border-radius:20px;border:1px solid #131218;">{{ $sertifikasi->total() }} Data</span>
-        </div>
+      <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:#ECFDF5;border:1.5px solid #10B981;display:flex;align-items:center;justify-content:center;color:#10B981;flex-shrink:0;">
+              @include('components.icon',['name'=>'calendar','size'=>20])
+          </div>
+          <div style="min-width:0;">
+              <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Jadwal Terdaftar</p>
+              <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ \App\Models\JadwalSertifikasi::count() }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Batch</span></p>
+          </div>
+      </div>
+  </div>
 
-        <div class="fcc-sertifikasi-desktop-table" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
-            <table style="width:100%;border-collapse:collapse;min-width:720px;">
-                <thead>
-                    <tr style="background:#131218;color:#FFFFFF;">
-                        <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">Kode</th>
-                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Program Sertifikasi</th>
-                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Kategori</th>
-                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;white-space:nowrap;">Status Modul &amp; Jadwal</th>
-                        <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;white-space:nowrap;width:130px;min-width:130px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($sertifikasi as $s)
-                    <tr style="border-top:1px solid #F1F5F9;transition:background .15s;cursor:pointer;" onclick="if(!event.target.closest('button, a, select, input, form')) window.location.href='{{ route('admin.sertifikasi.show', $s) }}'" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''">
-                        {{-- Kode --}}
-                        <td style="padding:14px 20px;vertical-align:middle;">
-                            <span style="font-size:12px;font-weight:900;color:#FFC81A;background:#131218;padding:4px 10px;border-radius:8px;font-family:monospace;letter-spacing:0.5px;border:1px solid #131218;display:inline-block;">
-                                {{ $s->kode }}
-                            </span>
-                        </td>
+  {{-- Main Neo-Brutalist Table Card --}}
+  <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+      <div style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="margin:0;font-size:16px;font-weight:900;color:#131218;">Daftar Master Sertifikasi</h3>
+          <span style="font-size:11.5px;font-weight:800;color:#131218;background:#FFC81A;padding:4px 12px;border-radius:20px;border:1px solid #131218;">{{ $sertifikasi->total() }} Data</span>
+      </div>
 
-                        {{-- Judul --}}
-                        <td style="padding:14px 16px;vertical-align:middle;">
-                            <div style="display:flex;align-items:center;gap:12px;">
-                                @if($s->gambar_url || $s->gambar)
-                                    <img src="{{ $s->gambar_url ?? asset('storage/'.$s->gambar) }}" alt="{{ $s->judul }}" style="width:42px;height:42px;border-radius:10px;object-fit:cover;border:1.5px solid #131218;flex-shrink:0;">
-                                @else
-                                    <div style="width:42px;height:42px;border-radius:10px;background:#F1F5F9;border:1.5px solid #CBD5E1;display:flex;align-items:center;justify-content:center;color:#94A3B8;flex-shrink:0;">
-                                        @include('components.icon',['name'=>'award','size'=>18])
-                                    </div>
-                                @endif
-                                <div>
-                                    <a href="{{ route('admin.sertifikasi.show', $s) }}" style="font-size:14px;font-weight:900;color:#131218;text-decoration:none;margin:0;display:block;transition:color .15s;" onmouseover="this.style.color='#3B82F6'" onmouseout="this.style.color='#131218'">
-                                        {{ $s->judul }}
-                                    </a>
-                                    <span style="font-size:11px;color:#64748B;font-weight:600;">Dibuat: {{ $s->created_at?->translatedFormat('d M Y') ?? '—' }}</span>
-                                </div>
-                            </div>
-                        </td>
+      <div class="fcc-sertifikasi-desktop-table">
+          <table style="width:100%;border-collapse:collapse;min-width:820px;">
+              <thead>
+                  <tr style="background:#131218;color:#FFFFFF;">
+                      <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;width:85px;white-space:nowrap;">Kode</th>
+                      <th class="fcc-col-program" style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;white-space:nowrap;">Program Sertifikasi</th>
+                      <th class="fcc-col-kategori" style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:180px;min-width:155px;max-width:220px;">Kategori</th>
+                      <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;white-space:nowrap;width:180px;">Status Modul &amp; Jadwal</th>
+                      <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;white-space:nowrap;width:130px;min-width:130px;">Aksi</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  @forelse($sertifikasi as $s)
+                  <tr style="border-top:1px solid #F1F5F9;transition:background .15s;cursor:pointer;" onclick="if(!event.target.closest('button, a, select, input, form')) window.location.href='{{ route('admin.sertifikasi.show', $s) }}'" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''">
+                      {{-- Kode --}}
+                      <td style="padding:14px 20px;vertical-align:middle;white-space:nowrap;width:85px;">
+                          <span style="font-size:12px;font-weight:900;color:#FFC81A;background:#131218;padding:4px 10px;border-radius:8px;font-family:monospace;letter-spacing:0.5px;border:1px solid #131218;display:inline-block;">
+                              {{ $s->kode }}
+                          </span>
+                      </td>
 
-                        {{-- Kategori --}}
-                        <td style="padding:14px 16px;vertical-align:middle;white-space:nowrap;">
-                            <span style="font-size:11.5px;font-weight:800;color:#475569;background:#F1F5F9;padding:4px 12px;border-radius:20px;border:1px solid #E2E8F0;display:inline-block;white-space:nowrap;">
-                                {{ $s->kategori->nama_kategori ?? 'Umum' }}
-                            </span>
-                        </td>
+                      {{-- Judul (Program Sertifikasi TIDAK DI-WRAP) --}}
+                      <td class="fcc-col-program" style="padding:14px 16px;vertical-align:middle;white-space:nowrap;">
+                          <div style="display:flex;align-items:center;gap:12px;white-space:nowrap;">
+                              @if($s->gambar_url || $s->gambar)
+                                  <img src="{{ $s->gambar_url ?? asset('storage/'.$s->gambar) }}" alt="{{ $s->judul }}" style="width:42px;height:42px;border-radius:10px;object-fit:cover;border:1.5px solid #131218;flex-shrink:0;">
+                              @else
+                                  <div style="width:42px;height:42px;border-radius:10px;background:#F1F5F9;border:1.5px solid #CBD5E1;display:flex;align-items:center;justify-content:center;color:#94A3B8;flex-shrink:0;">
+                                      @include('components.icon',['name'=>'award','size'=>18])
+                                  </div>
+                              @endif
+                              <div style="white-space:nowrap;">
+                                  <a href="{{ route('admin.sertifikasi.show', $s) }}" class="fcc-program-title" style="font-size:14px;font-weight:900;color:#131218;text-decoration:none;margin:0;display:block;white-space:nowrap;transition:color .15s;" onmouseover="this.style.color='#3B82F6'" onmouseout="this.style.color='#131218'">
+                                      {{ $s->judul }}
+                                  </a>
+                                  <span style="font-size:11px;color:#64748B;font-weight:600;white-space:nowrap;display:block;">Dibuat: {{ $s->created_at?->translatedFormat('d M Y') ?? '—' }}</span>
+                              </div>
+                          </div>
+                      </td>
 
-                        {{-- Modul & Jadwal Stats (Compact Capsule) --}}
-                        <td style="padding:14px 16px;vertical-align:middle;white-space:nowrap;">
-                            @php
-                                $cntJadwal = $s->jadwal_count ?? $s->jadwal()->count();
-                                $cntMateri = $s->materi_count ?? $s->materi()->count();
-                            @endphp
-                            <div style="display:inline-flex;align-items:center;gap:4px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;padding:3px 6px;white-space:nowrap;" title="{{ $cntJadwal }} Jadwal, {{ $cntMateri }} Modul">
+                      {{-- Kategori (Proporsional & Rapi) --}}
+                      <td class="fcc-col-kategori" style="padding:14px 16px;vertical-align:middle;width:180px;min-width:155px;max-width:220px;white-space:normal;">
+                          <span class="fcc-kategori-badge">
+                              <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#F59E0B;flex-shrink:0;"></span>
+                              <span>{{ $s->kategori->nama_kategori ?? 'Umum' }}</span>
+                          </span>
+                      </td>
+
+                      {{-- Modul & Jadwal Stats (Compact Capsule) --}}
+                      <td style="padding:14px 16px;vertical-align:middle;white-space:nowrap;width:180px;">
+                          @php
+                              $cntJadwal = $s->jadwal_count ?? $s->jadwal()->count();
+                              $cntMateri = $s->materi_count ?? $s->materi()->count();
+                          @endphp
+                          <div style="display:inline-flex;align-items:center;gap:4px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;padding:3px 6px;white-space:nowrap;" title="{{ $cntJadwal }} Jadwal, {{ $cntMateri }} Modul">
                                 {{-- Jadwal Pill --}}
                                 @if($cntJadwal > 0)
                                     <span style="display:inline-flex;align-items:center;gap:3.5px;font-size:11px;font-weight:800;color:#131218;background:#FFFDF5;border:1px solid #FFC81A;padding:2px 7px;border-radius:6px;line-height:1.2;">

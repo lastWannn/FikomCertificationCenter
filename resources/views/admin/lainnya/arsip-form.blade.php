@@ -1,7 +1,137 @@
 @extends('layouts.admin')
 @section('title', 'Edit Arsip Kegiatan')
 @section('page-content')
-<div style="padding:24px;max-width:760px;margin:0 auto;width:100%;">
+<style>
+  .fcc-arsip-form-container {
+    padding: 24px;
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .fcc-arsip-form-card {
+    padding: 32px;
+    border-radius: 24px;
+    background: #FFFFFF;
+    border: 2px solid #E5E7EB;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.04);
+    box-sizing: border-box;
+  }
+  .fcc-arsip-form-title {
+    font-size: 22px;
+    font-weight: 900;
+    color: #131218;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  .fcc-arsip-dropzone {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 2px dashed #CBD5E1;
+    border-radius: 16px;
+    padding: 20px 24px;
+    cursor: pointer;
+    background: #F8FAFC;
+    transition: all .2s;
+    box-sizing: border-box;
+  }
+  .fcc-arsip-thumb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #F8FAFC;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 14px;
+    box-sizing: border-box;
+  }
+  .fcc-arsip-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 28px;
+    border-top: 1.5px solid #E2E4EB;
+    padding-top: 20px;
+  }
+
+  .fcc-arsip-form-header-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  /* ═══ TABLET (768px – 1023px) ═══ */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .fcc-arsip-form-container {
+      padding: 20px 16px !important;
+    }
+    .fcc-arsip-form-card {
+      padding: 26px 22px !important;
+    }
+  }
+
+  /* ═══ MOBILE (< 768px) ═══ */
+  @media (max-width: 767px) {
+    .fcc-arsip-form-container {
+      padding: 14px 10px !important;
+    }
+    .fcc-arsip-form-header-row {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 6px !important;
+    }
+    .fcc-arsip-form-title {
+      font-size: 20px !important;
+    }
+    .fcc-arsip-form-card {
+      padding: 20px 16px !important;
+      border-radius: 18px !important;
+    }
+    .fcc-arsip-dropzone {
+      padding: 14px 16px !important;
+      gap: 12px !important;
+    }
+  }
+
+  /* ═══ COMPACT MOBILE (< 480px) ═══ */
+  @media (max-width: 479px) {
+    .fcc-arsip-form-container {
+      padding: 12px 8px !important;
+    }
+    .fcc-arsip-form-title {
+      font-size: 18px !important;
+    }
+    .fcc-arsip-form-card {
+      padding: 16px 12px !important;
+    }
+    .fcc-arsip-dropzone {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 10px !important;
+    }
+    .fcc-arsip-thumb-grid {
+      grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)) !important;
+      gap: 8px !important;
+      padding: 8px !important;
+    }
+    .fcc-arsip-form-actions {
+      flex-direction: column-reverse !important;
+      gap: 8px !important;
+    }
+    .fcc-arsip-form-actions > * {
+      width: 100% !important;
+      justify-content: center !important;
+      text-align: center !important;
+      box-sizing: border-box !important;
+    }
+  }
+</style>
+
+<div class="fcc-arsip-form-container">
     
     {{-- Header & Back Button --}}
     <div style="margin-bottom:24px;">
@@ -10,15 +140,15 @@
            onmouseover="this.style.background='#FFC81A';" onmouseout="this.style.background='#FFFFFF';">
             @include('components.icon',['name'=>'chevron-left','size'=>14]) Kembali ke Daftar Arsip
         </a>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+        <div class="fcc-arsip-form-header-row">
             <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;">Form Arsip</span>
-            <h1 style="font-size:22px;font-weight:900;color:#131218;margin:0;letter-spacing:-0.02em;">{{ isset($arsip) ? 'Edit' : 'Tambah' }} Arsip Kegiatan</h1>
+            <h1 class="fcc-arsip-form-title">{{ isset($arsip) ? 'Edit' : 'Tambah' }} Arsip Kegiatan</h1>
         </div>
         <p style="color:#64748B;font-size:13px;margin:6px 0 0;font-weight:500;">Lengkapi berita acara, ringkasan, dan dokumentasi foto-foto kegiatan.</p>
     </div>
 
     {{-- Card Form --}}
-    <div class="fcc-card" style="padding:32px;border-radius:24px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 6px 24px rgba(0,0,0,0.04);">
+    <div class="fcc-card fcc-arsip-form-card">
         @if($errors->any())
         <div style="background:#FEF2F2; border:1.5px solid #FCA5A5; color:#991B1B; padding:14px 18px; border-radius:12px; margin-bottom:24px; font-size:13px;">
             <p style="margin:0 0 6px; font-weight:800; font-size:13.5px; display:flex; align-items:center; gap:6px;">
@@ -79,7 +209,7 @@
                 </label>
                 
                 {{-- Input File Async Dropzone --}}
-                <label style="display:flex;align-items:center;gap:14px;border:2px dashed #CBD5E1;border-radius:16px;padding:20px 24px;cursor:pointer;background:#F8FAFC;transition:all .2s;"
+                <label class="fcc-arsip-dropzone"
                        onmouseover="this.style.borderColor='#FFC81A';this.style.background='#FFFDF5'"
                        onmouseout="this.style.borderColor='#CBD5E1';this.style.background='#F8FAFC'">
                     <div style="width:44px;height:44px;border-radius:12px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -103,7 +233,7 @@
                         </span>
                     </div>
 
-                    <div id="async-progress-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(110px, 1fr)); gap:10px; max-height:240px; overflow-y:auto; padding:10px; background:#F8FAFC; border:1.5px solid #CBD5E1; border-radius:14px;">
+                    <div id="async-progress-list" class="fcc-arsip-thumb-grid">
                     </div>
                 </div>
 
@@ -116,7 +246,7 @@
                     <p style="font-size:11px;font-weight:800;color:#131218;margin:0 0 12px;text-transform:uppercase;letter-spacing:0.5px;">
                         Dokumentasi Foto Tersimpan ({{ count($arsip->dokumentasi) }} foto):
                     </p>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));gap:10px;max-height:240px;overflow-y:auto;padding:10px;background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:14px;">
+                    <div class="fcc-arsip-thumb-grid">
                         @foreach($arsip->dokumentasi as $img)
                         <div style="position:relative;border-radius:10px;overflow:hidden;border:1.5px solid #CBD5E1;background:#131218;aspect-ratio:1/1;">
                             <img src="{{ asset('storage/'.$img) }}" alt="Dokumentasi" style="width:100%;height:100%;object-fit:cover;">
@@ -133,11 +263,11 @@
             </div>
 
             {{-- Buttons --}}
-            <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:28px;border-top:1.5px solid #E2E4EB;padding-top:20px;">
-                <a href="{{ route('admin.arsip.index') }}" style="padding:10px 18px;font-size:13px;font-weight:800;color:#131218;text-decoration:none;background:#FFFFFF;border:1.5px solid #131218;border-radius:10px;">
+            <div class="fcc-arsip-form-actions">
+                <a href="{{ route('admin.arsip.index') }}" style="padding:10px 18px;font-size:13px;font-weight:800;color:#131218;text-decoration:none;background:#FFFFFF;border:1.5px solid #131218;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;">
                     Batal
                 </a>
-                <button type="submit" id="btn-submit-arsip" style="padding:10px 24px;font-size:13px;font-weight:800;background:#131218;color:#FFC81A;border:1.5px solid #131218;border-radius:10px;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:6px;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">
+                <button type="submit" id="btn-submit-arsip" style="padding:10px 24px;font-size:13px;font-weight:800;background:#131218;color:#FFC81A;border:1.5px solid #131218;border-radius:10px;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;justify-content:center;gap:6px;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">
                     @include('components.icon',['name'=>'check','size'=>15]) {{ isset($arsip) ? 'Simpan Perubahan' : 'Simpan Arsip' }}
                 </button>
             </div>

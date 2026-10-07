@@ -24,7 +24,7 @@
     box-shadow: 0 8px 20px rgba(0,0,0,0.3);
   }
 
-  /* ═══ RESPONSIVE DASHBOARD LAYOUT & DESIGN SYSTEM ═══ */
+  /* ═══ RESPONSIVE DASHBOARD MULTI-TIER DESIGN SYSTEM ═══ */
   .fcc-dashboard-wrapper {
     padding: 24px 28px;
     background: #F6F8FB;
@@ -37,12 +37,18 @@
     overflow-x: hidden;
   }
 
-  /* 4-Stat Cards Grid */
+  /* 4-Stat Cards Grid (Default Desktop >= 1240px) */
   .fcc-stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 18px;
     margin-bottom: 24px;
+  }
+  .taskora-stat-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
   .fcc-stat-card {
     padding: 20px;
@@ -56,6 +62,7 @@
     transition: all .28s ease;
     box-sizing: border-box;
     min-width: 0;
+    height: 100%;
   }
   .fcc-stat-icon {
     width: 52px;
@@ -66,6 +73,23 @@
     justify-content: center;
     flex-shrink: 0;
   }
+  .fcc-stat-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .fcc-stat-lbl {
+    margin: 0 0 2px;
+    color: #64748B;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .fcc-stat-val {
     margin: 0;
     color: #131218;
@@ -75,31 +99,39 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  .fcc-stat-lbl {
-    margin: 0 0 2px;
-    color: #64748B;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    line-height: 1.2;
   }
   .fcc-stat-suf {
     margin: 2px 0 0;
     font-size: 11px;
     color: #131218;
     font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  /* Main 2-Column Grid */
+  /* Main Layout Grid */
   .fcc-dashboard-main-grid {
     display: grid;
     grid-template-columns: 1fr 330px;
     gap: 24px;
     align-items: start;
   }
+  .fcc-dashboard-main-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+  .fcc-dashboard-sidebar-widgets {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
 
-  /* Pending Payment Banner */
+  /* Action Banner */
   .fcc-action-banner {
     background: #FFFDF5;
     border: 2px solid #FFC81A;
@@ -118,8 +150,49 @@
     flex: 1;
     min-width: 0;
   }
+  .fcc-action-banner-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: #FFC81A;
+    border: 1.5px solid #131218;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(255,200,26,0.3);
+  }
+  .fcc-action-banner-title {
+    margin: 0;
+    font-weight: 900;
+    color: #131218;
+    font-size: 14.5px;
+  }
+  .fcc-action-banner-desc {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: #4B5563;
+    font-weight: 500;
+  }
+  .fcc-action-banner-btn {
+    padding: 9px 20px;
+    font-size: 12.5px;
+    font-weight: 800;
+    text-decoration: none;
+    flex-shrink: 0;
+    background: #131218;
+    color: #FFC81A;
+    border-radius: 30px;
+    border: 1.5px solid #131218;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all .18s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-  /* Expired Activities Banner */
+  /* Expired Activities */
   .fcc-expired-card {
     background: #FFFFFF;
     border: 2px solid #E5E7EB;
@@ -134,6 +207,12 @@
     gap: 12px;
     margin-bottom: 12px;
     flex-wrap: wrap;
+  }
+  .fcc-expired-items-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
   }
   .fcc-expired-item {
     background: #F8FAFC;
@@ -160,14 +239,21 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 18px;
+    gap: 14px;
     flex-wrap: wrap;
-    gap: 12px;
   }
   .fcc-chart-controls {
     display: flex;
     align-items: center;
     gap: 14px;
     flex-wrap: wrap;
+  }
+  .fcc-chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    font-weight: 800;
   }
   .fcc-chart-selects {
     display: flex;
@@ -176,7 +262,7 @@
   }
   .fcc-chart-canvas-wrapper {
     position: relative;
-    height: 260px;
+    height: 270px;
     width: 100%;
   }
 
@@ -206,8 +292,108 @@
   }
   .fcc-table {
     width: 100%;
-    min-width: 520px;
+    min-width: 580px;
     border-collapse: collapse;
+  }
+
+  /* Mobile Kegiatan Cards List (< 640px) */
+  .fcc-dashboard-kegiatan-mobile-list {
+    display: none;
+    padding: 12px;
+    gap: 10px;
+  }
+  .fcc-kegiatan-m-card {
+    background: #FFFFFF;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 14px;
+    transition: all .2s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+  .fcc-kegiatan-m-card:hover {
+    border-color: #FFC81A;
+    box-shadow: 0 6px 16px rgba(255, 200, 26, 0.15);
+  }
+  .fcc-kegiatan-m-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .fcc-kegiatan-m-title {
+    margin: 0 0 6px;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #131218;
+    line-height: 1.35;
+  }
+  .fcc-kegiatan-m-badge {
+    font-size: 9.5px;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+  }
+  .fcc-kegiatan-m-btn {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #131218;
+    background: #FFC81A;
+    border: 1px solid #131218;
+    padding: 5px 12px;
+    border-radius: 18px;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    transition: all .15s ease;
+  }
+  .fcc-kegiatan-m-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #F1F5F9;
+    font-size: 12px;
+  }
+  .fcc-kegiatan-m-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #64748B;
+    font-weight: 600;
+    font-size: 11.5px;
+    white-space: nowrap;
+  }
+  .fcc-kegiatan-m-progress-wrap {
+    flex: 1;
+    max-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .fcc-kegiatan-m-quota-lbl {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: #64748B;
+  }
+  .fcc-kegiatan-m-quota-lbl strong {
+    color: #131218;
+    font-weight: 800;
+  }
+  .fcc-kegiatan-m-progress-bar {
+    width: 100%;
+    height: 5px;
+    background: #E5E7EB;
+    border-radius: 3px;
+    overflow: hidden;
   }
 
   /* Right Side Widgets */
@@ -219,10 +405,43 @@
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   }
 
-  /* ═══ TABLET BREAKPOINT (< 1024px) ═══ */
-  @media (max-width: 1023px) {
+  /* ══════════════════════════════════════════════════════════════════
+     TIER 1: LAPTOP & MEDIUM DESKTOP (1024px – 1239px)
+     Sidebar: 256px visible. Viewport content: 768px – 983px
+     ══════════════════════════════════════════════════════════════════ */
+  @media (max-width: 1239px) {
     .fcc-dashboard-wrapper {
-      padding: 18px 16px;
+      padding: 20px 20px;
+    }
+    .fcc-dashboard-main-grid {
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+    .fcc-dashboard-sidebar-widgets {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .fcc-widget-full-on-grid {
+      grid-column: span 2;
+    }
+    .fcc-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .fcc-chart-canvas-wrapper {
+      height: 250px;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     TIER 2: TABLET STANDARD (768px – 1023px, iPad Air / Pro Portrait)
+     Sidebar: Off-canvas (0px). Full Viewport: 768px – 1023px
+     ══════════════════════════════════════════════════════════════════ */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .fcc-dashboard-wrapper {
+      padding: 18px 18px;
     }
     .fcc-stats-grid {
       grid-template-columns: repeat(2, 1fr);
@@ -233,21 +452,90 @@
       grid-template-columns: 1fr;
       gap: 20px;
     }
+    .fcc-dashboard-sidebar-widgets {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .fcc-widget-full-on-grid {
+      grid-column: span 2;
+    }
     .fcc-chart-card,
     .fcc-widget-card {
       padding: 20px 18px;
     }
+    .fcc-chart-canvas-wrapper {
+      height: 240px;
+    }
   }
 
-  /* ═══ MOBILE BREAKPOINT (< 640px) ═══ */
+  /* ══════════════════════════════════════════════════════════════════
+     TIER 3: SMALL TABLET / MOBILE LANDSCAPE / PHABLET (640px – 767px)
+     ══════════════════════════════════════════════════════════════════ */
+  @media (min-width: 640px) and (max-width: 767px) {
+    .fcc-dashboard-wrapper {
+      padding: 16px 14px;
+    }
+    .fcc-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .fcc-stat-card {
+      padding: 16px 14px;
+      gap: 12px;
+    }
+    .fcc-stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+    }
+    .fcc-stat-val {
+      font-size: 20px;
+    }
+    .fcc-dashboard-main-grid {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    .fcc-dashboard-sidebar-widgets {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .fcc-widget-full-on-grid {
+      grid-column: span 2;
+    }
+    .fcc-chart-card,
+    .fcc-widget-card {
+      padding: 18px 16px;
+    }
+    .fcc-chart-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .fcc-chart-controls {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .fcc-chart-canvas-wrapper {
+      height: 230px;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     TIER 4: STANDARD MOBILE (420px – 639px)
+     ══════════════════════════════════════════════════════════════════ */
   @media (max-width: 639px) {
     .fcc-dashboard-wrapper {
       padding: 14px 10px;
     }
     .fcc-stats-grid {
       grid-template-columns: repeat(2, 1fr) !important;
-      gap: 12px !important;
-      margin-bottom: 18px !important;
+      gap: 10px !important;
+      margin-bottom: 16px !important;
     }
     .taskora-stat-link {
       display: flex !important;
@@ -259,22 +547,22 @@
       flex-direction: column !important;
       align-items: flex-start !important;
       justify-content: space-between !important;
-      padding: 14px !important;
+      padding: 12px 11px !important;
       border-radius: 16px !important;
       height: 100% !important;
-      min-height: 142px !important;
+      min-height: 136px !important;
       box-sizing: border-box !important;
       gap: 10px !important;
     }
     .fcc-stat-icon {
-      width: 40px !important;
-      height: 40px !important;
+      width: 38px !important;
+      height: 38px !important;
       border-radius: 11px !important;
       flex-shrink: 0 !important;
     }
     .fcc-stat-icon svg {
-      width: 19px !important;
-      height: 19px !important;
+      width: 18px !important;
+      height: 18px !important;
     }
     .fcc-stat-body {
       width: 100% !important;
@@ -289,41 +577,57 @@
       text-transform: uppercase !important;
       letter-spacing: 0.3px !important;
       margin: 0 0 2px !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
     }
     .fcc-stat-val {
       font-size: 17px !important;
       font-weight: 900 !important;
       color: #131218 !important;
       letter-spacing: -0.02em !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-      line-height: 1.25 !important;
+      line-height: 1.2 !important;
       margin: 0 !important;
     }
     .fcc-stat-suf {
       font-size: 10px !important;
       color: #131218 !important;
       font-weight: 700 !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
       margin: 2px 0 0 !important;
     }
 
-    /* Action Banner mobile stacking */
+    /* Main Grid & Widgets */
+    .fcc-dashboard-main-grid {
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+    .fcc-dashboard-sidebar-widgets {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+    }
+    .fcc-widget-full-on-grid {
+      grid-column: auto !important;
+    }
+
+    /* Action Banner Mobile Stacking */
     .fcc-action-banner {
       flex-direction: column;
       align-items: stretch;
-      padding: 15px 16px;
+      padding: 14px 14px;
       gap: 12px;
       border-radius: 16px;
     }
     .fcc-action-banner-body {
       gap: 12px;
+    }
+    .fcc-action-banner-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+    }
+    .fcc-action-banner-title {
+      font-size: 13.5px;
+    }
+    .fcc-action-banner-desc {
+      font-size: 11.5px;
     }
     .fcc-action-banner-btn {
       width: 100%;
@@ -331,12 +635,18 @@
       justify-content: center;
       display: block;
       box-sizing: border-box;
+      padding: 10px 16px;
     }
 
     /* Expired Activities */
     .fcc-expired-card {
-      padding: 15px 16px;
+      padding: 14px 14px;
       border-radius: 16px;
+    }
+    .fcc-expired-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
     }
     .fcc-expired-item {
       width: 100%;
@@ -351,14 +661,20 @@
     }
     .fcc-chart-header {
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
       gap: 12px;
+      margin-bottom: 14px;
     }
     .fcc-chart-controls {
       width: 100%;
       flex-direction: column;
       align-items: stretch;
       gap: 10px;
+    }
+    .fcc-chart-legend {
+      justify-content: flex-start;
+      gap: 12px;
+      font-size: 11.5px;
     }
     .fcc-chart-selects {
       width: 100%;
@@ -367,17 +683,26 @@
     }
     .fcc-chart-selects select {
       flex: 1;
+      font-size: 11.5px !important;
+      padding: 6px 10px !important;
     }
     .fcc-chart-canvas-wrapper {
       height: 220px;
     }
 
-    /* Table Card */
+    /* Kegiatan Aktif Dual Layout */
     .fcc-table-card {
       border-radius: 16px;
     }
     .fcc-table-header {
       padding: 14px 16px;
+    }
+    .fcc-table-wrapper {
+      display: none !important;
+    }
+    .fcc-dashboard-kegiatan-mobile-list {
+      display: flex !important;
+      flex-direction: column !important;
     }
 
     /* Widgets */
@@ -388,12 +713,60 @@
     #mini-calendar-widget {
       padding: 16px 14px;
     }
+    .calendar-day-cell {
+      padding: 6px 0 !important;
+      font-size: 11.5px !important;
+    }
+    .calendar-day-cell[data-tooltip]:hover::after {
+      display: none !important;
+    }
   }
 
-  /* ═══ EXTRA SMALL PHONES (< 380px) ═══ */
-  @media (max-width: 379px) {
+  /* ══════════════════════════════════════════════════════════════════
+     TIER 5: COMPACT MOBILE (< 420px, iPhone SE, Galaxy Mini)
+     ══════════════════════════════════════════════════════════════════ */
+  @media (max-width: 419px) {
+    .fcc-dashboard-wrapper {
+      padding: 12px 8px;
+    }
     .fcc-stats-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr !important;
+      gap: 8px !important;
+    }
+    .fcc-stat-card {
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      padding: 12px 14px !important;
+      min-height: auto !important;
+      gap: 12px !important;
+      border-radius: 14px !important;
+    }
+    .fcc-stat-icon {
+      width: 42px !important;
+      height: 42px !important;
+      border-radius: 12px !important;
+    }
+    .fcc-stat-val {
+      font-size: 18px !important;
+    }
+    .fcc-chart-canvas-wrapper {
+      height: 200px;
+    }
+    .calendar-day-cell {
+      padding: 5px 0 !important;
+      font-size: 11px !important;
+    }
+    .fcc-kegiatan-m-meta {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .fcc-kegiatan-m-progress-wrap {
+      max-width: 100%;
+    }
+    .fcc-verif-item {
+      padding: 10px 12px !important;
     }
   }
 </style>
@@ -437,7 +810,7 @@
     {{-- 2 Columns Skeleton --}}
     <div class="fcc-dashboard-main-grid">
       {{-- Left Side --}}
-      <div style="display:flex;flex-direction:column;gap:24px;">
+      <div class="fcc-dashboard-main-col">
         <div class="fcc-card" style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;gap:16px;">
           <div class="fcc-skeleton-box" style="width:46px;height:46px;border-radius:14px;flex-shrink:0;"></div>
           <div style="flex:1;">
@@ -460,7 +833,7 @@
       </div>
 
       {{-- Right Side --}}
-      <div style="display:flex;flex-direction:column;gap:24px;">
+      <div class="fcc-dashboard-sidebar-widgets">
         <div class="fcc-widget-card">
           <div class="fcc-skeleton-box" style="width:100%;height:28px;margin-bottom:16px;border-radius:8px;"></div>
           <div class="fcc-skeleton-box" style="width:100%;height:180px;border-radius:12px;"></div>
@@ -469,6 +842,10 @@
           <div class="fcc-skeleton-box" style="width:60%;height:16px;margin-bottom:16px;"></div>
           <div class="fcc-skeleton-box" style="width:120px;height:120px;border-radius:50%;margin:0 auto 14px;"></div>
           <div class="fcc-skeleton-box" style="width:100%;height:24px;border-radius:6px;"></div>
+        </div>
+        <div class="fcc-widget-card fcc-widget-full-on-grid">
+          <div class="fcc-skeleton-box" style="width:40%;height:16px;margin-bottom:16px;"></div>
+          <div class="fcc-skeleton-box" style="width:100%;height:80px;border-radius:8px;"></div>
         </div>
       </div>
     </div>
@@ -517,23 +894,23 @@
   {{-- 2 Columns Grid (Main Area + Side Widgets Area) --}}
   <div class="fcc-dashboard-main-grid">
 
-    {{-- MAIN LEFT AREA (~70%) --}}
-    <div style="display:flex;flex-direction:column;gap:24px;min-width:0;">
+    {{-- MAIN LEFT AREA (~70% on desktop, 100% on tablet/mobile) --}}
+    <div class="fcc-dashboard-main-col">
 
       {{-- Pending Payment Banner --}}
       @php $pendingBayar = \App\Models\Pembayaran::where('status_pembayaran','menunggu_verifikasi')->count(); @endphp
       @if($pendingBayar > 0)
       <div class="fcc-card fcc-action-banner">
         <div class="fcc-action-banner-body">
-          <div style="width:46px;height:46px;border-radius:14px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(255,200,26,0.3);">
+          <div class="fcc-action-banner-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           </div>
           <div style="flex:1;min-width:0;">
-            <p style="margin:0;font-weight:900;color:#131218;font-size:14.5px;">{{ $pendingBayar }} Pembayaran Menunggu Verifikasi</p>
-            <p style="margin:2px 0 0;font-size:12px;color:#4B5563;font-weight:500;">Ada transaksi peserta yang memerlukan tindakan verifikasi segera.</p>
+            <p class="fcc-action-banner-title">{{ $pendingBayar }} Pembayaran Menunggu Verifikasi</p>
+            <p class="fcc-action-banner-desc">Ada transaksi peserta yang memerlukan tindakan verifikasi segera.</p>
           </div>
         </div>
-        <a href="{{ route('admin.pembayaran.index',['status'=>'menunggu_verifikasi']) }}" class="fcc-action-banner-btn" style="padding:9px 20px;font-size:12.5px;font-weight:800;text-decoration:none;flex-shrink:0;background:#131218;color:#FFC81A;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:all .18s;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">Verifikasi Sekarang</a>
+        <a href="{{ route('admin.pembayaran.index',['status'=>'menunggu_verifikasi']) }}" class="fcc-action-banner-btn" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">Verifikasi Sekarang</a>
       </div>
       @endif
 
@@ -557,20 +934,20 @@
             Kelola Kegiatan &rarr;
           </a>
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+        <div class="fcc-expired-items-grid">
           @foreach($passedKegiatans->take(4) as $pk)
           @php
             $detail = $pk->detail;
             $editUrl = $pk->jenis_kegiatan === 'pelatihan' ? ($detail ? route('admin.pelatihan.edit', $detail) : '#') : ($detail ? route('admin.sertifikasi.edit', $detail) : '#');
           @endphp
           <div class="fcc-expired-item">
-            <span style="font-weight:700;color:#0F172A;">{{ $pk->judul }}</span>
-            <span style="color:#64748B;font-size:11px;">(Lewat {{ $pk->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Tgl' }})</span>
+            <span style="font-weight:700;color:#0F172A;flex:1;min-width:140px;">{{ $pk->judul }}</span>
+            <span style="color:#64748B;font-size:11px;white-space:nowrap;">(Lewat {{ $pk->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Tgl' }})</span>
             <div style="display:flex;gap:6px;margin-left:auto;">
-              <a href="{{ $editUrl }}" style="color:#131218;font-size:11px;font-weight:800;text-decoration:none;background:#FFC81A;padding:3px 9px;border-radius:6px;border:1px solid #131218;">Perpanjang</a>
+              <a href="{{ $editUrl }}" style="color:#131218;font-size:11px;font-weight:800;text-decoration:none;background:#FFC81A;padding:4px 10px;border-radius:6px;border:1px solid #131218;white-space:nowrap;">Perpanjang</a>
               <form action="{{ route('admin.kegiatan.arsipkan', $pk) }}" method="POST" style="margin:0;">
                 @csrf
-                <button type="submit" style="color:#FFFFFF;font-size:11px;font-weight:800;background:#131218;padding:3px 9px;border-radius:6px;border:none;cursor:pointer;">Arsipkan</button>
+                <button type="submit" style="color:#FFFFFF;font-size:11px;font-weight:800;background:#131218;padding:4px 10px;border-radius:6px;border:none;cursor:pointer;white-space:nowrap;">Arsipkan</button>
               </form>
             </div>
           </div>
@@ -587,7 +964,7 @@
             <p style="margin:0;font-size:12px;color:#64748B;">Perbandingan pendapatan (Rp) dan jumlah pendaftaran per bulan tahun <span id="chart-year-label">{{ date('Y') }}</span></p>
           </div>
           <div class="fcc-chart-controls">
-            <div style="display:flex;align-items:center;gap:14px;font-size:12px;font-weight:800;">
+            <div class="fcc-chart-legend">
               <span style="display:inline-flex;align-items:center;gap:6px;color:#131218;">
                 <span style="width:12px;height:12px;border-radius:3px;background:#FFC81A;border:1px solid #131218;"></span> Pendapatan (Rp)
               </span>
@@ -614,7 +991,7 @@
         </div>
       </div>
 
-      {{-- Widget 3: Tabel Kegiatan Aktif Terbaru --}}
+      {{-- Widget 3: Tabel & Kartu Kegiatan Aktif Terbaru --}}
       <div class="fcc-card fcc-table-card">
         <div class="fcc-table-header">
           <div>
@@ -623,8 +1000,10 @@
           </div>
           <a href="{{ route('admin.kegiatan.index') }}" style="font-size:12px;font-weight:800;color:#131218;text-decoration:none;background:#FFC81A;padding:6px 14px;border-radius:20px;border:1px solid #131218;transition:all .18s;" onmouseover="this.style.background='#131218';this.style.color='#FFC81A';" onmouseout="this.style.background='#FFC81A';this.style.color='#131218';">Lihat semua &rarr;</a>
         </div>
+
+        {{-- Desktop & Tablet Table (>= 640px) --}}
         <div class="fcc-table-wrapper">
-          <table class="fcc-table" style="width:100%;min-width:580px;border-collapse:collapse;">
+          <table class="fcc-table">
             <thead>
               <tr style="background:#F8FAFC;border-bottom:1.5px solid #E5E7EB;">
                 <th style="padding:12px 18px;text-align:left;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;min-width:180px;">Kegiatan</th>
@@ -657,12 +1036,49 @@
             </tbody>
           </table>
         </div>
+
+        {{-- Mobile Cards List (< 640px) --}}
+        <div class="fcc-dashboard-kegiatan-mobile-list">
+          @forelse($kegiatanTerbaru as $k)
+          <div class="fcc-kegiatan-m-card" onclick="if(!event.target.closest('a, button')) window.location.href='{{ route('admin.kegiatan.show', $k) }}'">
+            <div class="fcc-kegiatan-m-top">
+              <div style="flex:1;min-width:0;">
+                <h4 class="fcc-kegiatan-m-title">{{ $k->judul }}</h4>
+                <span class="fcc-kegiatan-m-badge" style="background:{{ $k->jenis_kegiatan==='pelatihan'?'#FFC81A':'#131218' }};color:{{ $k->jenis_kegiatan==='pelatihan'?'#131218':'#FFC81A' }};border:1px solid #131218;">
+                  {{ ucfirst($k->jenis_kegiatan) }}
+                </span>
+              </div>
+              <a href="{{ route('admin.kegiatan.show', $k) }}" class="fcc-kegiatan-m-btn" onmouseover="this.style.background='#131218';this.style.color='#FFC81A';" onmouseout="this.style.background='#FFC81A';this.style.color='#131218';">
+                Detail &rarr;
+              </a>
+            </div>
+
+            <div class="fcc-kegiatan-m-meta">
+              <div class="fcc-kegiatan-m-date">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="18" y2="10"/></svg>
+                <span>{{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? '—' }}</span>
+              </div>
+              <div class="fcc-kegiatan-m-progress-wrap">
+                <div class="fcc-kegiatan-m-quota-lbl">
+                  <span>Peserta</span>
+                  <strong>{{ $k->terisi }}/{{ $k->kuota }}</strong>
+                </div>
+                <div class="fcc-kegiatan-m-progress-bar">
+                  <div style="height:100%;border-radius:3px;background:{{ $k->isFull()?'#EF4444':'#FFC81A' }};width:{{ $k->kuota>0?min(100,round($k->terisi/$k->kuota*100)):0 }}%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          @empty
+          <div style="padding:24px 16px;text-align:center;color:#94A3B8;font-size:12.5px;font-weight:600;">Belum ada kegiatan aktif.</div>
+          @endforelse
+        </div>
       </div>
 
     </div>
 
-    {{-- RIGHT SIDE WIDGETS AREA (~30%) --}}
-    <div style="display:flex;flex-direction:column;gap:24px;">
+    {{-- RIGHT SIDE WIDGETS AREA (~30% on desktop >=1240px, 2-col grid on tablet/laptop, 1-col on mobile) --}}
+    <div class="fcc-dashboard-sidebar-widgets">
 
       {{-- Mini Calendar Widget (AJAX Enabled) --}}
       <div id="mini-calendar-widget" class="fcc-card fcc-widget-card" style="transition:opacity .2s;">
@@ -728,7 +1144,7 @@
         </div>
 
         {{-- Legenda Kalender --}}
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1.5px solid #F1F5F9;font-size:10.5px;font-weight:700;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1.5px solid #F1F5F9;font-size:10.5px;font-weight:700;flex-wrap:wrap;gap:6px;">
           <span style="display:inline-flex;align-items:center;gap:5px;color:#131218;">
             <span style="width:10px;height:10px;border-radius:3px;background:#FFC81A;border:1px solid #131218;"></span> Hari Ini
           </span>
@@ -750,10 +1166,8 @@
         <div id="status-pendaftar-legend" style="display:flex;flex-direction:column;gap:2px;margin-top:8px;"></div>
       </div>
 
-
-
       {{-- Menunggu Verifikasi List Widget --}}
-      <div class="fcc-card fcc-table-card">
+      <div class="fcc-card fcc-table-card fcc-widget-full-on-grid">
         <div style="padding:16px 20px;border-bottom:2px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center;background:#F8FAFC;">
           <h3 style="margin:0;font-size:15px;font-weight:900;color:#131218;">Menunggu Verifikasi</h3>
           @if($pendingBayar)
@@ -761,7 +1175,7 @@
           @endif
         </div>
         @forelse($pembayaranMenunggu as $p)
-        <a href="{{ route('admin.pembayaran.show', $p) }}" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid #F8FAFC;text-decoration:none;transition:background .18s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''">
+        <a href="{{ route('admin.pembayaran.show', $p) }}" class="fcc-verif-item" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid #F8FAFC;text-decoration:none;transition:background .18s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''">
           <div style="width:36px;height:36px;border-radius:12px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(255,200,26,0.25);">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>

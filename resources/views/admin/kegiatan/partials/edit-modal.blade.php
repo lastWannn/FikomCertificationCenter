@@ -1,5 +1,70 @@
+@once
+<style>
+.fcc-modal-content-box {
+  background: #FFFFFF;
+  border: 2px solid #131218;
+  border-radius: 24px;
+  max-width: 740px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+  position: relative;
+  padding: 32px;
+  box-sizing: border-box;
+  text-align: left !important;
+}
+.fcc-modal-grid-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.3fr;
+  gap: 14px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+.fcc-modal-grid-time {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+@media (max-width: 767px) {
+  .fcc-modal-content-box {
+    padding: 22px 18px !important;
+    border-radius: 20px !important;
+    max-height: 88vh !important;
+  }
+  .fcc-modal-grid-top {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .fcc-modal-grid-time {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+}
+@media (max-width: 479px) {
+  .fcc-modal-content-box {
+    padding: 18px 14px !important;
+  }
+  .fcc-modal-grid-time {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .fcc-modal-footer-actions {
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+  }
+  .fcc-modal-footer-actions > * {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+}
+</style>
+@endonce
+
 <div id="edit-kegiatan-modal-{{ $kegiatan->id }}" class="fcc-modal-backdrop" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(19,18,24,.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) this.style.display='none'">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;max-width:740px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.3);position:relative;padding:32px;text-align:left !important;" onclick="event.stopPropagation()">
+    <div class="fcc-modal-content-box" onclick="event.stopPropagation()">
         
         {{-- Close button --}}
         <button type="button" onclick="document.getElementById('edit-kegiatan-modal-{{ $kegiatan->id }}').style.display='none'" aria-label="Tutup" style="
@@ -23,7 +88,7 @@
             @method('PUT')
 
             {{-- Informasi Utama --}}
-            <div style="display:grid;grid-template-columns:2fr 1fr 1.3fr;gap:14px;margin-bottom:16px;text-align:left;">
+            <div class="fcc-modal-grid-top">
                 <div style="text-align:left;">
                     <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Judul / Nama Kegiatan <span style="color:#EF4444;">*</span></label>
                     <input type="text" name="nama_kegiatan" value="{{ old('nama_kegiatan', $kegiatan->judul ?? $kegiatan->jadwal?->nama_kegiatan) }}" class="fcc-input" required placeholder="Masukkan nama kegiatan..." style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
@@ -45,7 +110,7 @@
             </div>
 
             {{-- Grid Tanggal & Jam --}}
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:24px;">
+            <div class="fcc-modal-grid-time">
                 <div style="text-align:left;">
                     <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Batas Daftar</label>
                     <input type="date" name="tgl_batas_daftar" value="{{ old('tgl_batas_daftar', $kegiatan->jadwal?->tgl_batas_daftar?->format('Y-m-d')) }}" class="fcc-input" style="padding:9px 10px;font-size:12.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
@@ -109,7 +174,7 @@
             </div>
 
             {{-- Action Buttons --}}
-            <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;border-top:1.5px solid #E5E7EB;padding-top:18px;">
+            <div class="fcc-modal-footer-actions" style="display:flex;gap:12px;justify-content:flex-end;align-items:center;border-top:1.5px solid #E5E7EB;padding-top:18px;">
                 <button type="button" onclick="document.getElementById('edit-kegiatan-modal-{{ $kegiatan->id }}').style.display='none'" style="padding:10px 24px;font-size:13.5px;font-weight:800;border-radius:30px;border:1.5px solid #CBD5E1;background:#F8FAFC;color:#64748B;cursor:pointer;">
                     Batal
                 </button>

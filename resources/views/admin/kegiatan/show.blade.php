@@ -3,7 +3,211 @@
 @section('page-title','Detail Kegiatan')
 
 @section('page-content')
-<div style="padding:24px;">
+<style>
+  .fcc-show-container {
+    padding: 24px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .fcc-show-header-title {
+    font-size: 24px;
+    font-weight: 900;
+    color: #131218;
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+  .fcc-show-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .fcc-show-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .fcc-show-side-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: stretch;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .fcc-modal-dialog {
+    background: #FFFFFF;
+    border: 2px solid #131218;
+    border-radius: 24px;
+    padding: 30px;
+    max-width: 480px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    box-sizing: border-box;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .fcc-modal-footer-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+    border-top: 1.5px solid #E5E7EB;
+    padding-top: 18px;
+  }
+  .fcc-show-card-header {
+    padding: 16px 22px;
+    border-bottom: 2px solid #E5E7EB;
+    background: #F8FAFC;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .fcc-show-alert {
+    background: #FFFDF5;
+    border: 2px solid #FFC81A;
+    border-radius: 20px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 16px rgba(255,200,26,0.15);
+  }
+
+  /* ═══ LAPTOP (1024px – 1279px) ═══ */
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    .fcc-show-stats-bar {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 14px !important;
+    }
+  }
+
+  /* ═══ TABLET (768px – 1023px) ═══ */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .fcc-show-container {
+      padding: 18px 16px !important;
+    }
+    .fcc-show-stats-bar {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px !important;
+    }
+    .fcc-show-summary-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px !important;
+    }
+    .fcc-show-side-cards {
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+  }
+
+  /* ═══ SMALL TABLET & MOBILE (< 768px) ═══ */
+  @media (max-width: 767px) {
+    .fcc-show-container {
+      padding: 14px 10px !important;
+    }
+    .fcc-show-header-title {
+      font-size: 20px !important;
+    }
+    .fcc-show-stats-bar {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+      margin-bottom: 18px !important;
+    }
+    .fcc-show-summary-grid {
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+    }
+    .fcc-show-side-cards {
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+    .fcc-show-header-actions {
+      width: 100% !important;
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 8px !important;
+    }
+    .fcc-show-header-actions > a,
+    .fcc-show-header-actions > button,
+    .fcc-show-header-actions > form,
+    .fcc-show-header-actions > span {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      justify-content: center !important;
+      text-align: center !important;
+    }
+    .fcc-show-header-actions > form button {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      justify-content: center !important;
+      text-align: center !important;
+    }
+    .fcc-show-alert {
+      padding: 14px 16px !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 12px !important;
+    }
+    .fcc-show-alert form,
+    .fcc-show-alert button {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+    .fcc-modal-dialog {
+      padding: 22px 18px !important;
+      border-radius: 20px !important;
+      max-height: 88vh !important;
+    }
+    .fcc-show-card-header {
+      padding: 14px 16px !important;
+    }
+  }
+
+  /* ═══ COMPACT MOBILE (< 480px) ═══ */
+  @media (max-width: 479px) {
+    .fcc-show-header-actions {
+      grid-template-columns: 1fr !important;
+    }
+    .fcc-modal-dialog {
+      padding: 18px 14px !important;
+    }
+    .fcc-modal-footer-actions {
+      flex-direction: column-reverse !important;
+      gap: 8px !important;
+    }
+    .fcc-modal-footer-actions > * {
+      width: 100% !important;
+      justify-content: center !important;
+      text-align: center !important;
+    }
+  }
+
+  /* ═══ EXTRA COMPACT MOBILE (< 420px) ═══ */
+  @media (max-width: 419px) {
+    .fcc-show-container {
+      padding: 12px 8px !important;
+    }
+    .fcc-show-header-title {
+      font-size: 18px !important;
+    }
+    .fcc-show-stats-bar {
+      grid-template-columns: 1fr !important;
+      gap: 8px !important;
+    }
+  }
+</style>
+
+<div class="fcc-show-container">
   @php
     $isPel = $kegiatan->jenis_kegiatan === 'pelatihan';
     $detail = $kegiatan->detail;
@@ -20,12 +224,12 @@
 
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">
       {{-- Judul --}}
-      <div style="flex:1;min-width:300px;">
-        <h1 style="font-size:24px;font-weight:900;color:#131218;margin:0;letter-spacing:-0.02em;line-height:1.3;">{{ $kegiatan->judul }}</h1>
+      <div style="flex:1;min-width:0;">
+        <h1 class="fcc-show-header-title">{{ $kegiatan->judul }}</h1>
       </div>
 
       {{-- Action Buttons --}}
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <div class="fcc-show-header-actions" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="{{ route('admin.presensi.show', $kegiatan) }}"
            style="display:inline-flex;align-items:center;gap:8px;padding:9.5px 18px;border-radius:30px;border:1.5px solid #131218;background:#FFC81A;color:#131218;font-size:13px;font-weight:900;text-decoration:none;box-shadow:0 4px 14px rgba(255,200,26,0.35);transition:all .18s;"
            onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
@@ -61,7 +265,7 @@
 
   {{-- Warning Alert jika lewat tanggal --}}
   @if($kegiatan->isPassed() && !$kegiatan->arsip)
-  <div style="background:#FFFDF5;border:2px solid #FFC81A;border-radius:20px;padding:18px 22px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 4px 16px rgba(255,200,26,0.15);">
+  <div class="fcc-show-alert">
     <div style="display:flex;align-items:center;gap:14px;">
       <div style="width:44px;height:44px;border-radius:12px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;color:#131218;font-size:20px;font-weight:900;flex-shrink:0;">
         ⚠
@@ -86,7 +290,7 @@
   @endif
 
   {{-- ── 2. STAT CARDS HORIZONTAL BAR (SUBTLE ACCENT COLORS) ─────────────────── --}}
-  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;margin-bottom:24px;">
+  <div class="fcc-show-stats-bar">
     @foreach([
       ['Terdaftar', $kegiatan->pendaftaran->where('status_pendaftaran','terdaftar')->count(), 'check', '#ECFDF5', '#10B981'],
       ['Menunggu Verifikasi', $kegiatan->pendaftaran->where('status_pendaftaran','menunggu_verifikasi')->count(), 'clock', '#FFFDF5', '#D97706'],
@@ -115,7 +319,7 @@
     </div>
 
     <div style="padding:20px 22px;">
-      <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;">
+      <div class="fcc-show-summary-grid">
         @foreach([
           ['Pelaksanaan', $kegiatan->jadwal?->tgl_pelaksanaan?->translatedFormat('d F Y') ?? '—', 'calendar', '#EFF6FF', '#2563EB'],
           ['Waktu', ($kegiatan->jadwal?->jam_mulai ? substr($kegiatan->jadwal->jam_mulai, 0, 5) : '—').' – '.($kegiatan->jadwal?->jam_selesai ? substr($kegiatan->jadwal->jam_selesai, 0, 5) : '—'), 'clock', '#FFFDF5', '#D97706'],
@@ -139,7 +343,7 @@
   </div>
 
   {{-- ── 4. TWO EQUAL HEIGHT SIDE-BY-SIDE CARDS: MATERI & BIAYA ───────────────── --}}
-  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(360px, 1fr));align-items:stretch;gap:20px;margin-bottom:24px;">
+  <div class="fcc-show-side-cards">
     
     {{-- Card 1: Materi & Modul --}}
     @php
@@ -259,14 +463,14 @@
 
   {{-- ── 5. FULL WIDTH BOTTOM SECTION: DAFTAR PESERTA ────────────────────────── --}}
   <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
-    <div style="padding:16px 22px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;">
+    <div class="fcc-show-card-header">
       <h3 style="margin:0;font-size:15px;font-weight:900;color:#131218;">Daftar Peserta Terdaftar ({{ $kegiatan->pendaftaran->count() }})</h3>
       <a href="{{ route('admin.presensi.export', $kegiatan) }}" style="font-size:12px;color:#131218;background:#FFFFFF;border:1.5px solid #131218;padding:4px 14px;border-radius:20px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
         @include('components.icon',['name'=>'download','size'=>13]) Export CSV
       </a>
     </div>
-    <div style="overflow-x:auto;">
-      <table style="width:100%;border-collapse:collapse;">
+    <div style="width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;">
+      <table style="width:100%;min-width:580px;border-collapse:collapse;">
         <thead>
           <tr style="background:#131218;color:#FFFFFF;">
             <th style="padding:12px 18px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#FFC81A;text-align:left;">Nama Peserta</th>
@@ -324,7 +528,7 @@
 
 {{-- ── TAMBAH BIAYA MODAL (Neo-Brutalist) ────────────────────────────── --}}
 <div id="tambah-biaya-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) this.style.display='none'">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:480px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);display:flex;flex-direction:column;text-align:left;" onclick="event.stopPropagation()">
+    <div class="fcc-modal-dialog" onclick="event.stopPropagation()">
         
         {{-- Close button --}}
         <button type="button" onclick="document.getElementById('tambah-biaya-modal').style.display='none'" aria-label="Tutup" style="
@@ -363,7 +567,7 @@
             </div>
 
             {{-- ACTION BUTTONS --}}
-            <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;border-top:1.5px solid #E5E7EB;padding-top:18px;">
+            <div class="fcc-modal-footer-actions">
                 <button type="button" onclick="document.getElementById('tambah-biaya-modal').style.display='none'"
                         style="padding:10px 22px;font-size:13px;font-weight:800;border-radius:30px;border:1.5px solid #CBD5E1;background:#F8FAFC;color:#64748B;cursor:pointer;">
                     Batal
@@ -380,7 +584,7 @@
 {{-- ── TAMBAH MATERI / MODUL MODAL (Neo-Brutalist) ────────────────────────────── --}}
 @if($storeMateriRoute)
 <div id="tambah-materi-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) this.style.display='none'">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:520px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);display:flex;flex-direction:column;text-align:left;" onclick="event.stopPropagation()">
+    <div class="fcc-modal-dialog" style="max-width:520px;" onclick="event.stopPropagation()">
         
         {{-- Close button --}}
         <button type="button" onclick="document.getElementById('tambah-materi-modal').style.display='none'" aria-label="Tutup" style="
@@ -429,7 +633,7 @@
             </div>
 
             {{-- ACTION BUTTONS --}}
-            <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;border-top:1.5px solid #E5E7EB;padding-top:18px;">
+            <div class="fcc-modal-footer-actions">
                 <button type="button" onclick="document.getElementById('tambah-materi-modal').style.display='none'"
                         style="padding:10px 22px;font-size:13px;font-weight:800;border-radius:30px;border:1.5px solid #CBD5E1;background:#F8FAFC;color:#64748B;cursor:pointer;">
                     Batal

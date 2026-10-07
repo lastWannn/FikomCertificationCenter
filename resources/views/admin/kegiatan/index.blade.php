@@ -20,23 +20,104 @@
       #kegiatan-skeleton-overlay {
         transition: opacity 0.35s ease, visibility 0.35s ease;
       }
+
+      /* Container */
+      .fcc-kegiatan-container {
+        padding: 24px;
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+      }
+
+      /* Desktop & Tablet Table Display */
       .fcc-kegiatan-desktop-table {
         display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
       .fcc-kegiatan-mobile-list {
         display: none;
       }
-      @media (max-width: 768px) {
+
+      /* 4 Stat Cards Grid */
+      .fcc-kegiatan-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .fcc-kegiatan-stat-card {
+        padding: 18px 20px;
+        border-radius: 18px;
+        background: #FFFFFF;
+        border: 2px solid #E5E7EB;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        height: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      /* Kolom Kegiatan Title (No Awkward Wrap on Tablet) */
+      .fcc-kegiatan-col-title {
+        white-space: nowrap !important;
+        min-width: 250px !important;
+      }
+      .fcc-kegiatan-col-title .fcc-kegiatan-title-link {
+        white-space: nowrap !important;
+      }
+
+      /* ═══ TABLET BREAKPOINT (768px – 1023px) ═══ */
+      @media (min-width: 768px) and (max-width: 1023px) {
+        .fcc-kegiatan-container {
+          padding: 18px 16px !important;
+        }
+        .fcc-kegiatan-stats-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 12px !important;
+          margin-bottom: 20px !important;
+        }
+        .fcc-kegiatan-stat-card {
+          padding: 16px 16px !important;
+        }
+        .fcc-kegiatan-col-title {
+          white-space: nowrap !important;
+          min-width: 240px !important;
+        }
+      }
+
+      /* ═══ SMALL TABLET / PHABLET (640px – 767px) ═══ */
+      @media (min-width: 640px) and (max-width: 767px) {
+        .fcc-kegiatan-container {
+          padding: 16px 14px !important;
+        }
+        .fcc-kegiatan-stats-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 10px !important;
+          margin-bottom: 18px !important;
+        }
+        .fcc-kegiatan-stat-card {
+          padding: 14px 12px !important;
+        }
+        .fcc-kegiatan-col-title {
+          white-space: nowrap !important;
+          min-width: 220px !important;
+        }
+      }
+
+      /* ═══ MOBILE BREAKPOINT (< 640px) ═══ */
+      @media (max-width: 639px) {
+        .fcc-kegiatan-container {
+          padding: 14px 10px !important;
+        }
         .fcc-kegiatan-desktop-table {
           display: none !important;
         }
         .fcc-kegiatan-mobile-list {
           display: block !important;
-        }
-      }
-      @media (max-width: 639px) {
-        .fcc-kegiatan-container {
-          padding: 14px !important;
         }
         .fcc-kegiatan-header-actions {
           width: 100% !important;
@@ -44,6 +125,26 @@
         .fcc-kegiatan-header-btn {
           width: 100% !important;
           justify-content: center !important;
+        }
+        .fcc-kegiatan-stats-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 10px !important;
+          margin-bottom: 16px !important;
+        }
+        .fcc-kegiatan-stat-card {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          justify-content: space-between !important;
+          padding: 14px 12px !important;
+          border-radius: 16px !important;
+          height: 100% !important;
+          min-height: 120px !important;
+          gap: 10px !important;
+        }
+        .fcc-kegiatan-card-header {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          gap: 10px !important;
         }
         .fcc-kegiatan-pagination-bar {
           flex-direction: column !important;
@@ -56,25 +157,52 @@
           display: flex !important;
         }
       }
+
+      /* ═══ COMPACT MOBILE (< 420px) ═══ */
+      @media (max-width: 419px) {
+        .fcc-kegiatan-container {
+          padding: 12px 8px !important;
+        }
+        .fcc-kegiatan-stats-grid {
+          grid-template-columns: 1fr !important;
+          gap: 8px !important;
+        }
+        .fcc-kegiatan-stat-card {
+          flex-direction: row !important;
+          align-items: center !important;
+          min-height: auto !important;
+          padding: 12px 14px !important;
+        }
+        .fcc-kegiatan-mobile-actions {
+          flex-wrap: wrap !important;
+        }
+        .fcc-kegiatan-mobile-actions > * {
+          flex: 1 1 auto !important;
+          justify-content: center !important;
+          text-align: center !important;
+        }
+      }
     </style>
 
     <div id="kegiatan-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px;box-sizing:border-box;pointer-events:none;">
       {{-- Header Skeleton --}}
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-        <div style="width:40%;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
+        <div style="width:40%;min-width:240px;">
           <div class="fcc-skeleton-box" style="width:110px;height:18px;margin-bottom:8px;border-radius:20px;"></div>
           <div class="fcc-skeleton-box" style="width:260px;height:24px;margin-bottom:6px;"></div>
           <div class="fcc-skeleton-box" style="width:200px;height:12px;"></div>
         </div>
-        <div style="display:flex;gap:10px;">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <div class="fcc-skeleton-box" style="width:140px;height:40px;border-radius:30px;"></div>
           <div class="fcc-skeleton-box" style="width:140px;height:40px;border-radius:30px;"></div>
         </div>
       </div>
-      {{-- Filter Skeleton --}}
-      <div style="padding:18px 22px;border-radius:18px;background:#131218;margin-bottom:24px;display:flex;gap:12px;align-items:center;">
-        <div class="fcc-skeleton-box" style="width:120px;height:34px;background:#24232C;"></div>
-        <div class="fcc-skeleton-box" style="width:100px;height:34px;background:#24232C;"></div>
+      {{-- 4 Stat Cards Skeleton --}}
+      <div class="fcc-kegiatan-stats-grid">
+        <div class="fcc-skeleton-box" style="height:80px;border-radius:18px;"></div>
+        <div class="fcc-skeleton-box" style="height:80px;border-radius:18px;"></div>
+        <div class="fcc-skeleton-box" style="height:80px;border-radius:18px;"></div>
+        <div class="fcc-skeleton-box" style="height:80px;border-radius:18px;"></div>
       </div>
       {{-- Table Skeleton --}}
       <div style="padding:28px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
@@ -119,52 +247,6 @@
             </a>
         </div>
     </div>
-
-    <style>
-      .fcc-kegiatan-stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
-      }
-      .fcc-kegiatan-stat-card {
-        padding: 18px 20px;
-        border-radius: 18px;
-        background: #FFFFFF;
-        border: 2px solid #E5E7EB;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        height: 100%;
-        min-width: 0;
-        box-sizing: border-box;
-      }
-      @media (max-width: 1023px) {
-        .fcc-kegiatan-stats-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 12px;
-          margin-bottom: 20px;
-        }
-      }
-      @media (max-width: 639px) {
-        .fcc-kegiatan-stats-grid {
-          grid-template-columns: repeat(2, 1fr) !important;
-          gap: 10px !important;
-          margin-bottom: 16px !important;
-        }
-        .fcc-kegiatan-stat-card {
-          flex-direction: column !important;
-          align-items: flex-start !important;
-          justify-content: space-between !important;
-          padding: 14px 12px !important;
-          border-radius: 16px !important;
-          height: 100% !important;
-          min-height: 125px !important;
-          gap: 10px !important;
-        }
-      }
-    </style>
 
     {{-- Stat Cards Grid (Neo-Brutalist) --}}
     <div class="fcc-kegiatan-stats-grid">
@@ -215,7 +297,7 @@
 
     {{-- Main Neo-Brutalist Table Card --}}
     <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
-        <div style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div class="fcc-kegiatan-card-header" style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
             <h3 style="margin:0;font-size:16px;font-weight:900;color:#131218;">Daftar Kegiatan Aktif</h3>
             <div style="display:flex;align-items:center;gap:12px;">
                 <form method="GET" style="display:flex;gap:8px;margin:0;">
@@ -230,15 +312,15 @@
         </div>
 
         <div class="fcc-kegiatan-desktop-table" style="width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;">
-            <table style="width:100%;min-width:880px;border-collapse:collapse;">
+            <table style="width:100%;min-width:860px;border-collapse:collapse;">
                 <thead>
                     <tr style="background:#131218;color:#FFFFFF;">
-                        <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;min-width:200px;">Kegiatan</th>
-                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:120px;min-width:120px;">Jenis</th>
-                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:170px;min-width:170px;">Jadwal</th>
-                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:150px;min-width:150px;">Kuota &amp; Peserta</th>
-                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:130px;min-width:130px;">Status Biaya</th>
-                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;width:145px;min-width:145px;">Aksi</th>
+                        <th class="fcc-kegiatan-col-title" style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;min-width:240px;white-space:nowrap;">Kegiatan</th>
+                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:120px;min-width:120px;white-space:nowrap;">Jenis</th>
+                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:170px;min-width:170px;white-space:nowrap;">Jadwal</th>
+                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:150px;min-width:150px;white-space:nowrap;">Kuota &amp; Peserta</th>
+                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:130px;min-width:130px;white-space:nowrap;">Status Biaya</th>
+                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;width:145px;min-width:145px;white-space:nowrap;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -250,16 +332,16 @@
                     @endphp
                     <tr style="border-top:1px solid #F1F5F9;transition:background .15s;cursor:pointer; {{ $isPassed ? 'background:#FFFDF5;' : '' }}" onclick="if(!event.target.closest('button, a, select, input, form')) window.location.href='{{ route('admin.kegiatan.show', $k) }}'" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='{{ $isPassed ? '#FFFDF5' : '' }}'">
                         {{-- Kegiatan Info --}}
-                        <td style="padding:14px 20px;vertical-align:middle;">
-                            <div style="display:flex;align-items:center;gap:12px;">
+                        <td class="fcc-kegiatan-col-title" style="padding:14px 20px;vertical-align:middle;white-space:nowrap;">
+                            <div style="display:flex;align-items:center;gap:12px;white-space:nowrap;">
                                 <div style="width:42px;height:42px;border-radius:10px;background:{{ $isPel?'rgba(255,200,26,.18)':'rgba(59,130,246,.14)' }};border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                     @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>18,'style'=>'color:'.($isPel?'#131218':'#2563EB')])
                                 </div>
-                                <div>
-                                    <a href="{{ route('admin.kegiatan.show', $k) }}" style="font-size:14px;font-weight:900;color:#131218;text-decoration:none;margin:0;display:block;line-height:1.3;transition:color .15s;" onmouseover="this.style.color='#3B82F6'" onmouseout="this.style.color='#131218'">
+                                <div style="white-space:nowrap;">
+                                    <a href="{{ route('admin.kegiatan.show', $k) }}" class="fcc-kegiatan-title-link" style="font-size:14px;font-weight:900;color:#131218;text-decoration:none;margin:0;display:block;line-height:1.3;white-space:nowrap;transition:color .15s;" onmouseover="this.style.color='#3B82F6'" onmouseout="this.style.color='#131218'">
                                         {{ $k->judul }}
                                     </a>
-                                    <div style="display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap;">
+                                    <div style="display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:nowrap;white-space:nowrap;">
                                         @if($k->isDraf())
                                         <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#F3F4F6;color:#4B5563;border:1px solid #D1D5DB;">Draft</span>
                                         @elseif($k->isComingSoon())
@@ -461,7 +543,7 @@
                 </div>
 
                 {{-- Action Buttons on Mobile --}}
-                <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;padding-top:2px;">
+                <div class="fcc-kegiatan-mobile-actions" style="display:flex;justify-content:flex-end;align-items:center;gap:8px;padding-top:2px;">
                     <a href="{{ route('admin.kegiatan.show', $k) }}"
                        style="padding:6px 14px;font-size:12px;font-weight:800;background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:18px;color:#131218;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
                         @include('components.icon',['name'=>'eye','size'=>13])
