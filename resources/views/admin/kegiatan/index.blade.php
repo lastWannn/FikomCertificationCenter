@@ -3,7 +3,7 @@
 @section('page-title','Kegiatan Aktif')
 
 @section('page-content')
-<div style="padding:24px;position:relative;">
+<div class="fcc-kegiatan-container" style="padding:24px;position:relative;">
 
     {{-- === SKELETON LOADING OVERLAY === --}}
     <style>
@@ -19,6 +19,42 @@
       }
       #kegiatan-skeleton-overlay {
         transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+      .fcc-kegiatan-desktop-table {
+        display: block;
+      }
+      .fcc-kegiatan-mobile-list {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        .fcc-kegiatan-desktop-table {
+          display: none !important;
+        }
+        .fcc-kegiatan-mobile-list {
+          display: block !important;
+        }
+      }
+      @media (max-width: 639px) {
+        .fcc-kegiatan-container {
+          padding: 14px !important;
+        }
+        .fcc-kegiatan-header-actions {
+          width: 100% !important;
+        }
+        .fcc-kegiatan-header-btn {
+          width: 100% !important;
+          justify-content: center !important;
+        }
+        .fcc-kegiatan-pagination-bar {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 12px !important;
+        }
+        .fcc-kegiatan-pagination-bar > div {
+          justify-content: center !important;
+          width: 100% !important;
+          display: flex !important;
+        }
       }
     </style>
 
@@ -70,13 +106,13 @@
             </div>
             <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">Semua kegiatan yang sedang aktif dan terbuka untuk pendaftaran publik.</p>
         </div>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-            <a href="{{ route('admin.jadwal-pelatihan.index') }}"
+        <div class="fcc-kegiatan-header-actions" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <a href="{{ route('admin.jadwal-pelatihan.index') }}" class="fcc-kegiatan-header-btn"
                style="padding:10px 18px;font-size:13px;font-weight:800;background:#FFFFFF;color:#131218;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 12px rgba(0,0,0,0.04);text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .18s;"
                onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
                 @include('components.icon',['name'=>'book-open','size'=>15,'style'=>'color:#131218']) Kelola Pelatihan
             </a>
-            <a href="{{ route('admin.jadwal-sertifikasi.index') }}"
+            <a href="{{ route('admin.jadwal-sertifikasi.index') }}" class="fcc-kegiatan-header-btn"
                style="padding:10px 18px;font-size:13px;font-weight:800;background:#FFC81A;color:#131218;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.35);text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .18s;"
                onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
                 @include('components.icon',['name'=>'award','size'=>15,'style'=>'color:#131218']) Kelola Sertifikasi
@@ -84,49 +120,95 @@
         </div>
     </div>
 
+    <style>
+      .fcc-kegiatan-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .fcc-kegiatan-stat-card {
+        padding: 18px 20px;
+        border-radius: 18px;
+        background: #FFFFFF;
+        border: 2px solid #E5E7EB;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        height: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      @media (max-width: 1023px) {
+        .fcc-kegiatan-stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+          margin-bottom: 20px;
+        }
+      }
+      @media (max-width: 639px) {
+        .fcc-kegiatan-stats-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 10px !important;
+          margin-bottom: 16px !important;
+        }
+        .fcc-kegiatan-stat-card {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          justify-content: space-between !important;
+          padding: 14px 12px !important;
+          border-radius: 16px !important;
+          height: 100% !important;
+          min-height: 125px !important;
+          gap: 10px !important;
+        }
+      }
+    </style>
+
     {{-- Stat Cards Grid (Neo-Brutalist) --}}
-    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;margin-bottom:24px;">
+    <div class="fcc-kegiatan-stats-grid">
         {{-- Card 1: Total Aktif --}}
-        <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
+        <div class="fcc-card fcc-kegiatan-stat-card">
             <div style="width:44px;height:44px;border-radius:12px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;color:#131218;box-shadow:0 4px 10px rgba(255,200,26,0.25);flex-shrink:0;">
                 @include('components.icon',['name'=>'zap','size'=>20])
             </div>
-            <div>
-                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Kegiatan Aktif</p>
-                <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ $totalAktif }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Kegiatan</span></p>
+            <div style="flex:1;min-width:0;">
+                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kegiatan Aktif</p>
+                <p style="margin:2px 0 0;font-size:20px;font-weight:900;color:#131218;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $totalAktif }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Kegiatan</span></p>
             </div>
         </div>
 
         {{-- Card 2: Pelatihan Aktif --}}
-        <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
+        <div class="fcc-card fcc-kegiatan-stat-card">
             <div style="width:44px;height:44px;border-radius:12px;background:#EEF2FF;border:1.5px solid #6366F1;display:flex;align-items:center;justify-content:center;color:#6366F1;flex-shrink:0;">
                 @include('components.icon',['name'=>'book-open','size'=>20])
             </div>
-            <div>
-                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Pelatihan Aktif</p>
-                <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ $totalPelatihan }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Program</span></p>
+            <div style="flex:1;min-width:0;">
+                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Pelatihan Aktif</p>
+                <p style="margin:2px 0 0;font-size:20px;font-weight:900;color:#131218;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $totalPelatihan }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Program</span></p>
             </div>
         </div>
 
         {{-- Card 3: Sertifikasi Aktif --}}
-        <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
+        <div class="fcc-card fcc-kegiatan-stat-card">
             <div style="width:44px;height:44px;border-radius:12px;background:#ECFDF5;border:1.5px solid #10B981;display:flex;align-items:center;justify-content:center;color:#10B981;flex-shrink:0;">
                 @include('components.icon',['name'=>'award','size'=>20])
             </div>
-            <div>
-                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Sertifikasi Aktif</p>
-                <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ $totalSertifikasi }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Program</span></p>
+            <div style="flex:1;min-width:0;">
+                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Sertifikasi Aktif</p>
+                <p style="margin:2px 0 0;font-size:20px;font-weight:900;color:#131218;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $totalSertifikasi }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Program</span></p>
             </div>
         </div>
 
         {{-- Card 4: Total Pendaftar --}}
-        <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
+        <div class="fcc-card fcc-kegiatan-stat-card">
             <div style="width:44px;height:44px;border-radius:12px;background:#FEF3C7;border:1.5px solid #F59E0B;display:flex;align-items:center;justify-content:center;color:#D97706;flex-shrink:0;">
                 @include('components.icon',['name'=>'users','size'=>20])
             </div>
-            <div>
-                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Total Pendaftar</p>
-                <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">{{ $totalPendaftar }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Peserta</span></p>
+            <div style="flex:1;min-width:0;">
+                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Total Pendaftar</p>
+                <p style="margin:2px 0 0;font-size:20px;font-weight:900;color:#131218;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $totalPendaftar }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Peserta</span></p>
             </div>
         </div>
     </div>
@@ -147,16 +229,16 @@
             </div>
         </div>
 
-        <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;">
+        <div class="fcc-kegiatan-desktop-table" style="width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <table style="width:100%;min-width:880px;border-collapse:collapse;">
                 <thead>
                     <tr style="background:#131218;color:#FFFFFF;">
-                        <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">Kegiatan</th>
-                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:130px;">Jenis</th>
-                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:180px;">Jadwal</th>
-                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:160px;">Kuota &amp; Peserta</th>
-                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:140px;">Status Biaya</th>
-                        <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;width:130px;">Aksi</th>
+                        <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;min-width:200px;">Kegiatan</th>
+                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:120px;min-width:120px;">Jenis</th>
+                        <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:170px;min-width:170px;">Jadwal</th>
+                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:150px;min-width:150px;">Kuota &amp; Peserta</th>
+                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;width:130px;min-width:130px;">Status Biaya</th>
+                        <th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;width:145px;min-width:145px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -245,35 +327,34 @@
                         </td>
 
                         {{-- Aksi --}}
-                        <td style="padding:14px 20px;text-align:center;vertical-align:middle;">
-                            <div style="display:inline-flex;gap:6px;align-items:center;">
+                        <td style="padding:14px 16px;text-align:center;vertical-align:middle;white-space:nowrap;width:145px;min-width:145px;">
+                            <div style="display:inline-flex;gap:7px;align-items:center;justify-content:center;white-space:nowrap;flex-wrap:nowrap;">
                                 {{-- Detail Button --}}
                                 <a href="{{ route('admin.kegiatan.show', $k) }}" title="Lihat Detail"
-                                   style="width:32px;height:32px;border-radius:9px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#131218;text-decoration:none;transition:all .18s;"
+                                   style="width:34px;height:34px;border-radius:10px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:inline-flex;align-items:center;justify-content:center;color:#131218;text-decoration:none;transition:all .18s;flex-shrink:0;"
                                    onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#E2E8F0';">
                                     @include('components.icon',['name'=>'eye','size'=>15])
                                 </a>
 
                                 {{-- Edit Button --}}
                                 <button type="button" onclick="document.getElementById('edit-kegiatan-modal-{{ $k->id }}').style.display='flex'" title="Edit Kegiatan"
-                                        style="width:32px;height:32px;border-radius:9px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#131218;cursor:pointer;transition:all .18s;padding:0;"
+                                        style="width:34px;height:34px;border-radius:10px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:inline-flex;align-items:center;justify-content:center;color:#131218;cursor:pointer;transition:all .18s;padding:0;flex-shrink:0;"
                                         onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#E2E8F0';">
                                     @include('components.icon',['name'=>'edit','size'=>15])
                                 </button>
 
                                 {{-- Delete / Archive Button --}}
-                                <form action="{{ route('admin.kegiatan.destroy', $k) }}" method="POST" style="margin:0;">
+                                <form action="{{ route('admin.kegiatan.destroy', $k) }}" method="POST" style="margin:0;display:inline-flex;">
                                     @csrf @method('DELETE')
                                     <button type="button" onclick="fccConfirmDelete(this, '{{ $k->isPassed() ? 'Pindahkan ke Arsip' : 'Hapus Kegiatan' }}', '{{ $k->isPassed() ? 'Kegiatan telah selesai. Apakah Anda yakin ingin memindahkannya ke Arsip Kegiatan?' : 'Apakah Anda yakin ingin menghapus kegiatan '.addslashes($k->judul).'?' }}')"
                                             title="{{ $k->isPassed() ? 'Pindahkan ke Arsip Kegiatan' : 'Hapus Kegiatan' }}"
-                                            style="width:32px;height:32px;border-radius:9px;background:{{ $k->isPassed() ? '#ECFDF5' : '#FEF2F2' }};border:1.5px solid {{ $k->isPassed() ? '#A7F3D0' : '#FCA5A5' }};display:flex;align-items:center;justify-content:center;color:{{ $k->isPassed() ? '#10B981' : '#EF4444' }};cursor:pointer;transition:all .18s;padding:0;"
+                                            style="width:34px;height:34px;border-radius:10px;background:{{ $k->isPassed() ? '#ECFDF5' : '#FEF2F2' }};border:1.5px solid {{ $k->isPassed() ? '#A7F3D0' : '#FCA5A5' }};display:inline-flex;align-items:center;justify-content:center;color:{{ $k->isPassed() ? '#10B981' : '#EF4444' }};cursor:pointer;transition:all .18s;padding:0;flex-shrink:0;"
                                             onmouseover="this.style.background='{{ $k->isPassed() ? '#10B981' : '#EF4444' }}';this.style.color='#FFFFFF';this.style.borderColor='#131218';" onmouseout="this.style.background='{{ $k->isPassed() ? '#ECFDF5' : '#FEF2F2' }}';this.style.color='{{ $k->isPassed() ? '#10B981' : '#EF4444' }}';this.style.borderColor='{{ $k->isPassed() ? '#A7F3D0' : '#FCA5A5' }}';">
                                         @include('components.icon',['name'=>$k->isPassed() ? 'archive' : 'trash','size'=>15])
                                     </button>
                                 </form>
-                                
-                                @include('admin.kegiatan.partials.edit-modal', ['kegiatan' => $k])
                             </div>
+                            @include('admin.kegiatan.partials.edit-modal', ['kegiatan' => $k])
                         </td>
                     </tr>
                     @empty
@@ -299,7 +380,120 @@
             </table>
         </div>
 
-        <div style="padding:14px 20px;border-top:1.5px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        {{-- Mobile Cards List View (< 768px) --}}
+        <div class="fcc-kegiatan-mobile-list">
+            @forelse($kegiatan as $k)
+            @php
+                $isPel = $k->jenis_kegiatan === 'pelatihan';
+                $isPassed = $k->isPassed();
+                $detail = $k->detail;
+            @endphp
+            <div style="padding:16px;border-top:1px solid #F1F5F9;background:{{ $isPassed ? '#FFFDF5' : '#FFFFFF' }};">
+                {{-- Top Badges: Jenis & Status --}}
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span style="font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;background:{{ $isPel?'#FFFDF5':'#EFF6FF' }};color:{{ $isPel?'#B38F00':'#2563EB' }};border:1px solid {{ $isPel?'#FFC81A':'#93C5FD' }};display:inline-flex;align-items:center;gap:4px;">
+                            @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>12,'style'=>'color:'.($isPel?'#B38F00':'#2563EB')])
+                            {{ ucfirst($k->jenis_kegiatan) }}
+                        </span>
+                        @if($k->isDraf())
+                        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#F3F4F6;color:#4B5563;border:1px solid #D1D5DB;">Draft</span>
+                        @elseif($k->isComingSoon())
+                        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;">Coming Soon</span>
+                        @else
+                        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#ECFDF5;color:#10B981;border:1px solid #6EE7B7;">Public</span>
+                        @endif
+                    </div>
+                    
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        @if($isPassed)
+                        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;display:inline-flex;align-items:center;gap:3px;">
+                            @include('components.icon',['name'=>'alert-triangle','size'=>10,'style'=>'color:#D97706;flex-shrink:0;'])
+                            Lewat Tanggal
+                        </span>
+                        @endif
+                        @if($k->isFull())
+                        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:#FEE2E2;color:#EF4444;border:1px solid #FCA5A5;">Penuh</span>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Judul Kegiatan --}}
+                <a href="{{ route('admin.kegiatan.show', $k) }}" style="font-size:14.5px;font-weight:900;color:#131218;text-decoration:none;margin:0 0 10px;display:block;line-height:1.35;word-break:break-word;">
+                    {{ $k->judul }}
+                </a>
+
+                {{-- Info Box: Jadwal, Biaya, Kuota --}}
+                <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px;margin-bottom:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div>
+                        <span style="font-size:10px;font-weight:800;color:#64748B;display:block;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">Jadwal</span>
+                        <p style="margin:0;font-size:12.5px;font-weight:800;color:#131218;">{{ $k->jadwal?->tgl_pelaksanaan?->translatedFormat('d M Y') ?? 'TBA' }}</p>
+                        @if($k->jadwal?->jam_mulai)
+                        <span style="font-size:11px;color:#64748B;font-weight:600;display:inline-flex;align-items:center;gap:3px;margin-top:2px;">
+                            @include('components.icon',['name'=>'clock','size'=>11,'style'=>'color:#94A3B8;flex-shrink:0;'])
+                            {{ substr($k->jadwal->jam_mulai, 0, 5) }} &ndash; {{ substr($k->jadwal->jam_selesai, 0, 5) }}
+                        </span>
+                        @endif
+                    </div>
+
+                    <div>
+                        <span style="font-size:10px;font-weight:800;color:#64748B;display:block;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">Status Biaya</span>
+                        @if($k->biaya->isEmpty())
+                            <span style="font-size:11.5px;font-weight:900;color:#10B981;background:#ECFDF5;border:1px solid #A7F3D0;padding:2px 8px;border-radius:12px;display:inline-block;">Gratis</span>
+                        @else
+                            <span style="font-size:12.5px;font-weight:900;color:#131218;">
+                                Rp {{ number_format($k->biaya->min('nominal'),0,',','.') }}+
+                            </span>
+                        @endif
+                    </div>
+
+                    <div style="grid-column: span 2; border-top: 1px dashed #E2E8F0; padding-top: 8px;">
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748B;margin-bottom:4px;font-weight:800;">
+                            <span>Kuota &amp; Peserta</span>
+                            <span style="color:#131218;">{{ $k->terisi }} / {{ $k->kuota }}</span>
+                        </div>
+                        <div style="height:6px;background:#E2E8F0;border-radius:4px;overflow:hidden;border:1px solid #CBD5E1;">
+                            <div style="height:100%;border-radius:3px;
+                                background:{{ $k->isFull()?'#EF4444':($k->kuota > 0 && ($k->terisi/$k->kuota)>0.8?'#F59E0B':'#131218') }};
+                                width:{{ $k->kuota>0?min(100,round($k->terisi/$k->kuota*100)):0 }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Action Buttons on Mobile --}}
+                <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;padding-top:2px;">
+                    <a href="{{ route('admin.kegiatan.show', $k) }}"
+                       style="padding:6px 14px;font-size:12px;font-weight:800;background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:18px;color:#131218;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
+                        @include('components.icon',['name'=>'eye','size'=>13])
+                        <span>Detail</span>
+                    </a>
+                    <button type="button" onclick="document.getElementById('edit-kegiatan-modal-{{ $k->id }}').style.display='flex'"
+                            style="padding:6px 14px;font-size:12px;font-weight:800;color:#131218;background:#FFC81A;border:1.5px solid #131218;border-radius:18px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+                        @include('components.icon',['name'=>'edit','size'=>13])
+                        <span>Edit</span>
+                    </button>
+                    <form action="{{ route('admin.kegiatan.destroy', $k) }}" method="POST" style="margin:0;display:inline-flex;">
+                        @csrf @method('DELETE')
+                        <button type="button" onclick="fccConfirmDelete(this, '{{ $k->isPassed() ? 'Pindahkan ke Arsip' : 'Hapus Kegiatan' }}', '{{ $k->isPassed() ? 'Kegiatan telah selesai. Apakah Anda yakin ingin memindahkannya ke Arsip Kegiatan?' : 'Apakah Anda yakin ingin menghapus kegiatan '.addslashes($k->judul).'?' }}')"
+                                style="padding:6px 14px;font-size:12px;font-weight:800;color:{{ $k->isPassed() ? '#10B981' : '#EF4444' }};background:{{ $k->isPassed() ? '#ECFDF5' : '#FEF2F2' }};border:1.5px solid {{ $k->isPassed() ? '#A7F3D0' : '#FCA5A5' }};border-radius:18px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+                            @include('components.icon',['name'=>$k->isPassed() ? 'archive' : 'trash','size'=>13])
+                            <span>{{ $k->isPassed() ? 'Arsip' : 'Hapus' }}</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @empty
+            <div style="padding:40px 20px;text-align:center;color:#94A3B8;">
+                <div style="width:52px;height:52px;border-radius:16px;background:#F8FAFC;border:2px solid #E2E8F0;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#94A3B8;">
+                    @include('components.icon',['name'=>'zap','size'=>24])
+                </div>
+                <p style="font-size:14.5px;font-weight:900;color:#131218;margin:0 0 4px;">Belum Ada Kegiatan Aktif</p>
+                <p style="font-size:12.5px;color:#64748B;margin:0;">Aktifkan jadwal pelatihan atau sertifikasi untuk mulai menerima pendaftaran publik.</p>
+            </div>
+            @endforelse
+        </div>
+
+        <div class="fcc-kegiatan-pagination-bar" style="padding:14px 20px;border-top:1.5px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
                 <form method="GET" action="{{ url()->current() }}" style="margin:0;">
                     @if(request()->filled('jenis'))

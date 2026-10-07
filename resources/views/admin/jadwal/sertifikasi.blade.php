@@ -2,7 +2,7 @@
 @section('title','Jadwal Sertifikasi')
 @section('page-title','Jadwal Sertifikasi')
 @section('page-content')
-<div style="padding:24px;position:relative;">
+<div class="fcc-jadwal-container" style="padding:24px;position:relative;">
 
   {{-- === SKELETON LOADING OVERLAY === --}}
   <style>
@@ -16,13 +16,58 @@
       animation: skeletonShimmer 1.4s infinite ease-in-out;
       border-radius: 12px;
     }
-    #jadwal-sertifikasi-skeleton-overlay {
-      transition: opacity 0.35s ease, visibility 0.35s ease;
+    .fcc-jadwal-desktop-table {
+      display: block;
+    }
+    .fcc-jadwal-mobile-list {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .fcc-jadwal-desktop-table {
+        display: none !important;
+      }
+      .fcc-jadwal-mobile-list {
+        display: block !important;
+      }
+    }
+    @media (max-width: 640px) {
+      .fcc-jadwal-container {
+        padding: 14px !important;
+      }
+      .fcc-jadwal-filter-form {
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+      .fcc-filter-select {
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+      .fcc-btn-tambah-wrap {
+        width: 100% !important;
+        margin-left: 0 !important;
+      }
+      .fcc-btn-tambah {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        text-align: center;
+        box-sizing: border-box;
+      }
+      .fcc-pagination-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+      }
+      .fcc-pagination-bar > div {
+        justify-content: center !important;
+        display: flex !important;
+        text-align: center;
+      }
     }
   </style>
 
   <div id="jadwal-sertifikasi-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px;box-sizing:border-box;pointer-events:none;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
       <div class="fcc-skeleton-box" style="width:240px;height:38px;border-radius:10px;"></div>
       <div class="fcc-skeleton-box" style="width:140px;height:38px;border-radius:30px;"></div>
     </div>
@@ -45,28 +90,32 @@
       }, 400);
     })();
   </script>
-  <form method="GET" style="display:flex;gap:10px;align-items:center;margin-bottom:18px;">
-    <select name="sertifikasi_id" class="fcc-input" style="width:auto;min-width:220px;" onchange="this.form.submit()">
+  <form method="GET" class="fcc-jadwal-filter-form" style="display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap;">
+    <select name="sertifikasi_id" class="fcc-input fcc-filter-select" style="width:auto;min-width:220px;" onchange="this.form.submit()">
       <option value="">&mdash; Semua Program Sertifikasi &mdash;</option>
       @foreach($sertifikasi as $s)
       <option value="{{ $s->id }}" {{ request('sertifikasi_id')==$s->id?'selected':'' }}>{{ $s->judul }}</option>
       @endforeach
     </select>
-    <div style="margin-left:auto;">
-      <a href="{{ route('admin.sertifikasi.index') }}" class="fcc-btn-gold" style="padding:9px 18px;font-size:13px;text-decoration:none;">
+    <div class="fcc-btn-tambah-wrap" style="margin-left:auto;">
+      <a href="{{ route('admin.sertifikasi.index') }}" class="fcc-btn-gold fcc-btn-tambah" style="padding:9px 18px;font-size:13px;text-decoration:none;">
         @include('components.icon',['name'=>'plus','size'=>14]) Tambah Jadwal
       </a>
     </div>
   </form>
   <div class="fcc-card" style="padding:0;overflow:hidden;">
-    <table style="width:100%;border-collapse:collapse;">
-      <thead>
-        <tr style="background:#F7F8FA;border-bottom:1.5px solid #E2E4EB;">
-          @foreach(['Program','Tanggal Pelaksanaan','Kuota','Batas Daftar','Status','Aksi'] as $h)
-          <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.7px;">{{ $h }}</th>
-          @endforeach
-        </tr>
-      </thead>
+    <div class="fcc-jadwal-desktop-table" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+      <table style="width:100%;min-width:720px;border-collapse:collapse;">
+        <thead>
+          <tr style="background:#F7F8FA;border-bottom:1.5px solid #E2E4EB;">
+            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.7px;min-width:180px;">Program</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.7px;min-width:140px;">Tanggal Pelaksanaan</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.7px;min-width:90px;">Kuota</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.7px;min-width:110px;">Batas Daftar</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.7px;min-width:110px;">Status</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:#9CA3B0;text-transform:uppercase;letter-spacing:.7px;width:140px;min-width:140px;white-space:nowrap;">Aksi</th>
+          </tr>
+        </thead>
       <tbody>
         @forelse($jadwal as $j)
         @php $hasK = $j->kegiatanSertifikasi !== null; $k = $j->kegiatanSertifikasi?->kegiatan; @endphp
@@ -102,8 +151,8 @@
               </select>
             </form>
           </td>
-          <td style="padding:12px 14px;">
-            <div style="display:flex;gap:8px;align-items:center;">
+          <td style="padding:12px 14px;width:140px;min-width:140px;white-space:nowrap;">
+            <div style="display:flex;gap:8px;align-items:center;white-space:nowrap;">
               @if($hasK)
               <a href="{{ route('admin.kegiatan.show', $k) }}" style="font-size:11px;color:#3B82F6;font-weight:700;text-decoration:none;white-space:nowrap;">Lihat Kegiatan</a>
               @endif
@@ -120,7 +169,100 @@
         @endforelse
       </tbody>
     </table>
-    <div style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+    </div>
+
+    {{-- Mobile Cards List View (< 768px) --}}
+    <div class="fcc-jadwal-mobile-list">
+      @forelse($jadwal as $j)
+      @php
+        $hasK = $j->kegiatanSertifikasi !== null;
+        $k = $j->kegiatanSertifikasi?->kegiatan;
+        $st = $j->kegiatanSertifikasi?->kegiatan?->status ?? 'draf';
+      @endphp
+      <div style="padding:16px;border-top:1px solid #F0F1F5;background:#FFF;">
+        {{-- Header: Program Judul & Kode --}}
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+          <div style="flex:1;min-width:0;">
+            <h4 style="margin:0 0 4px;font-size:14px;font-weight:900;color:#131218;line-height:1.35;word-break:break-word;">
+              {{ $j->sertifikasi->judul }}
+              @if($j->nama_kegiatan)
+              <span style="font-size:10px;font-weight:700;color:#FFC81A;background:#131218;padding:2px 6px;border-radius:4px;display:inline-block;margin-left:4px;">{{ $j->nama_kegiatan }}</span>
+              @endif
+            </h4>
+            <span style="font-size:11px;color:#9CA3B0;font-family:monospace;font-weight:700;">{{ $j->sertifikasi->kode }}</span>
+          </div>
+          
+          {{-- Status selector --}}
+          <form action="{{ route('admin.jadwal-sertifikasi.status', $j) }}" method="POST" style="margin:0;flex-shrink:0;">
+            @csrf
+            <select name="status" onchange="this.form.submit()" title="Ubah Status Publikasi"
+                    style="padding:4px 8px;font-size:11px;font-weight:800;border-radius:8px;border:1.5px solid #131218;cursor:pointer;outline:none;
+                           background:{{ $st === 'public' ? '#ECFDF5' : ($st === 'comingsoon' ? '#FFFDF5' : '#F8FAFC') }};
+                           color:{{ $st === 'public' ? '#059669' : ($st === 'comingsoon' ? '#D97706' : '#64748B') }};">
+              <option value="draf" {{ $st === 'draf' ? 'selected' : '' }}>Draft</option>
+              <option value="comingsoon" {{ $st === 'comingsoon' ? 'selected' : '' }}>Coming Soon</option>
+              <option value="public" {{ $st === 'public' ? 'selected' : '' }}>Publik</option>
+            </select>
+          </form>
+        </div>
+
+        {{-- Details Grid --}}
+        <div style="background:#F8FAFC;border:1px solid #E2E4EB;border-radius:12px;padding:12px;margin-bottom:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <span style="font-size:10px;font-weight:800;color:#64748B;display:block;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">Pelaksanaan</span>
+            <p style="margin:0;font-size:12.5px;font-weight:800;color:#131218;">{{ $j->tgl_pelaksanaan->format('d M Y') }}</p>
+            <span style="font-size:11px;color:#9CA3B0;font-weight:600;">{{ $j->jam_mulai }} &ndash; {{ $j->jam_selesai }}</span>
+          </div>
+          <div>
+            <span style="font-size:10px;font-weight:800;color:#64748B;display:block;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">Batas Daftar</span>
+            <p style="margin:0;font-size:12.5px;font-weight:800;color:{{ now()->gt($j->tgl_batas_daftar)?'#EF4444':'#131218' }};">
+              {{ $j->tgl_batas_daftar->format('d M Y') }}
+            </p>
+            @if(now()->gt($j->tgl_batas_daftar))
+            <span style="font-size:10px;font-weight:800;color:#EF4444;">Lewat Batas</span>
+            @endif
+          </div>
+
+          {{-- Kuota Progress --}}
+          <div style="grid-column: span 2; border-top: 1px dashed #E2E4EB; padding-top: 8px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748B;margin-bottom:4px;font-weight:800;">
+              <span>Kuota Peserta</span>
+              <span style="color:#131218;">{{ $hasK ? $k->terisi : 0 }} / {{ $j->kuota_peserta }}</span>
+            </div>
+            <div style="height:5px;background:#E2E4EB;border-radius:3px;overflow:hidden;">
+              <div style="height:100%;border-radius:3px;
+                   background:{{ $hasK && $k->isFull() ? '#EF4444' : '#FFC81A' }};
+                   width:{{ $hasK ? min(100,round($k->terisi/$j->kuota_peserta*100)) : 0 }}%;"></div>
+            </div>
+          </div>
+        </div>
+
+        {{-- Actions Row --}}
+        <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;">
+          @if($hasK)
+          <a href="{{ route('admin.kegiatan.show', $k) }}"
+             style="padding:6px 14px;font-size:12px;font-weight:800;color:#2563EB;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:18px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+            @include('components.icon',['name'=>'eye','size'=>13]) Kegiatan
+          </a>
+          @endif
+          <a href="{{ route('admin.jadwal-sertifikasi.edit', $j) }}"
+             style="padding:6px 14px;font-size:12px;font-weight:800;color:#131218;background:#FFC81A;border:1.5px solid #131218;border-radius:18px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+            @include('components.icon',['name'=>'edit','size'=>13]) Edit
+          </a>
+          <form action="{{ route('admin.jadwal-sertifikasi.destroy', $j) }}" method="POST" style="margin:0;" onsubmit="return fccConfirmDelete(event, this, 'Hapus Jadwal', 'Apakah Anda yakin ingin menghapus jadwal ini?')">
+            @csrf @method('DELETE')
+            <button type="submit" style="padding:6px 14px;font-size:12px;font-weight:800;color:#EF4444;background:#FEF2F2;border:1.5px solid #FCA5A5;border-radius:18px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+              @include('components.icon',['name'=>'trash','size'=>13]) Hapus
+            </button>
+          </form>
+        </div>
+      </div>
+      @empty
+      <div style="padding:36px 20px;text-align:center;color:#9CA3B0;font-size:14px;">Belum ada jadwal sertifikasi.</div>
+      @endforelse
+    </div>
+
+    <div class="fcc-pagination-bar" style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
       <div style="display:flex;align-items:center;gap:10px;">
         <form method="GET" action="{{ url()->current() }}" style="margin:0;">
           @if(request()->filled('sertifikasi_id'))

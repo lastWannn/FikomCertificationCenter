@@ -1,6 +1,13 @@
 {{-- ── TAMBAH MATERI SERTIFIKASI MODAL (Neo-Brutalist Glassmorphism) ────────────────────────────────────── --}}
-<div id="create-modal" style="display:{{ $errors->has('judul_materi') && !session('materi_id') ? 'flex' : 'none' }};position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this) this.style.display='none'">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:540px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);display:flex;flex-direction:column;" onclick="event.stopPropagation()">
+<div id="create-modal" style="display:{{ ($errors?->has('judul_materi') ?? false) && !session('materi_id') ? 'flex' : 'none' }};position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;box-sizing:border-box;" onclick="if(event.target===this) this.style.display='none'">
+    <style>
+      @media (max-width: 640px) {
+        .fcc-materi-modal-card { padding: 20px 16px !important; border-radius: 18px !important; }
+        .fcc-materi-modal-actions { flex-direction: column-reverse !important; gap: 10px !important; }
+        .fcc-materi-modal-actions button { width: 100% !important; justify-content: center !important; }
+      }
+    </style>
+    <div class="fcc-materi-modal-card" style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:540px;width:100%;box-sizing:border-box;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);display:flex;flex-direction:column;" onclick="event.stopPropagation()">
         
         {{-- Close Button --}}
         <button type="button" onclick="document.getElementById('create-modal').style.display='none'" aria-label="Tutup" style="
@@ -37,7 +44,7 @@
                 <input type="text" name="isi" value="{{ old('isi') }}" placeholder="Contoh: 4 atau 4 JP" class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
             </div>
 
-            <div style="display:flex;justify-content:flex-end;gap:12px;">
+            <div class="fcc-materi-modal-actions" style="display:flex;justify-content:flex-end;gap:12px;">
                 <button type="button" onclick="document.getElementById('create-modal').style.display='none'"
                         style="padding:11px 22px;font-size:13px;font-weight:800;color:#64748B;background:#F1F5F9;border:1.5px solid #CBD5E1;border-radius:30px;cursor:pointer;transition:all .18s;"
                         onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#CBD5E1';">

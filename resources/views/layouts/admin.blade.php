@@ -4,6 +4,7 @@
     .fcc-admin-layout {
         display: flex;
         height: 100vh;
+        height: 100dvh;
         overflow: hidden;
         background: #F7F8FA;
         font-family: 'Inter', sans-serif;
@@ -107,11 +108,14 @@
             display: block !important;
         }
         .fcc-admin-header {
-            padding: 0 14px !important;
-            gap: 10px !important;
+            padding: 0 12px !important;
+            gap: 8px !important;
         }
         .fcc-admin-header-userinfo {
             display: none !important;
+        }
+        .fcc-admin-user-btn {
+            padding: 4px !important;
         }
     }
 
@@ -384,7 +388,7 @@
       @livewire('admin.notification-bell')
 
       {{-- Admin info --}}
-      <a href="{{ route('admin.profile') }}"
+      <a href="{{ route('admin.profile') }}" class="fcc-admin-user-btn"
          style="display:flex;align-items:center;gap:10px;background:#F7F8FA;
                 border:1.5px solid #E2E4EB;border-radius:10px;padding:5px 12px 5px 5px;
                 text-decoration:none;transition:border-color .18s;flex-shrink:0;"
@@ -403,7 +407,7 @@
     </header>
 
     {{-- Content --}}
-    <main style="flex:1;overflow:auto;background:#F7F8FA;">
+    <main class="fcc-admin-main" style="flex:1;overflow-y:auto;overflow-x:hidden;background:#F7F8FA;-webkit-overflow-scrolling:touch;">
       @yield('page-content')
     </main>
   </div>

@@ -2,7 +2,7 @@
 @section('title', 'Materi Sertifikasi')
 
 @section('page-content')
-<div style="padding:24px;position:relative;">
+<div class="fcc-materi-container" style="padding:24px;position:relative;">
 
     {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
     <style>
@@ -18,6 +18,74 @@
       }
       #materi-sertifikasi-skeleton-overlay {
         transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+      .fcc-materi-desktop-table {
+        display: block;
+      }
+      .fcc-materi-mobile-list {
+        display: none;
+      }
+      @media (max-width: 1024px) {
+        .fcc-materi-grid {
+          grid-template-columns: 1fr !important;
+          gap: 20px !important;
+        }
+        .fcc-materi-sidebar {
+          position: static !important;
+        }
+      }
+      @media (max-width: 768px) {
+        .fcc-materi-desktop-table {
+          display: none !important;
+        }
+        .fcc-materi-mobile-list {
+          display: block !important;
+        }
+      }
+      .fcc-materi-count-badge {
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+      }
+      @media (max-width: 640px) {
+        .fcc-materi-container {
+          padding: 14px !important;
+        }
+        .fcc-materi-header-btn {
+          width: 100% !important;
+          justify-content: center !important;
+        }
+        .fcc-card-filter {
+          padding: 16px 14px !important;
+        }
+        .fcc-materi-table-header {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 12px !important;
+        }
+        .fcc-materi-title-wrap {
+          width: 100% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          gap: 10px !important;
+        }
+        .fcc-materi-title-heading {
+          font-size: 14.5px !important;
+          line-height: 1.35 !important;
+          flex: 1 !important;
+          min-width: 0 !important;
+        }
+        .fcc-materi-count-badge {
+          padding: 3px 10px !important;
+          font-size: 11px !important;
+        }
+        .fcc-materi-table-header button {
+          width: 100% !important;
+          justify-content: center !important;
+        }
+        .fcc-materi-sidebar {
+          padding: 18px 16px !important;
+        }
       }
     </style>
 
@@ -65,7 +133,7 @@
         </div>
 
         @if($selectedSertifikasi)
-        <button type="button" onclick="document.getElementById('create-modal').style.display='flex'"
+        <button type="button" class="fcc-materi-header-btn" onclick="document.getElementById('create-modal').style.display='flex'"
                 style="padding:10px 22px;font-size:13.5px;font-weight:900;background:#FFC81A;color:#131218;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.35);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .18s;"
                 onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
             @include('components.icon',['name'=>'plus','size'=>16]) Tambah Materi Baru
@@ -74,7 +142,7 @@
     </div>
 
     {{-- TOP BAR: Searchable Dropdown Sertifikasi --}}
-    <div class="fcc-card" style="margin-bottom:24px;padding:22px 24px;background:#FFF;border-radius:20px;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);">
+    <div class="fcc-card fcc-card-filter" style="margin-bottom:24px;padding:22px 24px;background:#FFF;border-radius:20px;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);">
         <form id="select-sertifikasi-form" method="GET" action="{{ route('admin.sertifikasi.materi.index') }}">
             <input type="hidden" name="sertifikasi_id" id="hidden-sertifikasi-id" value="{{ $selectedSertifikasi ? $selectedSertifikasi->id : '' }}">
             
@@ -123,17 +191,17 @@
     </div>
 
     @if($selectedSertifikasi)
-    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;">
+    <div class="fcc-materi-grid" style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;">
         
         {{-- KIRI: Tabel Materi Sertifikasi --}}
         <div>
             <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
-                <div style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-                    <div style="display:flex;align-items:center;gap:12px;">
-                        <h3 style="margin:0;font-size:16px;font-weight:900;color:#131218;">
+                <div class="fcc-materi-table-header" style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                    <div class="fcc-materi-title-wrap" style="display:flex;align-items:center;gap:12px;">
+                        <h3 class="fcc-materi-title-heading" style="margin:0;font-size:16px;font-weight:900;color:#131218;">
                             Daftar Modul Materi Sertifikasi
                         </h3>
-                        <span style="font-size:11.5px;font-weight:800;color:#131218;background:#FFC81A;padding:4px 12px;border-radius:20px;border:1px solid #131218;">{{ $selectedSertifikasi->materi->count() }} Modul</span>
+                        <span class="fcc-materi-count-badge" style="font-size:11.5px;font-weight:800;color:#131218;background:#FFC81A;padding:4px 12px;border-radius:20px;border:1px solid #131218;white-space:nowrap;flex-shrink:0;">{{ $selectedSertifikasi->materi->count() }} Modul</span>
                     </div>
 
                     <button type="button" onclick="document.getElementById('create-modal').style.display='flex'"
@@ -143,14 +211,15 @@
                     </button>
                 </div>
 
-                <div style="overflow-x:auto;">
+                {{-- Desktop Table View (>= 768px) --}}
+                <div class="fcc-materi-desktop-table" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
                     <table style="width:100%;border-collapse:collapse;">
                         <thead>
                             <tr style="background:#131218;color:#FFFFFF;">
                                 <th style="text-align:center;padding:14px 16px;font-weight:900;color:#FFC81A;width:55px;text-transform:uppercase;font-size:11px;letter-spacing:0.6px;">No</th>
                                 <th style="text-align:left;padding:14px 16px;font-weight:900;color:#FFFFFF;text-transform:uppercase;font-size:11px;letter-spacing:0.6px;">Judul & Berkas Materi</th>
-                                <th style="text-align:left;padding:14px 16px;font-weight:900;color:#FFFFFF;text-transform:uppercase;font-size:11px;letter-spacing:0.6px;">Durasi (JP)</th>
-                                <th style="text-align:center;padding:14px 20px;font-weight:900;color:#FFC81A;width:130px;text-transform:uppercase;font-size:11px;letter-spacing:0.6px;">Aksi</th>
+                                <th style="text-align:left;padding:14px 16px;font-weight:900;color:#FFFFFF;text-transform:uppercase;font-size:11px;letter-spacing:0.6px;white-space:nowrap;">Durasi (JP)</th>
+                                <th style="text-align:center;padding:14px 20px;font-weight:900;color:#FFC81A;width:130px;min-width:130px;text-transform:uppercase;font-size:11px;letter-spacing:0.6px;white-space:nowrap;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -169,12 +238,12 @@
                                     </div>
                                     @endif
                                 </td>
-                                <td style="padding:14px 16px;vertical-align:middle;color:#131218;font-size:13.5px;font-weight:800;">
+                                <td style="padding:14px 16px;vertical-align:middle;color:#131218;font-size:13.5px;font-weight:800;white-space:nowrap;">
                                     <span style="background:#F1F5F9;border:1px solid #CBD5E1;padding:3px 10px;border-radius:12px;display:inline-block;">
                                         {{ $m->isi ? (str_contains(strtolower($m->isi), 'jp') ? $m->isi : $m->isi . ' JP') : '-' }}
                                     </span>
                                 </td>
-                                <td style="padding:14px 20px;text-align:center;vertical-align:middle;">
+                                <td style="padding:14px 20px;text-align:center;vertical-align:middle;width:130px;min-width:130px;white-space:nowrap;">
                                     <div style="display:inline-flex;align-items:center;gap:6px;">
                                         <button type="button" onclick="openEditModal('{{ route('admin.materi-sertifikasi.update', [$selectedSertifikasi, $m]) }}', '{{ addslashes($m->judul_materi) }}', '{{ addslashes($m->deskripsi ?? $m->isi ?? '') }}')"
                                                 style="padding:6px 10px;font-size:12px;font-weight:800;color:#131218;background:#FFC81A;border:1.5px solid #131218;border-radius:20px;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;justify-content:center;" title="Edit Materi"
@@ -205,12 +274,65 @@
                         </tbody>
                     </table>
                 </div>
+
+                {{-- Mobile Card List View (< 768px) --}}
+                <div class="fcc-materi-mobile-list">
+                    @forelse($selectedSertifikasi->materi as $index => $m)
+                    <div style="padding:16px;border-top:1px solid #F1F5F9;background:#FFF;">
+                        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+                            <span style="display:inline-flex;width:28px;height:28px;border-radius:8px;background:#131218;color:#FFC81A;border:1px solid #131218;align-items:center;justify-content:center;font-weight:900;font-size:12px;flex-shrink:0;margin-top:1px;">
+                                {{ $index + 1 }}
+                            </span>
+                            <div style="flex:1;min-width:0;">
+                                <h4 style="font-size:14.5px;font-weight:900;color:#131218;margin:0 0 6px;line-height:1.35;word-break:break-word;">
+                                    {{ $m->judul_materi }}
+                                </h4>
+                                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                    <span style="background:#F1F5F9;border:1px solid #CBD5E1;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:800;color:#131218;display:inline-flex;align-items:center;gap:4px;">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                        {{ $m->isi ? (str_contains(strtolower($m->isi), 'jp') ? $m->isi : $m->isi . ' JP') : '-' }}
+                                    </span>
+                                    @if($m->link_materi)
+                                    <a href="{{ $m->link_materi }}" target="_blank" style="font-size:11px;color:#10B981;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:4px;background:#ECFDF5;padding:2px 8px;border-radius:8px;border:1px solid #A7F3D0;">
+                                        @include('components.icon',['name'=>'globe','size'=>12]) Tautan Eksternal
+                                    </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Action Buttons on Mobile --}}
+                        <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;padding-top:10px;border-top:1px dashed #E2E8F0;">
+                            <button type="button" onclick="openEditModal('{{ route('admin.materi-sertifikasi.update', [$selectedSertifikasi, $m]) }}', '{{ addslashes($m->judul_materi) }}', '{{ addslashes($m->deskripsi ?? $m->isi ?? '') }}')"
+                                    style="padding:6px 14px;font-size:12px;font-weight:800;color:#131218;background:#FFC81A;border:1.5px solid #131218;border-radius:18px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+                                @include('components.icon',['name'=>'edit','size'=>13])
+                                <span>Edit</span>
+                            </button>
+                            <form action="{{ route('admin.materi-sertifikasi.destroy', [$selectedSertifikasi, $m]) }}" method="POST" style="margin:0;" onsubmit="return fccConfirmDelete(event, this, 'Hapus Materi', 'Apakah Anda yakin ingin menghapus materi sertifikasi ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" style="padding:6px 14px;font-size:12px;font-weight:800;color:#EF4444;background:#FEF2F2;border:1.5px solid #FCA5A5;border-radius:18px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+                                    @include('components.icon',['name'=>'trash','size'=>13])
+                                    <span>Hapus</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @empty
+                    <div style="text-align:center;padding:40px 20px;color:#94A3B8;">
+                        <div style="width:52px;height:52px;background:#F7F8FA;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                            @include('components.icon',['name'=>'book-open','size'=>24,'style'=>'color:#9CA3B0'])
+                        </div>
+                        <p style="font-weight:900;color:#131218;margin:0 0 4px;font-size:14px;">Belum Ada Materi Terdaftar</p>
+                        <p style="font-size:12.5px;color:#64748B;margin:0;">Klik tombol Tambah Materi di atas untuk membuat modul materi pertama.</p>
+                    </div>
+                    @endforelse
+                </div>
             </div>
         </div>
 
         {{-- KANAN: Sidebar Ringkasan Sertifikasi --}}
         <div>
-            <div class="fcc-card" style="padding:22px;border-radius:20px;background:#FFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);position:sticky;top:90px;">
+            <div class="fcc-card fcc-materi-sidebar" style="padding:22px;border-radius:20px;background:#FFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);position:sticky;top:90px;">
                 <div style="margin-bottom:16px;text-align:center;">
                     @if($selectedSertifikasi->gambar_url || $selectedSertifikasi->gambar)
                     <img src="{{ $selectedSertifikasi->gambar_url ?? asset('storage/'.$selectedSertifikasi->gambar) }}" alt="{{ $selectedSertifikasi->judul }}" style="width:100%;height:140px;object-fit:cover;border-radius:14px;border:1.5px solid #131218;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
@@ -225,13 +347,13 @@
                 </div>
 
                 <div style="border-top:1px solid #F1F5F9;padding-top:14px;display:flex;flex-direction:column;gap:10px;">
-                    <div style="display:flex;justify-content:space-between;font-size:12.5px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;gap:8px;">
                         <span style="color:#64748B;font-weight:600;">Total Modul Materi</span>
-                        <span style="font-weight:900;color:#131218;">{{ $selectedSertifikasi->materi->count() }} Modul</span>
+                        <span style="font-weight:900;color:#131218;white-space:nowrap;flex-shrink:0;">{{ $selectedSertifikasi->materi->count() }} Modul</span>
                     </div>
-                    <div style="display:flex;justify-content:space-between;font-size:12.5px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;gap:8px;">
                         <span style="color:#64748B;font-weight:600;">Batch Jadwal Pelaksanaan</span>
-                        <span style="font-weight:900;color:#131218;">{{ $selectedSertifikasi->jadwal->count() }} Batch</span>
+                        <span style="font-weight:900;color:#131218;white-space:nowrap;flex-shrink:0;">{{ $selectedSertifikasi->jadwal->count() }} Batch</span>
                     </div>
                 </div>
             </div>

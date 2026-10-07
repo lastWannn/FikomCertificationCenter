@@ -2,7 +2,7 @@
 @section('title','Program Pelatihan')
 
 @section('page-content')
-<div style="padding:24px;position:relative;">
+<div class="fcc-catalog-container" style="padding:24px;position:relative;">
 
     {{-- ═══ SKELETON LOADING OVERLAY ═════════════════════════════════ --}}
     <style>
@@ -64,6 +64,29 @@
       })();
     </script>
 
+    <style>
+      .fcc-pelatihan-desktop-table {
+        display: block;
+      }
+      .fcc-pelatihan-mobile-list {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        .fcc-pelatihan-desktop-table {
+          display: none !important;
+        }
+        .fcc-pelatihan-mobile-list {
+          display: block !important;
+        }
+      }
+      @media (max-width: 640px) {
+        .fcc-catalog-container { padding: 14px !important; }
+        .fcc-catalog-header-btn { width: 100% !important; justify-content: center !important; }
+        .fcc-pagination-bar { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
+        .fcc-pagination-bar > div { justify-content: center !important; width: 100% !important; }
+      }
+    </style>
+
     {{-- Header & Action Bar --}}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
         <div>
@@ -73,7 +96,7 @@
             </div>
             <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">Kelola master data program pelatihan, materi pembelajaran, dan biaya.</p>
         </div>
-        <button type="button" onclick="document.getElementById('create-modal').style.display='flex'"
+        <button type="button" class="fcc-catalog-header-btn" onclick="document.getElementById('create-modal').style.display='flex'"
                 style="padding:10px 22px;font-size:13.5px;font-weight:900;background:#FFC81A;color:#131218;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(255,200,26,0.35);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .18s;"
                 onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
             @include('components.icon',['name'=>'plus','size'=>16]) Tambah Pelatihan Baru
@@ -120,15 +143,15 @@
             <span style="font-size:11.5px;font-weight:800;color:#131218;background:#FFC81A;padding:4px 12px;border-radius:20px;border:1px solid #131218;">{{ $pelatihan->total() }} Data</span>
         </div>
 
-        <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;">
+        <div class="fcc-pelatihan-desktop-table" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <table style="width:100%;border-collapse:collapse;min-width:720px;">
                 <thead>
                     <tr style="background:#131218;color:#FFFFFF;">
                         <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;">Kode</th>
                         <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Program Pelatihan</th>
                         <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;">Kategori</th>
                         <th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFFFFF;white-space:nowrap;">Status Modul &amp; Jadwal</th>
-                        <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;white-space:nowrap;">Aksi</th>
+                        <th style="padding:14px 20px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;color:#FFC81A;white-space:nowrap;width:130px;min-width:130px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -202,7 +225,7 @@
                         </td>
 
                         {{-- Aksi --}}
-                        <td style="padding:14px 20px;text-align:center;vertical-align:middle;">
+                        <td style="padding:14px 20px;text-align:center;vertical-align:middle;width:130px;min-width:130px;white-space:nowrap;">
                             <div style="display:inline-flex;gap:6px;align-items:center;">
                                 {{-- Detail Button --}}
                                 <a href="{{ route('admin.pelatihan.show', $p) }}" title="Detail Pelatihan"
@@ -241,7 +264,94 @@
             </table>
         </div>
 
-        <div style="padding:14px 20px;border-top:1.5px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        {{-- Mobile Cards List View (< 768px) --}}
+        <div class="fcc-pelatihan-mobile-list">
+            @forelse($pelatihan as $p)
+            @php
+                $cntJadwal = $p->jadwal_count ?? $p->jadwal()->count();
+                $cntMateri = $p->materi_count ?? $p->materi()->count();
+            @endphp
+            <div style="padding:16px;border-top:1px solid #F1F5F9;background:#FFF;">
+                {{-- Top: Kode & Kategori --}}
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;">
+                    <span style="font-size:11px;font-weight:900;color:#FFC81A;background:#131218;padding:3px 10px;border-radius:8px;font-family:monospace;letter-spacing:0.5px;border:1px solid #131218;">
+                        {{ $p->kode }}
+                    </span>
+                    <span style="font-size:11px;font-weight:800;color:#475569;background:#F1F5F9;padding:3px 10px;border-radius:20px;border:1px solid #E2E8F0;">
+                        {{ $p->kategori->nama_kategori ?? 'Umum' }}
+                    </span>
+                </div>
+
+                {{-- Program Info: Gambar + Judul --}}
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                    @if($p->gambar_url)
+                        <img src="{{ $p->gambar_url }}" alt="{{ $p->judul }}" style="width:44px;height:44px;border-radius:10px;object-fit:cover;border:1.5px solid #131218;flex-shrink:0;">
+                    @else
+                        <div style="width:44px;height:44px;border-radius:10px;background:#F1F5F9;border:1.5px solid #CBD5E1;display:flex;align-items:center;justify-content:center;color:#94A3B8;flex-shrink:0;">
+                            @include('components.icon',['name'=>'book','size'=>18])
+                        </div>
+                    @endif
+                    <div style="flex:1;min-width:0;">
+                        <a href="{{ route('admin.pelatihan.show', $p) }}" style="font-size:14.5px;font-weight:900;color:#131218;text-decoration:none;margin:0 0 4px;display:block;line-height:1.3;word-break:break-word;">
+                            {{ $p->judul }}
+                        </a>
+                        <span style="font-size:11px;color:#64748B;font-weight:600;">Dibuat: {{ $p->created_at?->format('d M Y') ?? '—' }}</span>
+                    </div>
+                </div>
+
+                {{-- Modul & Jadwal Badges Row --}}
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:8px 10px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;">
+                    @if($cntJadwal > 0)
+                        <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;color:#131218;background:#FFFDF5;border:1px solid #FFC81A;padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0;">
+                            📅 {{ $cntJadwal }} Jadwal
+                        </span>
+                    @else
+                        <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#94A3B8;padding:3px 6px;white-space:nowrap;flex-shrink:0;">
+                            📅 0 Jadwal
+                        </span>
+                    @endif
+
+                    @if($cntMateri > 0)
+                        <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;color:#1D4ED8;background:#EFF6FF;border:1px solid #93C5FD;padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0;">
+                            📚 {{ $cntMateri }} Modul
+                        </span>
+                    @else
+                        <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#94A3B8;padding:3px 6px;white-space:nowrap;flex-shrink:0;">
+                            📚 0 Modul
+                        </span>
+                    @endif
+                </div>
+
+                {{-- Actions Row on Mobile --}}
+                <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;padding-top:4px;border-top:1px dashed #E2E8F0;">
+                    <a href="{{ route('admin.pelatihan.show', $p) }}"
+                       style="padding:6px 14px;font-size:12px;font-weight:800;background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:18px;color:#131218;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
+                        @include('components.icon',['name'=>'eye','size'=>13])
+                        <span>Detail</span>
+                    </a>
+                    <button type="button" onclick="document.getElementById('edit-modal-{{ $p->id }}').style.display='flex'"
+                            style="padding:6px 14px;font-size:12px;font-weight:800;color:#131218;background:#FFC81A;border:1.5px solid #131218;border-radius:18px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+                        @include('components.icon',['name'=>'edit','size'=>13])
+                        <span>Edit</span>
+                    </button>
+                    <form action="{{ route('admin.pelatihan.destroy', $p) }}" method="POST" style="margin:0;">
+                        @csrf @method('DELETE')
+                        <button type="button" onclick="fccConfirmDelete(this, 'Hapus Pelatihan', 'Apakah Anda yakin ingin menghapus pelatihan {{ addslashes($p->judul) }}?')"
+                                style="padding:6px 14px;font-size:12px;font-weight:800;color:#EF4444;background:#FEF2F2;border:1.5px solid #FCA5A5;border-radius:18px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+                            @include('components.icon',['name'=>'trash','size'=>13])
+                            <span>Hapus</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @empty
+            <div style="padding:40px 24px;text-align:center;color:#94A3B8;font-size:14px;font-weight:600;">
+                Belum ada data program pelatihan. Klik <strong>Tambah Pelatihan Baru</strong> di atas.
+            </div>
+            @endforelse
+        </div>
+
+        <div class="fcc-pagination-bar" style="padding:14px 20px;border-top:1.5px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
                 <form method="GET" action="{{ url()->current() }}" style="margin:0;">
                 <select name="per_page" onchange="this.form.submit()" class="fcc-input" style="width:auto;font-size:12.5px;height:34px;padding:0 10px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;font-weight:700;cursor:pointer;color:#131218;outline:none;" title="Jumlah data per halaman">

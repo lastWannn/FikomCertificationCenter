@@ -2,7 +2,169 @@
 @section('title','Detail Sertifikasi — ' . $sertifikasi->judul)
 
 @section('page-content')
-<div style="padding:24px;">
+<style>
+  .fcc-detail-container {
+    padding: 24px;
+  }
+  .fcc-detail-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .fcc-header-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .fcc-schedule-item-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+  }
+  .fcc-schedule-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+  .fcc-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(19,18,24,0.65);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  .fcc-modal-card {
+    background: #FFFFFF;
+    border: 2px solid #131218;
+    border-radius: 24px;
+    padding: 32px;
+    max-width: 640px;
+    width: 92%;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    box-sizing: border-box;
+  }
+  .fcc-modal-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .fcc-modal-grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .fcc-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+    border-top: 1.5px solid #E5E7EB;
+    padding-top: 16px;
+  }
+
+  @media (max-width: 1024px) {
+    .fcc-detail-grid {
+      grid-template-columns: 1fr !important;
+      gap: 20px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .fcc-schedule-item-inner {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 12px;
+    }
+    .fcc-schedule-actions {
+      width: 100% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding-top: 10px;
+      border-top: 1px dashed #E2E8F0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .fcc-schedule-actions form {
+      flex: 1 1 auto;
+    }
+    .fcc-schedule-actions select {
+      width: 100%;
+      height: 34px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .fcc-detail-container {
+      padding: 14px !important;
+    }
+    .fcc-header-actions {
+      width: 100%;
+    }
+    .fcc-header-actions > button,
+    .fcc-header-actions > a {
+      flex: 1 1 calc(50% - 6px);
+      justify-content: center;
+      text-align: center;
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+      font-size: 12px !important;
+    }
+    .fcc-modal-overlay {
+      padding: 10px !important;
+    }
+    .fcc-modal-card {
+      padding: 20px 16px !important;
+      border-radius: 18px !important;
+      max-height: 92vh !important;
+      width: 96% !important;
+    }
+    .fcc-modal-grid-2 {
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+    }
+    .fcc-modal-grid-4 {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 10px !important;
+    }
+    .fcc-modal-actions {
+      flex-direction: column-reverse;
+      gap: 8px;
+    }
+    .fcc-modal-actions button {
+      width: 100%;
+      justify-content: center;
+    }
+    .fcc-pagination-bar {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 12px !important;
+    }
+    .fcc-pagination-bar > div {
+      justify-content: center !important;
+      display: flex !important;
+      text-align: center;
+    }
+  }
+</style>
+
+<div class="fcc-detail-container">
 
   {{-- Header Bar --}}
   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
@@ -20,7 +182,7 @@
       </div>
     </div>
 
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <div class="fcc-header-actions">
       <button type="button" onclick="openJadwalModal()" style="display:inline-flex;align-items:center;gap:8px;padding:9.5px 20px;border-radius:30px;border:1.5px solid #131218;background:#FFC81A;color:#131218;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(255,200,26,0.35);transition:all .18s;"
          onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
         @include('components.icon',['name'=>'calendar','size'=>14]) Tambah Batch Jadwal
@@ -31,7 +193,7 @@
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+  <div class="fcc-detail-grid">
     {{-- Kiri: Jadwal --}}
     <div>
       <div class="fcc-card" style="padding:0;overflow:hidden;">
@@ -42,7 +204,7 @@
         @forelse($jadwal as $j)
         @php $ks = $j->kegiatanSertifikasi; @endphp
         <div style="padding:12px 18px;border-top:1px solid #F0F1F5;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="fcc-schedule-item-inner">
             <div>
               @php
                 $isPassedSchedule = $j->tgl_pelaksanaan && $j->tgl_pelaksanaan->lte(now()->startOfDay());
@@ -99,7 +261,7 @@
               </div>
               @endif
             </div>
-            <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
+            <div class="fcc-schedule-actions">
               {{-- STATUS DROPDOWN SELECTOR --}}
               @php
                 $st = $ks?->kegiatan?->status ?? 'draf';
@@ -145,8 +307,8 @@
         </div>
 
         {{-- ── EDIT BATCH JADWAL MODAL (Neo-Brutalist) ────────────────────────────── --}}
-        <div id="edit-jadwal-modal-{{ $j->id }}" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) this.style.display='none'">
-            <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:640px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;text-align:left;" onclick="event.stopPropagation()">
+        <div id="edit-jadwal-modal-{{ $j->id }}" class="fcc-modal-overlay" style="display:none;" onclick="if(event.target===this) this.style.display='none'">
+            <div class="fcc-modal-card" onclick="event.stopPropagation()">
                 
                 {{-- Close button --}}
                 <button type="button" onclick="document.getElementById('edit-jadwal-modal-{{ $j->id }}').style.display='none'" aria-label="Tutup" style="
@@ -175,7 +337,7 @@
                     </div>
 
                     {{-- TANGGAL GRID --}}
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+                    <div class="fcc-modal-grid-2">
                         <div>
                             <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Batas Pendaftaran <span style="color:#EF4444;">*</span></label>
                             <input type="date" name="tgl_batas_daftar" value="{{ old('tgl_batas_daftar', $j->tgl_batas_daftar?->format('Y-m-d')) }}" required class="fcc-input" style="padding:9px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
@@ -187,7 +349,7 @@
                     </div>
 
                     {{-- JAM & KUOTA GRID --}}
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px;">
+                    <div class="fcc-modal-grid-4">
                         <div>
                             <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Jam Mulai <span style="color:#EF4444;">*</span></label>
                             <input type="time" name="jam_mulai" value="{{ old('jam_mulai', $j->jam_mulai ? substr($j->jam_mulai,0,5) : '08:00') }}" required class="fcc-input" style="padding:9px 10px;font-size:13px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
@@ -212,10 +374,10 @@
 
                     {{-- PENGATURAN BIAYA --}}
                     <div style="margin-bottom:14px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:14px;padding:14px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                            <label style="font-size:11px;font-weight:900;color:#131218;margin:0;text-transform:uppercase;letter-spacing:.5px;">Pengaturan Biaya Pendaftaran</label>
-                            <button type="button" onclick="addEditJadwalBiayaRow_{{ $j->id }}()" style="font-size:11px;font-weight:800;color:#131218;background:#FFC81A;border:1px solid #131218;padding:3px 10px;border-radius:14px;cursor:pointer;">
-                                + Baris Biaya
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;">
+                            <label style="font-size:11px;font-weight:900;color:#131218;margin:0;text-transform:uppercase;letter-spacing:.5px;">Biaya Pendaftaran</label>
+                            <button type="button" onclick="addEditJadwalBiayaRow_{{ $j->id }}()" style="font-size:11px;font-weight:900;color:#131218;background:#FFC81A;border:1.5px solid #131218;padding:3px 10px;border-radius:20px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(255,200,26,0.3);flex-shrink:0;">
+                                <span style="font-size:13px;line-height:1;">+</span> Tambah
                             </button>
                         </div>
                         <div id="edit-jadwal-biaya-container-{{ $j->id }}">
@@ -240,7 +402,7 @@
                     </div>
 
                     {{-- ACTION BUTTONS --}}
-                    <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;border-top:1.5px solid #E5E7EB;padding-top:16px;">
+                    <div class="fcc-modal-actions">
                         <button type="button" onclick="document.getElementById('edit-jadwal-modal-{{ $j->id }}').style.display='none'" style="padding:9px 22px;font-size:13px;font-weight:800;border-radius:30px;border:1.5px solid #CBD5E1;background:#F8FAFC;color:#64748B;cursor:pointer;">
                             Batal
                         </button>
@@ -274,7 +436,7 @@
         </div>
         @endforelse
 
-        <div style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div class="fcc-pagination-bar" style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
           <div style="display:flex;align-items:center;gap:10px;">
             <form method="GET" action="{{ url()->current() }}" style="margin:0;">
             <select name="per_page" onchange="this.form.submit()" class="fcc-input" style="width:auto;font-size:12.5px;height:34px;padding:0 10px;background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;font-weight:700;cursor:pointer;color:#131218;outline:none;" title="Jumlah data per halaman">
@@ -347,7 +509,7 @@
       @if(!empty($adminFacilities))
       <div class="fcc-card" style="padding:20px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
         <p style="font-size:13px;font-weight:900;color:#131218;margin:0 0 12px;text-transform:uppercase;letter-spacing:0.5px;">Fasilitas &amp; Benefit Keikutsertaan</p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:10px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:10px;">
           @foreach($adminFacilities as $fac)
           <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:#131218;font-weight:700;">
             <span style="color:#10B981;font-weight:900;">✓</span>
@@ -362,8 +524,8 @@
 </div>
 
 {{-- ── TAMBAH BATCH JADWAL MODAL (Neo-Brutalist Glassmorphism) ────────────────────────────────────── --}}
-<div id="jadwal-modal" style="display:{{ $errors->any() ? 'flex' : 'none' }};position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this) closeJadwalModal()">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:640px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;" onclick="event.stopPropagation()">
+<div id="jadwal-modal" class="fcc-modal-overlay" style="display:{{ $errors->any() ? 'flex' : 'none' }};" onclick="if(event.target===this) closeJadwalModal()">
+    <div class="fcc-modal-card" onclick="event.stopPropagation()">
         
         {{-- Close button --}}
         <button type="button" onclick="closeJadwalModal()" aria-label="Tutup" style="
@@ -392,7 +554,7 @@
             </div>
 
             {{-- TANGGAL GRID --}}
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+            <div class="fcc-modal-grid-2">
                 <div>
                     <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Batas Pendaftaran <span style="color:#EF4444;">*</span></label>
                     <input type="date" name="tgl_batas_daftar" value="{{ old('tgl_batas_daftar') }}" required class="fcc-input" style="padding:9px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
@@ -406,7 +568,7 @@
             </div>
 
             {{-- JAM & KUOTA GRID --}}
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px;">
+            <div class="fcc-modal-grid-4">
                 <div>
                     <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Jam Mulai <span style="color:#EF4444;">*</span></label>
                     <input type="time" name="jam_mulai" value="{{ old('jam_mulai') }}" required class="fcc-input" style="padding:9px 10px;font-size:13px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
@@ -435,17 +597,17 @@
 
             {{-- PENGATURAN BIAYA --}}
             <div style="margin-bottom:14px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:14px;padding:14px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                    <label style="font-size:11px;font-weight:900;color:#131218;margin:0;text-transform:uppercase;letter-spacing:.5px;">Pengaturan Biaya Pendaftaran</label>
-                    <button type="button" onclick="addJadwalBiayaRow()" style="font-size:11px;font-weight:800;color:#131218;background:#FFC81A;border:1px solid #131218;padding:3px 10px;border-radius:14px;cursor:pointer;">
-                        + Baris Biaya
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;">
+                    <label style="font-size:11px;font-weight:900;color:#131218;margin:0;text-transform:uppercase;letter-spacing:.5px;">Biaya Pendaftaran</label>
+                    <button type="button" onclick="addJadwalBiayaRow()" style="font-size:11px;font-weight:900;color:#131218;background:#FFC81A;border:1.5px solid #131218;padding:3px 10px;border-radius:20px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(255,200,26,0.3);flex-shrink:0;">
+                        <span style="font-size:13px;line-height:1;">+</span> Tambah
                     </button>
                 </div>
                 <div id="jadwal-biaya-container">
                     <div class="biaya-row" style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:8px;align-items:center;">
                         <input type="text" name="nama_jenis_biaya[]" value="{{ old('nama_jenis_biaya.0') }}" placeholder="Jenis (contoh: Umum)" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
                         <input type="number" name="nominal_biaya[]" value="{{ old('nominal_biaya.0') }}" placeholder="Nominal (Rp)" min="0" max="999999999" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
-                        <span style="width:24px;"></span>
+                        <span style="width:30px;"></span>
                     </div>
                 </div>
                 <p style="font-size:11px;color:#64748B;margin:6px 0 0;font-weight:500;">Isi 0 untuk pendaftaran gratis.</p>
@@ -463,7 +625,7 @@
             </div>
 
             {{-- Actions --}}
-            <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px;">
+            <div class="fcc-modal-actions">
                 <button type="button" onclick="closeJadwalModal()"
                         style="padding:11px 22px;font-size:13px;font-weight:800;color:#64748B;background:#F1F5F9;border:1.5px solid #CBD5E1;border-radius:30px;cursor:pointer;transition:all .18s;"
                         onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#CBD5E1';">
@@ -547,7 +709,9 @@ function addJadwalBiayaRow() {
     div.innerHTML = `
         <input type="text" name="nama_jenis_biaya[]" placeholder="contoh: Mahasiswa UMI" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;">
         <input type="number" name="nominal_biaya[]" placeholder="0" min="0" max="999999999" class="fcc-input" style="padding:8px 12px;font-size:12.5px;border:1px solid #CBD5E1;border-radius:8px;background:#FFF;" onfocus="this.select()">
-        <button type="button" onclick="this.closest('.biaya-row').remove()" style="color:#EF4444;background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;">✕</button>
+        <button type="button" onclick="this.closest('.biaya-row').remove()" style="background:#FEF2F2;border:1px solid #FCA5A5;color:#EF4444;width:30px;height:30px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;" title="Hapus">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+        </button>
     `;
     container.appendChild(div);
 }

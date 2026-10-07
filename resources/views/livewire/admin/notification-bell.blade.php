@@ -18,9 +18,28 @@
     </button>
 
     {{-- Dropdown Content --}}
-    <div id="notif-drop" class="{{ $isOpen ? '' : 'hidden' }}" style="position:absolute;right:0;top:46px;width:320px;
-        background:#FFF;border:1px solid #E2E4EB;border-radius:16px;
-        box-shadow:0 16px 48px rgba(0,0,0,.15);z-index:999;overflow:hidden;">
+    <style>
+      .fcc-notif-dropdown {
+        position: absolute;
+        right: 0;
+        top: 46px;
+        width: 320px;
+        max-width: calc(100vw - 24px);
+        background: #FFF;
+        border: 1px solid #E2E4EB;
+        border-radius: 16px;
+        box-shadow: 0 16px 48px rgba(0,0,0,.15);
+        z-index: 999;
+        overflow: hidden;
+      }
+      @media (max-width: 640px) {
+        .fcc-notif-dropdown {
+          right: -44px;
+          width: min(320px, calc(100vw - 24px));
+        }
+      }
+    </style>
+    <div id="notif-drop" class="fcc-notif-dropdown {{ $isOpen ? '' : 'hidden' }}">
       
       <div style="padding:12px 16px;background:#F9FAFB;border-bottom:1px solid #E2E4EB;display:flex;justify-content:space-between;align-items:center;">
         <span style="font-weight:800;font-size:13.5px;color:#131218;">Notifikasi</span>

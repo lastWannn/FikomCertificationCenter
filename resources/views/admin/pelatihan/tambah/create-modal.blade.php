@@ -1,6 +1,27 @@
 {{-- ── TAMBAH PELATIHAN MODAL (Neo-Brutalist Glassmorphism) ────────────────────────────────────── --}}
-<div id="create-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this) this.style.display='none'">
-    <div style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:680px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;" onclick="event.stopPropagation()">
+<style>
+  @media (max-width: 640px) {
+    .fcc-create-pelatihan-card {
+      padding: 20px 16px !important;
+      border-radius: 18px !important;
+      width: 96% !important;
+    }
+    .fcc-create-pelatihan-grid {
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+    }
+    .fcc-create-pelatihan-actions {
+      flex-direction: column-reverse !important;
+      gap: 8px !important;
+    }
+    .fcc-create-pelatihan-actions button {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+  }
+</style>
+<div id="create-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(19,18,24,0.65);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:12px;box-sizing:border-box;" onclick="if(event.target===this) this.style.display='none'">
+    <div class="fcc-create-pelatihan-card" style="background:#FFFFFF;border:2px solid #131218;border-radius:24px;padding:32px;max-width:680px;width:92%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;box-sizing:border-box;" onclick="event.stopPropagation()">
         
         {{-- Close button --}}
         <button type="button" onclick="document.getElementById('create-modal').style.display='none'" aria-label="Tutup" style="
@@ -21,7 +42,7 @@
         <form action="{{ route('admin.pelatihan.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
+            <div class="fcc-create-pelatihan-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
                 <div>
                     <label style="font-size:11px;font-weight:800;color:#131218;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Kode Pelatihan <span style="color:#EF4444;">*</span></label>
                     <input type="text" name="kode" value="{{ old('kode') }}" placeholder="Contoh: 100-ITFUND1" required class="fcc-input" style="padding:9.5px 14px;font-size:13.5px;width:100%;border:1.5px solid #CBD5E1;border-radius:10px;">
@@ -73,7 +94,7 @@
             </div>
 
             {{-- Actions --}}
-            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:14px;">
+            <div class="fcc-create-pelatihan-actions" style="display:flex;justify-content:flex-end;gap:12px;margin-top:14px;">
                 <button type="button" onclick="document.getElementById('create-modal').style.display='none'"
                         style="padding:11px 22px;font-size:13px;font-weight:800;color:#64748B;background:#F1F5F9;border:1.5px solid #CBD5E1;border-radius:30px;cursor:pointer;transition:all .18s;"
                         onmouseover="this.style.background='#131218';this.style.color='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#CBD5E1';">

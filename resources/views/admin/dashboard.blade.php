@@ -23,11 +23,384 @@
     z-index: 100;
     box-shadow: 0 8px 20px rgba(0,0,0,0.3);
   }
+
+  /* ═══ RESPONSIVE DASHBOARD LAYOUT & DESIGN SYSTEM ═══ */
+  .fcc-dashboard-wrapper {
+    padding: 24px 28px;
+    background: #F6F8FB;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* 4-Stat Cards Grid */
+  .fcc-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+  .fcc-stat-card {
+    padding: 20px;
+    border-radius: 18px;
+    background: #FFFFFF;
+    border: 2px solid #E5E7EB;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all .28s ease;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+  .fcc-stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .fcc-stat-val {
+    margin: 0;
+    color: #131218;
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .fcc-stat-lbl {
+    margin: 0 0 2px;
+    color: #64748B;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .fcc-stat-suf {
+    margin: 2px 0 0;
+    font-size: 11px;
+    color: #131218;
+    font-weight: 700;
+  }
+
+  /* Main 2-Column Grid */
+  .fcc-dashboard-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 330px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* Pending Payment Banner */
+  .fcc-action-banner {
+    background: #FFFDF5;
+    border: 2px solid #FFC81A;
+    border-radius: 18px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 6px 18px rgba(255, 200, 26, 0.15);
+  }
+  .fcc-action-banner-body {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Expired Activities Banner */
+  .fcc-expired-card {
+    background: #FFFFFF;
+    border: 2px solid #E5E7EB;
+    border-radius: 18px;
+    padding: 18px 22px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+  .fcc-expired-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .fcc-expired-item {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* Chart Card */
+  .fcc-chart-card {
+    padding: 24px;
+    border-radius: 20px;
+    background: #FFFFFF;
+    border: 2px solid #E5E7EB;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+  .fcc-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .fcc-chart-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .fcc-chart-selects {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fcc-chart-canvas-wrapper {
+    position: relative;
+    height: 260px;
+    width: 100%;
+  }
+
+  /* Table Card */
+  .fcc-table-card {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #FFFFFF;
+    border: 2px solid #E5E7EB;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+  .fcc-table-header {
+    padding: 18px 24px;
+    border-bottom: 2px solid #E5E7EB;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #F8FAFC;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .fcc-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .fcc-table {
+    width: 100%;
+    min-width: 520px;
+    border-collapse: collapse;
+  }
+
+  /* Right Side Widgets */
+  .fcc-widget-card {
+    padding: 22px;
+    border-radius: 20px;
+    background: #FFFFFF;
+    border: 2px solid #E5E7EB;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+
+  /* ═══ TABLET BREAKPOINT (< 1024px) ═══ */
+  @media (max-width: 1023px) {
+    .fcc-dashboard-wrapper {
+      padding: 18px 16px;
+    }
+    .fcc-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .fcc-dashboard-main-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .fcc-chart-card,
+    .fcc-widget-card {
+      padding: 20px 18px;
+    }
+  }
+
+  /* ═══ MOBILE BREAKPOINT (< 640px) ═══ */
+  @media (max-width: 639px) {
+    .fcc-dashboard-wrapper {
+      padding: 14px 10px;
+    }
+    .fcc-stats-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px !important;
+      margin-bottom: 18px !important;
+    }
+    .taskora-stat-link {
+      display: flex !important;
+      flex-direction: column !important;
+      height: 100% !important;
+      text-decoration: none !important;
+    }
+    .fcc-stat-card {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      justify-content: space-between !important;
+      padding: 14px !important;
+      border-radius: 16px !important;
+      height: 100% !important;
+      min-height: 142px !important;
+      box-sizing: border-box !important;
+      gap: 10px !important;
+    }
+    .fcc-stat-icon {
+      width: 40px !important;
+      height: 40px !important;
+      border-radius: 11px !important;
+      flex-shrink: 0 !important;
+    }
+    .fcc-stat-icon svg {
+      width: 19px !important;
+      height: 19px !important;
+    }
+    .fcc-stat-body {
+      width: 100% !important;
+      min-width: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .fcc-stat-lbl {
+      font-size: 10px !important;
+      font-weight: 800 !important;
+      color: #64748B !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.3px !important;
+      margin: 0 0 2px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    .fcc-stat-val {
+      font-size: 17px !important;
+      font-weight: 900 !important;
+      color: #131218 !important;
+      letter-spacing: -0.02em !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      line-height: 1.25 !important;
+      margin: 0 !important;
+    }
+    .fcc-stat-suf {
+      font-size: 10px !important;
+      color: #131218 !important;
+      font-weight: 700 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      margin: 2px 0 0 !important;
+    }
+
+    /* Action Banner mobile stacking */
+    .fcc-action-banner {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 15px 16px;
+      gap: 12px;
+      border-radius: 16px;
+    }
+    .fcc-action-banner-body {
+      gap: 12px;
+    }
+    .fcc-action-banner-btn {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+      display: block;
+      box-sizing: border-box;
+    }
+
+    /* Expired Activities */
+    .fcc-expired-card {
+      padding: 15px 16px;
+      border-radius: 16px;
+    }
+    .fcc-expired-item {
+      width: 100%;
+      box-sizing: border-box;
+      justify-content: space-between;
+    }
+
+    /* Chart Card */
+    .fcc-chart-card {
+      padding: 16px 14px;
+      border-radius: 16px;
+    }
+    .fcc-chart-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .fcc-chart-controls {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .fcc-chart-selects {
+      width: 100%;
+      display: flex;
+      gap: 8px;
+    }
+    .fcc-chart-selects select {
+      flex: 1;
+    }
+    .fcc-chart-canvas-wrapper {
+      height: 220px;
+    }
+
+    /* Table Card */
+    .fcc-table-card {
+      border-radius: 16px;
+    }
+    .fcc-table-header {
+      padding: 14px 16px;
+    }
+
+    /* Widgets */
+    .fcc-widget-card {
+      padding: 16px 14px;
+      border-radius: 16px;
+    }
+    #mini-calendar-widget {
+      padding: 16px 14px;
+    }
+  }
+
+  /* ═══ EXTRA SMALL PHONES (< 380px) ═══ */
+  @media (max-width: 379px) {
+    .fcc-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 @endpush
 
 @section('page-content')
-<div style="padding:24px 28px;background:#F6F8FB;min-height:100vh;font-family:'Inter',sans-serif;position:relative;">
+<div class="fcc-dashboard-wrapper">
 
   {{-- ═══ DASHBOARD SKELETON LOADING OVERLAY ════════════════════════ --}}
   <style>
@@ -46,15 +419,15 @@
     }
   </style>
 
-  <div id="dashboard-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px 28px;box-sizing:border-box;pointer-events:none;">
+  <div id="dashboard-skeleton-overlay" class="no-print fcc-dashboard-wrapper" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;box-sizing:border-box;pointer-events:none;">
     {{-- 4 Stat Cards Skeleton --}}
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px;">
+    <div class="fcc-stats-grid">
       @for($s=0;$s<4;$s++)
-      <div style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(0,0,0,0.02);">
-        <div class="fcc-skeleton-box" style="width:52px;height:52px;border-radius:14px;flex-shrink:0;"></div>
-        <div style="flex:1;">
-          <div class="fcc-skeleton-box" style="width:60%;height:12px;margin-bottom:8px;"></div>
-          <div class="fcc-skeleton-box" style="width:85%;height:24px;margin-bottom:6px;"></div>
+      <div class="fcc-stat-card">
+        <div class="fcc-skeleton-box fcc-stat-icon" style="flex-shrink:0;"></div>
+        <div class="fcc-stat-body" style="flex:1;width:100%;">
+          <div class="fcc-skeleton-box" style="width:60%;height:10px;margin-bottom:6px;"></div>
+          <div class="fcc-skeleton-box" style="width:85%;height:20px;margin-bottom:4px;"></div>
           <div class="fcc-skeleton-box" style="width:40%;height:10px;"></div>
         </div>
       </div>
@@ -62,10 +435,10 @@
     </div>
 
     {{-- 2 Columns Skeleton --}}
-    <div style="display:grid;grid-template-columns:1fr 330px;gap:24px;align-items:start;">
+    <div class="fcc-dashboard-main-grid">
       {{-- Left Side --}}
       <div style="display:flex;flex-direction:column;gap:24px;">
-        <div style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;gap:16px;">
+        <div class="fcc-card" style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;gap:16px;">
           <div class="fcc-skeleton-box" style="width:46px;height:46px;border-radius:14px;flex-shrink:0;"></div>
           <div style="flex:1;">
             <div class="fcc-skeleton-box" style="width:50%;height:14px;margin-bottom:8px;"></div>
@@ -74,7 +447,7 @@
           <div class="fcc-skeleton-box" style="width:130px;height:36px;border-radius:30px;"></div>
         </div>
 
-        <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <div class="fcc-chart-card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
             <div style="width:45%;">
               <div class="fcc-skeleton-box" style="width:80%;height:16px;margin-bottom:8px;"></div>
@@ -88,11 +461,11 @@
 
       {{-- Right Side --}}
       <div style="display:flex;flex-direction:column;gap:24px;">
-        <div style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <div class="fcc-widget-card">
           <div class="fcc-skeleton-box" style="width:100%;height:28px;margin-bottom:16px;border-radius:8px;"></div>
           <div class="fcc-skeleton-box" style="width:100%;height:180px;border-radius:12px;"></div>
         </div>
-        <div style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <div class="fcc-widget-card">
           <div class="fcc-skeleton-box" style="width:60%;height:16px;margin-bottom:16px;"></div>
           <div class="fcc-skeleton-box" style="width:120px;height:120px;border-radius:50%;margin:0 auto 14px;"></div>
           <div class="fcc-skeleton-box" style="width:100%;height:24px;border-radius:6px;"></div>
@@ -117,7 +490,7 @@
 
 
   {{-- Stat Cards Grid (4 Columns Aligned with Home Page Aesthetics) --}}
-  <div id="stats-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px;">
+  <div id="stats-grid" class="fcc-stats-grid">
     @foreach([
       ['Total Pelatihan',   $stats['pelatihan'],   'Program aktif',     'book-open',   '#FFC81A', '#131218', 'rgba(255,200,26,0.3)', route('admin.pelatihan.index')],
       ['Total Sertifikasi', $stats['sertifikasi'], 'Sertifikasi resmi', 'award',       '#131218', '#FFC81A', 'rgba(19,18,24,0.25)',   route('admin.sertifikasi.index')],
@@ -125,16 +498,16 @@
       ['Total Pendapatan',  'Rp '.number_format($stats['pendapatan'],0,',','.'), 'Terverifikasi', 'credit-card', '#131218', '#FFC81A', 'rgba(19,18,24,0.25)', route('admin.laporan.index')],
     ] as [$lbl,$val,$suf,$ic,$bg,$fg,$glow,$link])
     <a href="{{ $link }}" style="text-decoration:none;display:flex;flex-direction:column;" class="taskora-stat-link">
-      <div class="fcc-card" style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);display:flex;align-items:center;gap:16px;transition:all .28s ease;"
+      <div class="fcc-card fcc-stat-card"
            onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#FFC81A';this.style.boxShadow='0 14px 28px rgba(255,200,26,0.2)';"
            onmouseout="this.style.transform='translateY(0)';this.style.borderColor='#E5E7EB';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.04)';">
-        <div style="width:52px;height:52px;border-radius:14px;background:{{ $bg }};border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 16px {{ $glow }};">
+        <div class="fcc-stat-icon" style="background:{{ $bg }};border:1.5px solid #131218;box-shadow:0 6px 16px {{ $glow }};">
           @include('components.icon',['name'=>$ic,'size'=>22,'style'=>"color:{$fg}"])
         </div>
-        <div style="flex:1;min-width:0;">
-          <p style="margin:0 0 2px;color:#64748B;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;">{{ $lbl }}</p>
-          <p style="margin:0;color:#131218;font-size:24px;font-weight:900;letter-spacing:-0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $val }}</p>
-          <p id="stat-delta-{{ $loop->index }}" style="margin:2px 0 0;font-size:11px;color:#131218;font-weight:700;">{{ $suf }}</p>
+        <div class="fcc-stat-body" style="flex:1;min-width:0;">
+          <p class="fcc-stat-lbl">{{ $lbl }}</p>
+          <p class="fcc-stat-val">{{ $val }}</p>
+          <p id="stat-delta-{{ $loop->index }}" class="fcc-stat-suf">{{ $suf }}</p>
         </div>
       </div>
     </a>
@@ -142,7 +515,7 @@
   </div>
 
   {{-- 2 Columns Grid (Main Area + Side Widgets Area) --}}
-  <div style="display:grid;grid-template-columns:1fr 330px;gap:24px;align-items:start;">
+  <div class="fcc-dashboard-main-grid">
 
     {{-- MAIN LEFT AREA (~70%) --}}
     <div style="display:flex;flex-direction:column;gap:24px;min-width:0;">
@@ -150,15 +523,17 @@
       {{-- Pending Payment Banner --}}
       @php $pendingBayar = \App\Models\Pembayaran::where('status_pembayaran','menunggu_verifikasi')->count(); @endphp
       @if($pendingBayar > 0)
-      <div class="fcc-card" style="background:#FFFDF5;border:2px solid #FFC81A;border-radius:18px;padding:18px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 6px 18px rgba(255,200,26,0.15);">
-        <div style="width:46px;height:46px;border-radius:14px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(255,200,26,0.3);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div class="fcc-card fcc-action-banner">
+        <div class="fcc-action-banner-body">
+          <div style="width:46px;height:46px;border-radius:14px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(255,200,26,0.3);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <p style="margin:0;font-weight:900;color:#131218;font-size:14.5px;">{{ $pendingBayar }} Pembayaran Menunggu Verifikasi</p>
+            <p style="margin:2px 0 0;font-size:12px;color:#4B5563;font-weight:500;">Ada transaksi peserta yang memerlukan tindakan verifikasi segera.</p>
+          </div>
         </div>
-        <div style="flex:1;">
-          <p style="margin:0;font-weight:900;color:#131218;font-size:14.5px;">{{ $pendingBayar }} Pembayaran Menunggu Verifikasi</p>
-          <p style="margin:2px 0 0;font-size:12px;color:#4B5563;font-weight:500;">Ada transaksi peserta yang memerlukan tindakan verifikasi segera.</p>
-        </div>
-        <a href="{{ route('admin.pembayaran.index',['status'=>'menunggu_verifikasi']) }}" style="padding:9px 20px;font-size:12.5px;font-weight:800;text-decoration:none;flex-shrink:0;background:#131218;color:#FFC81A;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:all .18s;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">Verifikasi Sekarang</a>
+        <a href="{{ route('admin.pembayaran.index',['status'=>'menunggu_verifikasi']) }}" class="fcc-action-banner-btn" style="padding:9px 20px;font-size:12.5px;font-weight:800;text-decoration:none;flex-shrink:0;background:#131218;color:#FFC81A;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:all .18s;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">Verifikasi Sekarang</a>
       </div>
       @endif
 
@@ -167,8 +542,8 @@
         $passedKegiatans = \App\Models\Kegiatan::passed()->doesntHave('arsip')->with(['kegiatanPelatihan.jadwalPelatihan.pelatihan', 'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi'])->get();
       @endphp
       @if($passedKegiatans->count() > 0)
-      <div class="fcc-card" style="background:#FFFFFF;border:2px solid #E5E7EB;border-radius:18px;padding:18px 22px;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+      <div class="fcc-card fcc-expired-card">
+        <div class="fcc-expired-header">
           <div style="display:flex;align-items:center;gap:12px;">
             <div style="width:38px;height:38px;border-radius:12px;background:#FEE2E2;border:1px solid #EF4444;display:flex;align-items:center;justify-content:center;color:#EF4444;font-weight:800;font-size:16px;flex-shrink:0;">
               ⚠
@@ -188,10 +563,10 @@
             $detail = $pk->detail;
             $editUrl = $pk->jenis_kegiatan === 'pelatihan' ? ($detail ? route('admin.pelatihan.edit', $detail) : '#') : ($detail ? route('admin.sertifikasi.edit', $detail) : '#');
           @endphp
-          <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:8px 12px;font-size:12px;display:flex;align-items:center;gap:10px;">
+          <div class="fcc-expired-item">
             <span style="font-weight:700;color:#0F172A;">{{ $pk->judul }}</span>
             <span style="color:#64748B;font-size:11px;">(Lewat {{ $pk->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? 'Tgl' }})</span>
-            <div style="display:flex;gap:6px;">
+            <div style="display:flex;gap:6px;margin-left:auto;">
               <a href="{{ $editUrl }}" style="color:#131218;font-size:11px;font-weight:800;text-decoration:none;background:#FFC81A;padding:3px 9px;border-radius:6px;border:1px solid #131218;">Perpanjang</a>
               <form action="{{ route('admin.kegiatan.arsipkan', $pk) }}" method="POST" style="margin:0;">
                 @csrf
@@ -205,13 +580,13 @@
       @endif
 
       {{-- Combined Combo Chart: Pendapatan & Pendaftaran --}}
-      <div class="fcc-card" style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;">
+      <div class="fcc-card fcc-chart-card">
+        <div class="fcc-chart-header">
           <div>
             <h3 style="margin:0 0 2px;font-size:16px;font-weight:900;color:#131218;">Grafik Tren Pendapatan &amp; Pendaftaran</h3>
             <p style="margin:0;font-size:12px;color:#64748B;">Perbandingan pendapatan (Rp) dan jumlah pendaftaran per bulan tahun <span id="chart-year-label">{{ date('Y') }}</span></p>
           </div>
-          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div class="fcc-chart-controls">
             <div style="display:flex;align-items:center;gap:14px;font-size:12px;font-weight:800;">
               <span style="display:inline-flex;align-items:center;gap:6px;color:#131218;">
                 <span style="width:12px;height:12px;border-radius:3px;background:#FFC81A;border:1px solid #131218;"></span> Pendapatan (Rp)
@@ -220,63 +595,68 @@
                 <span style="width:12px;height:12px;border-radius:3px;background:#3B82F6;"></span> Pendaftaran
               </span>
             </div>
-            <select id="chart-metric" class="fcc-input" style="width:auto;font-size:12px;font-weight:800;padding:6px 14px;border-radius:10px;border:1.5px solid #E5E7EB;background:#F8FAFC;">
-              <option value="semua" selected>Semua</option>
-              <option value="pendapatan">Pendapatan</option>
-              <option value="pendaftaran">Pendaftaran</option>
-            </select>
-            <select id="chart-year" class="fcc-input" style="width:auto;font-size:12px;font-weight:800;padding:6px 14px;border-radius:10px;border:1.5px solid #E5E7EB;background:#F8FAFC;">
-              @foreach(range(date('Y'),date('Y')-3) as $y)
-              <option value="{{ $y }}" {{ date('Y')==$y?'selected':'' }}>Tahun {{ $y }}</option>
-              @endforeach
-            </select>
+            <div class="fcc-chart-selects">
+              <select id="chart-metric" class="fcc-input" style="width:auto;font-size:12px;font-weight:800;padding:6px 14px;border-radius:10px;border:1.5px solid #E5E7EB;background:#F8FAFC;">
+                <option value="semua" selected>Semua</option>
+                <option value="pendapatan">Pendapatan</option>
+                <option value="pendaftaran">Pendaftaran</option>
+              </select>
+              <select id="chart-year" class="fcc-input" style="width:auto;font-size:12px;font-weight:800;padding:6px 14px;border-radius:10px;border:1.5px solid #E5E7EB;background:#F8FAFC;">
+                @foreach(range(date('Y'),date('Y')-3) as $y)
+                <option value="{{ $y }}" {{ date('Y')==$y?'selected':'' }}>Tahun {{ $y }}</option>
+                @endforeach
+              </select>
+            </div>
           </div>
         </div>
-        <div style="position:relative;height:260px;">
+        <div class="fcc-chart-canvas-wrapper">
           <canvas id="chartPendapatanPendaftaran"></canvas>
         </div>
       </div>
 
       {{-- Widget 3: Tabel Kegiatan Aktif Terbaru --}}
-      <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
-        <div style="padding:18px 24px;border-bottom:2px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center;background:#F8FAFC;">
+      <div class="fcc-card fcc-table-card">
+        <div class="fcc-table-header">
           <div>
             <h3 style="margin:0 0 2px;font-size:16px;font-weight:900;color:#131218;">Kegiatan Aktif Terbaru</h3>
             <p style="margin:0;font-size:12px;color:#64748B;">Program yang sedang berjalan dan membuka pendaftaran</p>
           </div>
           <a href="{{ route('admin.kegiatan.index') }}" style="font-size:12px;font-weight:800;color:#131218;text-decoration:none;background:#FFC81A;padding:6px 14px;border-radius:20px;border:1px solid #131218;transition:all .18s;" onmouseover="this.style.background='#131218';this.style.color='#FFC81A';" onmouseout="this.style.background='#FFC81A';this.style.color='#131218';">Lihat semua &rarr;</a>
         </div>
-        <table style="width:100%;border-collapse:collapse;">
-          <thead>
-            <tr style="background:#F8FAFC;border-bottom:1.5px solid #E5E7EB;">
-              @foreach(['Kegiatan','Peserta','Tgl Pelaksanaan','Aksi'] as $h)
-              <th style="padding:12px 18px;text-align:left;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">{{ $h }}</th>
-              @endforeach
-            </tr>
-          </thead>
-          <tbody>
-            @forelse($kegiatanTerbaru as $k)
-            <tr style="border-top:1px solid #F1F5F9;transition:background .15s;cursor:pointer;" onclick="if(!event.target.closest('button, a, select, input, form')) window.location.href='{{ route('admin.kegiatan.show', $k) }}'" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background=''">
-              <td style="padding:14px 18px;">
-                <p style="margin:0 0 4px;font-size:13.5px;font-weight:800;color:#131218;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $k->judul }}</p>
-                <span style="font-size:10px;font-weight:900;padding:3px 9px;border-radius:6px;text-transform:uppercase;letter-spacing:0.5px;background:{{ $k->jenis_kegiatan==='pelatihan'?'#FFC81A':'#131218' }};color:{{ $k->jenis_kegiatan==='pelatihan'?'#131218':'#FFC81A' }};border:1px solid #131218;">{{ ucfirst($k->jenis_kegiatan) }}</span>
-              </td>
-              <td style="padding:14px 18px;">
-                <p style="margin:0 0 4px;font-size:13px;font-weight:800;color:#131218;">{{ $k->terisi }}/{{ $k->kuota }}</p>
-                <div style="width:90px;height:5px;background:#E5E7EB;border-radius:3px;overflow:hidden;">
-                  <div style="height:5px;border-radius:3px;background:{{ $k->isFull()?'#EF4444':'#FFC81A' }};width:{{ $k->kuota>0?min(100,round($k->terisi/$k->kuota*100)):0 }}%;"></div>
-                </div>
-              </td>
-              <td style="padding:14px 18px;font-size:12.5px;color:#4B5563;font-weight:600;">{{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? '—' }}</td>
-              <td style="padding:14px 18px;">
-                <a href="{{ route('admin.kegiatan.show', $k) }}" style="color:#FFC81A;font-size:12px;font-weight:800;text-decoration:none;background:#131218;padding:6px 14px;border-radius:20px;border:1px solid #131218;transition:all .15s;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">Detail &rarr;</a>
-              </td>
-            </tr>
-            @empty
-            <tr><td colspan="4" style="padding:28px;text-align:center;color:#94A3B8;font-size:13px;">Belum ada kegiatan aktif.</td></tr>
-            @endforelse
-          </tbody>
-        </table>
+        <div class="fcc-table-wrapper">
+          <table class="fcc-table" style="width:100%;min-width:580px;border-collapse:collapse;">
+            <thead>
+              <tr style="background:#F8FAFC;border-bottom:1.5px solid #E5E7EB;">
+                <th style="padding:12px 18px;text-align:left;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;min-width:180px;">Kegiatan</th>
+                <th style="padding:12px 14px;text-align:center;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;width:110px;min-width:110px;">Peserta</th>
+                <th style="padding:12px 14px;text-align:center;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;width:130px;min-width:130px;">Tgl Pelaksanaan</th>
+                <th style="padding:12px 16px;text-align:center;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;width:110px;min-width:110px;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($kegiatanTerbaru as $k)
+              <tr style="border-top:1px solid #F1F5F9;transition:background .15s;cursor:pointer;" onclick="if(!event.target.closest('button, a, select, input, form')) window.location.href='{{ route('admin.kegiatan.show', $k) }}'" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background=''">
+                <td style="padding:14px 18px;vertical-align:middle;">
+                  <p style="margin:0 0 4px;font-size:13.5px;font-weight:800;color:#131218;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $k->judul }}</p>
+                  <span style="font-size:10px;font-weight:900;padding:3px 9px;border-radius:6px;text-transform:uppercase;letter-spacing:0.5px;background:{{ $k->jenis_kegiatan==='pelatihan'?'#FFC81A':'#131218' }};color:{{ $k->jenis_kegiatan==='pelatihan'?'#131218':'#FFC81A' }};border:1px solid #131218;">{{ ucfirst($k->jenis_kegiatan) }}</span>
+                </td>
+                <td style="padding:14px 14px;text-align:center;vertical-align:middle;white-space:nowrap;">
+                  <p style="margin:0 0 4px;font-size:13px;font-weight:800;color:#131218;">{{ $k->terisi }}/{{ $k->kuota }}</p>
+                  <div style="width:80px;height:5px;background:#E5E7EB;border-radius:3px;overflow:hidden;margin:0 auto;">
+                    <div style="height:5px;border-radius:3px;background:{{ $k->isFull()?'#EF4444':'#FFC81A' }};width:{{ $k->kuota>0?min(100,round($k->terisi/$k->kuota*100)):0 }}%;"></div>
+                  </div>
+                </td>
+                <td style="padding:14px 14px;text-align:center;vertical-align:middle;font-size:12.5px;color:#4B5563;font-weight:600;white-space:nowrap;">{{ $k->jadwal?->tgl_pelaksanaan?->format('d M Y') ?? '—' }}</td>
+                <td style="padding:14px 16px;text-align:center;vertical-align:middle;white-space:nowrap;width:110px;min-width:110px;">
+                  <a href="{{ route('admin.kegiatan.show', $k) }}" style="display:inline-flex;align-items:center;justify-content:center;gap:4px;color:#FFC81A;font-size:12px;font-weight:800;text-decoration:none;background:#131218;padding:7px 16px;border-radius:20px;border:1px solid #131218;white-space:nowrap;transition:all .15s;" onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">Detail &rarr;</a>
+                </td>
+              </tr>
+              @empty
+              <tr><td colspan="4" style="padding:28px;text-align:center;color:#94A3B8;font-size:13px;">Belum ada kegiatan aktif.</td></tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
@@ -285,7 +665,7 @@
     <div style="display:flex;flex-direction:column;gap:24px;">
 
       {{-- Mini Calendar Widget (AJAX Enabled) --}}
-      <div id="mini-calendar-widget" class="fcc-card" style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);transition:opacity .2s;">
+      <div id="mini-calendar-widget" class="fcc-card fcc-widget-card" style="transition:opacity .2s;">
         {{-- Calendar grid --}}
         @php
           $currentCalDate = $calendarDate ?? now();
@@ -298,7 +678,7 @@
         @endphp
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <button type="button" id="cal-prev-btn" onclick="loadCalendarMonth('{{ $prevMonth }}')" title="Bulan Sebelumnya" style="width:30px;height:30px;border-radius:8px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#131218;font-weight:900;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#E2E8F0';">
+          <button type="button" id="cal-prev-btn" onclick="loadCalendarMonth('{{ $prevMonth }}')" title="Bulan Sebelumnya" style="width:32px;height:32px;border-radius:8px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#131218;font-weight:900;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#E2E8F0';">
             &larr;
           </button>
 
@@ -309,7 +689,7 @@
             <button type="button" id="cal-reset-btn" onclick="loadCalendarMonth('{{ now()->format('Y-m') }}')" style="display:{{ $isCurrentRealMonth ? 'none' : 'inline-block' }};font-size:10px;font-weight:800;color:#3B82F6;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">Ke Bulan Ini</button>
           </div>
 
-          <button type="button" id="cal-next-btn" onclick="loadCalendarMonth('{{ $nextMonth }}')" title="Bulan Berikutnya" style="width:30px;height:30px;border-radius:8px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#131218;font-weight:900;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#E2E8F0';">
+          <button type="button" id="cal-next-btn" onclick="loadCalendarMonth('{{ $nextMonth }}')" title="Bulan Berikutnya" style="width:32px;height:32px;border-radius:8px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#131218;font-weight:900;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#E2E8F0';">
             &rarr;
           </button>
         </div>
@@ -359,7 +739,7 @@
       </div>
 
       {{-- Status Pendaftar Chart Widget --}}
-      <div class="fcc-card" style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
+      <div class="fcc-card fcc-widget-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
           <h3 style="margin:0;font-size:15px;font-weight:900;color:#131218;">Status Pendaftar</h3>
           <span style="font-size:10.5px;font-weight:800;color:#131218;background:#FFC81A;padding:3px 8px;border-radius:6px;border:1px solid #131218;">Transaksi</span>
@@ -373,7 +753,7 @@
 
 
       {{-- Menunggu Verifikasi List Widget --}}
-      <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
+      <div class="fcc-card fcc-table-card">
         <div style="padding:16px 20px;border-bottom:2px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center;background:#F8FAFC;">
           <h3 style="margin:0;font-size:15px;font-weight:900;color:#131218;">Menunggu Verifikasi</h3>
           @if($pendingBayar)
