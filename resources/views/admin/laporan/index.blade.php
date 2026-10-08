@@ -199,7 +199,7 @@
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
-    width: 370px;
+    width: 380px;
     max-width: calc(100vw - 32px);
     background: #FFFFFF;
     border: 2px solid #131218;
@@ -336,7 +336,8 @@
       justify-content: center !important;
       min-height: 40px !important;
     }
-    .fcc-excel-popover {
+    .fcc-excel-popover,
+    .fcc-csv-popover {
       position: fixed !important;
       top: 50% !important;
       left: 50% !important;
@@ -347,7 +348,8 @@
       box-shadow: 0 24px 60px rgba(19, 18, 24, 0.35) !important;
       z-index: 1000 !important;
     }
-    .fcc-excel-popover::before {
+    .fcc-excel-popover::before,
+    .fcc-csv-popover::before {
       display: none !important;
     }
   }
@@ -387,7 +389,7 @@
   /* ── Print Media Query ── */
   @media print {
     body { background: #fff !important; color: #000 !important; }
-    .no-print, header, sidebar, .fcc-sidebar, .fcc-header, #filter-bar, .fcc-compact-toolbar, .fcc-excel-popover { display: none !important; }
+    .no-print, header, sidebar, .fcc-sidebar, .fcc-header, #filter-bar, .fcc-compact-toolbar, .fcc-excel-popover, .fcc-csv-popover { display: none !important; }
     .laporan-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; }
     .fcc-card { border: 1px solid #ddd !important; box-shadow: none !important; margin-bottom: 20px !important; page-break-inside: avoid; }
     .print-header { display: block !important; margin-bottom: 24px; border-bottom: 2px solid #131218; padding-bottom: 12px; }
@@ -429,8 +431,7 @@
         <div class="fcc-skeleton-box" style="width:140px;height:34px;border-radius:8px;"></div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <div class="fcc-skeleton-box" style="width:110px;height:34px;border-radius:8px;"></div>
-        <div class="fcc-skeleton-box" style="width:125px;height:34px;border-radius:8px;"></div>
+        <div class="fcc-skeleton-box" style="width:155px;height:34px;border-radius:8px;"></div>
       </div>
     </div>
 
@@ -520,26 +521,18 @@
 
     {{-- Right: Export Action Buttons --}}
     <div class="fcc-toolbar-actions">
-      {{-- 1. Direct Export CSV --}}
-      <a href="{{ route('admin.laporan.export-csv', ['tahun'=>$tahun,'bulan'=>$bulan,'jenis_kegiatan'=>$jenisKegiatan]) }}"
-         class="fcc-btn-tool fcc-btn-tool-gold"
-         title="Unduh ringkasan data periode ini ke format CSV">
-        @include('components.icon',['name'=>'download','size'=>13])
-        <span>Export CSV</span>
-      </a>
-
-      {{-- 2. Export Excel (Per Kegiatan Popover Trigger) --}}
+      {{-- Single Unified Export Excel (.xlsx) Trigger --}}
       <button type="button"
               id="fcc-excel-trigger"
               onclick="toggleExcelPopover()"
               class="fcc-btn-tool fcc-btn-tool-emerald"
-              title="Unduh rekap peserta & pembayaran per kegiatan ke Excel">
+              title="Pilih tipe laporan & unduh berkas Excel (.xlsx)">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Export Excel</span>
+        <span>Export Excel (.xlsx)</span>
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
 
-      {{-- Popover Dropdown for Excel Export Per Kegiatan --}}
+      {{-- Unified Popover Dropdown for Excel Export (4 Tipe Laporan) --}}
       <div id="fcc-excel-popover" class="fcc-excel-popover" style="display:none;">
         <div class="fcc-popover-head">
           <div style="display:flex;align-items:center;gap:8px;">
@@ -547,29 +540,102 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
             </div>
             <div>
-              <h4 style="margin:0;font-size:13px;font-weight:900;color:#131218;">Export Excel Per Kegiatan</h4>
-              <p style="margin:0;font-size:11px;color:#64748B;">Pilih program &amp; jadwal pelaksanaan</p>
+              <h4 style="margin:0;font-size:13px;font-weight:900;color:#131218;">Export Laporan Excel</h4>
+              <p style="margin:0;font-size:11px;color:#64748B;">Pilih tipe laporan &amp; filter kriteria data</p>
             </div>
           </div>
           <button type="button" onclick="toggleExcelPopover(false)" class="fcc-popover-close-btn" title="Tutup">✕</button>
         </div>
 
-        <form action="{{ route('admin.laporan.export-kegiatan-excel') }}" method="GET" style="display:flex;flex-direction:column;gap:10px;margin:0;">
+        <form action="{{ route('admin.laporan.export-csv') }}" method="GET" style="display:flex;flex-direction:column;gap:10px;margin:0;">
+          {{-- 1. Pilihan 4 Tipe Laporan --}}
           <div>
-            <label class="fcc-popover-label">1. Program Kegiatan</label>
-            <select id="select-program" name="program_key" required onchange="onProgramChange(this.value)" class="fcc-select-slim" style="width:100% !important;">
-              <option value="">-- Pilih Program Kegiatan --</option>
-              @foreach($programGroupList as $key => $group)
-                <option value="{{ $key }}">{{ $group['program_name'] }} ({{ $group['jenis'] }})</option>
-              @endforeach
+            <label class="fcc-popover-label">1. Tipe Laporan</label>
+            <select name="tipe_laporan" id="select-tipe-laporan" onchange="onTipeLaporanChange(this.value)" class="fcc-select-slim" style="width:100% !important;">
+              <option value="per_kegiatan" selected>1. Rincian Pembayaran Per Kegiatan / Batch</option>
+              <option value="keuangan">2. Buku Kas / Mutasi Transaksi Global</option>
+              <option value="rekap_program">3. Rekapitulasi Kinerja per Program</option>
+              <option value="peserta_kelulusan">4. Data Peserta &amp; Kelulusan Sertifikat</option>
             </select>
+            <div id="excel-tipe-hint" style="font-size:11px;color:#475569;line-height:1.45;margin-top:6px;padding:7px 10px;background:#F8FAFC;border-radius:8px;border:1px solid #E2E8F0;">
+              <strong style="color:#0F172A;display:block;margin-bottom:2px;">Rincian Pembayaran Per Kegiatan:</strong>
+              Rekap lengkap peserta &amp; verifikasi bukti bayar multi-sheet per jadwal/batch kegiatan.
+            </div>
           </div>
 
-          <div>
-            <label class="fcc-popover-label">2. Jadwal Pelaksanaan</label>
-            <select id="select-jadwal" name="kegiatan_id" disabled class="fcc-select-slim" style="width:100% !important;">
-              <option value="all">-- Semua Jadwal (Multi-Sheet) --</option>
-            </select>
+          {{-- GROUP B: Filter Program & Batch (untuk Tipe 1 - Per Kegiatan, Default) --}}
+          <div id="group-filter-kegiatan" style="display:flex;flex-direction:column;gap:10px;">
+            <div>
+              <label class="fcc-popover-label">2. Program Kegiatan</label>
+              <select id="select-program" name="program_key" required onchange="onProgramChange(this.value)" class="fcc-select-slim" style="width:100% !important;">
+                <option value="">-- Pilih Program Kegiatan --</option>
+                @foreach($programGroupList as $key => $group)
+                  <option value="{{ $key }}">{{ $group['program_name'] }} ({{ $group['jenis'] }})</option>
+                @endforeach
+              </select>
+            </div>
+
+            <div>
+              <label class="fcc-popover-label">3. Jadwal Pelaksanaan</label>
+              <select id="select-jadwal" name="kegiatan_id" disabled class="fcc-select-slim" style="width:100% !important;">
+                <option value="all">-- Semua Jadwal (Multi-Sheet) --</option>
+              </select>
+            </div>
+          </div>
+
+          {{-- GROUP A: Filter Periodik (untuk Tipe 2, 3, 4) --}}
+          <div id="group-filter-periodik" style="display:none;flex-direction:column;gap:10px;">
+            {{-- 2. Periode Laporan --}}
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div>
+                <label class="fcc-popover-label">2. Tahun</label>
+                <select name="tahun" class="fcc-select-slim" style="width:100% !important;">
+                  @foreach($availableYears as $y)
+                    <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>Tahun {{ $y }}</option>
+                  @endforeach
+                </select>
+              </div>
+              <div>
+                <label class="fcc-popover-label">Bulan</label>
+                <select name="bulan" class="fcc-select-slim" style="width:100% !important;">
+                  <option value="">Semua Bulan</option>
+                  @foreach(['01'=>'Januari','02'=>'Februari','03'=>'Maret','04'=>'April','05'=>'Mei','06'=>'Juni','07'=>'Juli','08'=>'Agustus','09'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'] as $v=>$l)
+                    <option value="{{ $v }}" {{ $bulan == $v ? 'selected' : '' }}>{{ $l }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+
+            {{-- 3. Filter Jenis Kegiatan --}}
+            <div>
+              <label class="fcc-popover-label">3. Jenis Kegiatan</label>
+              <select name="jenis_kegiatan" class="fcc-select-slim" style="width:100% !important;">
+                <option value="">Semua Jenis (Pelatihan &amp; Sertifikasi)</option>
+                <option value="pelatihan" {{ $jenisKegiatan == 'pelatihan' ? 'selected' : '' }}>Pelatihan</option>
+                <option value="sertifikasi" {{ $jenisKegiatan == 'sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
+              </select>
+            </div>
+
+            {{-- 4. Dynamic Filter: Status Pembayaran --}}
+            <div id="group-status-bayar">
+              <label class="fcc-popover-label">4. Status Pembayaran</label>
+              <select name="status_pembayaran" class="fcc-select-slim" style="width:100% !important;">
+                <option value="terverifikasi" selected>Khusus Terverifikasi (Lunas)</option>
+                <option value="semua">Semua Status Pembayaran</option>
+                <option value="pending">Pending / Belum Bayar</option>
+                <option value="ditolak">Ditolak</option>
+              </select>
+            </div>
+
+            {{-- 5. Dynamic Filter: Status Sertifikat --}}
+            <div id="group-status-sertifikat" style="display:none;">
+              <label class="fcc-popover-label">5. Status Sertifikat</label>
+              <select name="status_sertifikat" class="fcc-select-slim" style="width:100% !important;">
+                <option value="semua" selected>Semua (Terbit &amp; Belum)</option>
+                <option value="terbit">Hanya yang Sudah Terbit</option>
+                <option value="belum">Belum Terbit Sertifikat</option>
+              </select>
+            </div>
           </div>
 
           <button type="submit" class="fcc-btn-tool fcc-btn-tool-emerald" style="width:100%;height:38px;justify-content:center;margin-top:4px;">
@@ -582,8 +648,8 @@
     </div>
   </div>
 
-  {{-- Backdrop for Popover Modal --}}
-  <div id="fcc-excel-backdrop" class="fcc-excel-backdrop" onclick="toggleExcelPopover(false)"></div>
+  {{-- Backdrop for Popover Modals --}}
+  <div id="fcc-excel-backdrop" class="fcc-excel-backdrop" onclick="closeAllPopovers()"></div>
 
   <script>
     const programGroupData = @json($programGroupList);
@@ -616,31 +682,79 @@
       }
     }
 
+    function onTipeLaporanChange(val) {
+      const groupPeriodik = document.getElementById('group-filter-periodik');
+      const groupKegiatan = document.getElementById('group-filter-kegiatan');
+      const groupBayar = document.getElementById('group-status-bayar');
+      const groupSertifikat = document.getElementById('group-status-sertifikat');
+      const selectProgram = document.getElementById('select-program');
+      const hint = document.getElementById('excel-tipe-hint');
+
+      if (val === 'per_kegiatan') {
+        if (groupPeriodik) groupPeriodik.style.display = 'none';
+        if (groupKegiatan) groupKegiatan.style.display = 'flex';
+        if (selectProgram) selectProgram.required = true;
+        if (hint) {
+          hint.innerHTML = '<strong style="color:#0F172A;display:block;margin-bottom:2px;">Rincian Pembayaran Per Kegiatan:</strong>Rekap lengkap peserta &amp; verifikasi bukti bayar multi-sheet per jadwal/batch kegiatan.';
+        }
+      } else {
+        if (groupPeriodik) groupPeriodik.style.display = 'flex';
+        if (groupKegiatan) groupKegiatan.style.display = 'none';
+        if (selectProgram) selectProgram.required = false;
+
+        if (val === 'keuangan') {
+          if (groupBayar) groupBayar.style.display = 'block';
+          if (groupSertifikat) groupSertifikat.style.display = 'none';
+          if (hint) {
+            hint.innerHTML = '<strong style="color:#0F172A;display:block;margin-bottom:2px;">Buku Kas Transaksi Global:</strong>Rekap seluruh mutasi arus kas masuk FCC secara periodik (buku besar).';
+          }
+        } else if (val === 'rekap_program') {
+          if (groupBayar) groupBayar.style.display = 'none';
+          if (groupSertifikat) groupSertifikat.style.display = 'none';
+          if (hint) {
+            hint.innerHTML = '<strong style="color:#0F172A;display:block;margin-bottom:2px;">Kinerja &amp; Partisipasi Program:</strong>Ringkasan eksekutif 1 baris per program (jumlah batch, total pendaftar, rasio kelulusan %, dan pendapatan).';
+          }
+        } else if (val === 'peserta_kelulusan') {
+          if (groupBayar) groupBayar.style.display = 'block';
+          if (groupSertifikat) groupSertifikat.style.display = 'block';
+          if (hint) {
+            hint.innerHTML = '<strong style="color:#0F172A;display:block;margin-bottom:2px;">Data Peserta &amp; Kelulusan:</strong>Daftar operasional nama peserta, nomor registrasi sertifikat resmi, dan tautan verifikasi keabsahan.';
+          }
+        }
+      }
+    }
+
     function toggleExcelPopover(forceState) {
       const popover = document.getElementById('fcc-excel-popover');
       const backdrop = document.getElementById('fcc-excel-backdrop');
       if (!popover) return;
       const isVisible = popover.style.display === 'block';
       const nextState = forceState !== undefined ? forceState : !isVisible;
+
       popover.style.display = nextState ? 'block' : 'none';
       if (backdrop) {
         backdrop.style.display = nextState ? 'block' : 'none';
       }
     }
 
-    document.addEventListener('click', function(e) {
-      const popover = document.getElementById('fcc-excel-popover');
-      const triggerBtn = document.getElementById('fcc-excel-trigger');
-      if (!popover || popover.style.display !== 'block') return;
+    function closeAllPopovers() {
+      toggleExcelPopover(false);
+    }
 
-      if (!popover.contains(e.target) && !triggerBtn.contains(e.target)) {
-        toggleExcelPopover(false);
+    document.addEventListener('click', function(e) {
+      const excelPopover = document.getElementById('fcc-excel-popover');
+      const excelTrigger = document.getElementById('fcc-excel-trigger');
+
+      if (excelPopover && excelPopover.style.display === 'block') {
+        if (!excelPopover.contains(e.target) && !excelTrigger?.contains(e.target)) {
+          toggleExcelPopover(false);
+        }
       }
     });
 
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        toggleExcelPopover(false);
+        closeAllPopovers();
       }
     });
   </script>

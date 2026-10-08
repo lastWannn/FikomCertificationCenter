@@ -303,56 +303,515 @@ class LaporanController extends Controller
         $tahun         = $r->tahun ?? date('Y');
         $bulan         = $r->bulan;
         $jenisKegiatan = $r->jenis_kegiatan;
+        $tipeLaporan   = $r->tipe_laporan ?? 'per_kegiatan';
 
-        $pendaftaran = Pendaftaran::with(['peserta','kegiatan','pembayaran','biaya'])
-            ->whereYear('created_at', $tahun)
-            ->when($bulan, fn($q) => $q->whereMonth('created_at', $bulan))
-            ->when($jenisKegiatan, fn($q) => $q->whereHas('kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan)))
-            ->latest()
-            ->get();
+        $namaBulan = $bulan ? (['01'=>'Januari','02'=>'Februari','03'=>'Maret','04'=>'April','05'=>'Mei','06'=>'Juni','07'=>'Juli','08'=>'Agustus','09'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'][$bulan] ?? $bulan) : null;
+        $periodeText = ($namaBulan ? $namaBulan . ' ' : '') . 'Tahun ' . $tahun;
 
-        $csv = "No,Kode Transaksi,Nama Peserta,Email,No HP,Instansi,Judul Kegiatan,Jenis Kegiatan,Skema/Tipe Biaya,Nominal (Rp),Status Pendaftaran,Status Pembayaran,Tanggal Daftar\n";
-        
-        foreach ($pendaftaran as $idx => $pd) {
-            $csv .= implode(',', [
-                $idx + 1,
-                '"'.($pd->pembayaran->kode_pembayaran ?? '-').'"',
-                '"'.addslashes($pd->peserta->nama ?? '').'"',
-                '"'.($pd->peserta->email ?? '').'"',
-                '"'.($pd->peserta->no_hp ?? '').'"',
-                '"'.addslashes($pd->peserta->instansi ?? '-').'"',
-                '"'.addslashes($pd->kegiatan->judul ?? '').'"',
-                '"'.ucfirst($pd->kegiatan->jenis_kegiatan ?? '-').'"',
-                '"'.addslashes($pd->biaya->nama_jenis ?? 'Gratis').'"',
-                '"'.($pd->pembayaran->jumlah_bayar ?? $pd->biaya->nominal ?? 0).'"',
-                '"'.ucfirst(str_replace('_', ' ', $pd->status_pendaftaran ?? '')).'"',
-                '"'.ucfirst(str_replace('_', ' ', $pd->pembayaran->status_pembayaran ?? 'Belum Bayar')).'"',
-                '"'.($pd->tgl_daftar?->format('d/m/Y H:i') ?? '').'"',
-            ])."\n";
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setShowGridLines(true);
+
+        // Styling Palette
+        $headerBgColor = 'FF1E293B'; // Slate 800
+        $headerTextColor = 'FFFFFFFF'; // White
+        $zebraColor = 'FFF8FAFC'; // Slate 50
+        $borderColor = 'FFE2E8F0'; // Slate 200
+        $summaryBgColor = 'FFFEF3C7'; // Amber 100
+        $summaryTextColor = 'FF0F172A'; // Slate 900
+
+        // ════════════════════════════════════════════════════════════════════
+        // 4. TIPE: RINCIAN PEMBAYARAN PER PROGRAM / KEGIATAN (MULTI-SHEET)
+        // ════════════════════════════════════════════════════════════════════
+        if ($tipeLaporan === 'per_kegiatan') {
+            return $this->exportKegiatanExcel($r);
         }
-            foreach ($pendaftaran as $idx => $pd) {
-                $csv .= implode(',', [
-                    $idx + 1,
-                    '"'.($pd->pembayaran->kode_pembayaran ?? '-').'"',
-                    '"'.addslashes($pd->peserta->nama ?? '').'"',
-                    '"'.($pd->peserta->email ?? '').'"',
-                    '"'.($pd->peserta->no_hp ?? '').'"',
-                    '"'.addslashes($pd->peserta->instansi ?? '-').'"',
-                    '"'.addslashes($pd->kegiatan->judul ?? '').'"',
-                    '"'.ucfirst($pd->kegiatan->jenis_kegiatan ?? '-').'"',
-                    '"'.addslashes($pd->biaya->nama_jenis ?? 'Gratis').'"',
-                    '"'.($pd->pembayaran->jumlah_bayar ?? $pd->biaya->nominal ?? 0).'"',
-                    '"'.ucfirst(str_replace('_', ' ', $pd->status_pendaftaran ?? '')).'"',
-                    '"'.ucfirst(str_replace('_', ' ', $pd->pembayaran->status_pembayaran ?? 'Belum Bayar')).'"',
-                    '"'.($pd->tgl_daftar?->format('d/m/Y H:i') ?? '').'"',
-                ])."\n";
+
+        // ════════════════════════════════════════════════════════════════════
+        // 1. TIPE: BUKU KAS / LOG MUTASI TRANSAKSI GLOBAL
+        // ════════════════════════════════════════════════════════════════════
+        if ($tipeLaporan === 'keuangan') {
+            $statusBayar = $r->status_pembayaran ?? 'terverifikasi';
+
+            $query = Pembayaran::with([
+                'pendaftaran.peserta',
+                'pendaftaran.biaya',
+                'pendaftaran.kegiatan.kegiatanPelatihan.jadwalPelatihan.pelatihan',
+                'pendaftaran.kegiatan.kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
+            ])
+                ->whereYear('created_at', $tahun)
+                ->when($bulan, fn($q) => $q->whereMonth('created_at', $bulan))
+                ->when($jenisKegiatan, function($q) use ($jenisKegiatan) {
+                    $q->whereHas('pendaftaran.kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan));
+                });
+
+            if ($statusBayar && $statusBayar !== 'semua') {
+                $query->where('status_pembayaran', $statusBayar);
             }
 
-            return response($csv, 200, [
-                'Content-Type'        => 'text/csv',
-                'Content-Disposition' => 'attachment; filename="laporan-fikom-'.$tahun.($bulan ? '-'.$bulan : '').'.csv"',
-            ]);
+            $transaksi = $query->orderBy('created_at', 'desc')->get();
+
+            $sheet->setTitle('Buku Kas Mutasi Global');
+
+            // Header Judul Dokumen
+            $sheet->mergeCells('A1:N1');
+            $sheet->setCellValue('A1', 'FIKOM CERTIFICATION CENTER (FCC)');
+            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF131218'));
+
+            $sheet->mergeCells('A2:N2');
+            $sheet->setCellValue('A2', 'BUKU KAS & LOG MUTASI TRANSAKSI KEUANGAN GLOBAL');
+            $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(11.5)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF334155'));
+
+            $sheet->mergeCells('A3:N3');
+            $sheet->setCellValue('A3', 'Periode: ' . $periodeText . '  |  Status: ' . ucfirst(str_replace('_', ' ', $statusBayar)) . '  |  Filter Jenis: ' . ($jenisKegiatan ? ucfirst($jenisKegiatan) : 'Semua Program') . '  |  Digenerate: ' . now()->translatedFormat('d F Y H:i') . ' WITA');
+            $sheet->getStyle('A3')->getFont()->setSize(9.5)->setItalic(true)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF64748B'));
+
+            // Header Tabel (Baris 5)
+            $headers = ['No', 'Kode Pembayaran', 'Waktu Transaksi', 'Nama Peserta', 'Email Peserta', 'No. HP', 'Instansi', 'Program Kegiatan', 'Jenis', 'Skema Biaya', 'Metode / Layanan Bank', 'Nama Pengirim', 'Nominal (Rp)', 'Status Pembayaran'];
+            $colLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+            $colWidths  = [6,   22,   18,  26,  26,  16,  26,  32,  14,  18,  22,  22,  18,  18];
+
+            foreach ($headers as $i => $h) {
+                $col = $colLetters[$i];
+                $cell = $col . '5';
+                $sheet->setCellValue($cell, $h);
+                $sheet->getColumnDimension($col)->setWidth($colWidths[$i]);
+                $sheet->getStyle($cell)->getFont()->setBold(true)->setSize(10)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color($headerTextColor));
+                $sheet->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                $sheet->getStyle($cell)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($headerBgColor);
+                $sheet->getStyle($cell)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB('FF0F172A');
+            }
+            $sheet->getRowDimension(5)->setRowHeight(26);
+
+            $row = 6;
+            $totalNominal = 0;
+            foreach ($transaksi as $idx => $t) {
+                $nominal = (int) ($t->jumlah_bayar ?? 0);
+                $totalNominal += $nominal;
+
+                $metodeBank = trim(($t->metode_pembayaran ? ucfirst(str_replace('_', ' ', $t->metode_pembayaran)) : '') . ($t->nama_layanan_bank ? ' (' . $t->nama_layanan_bank . ')' : '')) ?: '-';
+                $namaPengirim = $t->nama_pengirim ?: '-';
+                $statusFormatted = ucfirst(str_replace('_', ' ', $t->status_pembayaran ?? '-'));
+
+                $sheet->setCellValue('A' . $row, $idx + 1);
+                $sheet->setCellValue('B' . $row, $t->kode_pembayaran ?? '-');
+                $sheet->setCellValue('C' . $row, $t->created_at ? $t->created_at->format('d/m/Y H:i') : '-');
+                $sheet->setCellValue('D' . $row, $t->pendaftaran?->peserta?->nama ?? '-');
+                $sheet->setCellValue('E' . $row, $t->pendaftaran?->peserta?->email ?? '-');
+                $sheet->setCellValue('F' . $row, $t->pendaftaran?->peserta?->no_hp ?? '-');
+                $sheet->setCellValue('G' . $row, $t->pendaftaran?->peserta?->instansi ?? '-');
+                $sheet->setCellValue('H' . $row, $t->pendaftaran?->kegiatan?->judul ?? '-');
+                $sheet->setCellValue('I' . $row, ucfirst($t->pendaftaran?->kegiatan?->jenis_kegiatan ?? '-'));
+                $sheet->setCellValue('J' . $row, $t->pendaftaran?->biaya?->nama_jenis ?? 'Gratis');
+                $sheet->setCellValue('K' . $row, $metodeBank);
+                $sheet->setCellValue('L' . $row, $namaPengirim);
+                $sheet->setCellValue('M' . $row, $nominal);
+                $sheet->setCellValue('N' . $row, $statusFormatted);
+
+                // Alignments
+                $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('N' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+                // Nominal Format
+                $sheet->getStyle('M' . $row)->getNumberFormat()->setFormatCode('#,##0');
+                $sheet->getStyle('M' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle('M' . $row)->getFont()->setBold(true);
+
+                // Row Heights & Styling
+                $sheet->getRowDimension($row)->setRowHeight(21);
+                $sheet->getStyle('A' . $row . ':N' . $row)->getFont()->setSize(9.5)->setName('Segoe UI');
+                $sheet->getStyle('A' . $row . ':N' . $row)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+                // Zebra striping
+                if ($row % 2 === 1) {
+                    $sheet->getStyle('A' . $row . ':N' . $row)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($zebraColor);
+                }
+
+                foreach ($colLetters as $cl) {
+                    $sheet->getStyle($cl . $row)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB($borderColor);
+                }
+
+                $row++;
+            }
+
+            if ($transaksi->isEmpty()) {
+                $sheet->mergeCells('A6:N6');
+                $sheet->setCellValue('A6', 'Tidak ditemukan data transaksi pembayaran pada periode ini.');
+                $sheet->getStyle('A6')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getRowDimension(6)->setRowHeight(24);
+                $row = 7;
+            }
+
+            // Summary Row
+            $sheet->mergeCells('A' . $row . ':L' . $row);
+            $sheet->setCellValue('A' . $row, 'TOTAL TRANSAKSI TERDATA (' . count($transaksi) . ' Transaksi)');
+            $sheet->setCellValue('M' . $row, $totalNominal);
+            $sheet->setCellValue('N' . $row, '');
+
+            $sheet->getStyle('A' . $row . ':N' . $row)->getFont()->setBold(true)->setSize(10)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color($summaryTextColor));
+            $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('M' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('M' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('A' . $row . ':N' . $row)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($summaryBgColor);
+
+            foreach ($colLetters as $cl) {
+                $sheet->getStyle($cl . $row)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB('FF94A3B8');
+                $sheet->getStyle($cl . $row)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE)->getColor()->setARGB('FF0F172A');
+                $sheet->getStyle($cl . $row)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB($borderColor);
+                $sheet->getStyle($cl . $row)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB($borderColor);
+            }
+            $sheet->getRowDimension($row)->setRowHeight(24);
+
+            $filename = 'buku-kas-transaksi-global-fcc-' . $tahun . ($bulan ? '-' . $bulan : '') . '-' . now()->format('YmdHis') . '.xlsx';
+
+        // ════════════════════════════════════════════════════════════════════
+        // 2. TIPE: REKAPITULASI KINERJA PER PROGRAM KEGIATAN
+        // ════════════════════════════════════════════════════════════════════
+        } elseif ($tipeLaporan === 'rekap_program') {
+            $allKegiatan = Kegiatan::with([
+                'kegiatanPelatihan.jadwalPelatihan.pelatihan',
+                'kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
+            ])
+            ->withCount([
+                'pendaftaran as total_pendaftar' => function($q) use ($tahun, $bulan) {
+                    $q->whereYear('created_at', $tahun)
+                      ->when($bulan, fn($b) => $b->whereMonth('created_at', $bulan));
+                },
+                'pendaftaran as total_lunas' => function($q) use ($tahun, $bulan) {
+                    $q->whereYear('created_at', $tahun)
+                      ->when($bulan, fn($b) => $b->whereMonth('created_at', $bulan))
+                      ->whereHas('pembayaran', fn($p) => $p->where('status_pembayaran', 'terverifikasi'));
+                }
+            ])
+            ->when($jenisKegiatan, fn($q) => $q->where('jenis_kegiatan', $jenisKegiatan))
+            ->get();
+
+            $grouped = [];
+            foreach ($allKegiatan as $k) {
+                $namaProgram = $k->detail?->judul ?: $k->judul;
+                $jenis       = ucfirst($k->jenis_kegiatan);
+                $key         = $k->jenis_kegiatan . '_' . $namaProgram;
+
+                if (!isset($grouped[$key])) {
+                    $grouped[$key] = [
+                        'nama_program'     => $namaProgram,
+                        'jenis'            => $jenis,
+                        'total_batch'      => 0,
+                        'total_pendaftar'  => 0,
+                        'total_lunas'      => 0,
+                        'kegiatan_ids'     => [],
+                    ];
+                }
+
+                $grouped[$key]['total_batch']     += 1;
+                $grouped[$key]['total_pendaftar'] += (int) $k->total_pendaftar;
+                $grouped[$key]['total_lunas']     += (int) $k->total_lunas;
+                $grouped[$key]['kegiatan_ids'][]   = $k->id;
+            }
+
+            $sheet->setTitle('Rekapitulasi Kinerja Program');
+
+            // Header Dokumen
+            $sheet->mergeCells('A1:I1');
+            $sheet->setCellValue('A1', 'FIKOM CERTIFICATION CENTER (FCC)');
+            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF131218'));
+
+            $sheet->mergeCells('A2:I2');
+            $sheet->setCellValue('A2', 'REKAPITULASI KINERJA & PARTISIPASI PROGRAM KEGIATAN');
+            $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(11.5)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF334155'));
+
+            $sheet->mergeCells('A3:I3');
+            $sheet->setCellValue('A3', 'Periode: ' . $periodeText . '  |  Filter: ' . ($jenisKegiatan ? ucfirst($jenisKegiatan) : 'Semua Program') . '  |  Digenerate: ' . now()->translatedFormat('d F Y H:i') . ' WITA');
+            $sheet->getStyle('A3')->getFont()->setSize(9.5)->setItalic(true)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF64748B'));
+
+            // Header Tabel (Baris 5)
+            $headers = ['No', 'Nama Program Kegiatan', 'Jenis Program', 'Jumlah Batch / Jadwal', 'Total Pendaftar', 'Peserta Lunas', 'Sertifikat Diterbitkan', 'Tingkat Kelulusan', 'Total Pendapatan (Rp)'];
+            $colLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+            $colWidths  = [6,   38,  16,  20,  16,  18,  20,  18,  22];
+
+            foreach ($headers as $i => $h) {
+                $col = $colLetters[$i];
+                $cell = $col . '5';
+                $sheet->setCellValue($cell, $h);
+                $sheet->getColumnDimension($col)->setWidth($colWidths[$i]);
+                $sheet->getStyle($cell)->getFont()->setBold(true)->setSize(10)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color($headerTextColor));
+                $sheet->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                $sheet->getStyle($cell)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($headerBgColor);
+                $sheet->getStyle($cell)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB('FF0F172A');
+            }
+            $sheet->getRowDimension(5)->setRowHeight(26);
+
+            $row = 6;
+            $sumBatch = 0; $sumPendaftar = 0; $sumLunas = 0; $sumSertifikat = 0; $sumPendapatan = 0;
+            $idx = 1;
+
+            foreach ($grouped as $g) {
+                $kegiatanIds = $g['kegiatan_ids'];
+
+                $totalSertifikat = \App\Models\Sertifikat::whereYear('created_at', $tahun)
+                    ->when($bulan, fn($q) => $q->whereMonth('created_at', $bulan))
+                    ->whereHas('pendaftaran', fn($p) => $p->whereIn('kegiatan_id', $kegiatanIds))
+                    ->count();
+
+                $totalPendapatan = (int) Pembayaran::where('status_pembayaran', 'terverifikasi')
+                    ->whereYear('created_at', $tahun)
+                    ->when($bulan, fn($q) => $q->whereMonth('created_at', $bulan))
+                    ->whereHas('pendaftaran', fn($p) => $p->whereIn('kegiatan_id', $kegiatanIds))
+                    ->sum('jumlah_bayar');
+
+                $rateLulus = $g['total_lunas'] > 0 ? round(($totalSertifikat / $g['total_lunas']) * 100, 1) : 0;
+
+                $sumBatch       += $g['total_batch'];
+                $sumPendaftar   += $g['total_pendaftar'];
+                $sumLunas       += $g['total_lunas'];
+                $sumSertifikat  += $totalSertifikat;
+                $sumPendapatan  += $totalPendapatan;
+
+                $sheet->setCellValue('A' . $row, $idx++);
+                $sheet->setCellValue('B' . $row, $g['nama_program']);
+                $sheet->setCellValue('C' . $row, $g['jenis']);
+                $sheet->setCellValue('D' . $row, $g['total_batch']);
+                $sheet->setCellValue('E' . $row, $g['total_pendaftar']);
+                $sheet->setCellValue('F' . $row, $g['total_lunas']);
+                $sheet->setCellValue('G' . $row, $totalSertifikat);
+                $sheet->setCellValue('H' . $row, $rateLulus . '%');
+                $sheet->setCellValue('I' . $row, $totalPendapatan);
+
+                // Alignments
+                $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle('B' . $row)->getFont()->setBold(true);
+                $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('H' . $row)->getFont()->setBold(true);
+
+                $sheet->getStyle('I' . $row)->getNumberFormat()->setFormatCode('#,##0');
+                $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle('I' . $row)->getFont()->setBold(true);
+
+                $sheet->getRowDimension($row)->setRowHeight(21);
+                $sheet->getStyle('A' . $row . ':I' . $row)->getFont()->setSize(9.5)->setName('Segoe UI');
+                $sheet->getStyle('A' . $row . ':I' . $row)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+                if ($row % 2 === 1) {
+                    $sheet->getStyle('A' . $row . ':I' . $row)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($zebraColor);
+                }
+
+                foreach ($colLetters as $cl) {
+                    $sheet->getStyle($cl . $row)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB($borderColor);
+                }
+
+                $row++;
+            }
+
+            if (empty($grouped)) {
+                $sheet->mergeCells('A6:I6');
+                $sheet->setCellValue('A6', 'Tidak ditemukan data program kegiatan pada periode ini.');
+                $sheet->getStyle('A6')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getRowDimension(6)->setRowHeight(24);
+                $row = 7;
+            }
+
+            $avgRate = $sumLunas > 0 ? round(($sumSertifikat / $sumLunas) * 100, 1) : 0;
+
+            // Summary Row
+            $sheet->mergeCells('A' . $row . ':C' . $row);
+            $sheet->setCellValue('A' . $row, 'TOTAL KESELURUHAN');
+            $sheet->setCellValue('D' . $row, $sumBatch);
+            $sheet->setCellValue('E' . $row, $sumPendaftar);
+            $sheet->setCellValue('F' . $row, $sumLunas);
+            $sheet->setCellValue('G' . $row, $sumSertifikat);
+            $sheet->setCellValue('H' . $row, $avgRate . '%');
+            $sheet->setCellValue('I' . $row, $sumPendapatan);
+
+            $sheet->getStyle('A' . $row . ':I' . $row)->getFont()->setBold(true)->setSize(10)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color($summaryTextColor));
+            $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('D' . $row . ':H' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('I' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('A' . $row . ':I' . $row)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($summaryBgColor);
+
+            foreach ($colLetters as $cl) {
+                $sheet->getStyle($cl . $row)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB('FF94A3B8');
+                $sheet->getStyle($cl . $row)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE)->getColor()->setARGB('FF0F172A');
+                $sheet->getStyle($cl . $row)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB($borderColor);
+                $sheet->getStyle($cl . $row)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB($borderColor);
+            }
+            $sheet->getRowDimension($row)->setRowHeight(24);
+
+            $filename = 'rekapitulasi-kinerja-program-fcc-' . $tahun . ($bulan ? '-' . $bulan : '') . '-' . now()->format('YmdHis') . '.xlsx';
+
+        // ════════════════════════════════════════════════════════════════════
+        // 3. TIPE: DAFTAR PESERTA & KELULUSAN SERTIFIKAT
+        // ════════════════════════════════════════════════════════════════════
+        } else {
+            $statusSertifikat = $r->status_sertifikat ?? 'semua';
+            $statusBayar      = $r->status_pembayaran ?? 'terverifikasi';
+
+            $query = Pendaftaran::with([
+                'peserta',
+                'kegiatan.kegiatanPelatihan.jadwalPelatihan.pelatihan',
+                'kegiatan.kegiatanSertifikasi.jadwalSertifikasi.sertifikasi',
+                'pembayaran',
+                'biaya',
+                'sertifikat'
+            ])
+                ->whereYear('created_at', $tahun)
+                ->when($bulan, fn($q) => $q->whereMonth('created_at', $bulan))
+                ->when($jenisKegiatan, fn($q) => $q->whereHas('kegiatan', fn($k) => $k->where('jenis_kegiatan', $jenisKegiatan)));
+
+            if ($statusBayar && $statusBayar !== 'semua') {
+                $query->whereHas('pembayaran', fn($p) => $p->where('status_pembayaran', $statusBayar));
+            }
+
+            if ($statusSertifikat === 'terbit') {
+                $query->whereHas('sertifikat');
+            } elseif ($statusSertifikat === 'belum') {
+                $query->whereDoesntHave('sertifikat');
+            }
+
+            $pendaftarList = $query->latest()->get();
+
+            $sheet->setTitle('Peserta & Kelulusan');
+
+            // Header Dokumen
+            $sheet->mergeCells('A1:L1');
+            $sheet->setCellValue('A1', 'FIKOM CERTIFICATION CENTER (FCC)');
+            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF131218'));
+
+            $sheet->mergeCells('A2:L2');
+            $sheet->setCellValue('A2', 'DATA OPERASIONAL PESERTA & KELULUSAN SERTIFIKAT');
+            $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(11.5)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF334155'));
+
+            $sheet->mergeCells('A3:L3');
+            $sheet->setCellValue('A3', 'Periode: ' . $periodeText . '  |  Status Sertifikat: ' . ucfirst($statusSertifikat) . '  |  Status Bayar: ' . ucfirst(str_replace('_', ' ', $statusBayar)) . '  |  Digenerate: ' . now()->translatedFormat('d F Y H:i') . ' WITA');
+            $sheet->getStyle('A3')->getFont()->setSize(9.5)->setItalic(true)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF64748B'));
+
+            // Header Tabel (Baris 5)
+            $headers = ['No', 'Nomor Sertifikat', 'Nama Lengkap Peserta', 'Email Peserta', 'No. HP / WhatsApp', 'Instansi', 'Program Kegiatan', 'Jenis', 'Waktu Pelaksanaan', 'Status Pembayaran', 'Tanggal Terbit', 'URL Verifikasi Keabsahan'];
+            $colLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+            $colWidths  = [6,   26,  26,  26,  16,  26,  32,  14,  18,  18,  18,  26];
+
+            foreach ($headers as $i => $h) {
+                $col = $colLetters[$i];
+                $cell = $col . '5';
+                $sheet->setCellValue($cell, $h);
+                $sheet->getColumnDimension($col)->setWidth($colWidths[$i]);
+                $sheet->getStyle($cell)->getFont()->setBold(true)->setSize(10)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color($headerTextColor));
+                $sheet->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                $sheet->getStyle($cell)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($headerBgColor);
+                $sheet->getStyle($cell)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB('FF0F172A');
+            }
+            $sheet->getRowDimension(5)->setRowHeight(26);
+
+            $row = 6;
+            $terbitCount = 0;
+            foreach ($pendaftarList as $idx => $pd) {
+                $hasCert = (bool) $pd->sertifikat;
+                if ($hasCert) $terbitCount++;
+
+                $noSertifikat = $pd->sertifikat?->nomor_sertifikat ?? 'Belum Terbit';
+                $tglTerbit    = $pd->sertifikat?->tgl_terbit ? $pd->sertifikat->tgl_terbit->format('d/m/Y') : '-';
+                $verifyUrl    = $pd->sertifikat ? route('sertifikat.verifikasi', $pd->sertifikat->nomor_sertifikat) : null;
+
+                $tglPel = $pd->kegiatan?->jadwal?->tgl_pelaksanaan 
+                    ? $pd->kegiatan->jadwal->tgl_pelaksanaan->format('d/m/Y') 
+                    : '-';
+
+                $sheet->setCellValue('A' . $row, $idx + 1);
+                $sheet->setCellValue('B' . $row, $noSertifikat);
+                $sheet->setCellValue('C' . $row, $pd->peserta?->nama ?? '-');
+                $sheet->setCellValue('D' . $row, $pd->peserta?->email ?? '-');
+                $sheet->setCellValue('E' . $row, $pd->peserta?->no_hp ?? '-');
+                $sheet->setCellValue('F' . $row, $pd->peserta?->instansi ?? '-');
+                $sheet->setCellValue('G' . $row, $pd->kegiatan?->judul ?? '-');
+                $sheet->setCellValue('H' . $row, ucfirst($pd->kegiatan?->jenis_kegiatan ?? '-'));
+                $sheet->setCellValue('I' . $row, $tglPel);
+                $sheet->setCellValue('J' . $row, ucfirst(str_replace('_', ' ', $pd->pembayaran?->status_pembayaran ?? 'Belum Bayar')));
+                $sheet->setCellValue('K' . $row, $tglTerbit);
+
+                if ($verifyUrl) {
+                    $sheet->setCellValue('L' . $row, 'Verifikasi Sertifikat ↗');
+                    $sheet->getCell('L' . $row)->getHyperlink()->setUrl($verifyUrl);
+                    $sheet->getStyle('L' . $row)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF0284C7'))->setUnderline(true);
+                } else {
+                    $sheet->setCellValue('L' . $row, '-');
+                    $sheet->getStyle('L' . $row)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FF94A3B8'));
+                }
+
+                // Alignments
+                $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('B' . $row)->getFont()->setBold($hasCert);
+                $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+                $sheet->getRowDimension($row)->setRowHeight(21);
+                $sheet->getStyle('A' . $row . ':L' . $row)->getFont()->setSize(9.5)->setName('Segoe UI');
+                $sheet->getStyle('A' . $row . ':L' . $row)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+                if ($row % 2 === 1) {
+                    $sheet->getStyle('A' . $row . ':L' . $row)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($zebraColor);
+                }
+
+                foreach ($colLetters as $cl) {
+                    $sheet->getStyle($cl . $row)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB($borderColor);
+                }
+
+                $row++;
+            }
+
+            if ($pendaftarList->isEmpty()) {
+                $sheet->mergeCells('A6:L6');
+                $sheet->setCellValue('A6', 'Tidak ditemukan data peserta pada periode ini.');
+                $sheet->getStyle('A6')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getRowDimension(6)->setRowHeight(24);
+                $row = 7;
+            }
+
+            // Summary Row
+            $sheet->mergeCells('A' . $row . ':I' . $row);
+            $sheet->setCellValue('A' . $row, 'TOTAL PESERTA TERDATA: ' . count($pendaftarList) . ' Peserta');
+            $sheet->mergeCells('J' . $row . ':L' . $row);
+            $sheet->setCellValue('J' . $row, 'SERTIFIKAT TERBIT: ' . $terbitCount . ' Berkas');
+
+            $sheet->getStyle('A' . $row . ':L' . $row)->getFont()->setBold(true)->setSize(10)->setName('Segoe UI')->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color($summaryTextColor));
+            $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('A' . $row . ':L' . $row)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($summaryBgColor);
+
+            foreach ($colLetters as $cl) {
+                $sheet->getStyle($cl . $row)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB('FF94A3B8');
+                $sheet->getStyle($cl . $row)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE)->getColor()->setARGB('FF0F172A');
+                $sheet->getStyle($cl . $row)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB($borderColor);
+                $sheet->getStyle($cl . $row)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->getColor()->setARGB($borderColor);
+            }
+            $sheet->getRowDimension($row)->setRowHeight(24);
+
+            $filename = 'data-peserta-kelulusan-fcc-' . $tahun . ($bulan ? '-' . $bulan : '') . '-' . now()->format('YmdHis') . '.xlsx';
         }
+
+        return response()->streamDownload(function() use ($spreadsheet) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, $filename, [
+            'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control'       => 'max-age=0',
+        ]);
+    }
 
         public function exportKegiatanExcel(Request $r)
         {
