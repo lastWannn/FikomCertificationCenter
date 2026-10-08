@@ -9,9 +9,19 @@ use Illuminate\Support\Facades\Storage;
 
 class MitraController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $mitras = Mitra::orderBy('urutan', 'asc')->paginate(12)->withQueryString();
+        $query = Mitra::orderBy('urutan', 'asc');
+
+        if ($request->filled('q')) {
+            $q = trim($request->q);
+            $query->where(function ($w) use ($q) {
+                $w->where('nama_mitra', 'like', "%{$q}%")
+                  ->orWhere('link_website', 'like', "%{$q}%");
+            });
+        }
+
+        $mitras = $query->paginate(12)->withQueryString();
         return view('admin.mitra.index', compact('mitras'));
     }
 

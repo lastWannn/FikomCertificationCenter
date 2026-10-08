@@ -4,7 +4,7 @@
 
 @push('styles')
 <style>
-  /* Base & Print Styling */
+  /* ── Base Styling & Responsive Containers ── */
   .laporan-container {
     padding: 24px 28px;
     max-width: 1600px;
@@ -37,13 +37,363 @@
   .badge-ditolak { background: #FEF2F2; color: #DC2626; border: 1px solid #EF4444; }
   .badge-kadaluarsa { background: #F3F4F6; color: #4B5563; border: 1px solid #9CA3AF; }
 
+  /* ── Layout Breakpoint Rules ── */
+  .fcc-laporan-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+  .fcc-laporan-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+  }
+  .fcc-transaksi-desktop-table {
+    display: block;
+  }
+  .fcc-transaksi-mobile-list {
+    display: none;
+  }
+
+  /* ── Ultra-Compact Toolbar Styling ── */
+  .fcc-compact-toolbar {
+    padding: 8px 16px;
+    margin-bottom: 20px;
+    background: #FFFFFF;
+    border: 2px solid #E5E7EB;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(19, 18, 24, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    position: relative;
+    box-sizing: border-box;
+  }
+  .fcc-toolbar-filter-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+  }
+  .fcc-toolbar-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: #FFC81A;
+    border: 1.5px solid #131218;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 900;
+    color: #131218;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .fcc-select-slim {
+    height: 36px;
+    box-sizing: border-box;
+    background: #F8FAFC !important;
+    border: 1.5px solid #CBD5E1 !important;
+    color: #131218 !important;
+    border-radius: 8px !important;
+    padding: 6px 28px 6px 10px !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    outline: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 9px center !important;
+    transition: all 0.15s ease !important;
+  }
+  .fcc-select-slim:hover,
+  .fcc-select-slim:focus {
+    border-color: #131218 !important;
+    background-color: #FFFFFF !important;
+    box-shadow: 0 0 0 3px rgba(255, 200, 26, 0.12) !important;
+  }
+  .fcc-btn-reset-slim {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #DC2626;
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .fcc-btn-reset-slim:hover {
+    background: #FEE2E2;
+  }
+  .fcc-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .fcc-btn-tool {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 12px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    box-sizing: border-box;
+    transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .fcc-btn-tool-gold {
+    background: #FFC81A;
+    color: #131218;
+    border: 1.5px solid #131218;
+    box-shadow: 0 2px 8px rgba(255, 200, 26, 0.25);
+  }
+  .fcc-btn-tool-gold:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 200, 26, 0.35);
+  }
+  .fcc-btn-tool-emerald {
+    background: #10B981;
+    color: #FFFFFF;
+    border: 1.5px solid #059669;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.22);
+  }
+  .fcc-btn-tool-emerald:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.32);
+  }
+  .fcc-excel-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(19, 18, 24, 0.4);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 998;
+  }
+  .fcc-excel-popover {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 370px;
+    max-width: calc(100vw - 32px);
+    background: #FFFFFF;
+    border: 2px solid #131218;
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 14px 40px rgba(19, 18, 24, 0.18);
+    z-index: 1000;
+    animation: popoverFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .fcc-excel-popover::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 32px;
+    width: 14px;
+    height: 14px;
+    background: #FFFFFF;
+    border-top: 2px solid #131218;
+    border-left: 2px solid #131218;
+    transform: rotate(45deg);
+  }
+  @keyframes popoverFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fcc-popover-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F1F5F9;
+  }
+  .fcc-popover-close-btn {
+    border: none;
+    background: #F1F5F9;
+    color: #64748B;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .fcc-popover-close-btn:hover {
+    background: #E2E8F0;
+    color: #0F172A;
+  }
+  .fcc-popover-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #475569;
+    display: block;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* ── Breakpoints ── */
+  @media (max-width: 1199px) {
+    .fcc-laporan-kpi-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 14px !important;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .laporan-container {
+      padding: 20px 16px !important;
+    }
+    .fcc-compact-toolbar {
+      flex-wrap: wrap !important;
+      padding: 10px 14px !important;
+      gap: 10px !important;
+    }
+    .fcc-toolbar-filter-form {
+      flex: 1 1 100% !important;
+      justify-content: flex-start !important;
+    }
+    .fcc-toolbar-actions {
+      flex: 1 1 100% !important;
+      justify-content: flex-end !important;
+      border-top: 1px dashed #E2E8F0;
+      padding-top: 8px;
+    }
+    .fcc-laporan-main-grid {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .fcc-transaksi-desktop-table {
+      display: none !important;
+    }
+    .fcc-transaksi-mobile-list {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+      padding: 12px !important;
+    }
+    .fcc-compact-toolbar {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      padding: 12px 14px !important;
+      gap: 10px !important;
+    }
+    .fcc-toolbar-filter-form {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      width: 100% !important;
+      gap: 8px !important;
+    }
+    .fcc-toolbar-tag {
+      width: fit-content !important;
+    }
+    .fcc-select-slim {
+      width: 100% !important;
+      min-height: 40px !important;
+    }
+    .fcc-toolbar-actions {
+      display: flex !important;
+      width: 100% !important;
+      gap: 8px !important;
+      border-top: 1px dashed #E2E8F0;
+      padding-top: 10px;
+    }
+    .fcc-btn-tool {
+      flex: 1 !important;
+      justify-content: center !important;
+      min-height: 40px !important;
+    }
+    .fcc-excel-popover {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      right: auto !important;
+      transform: translate(-50%, -50%) !important;
+      width: calc(100vw - 32px) !important;
+      max-width: 380px !important;
+      box-shadow: 0 24px 60px rgba(19, 18, 24, 0.35) !important;
+      z-index: 1000 !important;
+    }
+    .fcc-excel-popover::before {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .laporan-container {
+      padding: 14px 12px !important;
+    }
+    .fcc-laporan-kpi-grid {
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+    }
+    .fcc-chart-header-row {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 10px !important;
+    }
+    .fcc-chart-legend-wrap {
+      width: 100% !important;
+      justify-content: space-between !important;
+    }
+  }
+
+  @media (max-width: 419px) {
+    .laporan-container {
+      padding: 12px 10px !important;
+    }
+    .fcc-transaksi-mobile-list {
+      padding: 8px !important;
+      gap: 8px !important;
+    }
+    .fcc-transaksi-card-item {
+      padding: 12px 10px !important;
+    }
+  }
+
+  /* ── Print Media Query ── */
   @media print {
     body { background: #fff !important; color: #000 !important; }
-    .no-print, header, sidebar, .fcc-sidebar, .fcc-header, #filter-bar { display: none !important; }
+    .no-print, header, sidebar, .fcc-sidebar, .fcc-header, #filter-bar, .fcc-compact-toolbar, .fcc-excel-popover { display: none !important; }
     .laporan-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; }
     .fcc-card { border: 1px solid #ddd !important; box-shadow: none !important; margin-bottom: 20px !important; page-break-inside: avoid; }
     .print-header { display: block !important; margin-bottom: 24px; border-bottom: 2px solid #131218; padding-bottom: 12px; }
     .grid-print-2 { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 16px !important; }
+    .fcc-laporan-kpi-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 12px !important; }
+    .fcc-laporan-main-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 16px !important; }
   }
   .print-header { display: none; }
 </style>
@@ -69,22 +419,23 @@
     }
   </style>
 
-  <div id="laporan-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px 28px;box-sizing:border-box;pointer-events:none;">
-    {{-- Filter Bar Skeleton --}}
-    <div style="padding:18px 22px;margin-bottom:24px;border-radius:18px;background:#131218;display:flex;align-items:center;gap:12px;justify-content:space-between;">
-      <div style="display:flex;gap:12px;align-items:center;width:60%;">
-        <div class="fcc-skeleton-box" style="width:120px;height:34px;background:#24232C;"></div>
-        <div class="fcc-skeleton-box" style="width:100px;height:34px;background:#24232C;"></div>
-        <div class="fcc-skeleton-box" style="width:140px;height:34px;background:#24232C;"></div>
+  <div id="laporan-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:inherit;box-sizing:border-box;pointer-events:none;">
+    {{-- Ultra-Compact Toolbar Skeleton --}}
+    <div style="padding:10px 18px;margin-bottom:20px;border-radius:14px;background:#FFFFFF;border:2px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between;gap:12px;height:54px;box-sizing:border-box;">
+      <div style="display:flex;align-items:center;gap:10px;flex:1;">
+        <div class="fcc-skeleton-box" style="width:70px;height:32px;border-radius:8px;"></div>
+        <div class="fcc-skeleton-box" style="width:110px;height:34px;border-radius:8px;"></div>
+        <div class="fcc-skeleton-box" style="width:130px;height:34px;border-radius:8px;"></div>
+        <div class="fcc-skeleton-box" style="width:140px;height:34px;border-radius:8px;"></div>
       </div>
-      <div style="display:flex;gap:10px;">
-        <div class="fcc-skeleton-box" style="width:100px;height:34px;background:#24232C;border-radius:30px;"></div>
-        <div class="fcc-skeleton-box" style="width:120px;height:34px;background:#24232C;border-radius:30px;"></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="fcc-skeleton-box" style="width:110px;height:34px;border-radius:8px;"></div>
+        <div class="fcc-skeleton-box" style="width:125px;height:34px;border-radius:8px;"></div>
       </div>
     </div>
 
     {{-- 4 Stat Cards Skeleton --}}
-    <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:18px;margin-bottom:24px;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;margin-bottom:24px;">
       @for($s=0;$s<4;$s++)
       <div style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;">
         <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
@@ -97,35 +448,13 @@
       @endfor
     </div>
 
-    {{-- 2 Columns Structured Skeleton --}}
-    <div style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;">
-      {{-- Left Side --}}
-      <div style="display:flex;flex-direction:column;gap:24px;">
-        <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
-            <div class="fcc-skeleton-box" style="width:40%;height:18px;"></div>
-            <div class="fcc-skeleton-box" style="width:120px;height:30px;border-radius:10px;"></div>
-          </div>
-          <div class="fcc-skeleton-box" style="width:100%;height:220px;border-radius:14px;"></div>
-        </div>
-        <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
-          <div class="fcc-skeleton-box" style="width:30%;height:16px;margin-bottom:16px;"></div>
-          <div class="fcc-skeleton-box" style="width:100%;height:40px;margin-bottom:10px;"></div>
-          <div class="fcc-skeleton-box" style="width:100%;height:40px;"></div>
-        </div>
+    {{-- Main Structured Skeleton --}}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:24px;align-items:start;">
+      <div style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <div class="fcc-skeleton-box" style="width:100%;height:220px;border-radius:14px;"></div>
       </div>
-
-      {{-- Right Side --}}
-      <div style="display:flex;flex-direction:column;gap:24px;">
-        <div style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
-          <div class="fcc-skeleton-box" style="width:50%;height:16px;margin-bottom:16px;"></div>
-          <div class="fcc-skeleton-box" style="width:130px;height:130px;border-radius:50%;margin:0 auto 16px;"></div>
-          <div class="fcc-skeleton-box" style="width:100%;height:30px;border-radius:8px;"></div>
-        </div>
-        <div style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
-          <div class="fcc-skeleton-box" style="width:60%;height:16px;margin-bottom:16px;"></div>
-          <div class="fcc-skeleton-box" style="width:100%;height:80px;border-radius:8px;"></div>
-        </div>
+      <div style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;">
+        <div class="fcc-skeleton-box" style="width:100%;height:220px;border-radius:14px;"></div>
       </div>
     </div>
   </div>
@@ -143,23 +472,32 @@
     })();
   </script>
 
-  {{-- Filter & Action Bar --}}
-  <div id="filter-bar" class="fcc-card no-print" style="padding:18px 22px;margin-bottom:24px;background:#131218;border:2px solid #131218;border-radius:18px;color:#FFF;box-shadow:0 6px 20px rgba(19,18,24,0.15);">
-    <form method="GET" action="{{ route('admin.laporan.index') }}" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-      <div style="display:flex;align-items:center;gap:8px;">
-        @include('components.icon',['name'=>'filter','size'=>16,'style'=>'color:#FFC81A'])
-        <span style="font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#FFC81A;">Filter Laporan:</span>
+  {{-- Print Only Header --}}
+  <div class="print-header">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+      <h2 style="font-size:22px;font-weight:900;margin:0;color:#131218;">FIKOM CERTIFICATION CENTER (FCC)</h2>
+    </div>
+    <p style="margin:0;font-size:14px;color:#475569;font-weight:600;">Laporan Finansial &amp; Statistik Program — Periode {{ $bulan ? 'Bulan ' . $bulan . ' ' : '' }}Tahun {{ $tahun }}</p>
+  </div>
+
+  {{-- ═══ ULTRA-COMPACT SLIM TOOLBAR ═══════════════════════════ --}}
+  <div id="filter-bar" class="fcc-card fcc-compact-toolbar no-print">
+    {{-- Left: Filter Form (Tahun, Bulan, Jenis, Reset) --}}
+    <form method="GET" action="{{ route('admin.laporan.index') }}" class="fcc-toolbar-filter-form">
+      <div class="fcc-toolbar-tag">
+        @include('components.icon',['name'=>'filter','size'=>14,'style'=>'color:#131218;'])
+        <span>Filter:</span>
       </div>
 
       {{-- Tahun --}}
-      <select name="tahun" class="fcc-input" onchange="this.form.submit()" style="width:auto;background:#24232C;color:#FFF;border:1.5px solid #363442;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer;">
+      <select name="tahun" onchange="this.form.submit()" class="fcc-select-slim" title="Filter Tahun">
         @foreach($availableYears as $y)
           <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>Tahun {{ $y }}</option>
         @endforeach
       </select>
 
       {{-- Bulan --}}
-      <select name="bulan" class="fcc-input" onchange="this.form.submit()" style="width:auto;background:#24232C;color:#FFF;border:1.5px solid #363442;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer;">
+      <select name="bulan" onchange="this.form.submit()" class="fcc-select-slim" title="Filter Bulan">
         <option value="">Semua Bulan</option>
         @foreach(['01'=>'Januari','02'=>'Februari','03'=>'Maret','04'=>'April','05'=>'Mei','06'=>'Juni','07'=>'Juli','08'=>'Agustus','09'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'] as $v=>$l)
           <option value="{{ $v }}" {{ $bulan == $v ? 'selected' : '' }}>{{ $l }}</option>
@@ -167,63 +505,92 @@
       </select>
 
       {{-- Jenis Kegiatan --}}
-      <select name="jenis_kegiatan" class="fcc-input" onchange="this.form.submit()" style="width:auto;background:#24232C;color:#FFF;border:1.5px solid #363442;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer;">
-        <option value="">Semua Jenis Kegiatan</option>
+      <select name="jenis_kegiatan" onchange="this.form.submit()" class="fcc-select-slim" title="Filter Jenis Kegiatan">
+        <option value="">Semua Jenis</option>
         <option value="pelatihan" {{ $jenisKegiatan == 'pelatihan' ? 'selected' : '' }}>Pelatihan</option>
         <option value="sertifikasi" {{ $jenisKegiatan == 'sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
       </select>
 
       @if($bulan || $jenisKegiatan || $tahun != date('Y'))
-        <a href="{{ route('admin.laporan.index') }}" style="color:#9CA3B0;font-size:12px;font-weight:800;text-decoration:none;padding:8px 14px;background:#24232C;border-radius:20px;border:1px solid #363442;">
-          Reset
+        <a href="{{ route('admin.laporan.index') }}" class="fcc-btn-reset-slim" title="Reset filter ke default">
+          ✕ Reset
         </a>
       @endif
-
-      {{-- Export Button --}}
-      <div style="margin-left:auto;display:flex;gap:10px;">
-        <a href="{{ route('admin.laporan.export-csv', ['tahun'=>$tahun,'bulan'=>$bulan,'jenis_kegiatan'=>$jenisKegiatan]) }}" style="padding:9px 20px;font-size:13px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFC81A;color:#131218;border:1.5px solid #131218;border-radius:30px;box-shadow:0 4px 12px rgba(255,200,26,0.3);transition:all .2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
-          @include('components.icon',['name'=>'download','size'=>14])
-          Export CSV
-        </a>
-      </div>
     </form>
-  </div>
 
-  {{-- Card Export Data Pembayaran Per Kegiatan (Excel) --}}
-  <div class="fcc-card no-print" style="padding:20px 24px;margin-bottom:24px;background:#FFFFFF;border:2px solid #E5E7EB;border-radius:18px;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
-      <div>
-        <h3 style="margin:0 0 4px;font-size:17px;font-weight:900;color:#131218;">Export Laporan Pembayaran Per Kegiatan</h3>
-        <p style="margin:0;color:#64748B;font-size:13px;font-weight:500;">Pilih program kegiatan dan jadwal pelaksanaan untuk mengunduh laporan pembayaran peserta.</p>
+    {{-- Right: Export Action Buttons --}}
+    <div class="fcc-toolbar-actions">
+      {{-- 1. Direct Export CSV --}}
+      <a href="{{ route('admin.laporan.export-csv', ['tahun'=>$tahun,'bulan'=>$bulan,'jenis_kegiatan'=>$jenisKegiatan]) }}"
+         class="fcc-btn-tool fcc-btn-tool-gold"
+         title="Unduh ringkasan data periode ini ke format CSV">
+        @include('components.icon',['name'=>'download','size'=>13])
+        <span>Export CSV</span>
+      </a>
+
+      {{-- 2. Export Excel (Per Kegiatan Popover Trigger) --}}
+      <button type="button"
+              id="fcc-excel-trigger"
+              onclick="toggleExcelPopover()"
+              class="fcc-btn-tool fcc-btn-tool-emerald"
+              title="Unduh rekap peserta & pembayaran per kegiatan ke Excel">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Export Excel</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
+      {{-- Popover Dropdown for Excel Export Per Kegiatan --}}
+      <div id="fcc-excel-popover" class="fcc-excel-popover" style="display:none;">
+        <div class="fcc-popover-head">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:26px;height:26px;border-radius:6px;background:#ECFDF5;border:1px solid #10B981;display:flex;align-items:center;justify-content:center;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            </div>
+            <div>
+              <h4 style="margin:0;font-size:13px;font-weight:900;color:#131218;">Export Excel Per Kegiatan</h4>
+              <p style="margin:0;font-size:11px;color:#64748B;">Pilih program &amp; jadwal pelaksanaan</p>
+            </div>
+          </div>
+          <button type="button" onclick="toggleExcelPopover(false)" class="fcc-popover-close-btn" title="Tutup">✕</button>
+        </div>
+
+        <form action="{{ route('admin.laporan.export-kegiatan-excel') }}" method="GET" style="display:flex;flex-direction:column;gap:10px;margin:0;">
+          <div>
+            <label class="fcc-popover-label">1. Program Kegiatan</label>
+            <select id="select-program" name="program_key" required onchange="onProgramChange(this.value)" class="fcc-select-slim" style="width:100% !important;">
+              <option value="">-- Pilih Program Kegiatan --</option>
+              @foreach($programGroupList as $key => $group)
+                <option value="{{ $key }}">{{ $group['program_name'] }} ({{ $group['jenis'] }})</option>
+              @endforeach
+            </select>
+          </div>
+
+          <div>
+            <label class="fcc-popover-label">2. Jadwal Pelaksanaan</label>
+            <select id="select-jadwal" name="kegiatan_id" disabled class="fcc-select-slim" style="width:100% !important;">
+              <option value="all">-- Semua Jadwal (Multi-Sheet) --</option>
+            </select>
+          </div>
+
+          <button type="submit" class="fcc-btn-tool fcc-btn-tool-emerald" style="width:100%;height:38px;justify-content:center;margin-top:4px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Unduh File Excel (.xlsx)</span>
+          </button>
+        </form>
       </div>
 
-      <form action="{{ route('admin.laporan.export-kegiatan-excel') }}" method="GET" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-        {{-- Dropdown 1: Pilih Program --}}
-        <select id="select-program" name="program_key" required onchange="onProgramChange(this.value)" class="fcc-input" style="width:240px;max-width:100%;background:#F8FAFC;color:#131218;border:1.5px solid #CBD5E1;border-radius:12px;padding:9.5px 14px;font-size:13px;font-weight:800;cursor:pointer;">
-          <option value="">-- 1. Pilih Program --</option>
-          @foreach($programGroupList as $key => $group)
-            <option value="{{ $key }}">{{ $group['program_name'] }} ({{ $group['jenis'] }})</option>
-          @endforeach
-        </select>
-
-        {{-- Dropdown 2: Pilih Jadwal (Default: Semua Jadwal Multi-Sheet) --}}
-        <select id="select-jadwal" name="kegiatan_id" disabled class="fcc-input" style="width:260px;max-width:100%;background:#F8FAFC;color:#131218;border:1.5px solid #CBD5E1;border-radius:12px;padding:9.5px 14px;font-size:13px;font-weight:800;cursor:pointer;">
-          <option value="all">-- Semua Jadwal (Multi-Sheet) --</option>
-        </select>
-
-        <button type="submit" style="padding:9.5px 22px;font-size:13px;font-weight:900;display:inline-flex;align-items:center;gap:8px;background:#10B981;color:#FFFFFF;border:1.5px solid #059669;border-radius:30px;cursor:pointer;box-shadow:0 4px 14px rgba(16,185,129,0.25);transition:all .2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export Laporan
-        </button>
-      </form>
     </div>
   </div>
+
+  {{-- Backdrop for Popover Modal --}}
+  <div id="fcc-excel-backdrop" class="fcc-excel-backdrop" onclick="toggleExcelPopover(false)"></div>
 
   <script>
     const programGroupData = @json($programGroupList);
 
     function onProgramChange(selectedKey) {
       const selectJadwal = document.getElementById('select-jadwal');
+      if (!selectJadwal) return;
       selectJadwal.innerHTML = '<option value="all">-- Semua Jadwal (Multi-Sheet) --</option>';
 
       if (!selectedKey || !programGroupData[selectedKey]) {
@@ -248,20 +615,48 @@
         selectJadwal.disabled = false;
       }
     }
+
+    function toggleExcelPopover(forceState) {
+      const popover = document.getElementById('fcc-excel-popover');
+      const backdrop = document.getElementById('fcc-excel-backdrop');
+      if (!popover) return;
+      const isVisible = popover.style.display === 'block';
+      const nextState = forceState !== undefined ? forceState : !isVisible;
+      popover.style.display = nextState ? 'block' : 'none';
+      if (backdrop) {
+        backdrop.style.display = nextState ? 'block' : 'none';
+      }
+    }
+
+    document.addEventListener('click', function(e) {
+      const popover = document.getElementById('fcc-excel-popover');
+      const triggerBtn = document.getElementById('fcc-excel-trigger');
+      if (!popover || popover.style.display !== 'block') return;
+
+      if (!popover.contains(e.target) && !triggerBtn.contains(e.target)) {
+        toggleExcelPopover(false);
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        toggleExcelPopover(false);
+      }
+    });
   </script>
 
   {{-- 4 Main KPI Stat Cards Grid --}}
-  <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:18px;margin-bottom:24px;">
+  <div class="fcc-laporan-kpi-grid">
     
     {{-- Card 1: Total Pendapatan --}}
     <div class="fcc-card stat-card-glow" style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:.8px;">Total Pendapatan</p>
-        <div style="width:48px;height:48px;border-radius:14px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 14px rgba(255,200,26,0.3);">
+        <div style="width:46px;height:46px;border-radius:14px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 14px rgba(255,200,26,0.3);">
           @include('components.icon',['name'=>'credit-card','size'=>22,'style'=>'color:#131218'])
         </div>
       </div>
-      <h3 style="margin:0 0 4px;font-size:23px;font-weight:900;color:#131218;letter-spacing:-.5px;">
+      <h3 style="margin:0 0 4px;font-size:22px;font-weight:900;color:#131218;letter-spacing:-.5px;word-break:break-word;">
         Rp {{ number_format($summary['total_pendapatan'],0,',','.') }}
       </h3>
       <p style="margin:0;font-size:11px;color:#6B7280;font-weight:600;">
@@ -273,11 +668,11 @@
     <div class="fcc-card stat-card-glow" style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:.8px;">Pendaftaran Masuk</p>
-        <div style="width:48px;height:48px;border-radius:14px;background:#131218;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 14px rgba(19,18,24,0.25);">
+        <div style="width:46px;height:46px;border-radius:14px;background:#131218;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 14px rgba(19,18,24,0.25);">
           @include('components.icon',['name'=>'clipboard-list','size'=>22,'style'=>'color:#FFC81A'])
         </div>
       </div>
-      <h3 style="margin:0 0 4px;font-size:23px;font-weight:900;color:#131218;letter-spacing:-.5px;">
+      <h3 style="margin:0 0 4px;font-size:22px;font-weight:900;color:#131218;letter-spacing:-.5px;">
         {{ number_format($summary['total_pendaftaran']) }} <span style="font-size:13px;font-weight:700;color:#6B7280;">Siswa/i</span>
       </h3>
       <p style="margin:0;font-size:11px;color:#10B981;font-weight:700;">
@@ -285,15 +680,15 @@
       </p>
     </div>
 
-    {{-- Card 3 (Option 1): Sertifikat Diterbitkan --}}
+    {{-- Card 3: Sertifikat Diterbitkan --}}
     <div class="fcc-card stat-card-glow" style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:.8px;">Sertifikat Terbit</p>
-        <div style="width:48px;height:48px;border-radius:14px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 14px rgba(255,200,26,0.3);">
-          @include('components.icon',['name'=>'award','size'=>22,'style'=>'color:#131218'])
+        <div style="width:46px;height:46px;border-radius:14px;background:#FFFDF5;border:1.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 14px rgba(255,200,26,0.2);">
+          @include('components.icon',['name'=>'award','size'=>22,'style'=>'color:#B38F00'])
         </div>
       </div>
-      <h3 style="margin:0 0 4px;font-size:23px;font-weight:900;color:#131218;letter-spacing:-.5px;">
+      <h3 style="margin:0 0 4px;font-size:22px;font-weight:900;color:#131218;letter-spacing:-.5px;">
         {{ number_format($summary['total_sertifikat']) }} <span style="font-size:13px;font-weight:700;color:#6B7280;">Berkas</span>
       </h3>
       <p style="margin:0;font-size:11px;color:#6B7280;font-weight:600;">
@@ -301,15 +696,15 @@
       </p>
     </div>
 
-    {{-- Card 4 (Option 4): Efisiensi Kuota Kelas --}}
+    {{-- Card 4: Keterisian Kuota --}}
     <div class="fcc-card stat-card-glow" style="padding:20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:.8px;">Keterisian Kuota</p>
-        <div style="width:48px;height:48px;border-radius:14px;background:#131218;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 14px rgba(19,18,24,0.25);">
-          @include('components.icon',['name'=>'users','size'=>22,'style'=>'color:#FFC81A'])
+        <div style="width:46px;height:46px;border-radius:14px;background:#EEF2FF;border:1.5px solid #6366F1;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          @include('components.icon',['name'=>'users','size'=>22,'style'=>'color:#6366F1'])
         </div>
       </div>
-      <h3 style="margin:0 0 4px;font-size:23px;font-weight:900;color:#131218;letter-spacing:-.5px;">
+      <h3 style="margin:0 0 4px;font-size:22px;font-weight:900;color:#131218;letter-spacing:-.5px;">
         {{ $summary['rate_kuota'] }}% <span style="font-size:13px;font-weight:700;color:#6B7280;">Terisi</span>
       </h3>
       <p style="margin:0;font-size:11px;color:#6B7280;font-weight:600;">
@@ -319,31 +714,29 @@
 
   </div>
 
-  {{-- 2-Column Structured Layout (Left Main 70% + Right Side 30%) --}}
-  <div style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;">
+  {{-- 2-Column Structured Layout (Left Main ~70% + Right Side ~30%) --}}
+  <div class="fcc-laporan-main-grid">
 
     {{-- LEFT MAIN AREA (~70%) --}}
     <div style="display:flex;flex-direction:column;gap:24px;min-width:0;">
 
-
-
       {{-- Chart 1: Tren Pendapatan & Pendaftaran Bulanan --}}
       <div class="fcc-card" style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+        <div class="fcc-chart-header-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;">
           <div>
             <h4 style="margin:0;font-size:16px;font-weight:900;color:#131218;">{{ $chartTitle }}</h4>
             <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">Perbandingan pendapatan (Rp) dan pendaftaran {{ $bulan ? 'harian pada bulan terpilih' : 'bulanan pada tahun ' . $tahun }}</p>
           </div>
-          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-            <div style="display:flex;align-items:center;gap:14px;font-size:12px;font-weight:700;">
+          <div class="fcc-chart-legend-wrap" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:12px;font-size:12px;font-weight:700;">
               <span style="display:inline-flex;align-items:center;gap:6px;color:#131218;">
-                <span style="width:12px;height:12px;border-radius:3px;background:#FFC81A;border:1px solid #131218;"></span> Pendapatan (Rp)
+                <span style="width:12px;height:12px;border-radius:3px;background:#FFC81A;border:1px solid #131218;"></span> Pendapatan
               </span>
               <span style="display:inline-flex;align-items:center;gap:6px;color:#3B82F6;">
                 <span style="width:12px;height:12px;border-radius:3px;background:#3B82F6;"></span> Pendaftaran
               </span>
             </div>
-            <select id="laporan-chart-metric" class="fcc-input" style="width:auto;font-size:12px;font-weight:800;padding:6px 14px;border-radius:10px;border:1.5px solid #E5E7EB;background:#F8FAFC;cursor:pointer;">
+            <select id="laporan-chart-metric" class="fcc-input" style="width:auto;font-size:12px;font-weight:800;padding:6px 14px;border-radius:10px;border:1.5px solid #E5E7EB;background:#F8FAFC;cursor:pointer;outline:none;">
               <option value="semua" selected>Semua</option>
               <option value="pendapatan">Pendapatan</option>
               <option value="pendaftaran">Pendaftaran</option>
@@ -358,13 +751,18 @@
 
       {{-- Tabel Ringkasan Transaksi Terbaru --}}
       <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
-        <div style="padding:16px 20px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;">
+        <div style="padding:16px 20px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
           <div>
             <h4 style="margin:0;font-size:15px;font-weight:900;color:#131218;">Rincian Transaksi Pendaftaran Terbaru</h4>
-            <p style="margin:2px 0 0;font-size:11px;color:#6B7280;">10 Transaksi terakhir sesuai filter</p>
+            <p style="margin:2px 0 0;font-size:11px;color:#6B7280;">10 Transaksi terakhir sesuai filter periode</p>
           </div>
+          <span style="font-size:11px;font-weight:800;color:#131218;background:#FFC81A;padding:3px 10px;border-radius:14px;border:1px solid #131218;">
+            Terbaru
+          </span>
         </div>
-        <div style="overflow-x:auto;">
+
+        {{-- Desktop Table View (>= 768px) --}}
+        <div class="fcc-transaksi-desktop-table" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
           <table style="width:100%;border-collapse:collapse;text-align:left;">
             <thead>
               <tr style="background:#F8FAFC;border-bottom:1.5px solid #E5E7EB;">
@@ -386,7 +784,7 @@
                     default => 'badge-kadaluarsa'
                   };
                 @endphp
-                <tr style="border-bottom:1px solid #F1F5F9;">
+                <tr style="border-bottom:1px solid #F1F5F9;transition:background .15s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''">
                   <td style="padding:12px 16px;">
                     <p style="margin:0;font-size:13px;font-weight:900;color:#131218;">{{ $t->peserta->nama ?? '-' }}</p>
                     <p style="margin:0;font-size:11px;color:#6B7280;">{{ $t->peserta->instansi ?? 'Umum' }}</p>
@@ -397,21 +795,21 @@
                     </p>
                     <span style="font-size:10px;font-weight:800;color:#6B7280;text-transform:uppercase;">{{ ucfirst($t->kegiatan->jenis_kegiatan ?? '') }}</span>
                   </td>
-                  <td style="padding:12px 16px;font-size:13px;font-weight:900;color:#131218;">
+                  <td style="padding:12px 16px;font-size:13px;font-weight:900;color:#131218;white-space:nowrap;">
                     Rp {{ number_format($t->pembayaran->jumlah_bayar ?? $t->biaya->nominal ?? 0, 0, ',', '.') }}
                   </td>
-                  <td style="padding:12px 16px;">
+                  <td style="padding:12px 16px;white-space:nowrap;">
                     <span class="badge-status {{ $badgeClass }}">
                       {{ ucfirst(str_replace('_', ' ', $statusBayar)) }}
                     </span>
                   </td>
-                  <td style="padding:12px 16px;font-size:11.5px;color:#6B7280;font-weight:600;">
+                  <td style="padding:12px 16px;font-size:11.5px;color:#6B7280;font-weight:600;white-space:nowrap;">
                     {{ $t->tgl_daftar?->format('d/m/Y H:i') ?? '-' }}
                   </td>
                 </tr>
               @empty
                 <tr>
-                  <td colspan="5" style="padding:24px;text-align:center;color:#9CA3B0;font-size:13px;">
+                  <td colspan="5" style="padding:28px 16px;text-align:center;color:#9CA3B0;font-size:13px;">
                     Tidak ada transaksi pendaftaran ditemukan.
                   </td>
                 </tr>
@@ -419,14 +817,56 @@
             </tbody>
           </table>
         </div>
+
+        {{-- Mobile Cards List View (< 768px) --}}
+        <div class="fcc-transaksi-mobile-list">
+          @forelse($transaksiTerbaru as $t)
+            @php
+              $statusBayar = $t->pembayaran->status_pembayaran ?? 'belum_bayar';
+              $badgeClass = match($statusBayar) {
+                'terverifikasi' => 'badge-terverifikasi',
+                'menunggu_verifikasi', 'menunggu_pembayaran' => 'badge-menunggu',
+                'ditolak' => 'badge-ditolak',
+                default => 'badge-kadaluarsa'
+              };
+            @endphp
+            <div class="fcc-transaksi-card-item" style="background:#FFFFFF;border:1.5px solid #E2E8F0;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+                <div style="min-width:0;flex:1;">
+                  <h5 style="margin:0 0 2px;font-size:13.5px;font-weight:900;color:#131218;word-break:break-word;">{{ $t->peserta->nama ?? '-' }}</h5>
+                  <p style="margin:0;font-size:11px;color:#64748B;font-weight:500;">{{ $t->peserta->instansi ?? 'Umum' }}</p>
+                </div>
+                <span class="badge-status {{ $badgeClass }}" style="flex-shrink:0;">
+                  {{ ucfirst(str_replace('_', ' ', $statusBayar)) }}
+                </span>
+              </div>
+
+              <div style="padding:8px 10px;background:#F8FAFC;border-radius:8px;border:1px solid #E2E8F0;">
+                <p style="margin:0 0 2px;font-size:12px;font-weight:800;color:#131218;line-height:1.3;word-break:break-word;">{{ $t->kegiatan->judul ?? '-' }}</p>
+                <span style="font-size:10px;font-weight:800;color:#6B7280;text-transform:uppercase;">{{ ucfirst($t->kegiatan->jenis_kegiatan ?? '') }}</span>
+              </div>
+
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-top:4px;border-top:1px dashed #E2E8F0;font-size:11.5px;">
+                <span style="color:#64748B;font-weight:600;">📅 {{ $t->tgl_daftar?->format('d/m/Y H:i') ?? '-' }}</span>
+                <span style="font-size:13px;font-weight:900;color:#131218;">
+                  Rp {{ number_format($t->pembayaran->jumlah_bayar ?? $t->biaya->nominal ?? 0, 0, ',', '.') }}
+                </span>
+              </div>
+            </div>
+          @empty
+            <div style="padding:24px 12px;text-align:center;color:#9CA3B0;font-size:13px;">
+              Tidak ada transaksi pendaftaran ditemukan.
+            </div>
+          @endforelse
+        </div>
       </div>
 
     </div>
 
     {{-- RIGHT SIDE AREA (~30%) --}}
-    <div style="display:flex;flex-direction:column;gap:24px;">
+    <div style="display:flex;flex-direction:column;gap:24px;min-width:0;">
 
-      {{-- Demografi & Asal Instansi Peserta Widget (Dinamis Berdasarkan Inputan Terbanyak) --}}
+      {{-- Demografi & Asal Instansi Peserta Widget --}}
       <div class="fcc-card" style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <div>
@@ -468,7 +908,7 @@
       {{-- Doughnut Status Pembayaran Widget --}}
       <div class="fcc-card" style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
         <h4 style="margin:0 0 14px;font-size:15px;font-weight:900;color:#131218;">Status Pembayaran</h4>
-        <div style="position:relative;height:150px;">
+        <div style="position:relative;height:160px;">
           <canvas id="chartStatusPembayaran"></canvas>
         </div>
       </div>
@@ -476,7 +916,7 @@
       {{-- Doughnut Jenis Kegiatan Widget --}}
       <div class="fcc-card" style="padding:22px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
         <h4 style="margin:0 0 14px;font-size:15px;font-weight:900;color:#131218;">Proporsi Kegiatan</h4>
-        <div style="position:relative;height:150px;">
+        <div style="position:relative;height:160px;">
           <canvas id="chartJenisKegiatan"></canvas>
         </div>
       </div>
@@ -487,7 +927,7 @@
           <h4 style="margin:0;font-size:15px;font-weight:900;color:#131218;">10 Kegiatan Terfavorit</h4>
           <p style="margin:2px 0 0;font-size:11px;color:#6B7280;">Berdasarkan total peminat pendaftar</p>
         </div>
-        <div style="max-height:380px;overflow-y:auto;">
+        <div style="max-height:380px;overflow-y:auto;-webkit-overflow-scrolling:touch;">
           @forelse($perKegiatan as $i => $k)
             @php
               $maxCount = max(1, $perKegiatan->first()?->pendaftaran_count ?? 1);
@@ -546,6 +986,8 @@
     const statusCounts = {!! json_encode($statusPembayaranCounts) !!};
     const jenisCounts = {!! json_encode($jenisCounts) !!};
 
+    const isMobile = window.innerWidth < 640;
+
     // 1. Chart Main Laporan (Pendapatan & Pendaftaran)
     function renderMainChart() {
       const ctxBulanan = document.getElementById('chartLaporanBulanan');
@@ -556,7 +998,7 @@
 
       const datasets = [];
       const scales = {
-        x: { grid: { display: false } }
+        x: { grid: { display: false }, ticks: { font: { size: isMobile ? 10 : 12 } } }
       };
 
       if (metric === 'semua' || metric === 'pendapatan') {
@@ -570,7 +1012,7 @@
           pointBackgroundColor: '#FFC81A',
           pointBorderColor: '#131218',
           pointBorderWidth: 2,
-          pointRadius: 5,
+          pointRadius: isMobile ? 3 : 5,
           tension: 0.35,
           fill: true,
           yAxisID: metric === 'semua' ? 'yPendapatan' : 'y',
@@ -582,6 +1024,7 @@
           position: 'left',
           grid: { color: '#F0F1F5' },
           ticks: {
+            font: { size: isMobile ? 10 : 11 },
             callback: function(val) {
               if (val >= 1000000) return 'Rp ' + (val/1000000).toFixed(1) + 'M';
               if (val >= 1000) return 'Rp ' + (val/1000).toFixed(0) + 'k';
@@ -607,7 +1050,7 @@
           type: 'linear',
           position: metric === 'semua' ? 'right' : 'left',
           grid: metric === 'pendaftaran' ? { color: '#F0F1F5' } : { drawOnChartArea: false },
-          ticks: { precision: 0 }
+          ticks: { precision: 0, font: { size: isMobile ? 10 : 11 } }
         };
       }
 
@@ -672,9 +1115,12 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' } } }
+            legend: { 
+              position: window.innerWidth < 640 ? 'bottom' : 'right', 
+              labels: { boxWidth: 12, font: { size: 10.5, weight: 'bold' } } 
+            }
           },
-          cutout: '70%'
+          cutout: '68%'
         }
       });
     }
@@ -701,9 +1147,12 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' } } }
+            legend: { 
+              position: window.innerWidth < 640 ? 'bottom' : 'right', 
+              labels: { boxWidth: 12, font: { size: 10.5, weight: 'bold' } } 
+            }
           },
-          cutout: '70%'
+          cutout: '68%'
         }
       });
     }

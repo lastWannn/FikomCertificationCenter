@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Rekening\{StoreRekeningRequest, UpdateRekeningRequest};
 use App\Models\Rekening;
 use App\Services\Admin\RekeningService;
+use Illuminate\Http\Request;
 
 class RekeningController extends Controller
 {
@@ -18,10 +19,20 @@ class RekeningController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $query = Rekening::query();
+
+        if ($search = trim((string) $request->input('q'))) {
+            $query->where(function($q) use ($search) {
+                $q->where('bank', 'like', "%{$search}%")
+                  ->orWhere('no_rekening', 'like', "%{$search}%")
+                  ->orWhere('nama_pemilik', 'like', "%{$search}%");
+            });
+        }
+
         return view('admin.lainnya.rekening', [
-            'rekening' => Rekening::paginate(9)->withQueryString()
+            'rekening' => $query->orderBy('is_active', 'desc')->latest()->paginate(9)->withQueryString()
         ]);
     }
 

@@ -1,28 +1,71 @@
 @extends('layouts.admin')
 @section('title', isset($informasi) ? 'Edit Informasi' : 'Tambah Informasi')
 @section('page-content')
-<div style="padding:24px;max-width:800px;">
+<style>
+  .fcc-form-page-container {
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  .fcc-form-card {
+    padding: 28px;
+    background: #FFF;
+    border: 2px solid #131218;
+    border-radius: 16px;
+    box-shadow: 4px 4px 0px #131218;
+    box-sizing: border-box;
+  }
+  .fcc-radio-row {
+    display: flex;
+    gap: 12px;
+  }
+  .fcc-date-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 640px) {
+    .fcc-form-page-container {
+      padding: 14px 12px;
+    }
+    .fcc-form-card {
+      padding: 18px 14px;
+      border-radius: 14px;
+      box-shadow: 3px 3px 0px #131218;
+    }
+    .fcc-radio-row {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .fcc-date-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+</style>
+<div class="fcc-form-page-container">
     <div style="margin-bottom:20px;">
-        <a href="{{ route('admin.informasi.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#6B7280;font-size:13px;text-decoration:none;margin-bottom:10px;">
+        <a href="{{ route('admin.informasi.index') }}" style="display:inline-flex;align-items:center;gap:6px;color:#6B7280;font-size:13px;text-decoration:none;margin-bottom:10px;font-weight:700;">
             @include('components.icon',['name'=>'chevron-left','size'=>14]) Kembali
         </a>
-        <h1 style="font-size:21px;font-weight:900;color:#0F0F14;margin:0;">{{ isset($informasi) ? 'Edit' : 'Tambah' }} Informasi / FAQ</h1>
+        <h1 style="font-size:21px;font-weight:900;color:#0F0F14;margin:0;font-family:'Outfit',sans-serif;">{{ isset($informasi) ? 'Edit' : 'Tambah' }} Informasi / FAQ</h1>
     </div>
-    <div class="fcc-card" style="padding:28px;">
+    <div class="fcc-form-card">
         <form action="{{ isset($informasi) ? route('admin.informasi.update', $informasi) : route('admin.informasi.store') }}" method="POST">
             @csrf @if(isset($informasi)) @method('PUT') @endif
 
             {{-- Jenis --}}
             <div style="margin-bottom:16px;">
                 <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Jenis *</label>
-                <div style="display:flex;gap:12px;">
+                <div class="fcc-radio-row">
                     @foreach(['info'=>'📢 Informasi / Pengumuman','faq'=>'❓ FAQ'] as $v=>$l)
-                    <label id="label-jenis-{{ $v }}" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:#0F0F14;padding:10px 16px;border:1.5px solid #E2E4EB;border-radius:9px;flex:1;transition:border-color .18s;"
+                    <label id="label-jenis-{{ $v }}" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:#0F0F14;padding:10px 16px;border:1.5px solid #E2E4EB;border-radius:9px;flex:1;transition:border-color .18s;box-sizing:border-box;"
                            onmouseover="this.style.borderColor='#FFC81A'" onmouseout="this.style.borderColor=(document.querySelector('[name=jenis][value=\'{{ $v }}\']').checked)?'#FFC81A':'#E2E4EB'">
                         <input type="radio" name="jenis" value="{{ $v }}" id="jenis-{{ $v }}"
                                {{ old('jenis',isset($informasi)?$informasi->jenis:'info')===$v?'checked':'' }} required style="accent-color:#FFC81A;"
                                onchange="toggleTayangSection()">
-                        {{ $l }}
+                        <span>{{ $l }}</span>
                     </label>
                     @endforeach
                 </div>
@@ -49,7 +92,7 @@
                 <p style="font-size:12.5px;color:#78716C;margin:0 0 14px;line-height:1.6;">
                     Atur kapan pengumuman ini ditampilkan ke publik. Kosongkan kedua kolom jika ingin selalu aktif.
                 </p>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="fcc-date-grid">
                     <div>
                         <label style="font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;">Mulai Tayang</label>
                         <input type="datetime-local" name="tayang_mulai"

@@ -37,7 +37,11 @@ class AdminManagementController extends Controller
 
         $admins = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
-        return view('admin.pengguna.admin-index', compact('admins'));
+        $totalAdmins = Admin::count();
+        $totalSuperAdmin = Admin::where('role', 'super_admin')->count();
+        $totalRegularAdmin = Admin::where('role', 'admin')->count();
+
+        return view('admin.pengguna.admin-index', compact('admins', 'totalAdmins', 'totalSuperAdmin', 'totalRegularAdmin'));
     }
 
     public function store(Request $request)

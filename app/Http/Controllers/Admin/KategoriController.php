@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Kategori\{StoreKategoriRequest, UpdateKategoriRequest};
 use App\Models\Kategori;
+use App\Models\Pelatihan;
+use App\Models\Sertifikasi;
 use App\Services\Admin\KategoriService;
 use Illuminate\Http\Request;
 
@@ -11,10 +13,25 @@ class KategoriController extends Controller
 {
     public function __construct(private KategoriService $service) {}
 
-    public function index()
+    public function index(Request $request)
     {
+        $query = Kategori::withCount(['pelatihan', 'sertifikasi']);
+
+        if ($search = trim((string) $request->input('search'))) {
+            $query->where('nama_kategori', 'like', "%{$search}%");
+        }
+
+        $kategori = $query->orderBy('nama_kategori')->paginate(10)->withQueryString();
+
+        $totalKategori = Kategori::count();
+        $totalPelatihan = Pelatihan::whereNotNull('kategori_id')->count();
+        $totalSertifikasi = Sertifikasi::whereNotNull('kategori_id')->count();
+
         return view('admin.kategori.index', [
-            'kategori' => Kategori::withCount(['pelatihan', 'sertifikasi'])->orderBy('nama_kategori')->paginate(10)->withQueryString(),
+            'kategori' => $kategori,
+            'totalKategori' => $totalKategori,
+            'totalPelatihan' => $totalPelatihan,
+            'totalSertifikasi' => $totalSertifikasi,
         ]);
     }
 

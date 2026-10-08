@@ -9,9 +9,28 @@ use Illuminate\Support\Facades\Storage;
 
 class TestimoniController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $testimonis = Testimoni::orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+        $query = Testimoni::orderBy('created_at', 'desc');
+
+        if ($request->filled('q')) {
+            $q = trim($request->q);
+            $query->where(function ($w) use ($q) {
+                $w->where('nama', 'like', "%{$q}%")
+                  ->orWhere('keterangan', 'like', "%{$q}%")
+                  ->orWhere('kata', 'like', "%{$q}%");
+            });
+        }
+
+        if ($request->filled('status') && in_array($request->status, ['dipublikasikan', 'pending', 'ditolak'])) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('rating') && in_array($request->rating, ['1', '2', '3', '4', '5'])) {
+            $query->where('rating', $request->rating);
+        }
+
+        $testimonis = $query->paginate(12)->withQueryString();
         return view('admin.testimoni.index', compact('testimonis'));
     }
 
