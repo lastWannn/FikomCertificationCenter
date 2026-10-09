@@ -56,15 +56,46 @@
       display: flex !important;
       flex-direction: column !important;
       gap: 12px !important;
-      padding: 14px !important;
+      padding: 12px !important;
     }
     .fcc-admin-stats-grid {
-      grid-template-columns: repeat(2, 1fr) !important;
-      gap: 12px !important;
-      margin-bottom: 18px !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 8px !important;
+      margin-bottom: 16px !important;
     }
-    .fcc-admin-stats-grid > div:last-child {
-      grid-column: span 2 !important;
+    .fcc-admin-stat-card {
+      padding: 12px 6px !important;
+      border-radius: 14px !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center !important;
+      gap: 6px !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+    }
+    .fcc-admin-stat-icon {
+      width: 34px !important;
+      height: 34px !important;
+      border-radius: 10px !important;
+    }
+    .fcc-admin-stat-icon svg {
+      width: 17px !important;
+      height: 17px !important;
+    }
+    .fcc-admin-stat-lbl {
+      font-size: 9.5px !important;
+      font-weight: 800 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 100% !important;
+    }
+    .fcc-admin-stat-val {
+      font-size: 18px !important;
+      line-height: 1.1 !important;
+      margin: 2px 0 0 !important;
+    }
+    .fcc-admin-stat-sub {
+      display: none !important;
     }
   }
 
@@ -73,23 +104,23 @@
     .fcc-admin-mgmt-container {
       padding: 14px 12px !important;
     }
-    .fcc-admin-header {
+    .fcc-admin-page-hero {
       flex-direction: column !important;
       align-items: stretch !important;
-      gap: 14px !important;
-      margin-bottom: 18px !important;
+      gap: 12px !important;
+      margin-bottom: 16px !important;
     }
-    .fcc-admin-header-btn {
+    .fcc-admin-page-hero-btn {
       width: 100% !important;
       justify-content: center !important;
       padding: 11px 18px !important;
       font-size: 13.5px !important;
     }
     .fcc-admin-filter-header {
-      padding: 14px 16px !important;
+      padding: 14px 12px !important;
       flex-direction: column !important;
       align-items: stretch !important;
-      gap: 12px !important;
+      gap: 10px !important;
     }
     .fcc-admin-filter-title-row {
       display: flex !important;
@@ -100,7 +131,7 @@
     .fcc-admin-filter-form {
       flex-direction: column !important;
       align-items: stretch !important;
-      gap: 10px !important;
+      gap: 8px !important;
       width: 100% !important;
     }
     .fcc-admin-search-wrap {
@@ -111,17 +142,16 @@
       align-items: center !important;
       gap: 8px !important;
       width: 100% !important;
-      flex-wrap: wrap !important;
     }
     .fcc-admin-filter-actions select {
       flex: 1 !important;
-      min-width: 130px !important;
+      min-width: 0 !important;
     }
-    .fcc-admin-filter-actions button,
+    .fcc-admin-filter-actions button {
+      min-width: 72px !important;
+    }
     .fcc-admin-filter-actions a {
-      flex: 1 !important;
-      justify-content: center !important;
-      text-align: center !important;
+      min-width: 64px !important;
     }
     .fcc-admin-modal-card {
       padding: 20px 16px !important;
@@ -146,23 +176,44 @@
       padding: 12px 10px !important;
     }
     .fcc-admin-stats-grid {
-      grid-template-columns: 1fr !important;
-      gap: 10px !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 6px !important;
     }
-    .fcc-admin-stats-grid > div:last-child {
-      grid-column: auto !important;
+    .fcc-admin-stat-card {
+      padding: 10px 4px !important;
+      border-radius: 12px !important;
+    }
+    .fcc-admin-stat-icon {
+      width: 30px !important;
+      height: 30px !important;
+      border-radius: 8px !important;
+    }
+    .fcc-admin-stat-icon svg {
+      width: 15px !important;
+      height: 15px !important;
+    }
+    .fcc-admin-stat-lbl {
+      font-size: 8.5px !important;
+      letter-spacing: 0 !important;
+    }
+    .fcc-admin-stat-val {
+      font-size: 16px !important;
     }
     .fcc-admin-mobile-list {
-      padding: 10px !important;
+      padding: 10px 8px !important;
       gap: 10px !important;
     }
+    .fcc-admin-card-item {
+      padding: 12px 10px !important;
+    }
     .fcc-admin-mobile-actions {
-      flex-direction: column !important;
+      flex-direction: row !important;
       gap: 8px !important;
     }
     .fcc-admin-mobile-actions button,
     .fcc-admin-mobile-actions form {
-      width: 100% !important;
+      flex: 1 !important;
+      min-width: 0 !important;
     }
     .fcc-admin-mobile-actions form button {
       width: 100% !important;
@@ -232,7 +283,7 @@
     @endif
 
     {{-- Header & Add Button --}}
-    <div class="fcc-admin-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
+    <div class="fcc-admin-page-hero" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
         <div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;">
                 <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;flex-shrink:0;">Pengguna &amp; Hak Akses</span>
@@ -241,7 +292,7 @@
             <p style="color:#64748B;font-size:13px;margin:0;font-weight:500;">Kelola hak akses akun pengelola sistem FCC (Super Admin &amp; Admin Biasa).</p>
         </div>
 
-        <button type="button" onclick="openAddModal()" class="fcc-admin-header-btn"
+        <button type="button" onclick="openAddModal()" class="fcc-admin-page-hero-btn"
                 style="padding:10px 20px;font-size:13.5px;font-weight:900;background:#131218;color:#FFC81A;border-radius:30px;border:1.5px solid #131218;box-shadow:0 4px 14px rgba(0,0,0,0.12);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .18s;white-space:nowrap;"
                 onmouseover="this.style.background='#FFC81A';this.style.color='#131218';" onmouseout="this.style.background='#131218';this.style.color='#FFC81A';">
             @include('components.icon',['name'=>'plus','size'=>16]) Tambah Admin Baru
@@ -251,40 +302,40 @@
     {{-- Neo-Brutalist Stat Cards Grid --}}
     <div class="fcc-admin-stats-grid">
         {{-- Total Admin --}}
-        <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
-            <div style="width:44px;height:44px;border-radius:12px;background:#F1F5F9;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;color:#131218;box-shadow:0 4px 10px rgba(0,0,0,0.06);flex-shrink:0;">
+        <div class="fcc-card fcc-admin-stat-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
+            <div class="fcc-admin-stat-icon" style="width:44px;height:44px;border-radius:12px;background:#F1F5F9;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;color:#131218;box-shadow:0 4px 10px rgba(0,0,0,0.06);flex-shrink:0;">
                 @include('components.icon',['name'=>'users','size'=>20])
             </div>
-            <div style="min-width:0;">
-                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Total Pengelola</p>
-                <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">
-                    {{ $totalAdmins ?? $admins->total() }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Admin</span>
+            <div class="fcc-admin-stat-info" style="min-width:0;flex:1;">
+                <p class="fcc-admin-stat-lbl" style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Total Pengelola</p>
+                <p class="fcc-admin-stat-val" style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">
+                    {{ $totalAdmins ?? $admins->total() }} <span class="fcc-admin-stat-sub" style="font-size:12px;font-weight:700;color:#94A3B8;">Admin</span>
                 </p>
             </div>
         </div>
 
         {{-- Super Admin --}}
-        <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
-            <div style="width:44px;height:44px;border-radius:12px;background:#FFFDF5;border:1.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;color:#B38F00;box-shadow:0 4px 10px rgba(255,200,26,0.25);flex-shrink:0;">
+        <div class="fcc-card fcc-admin-stat-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
+            <div class="fcc-admin-stat-icon" style="width:44px;height:44px;border-radius:12px;background:#FFFDF5;border:1.5px solid #FFC81A;display:flex;align-items:center;justify-content:center;color:#B38F00;box-shadow:0 4px 10px rgba(255,200,26,0.25);flex-shrink:0;">
                 @include('components.icon',['name'=>'shield','size'=>20])
             </div>
-            <div style="min-width:0;">
-                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Super Admin</p>
-                <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">
-                    {{ $totalSuperAdmin ?? 0 }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Akun</span>
+            <div class="fcc-admin-stat-info" style="min-width:0;flex:1;">
+                <p class="fcc-admin-stat-lbl" style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Super Admin</p>
+                <p class="fcc-admin-stat-val" style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">
+                    {{ $totalSuperAdmin ?? 0 }} <span class="fcc-admin-stat-sub" style="font-size:12px;font-weight:700;color:#94A3B8;">Akun</span>
                 </p>
             </div>
         </div>
 
         {{-- Admin Biasa --}}
-        <div class="fcc-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
-            <div style="width:44px;height:44px;border-radius:12px;background:#EEF2FF;border:1.5px solid #6366F1;display:flex;align-items:center;justify-content:center;color:#6366F1;flex-shrink:0;">
+        <div class="fcc-card fcc-admin-stat-card" style="padding:18px 20px;border-radius:18px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.03);display:flex;align-items:center;gap:14px;">
+            <div class="fcc-admin-stat-icon" style="width:44px;height:44px;border-radius:12px;background:#EEF2FF;border:1.5px solid #6366F1;display:flex;align-items:center;justify-content:center;color:#6366F1;flex-shrink:0;">
                 @include('components.icon',['name'=>'user-check','size'=>20])
             </div>
-            <div style="min-width:0;">
-                <p style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Admin Biasa</p>
-                <p style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">
-                    {{ $totalRegularAdmin ?? 0 }} <span style="font-size:12px;font-weight:700;color:#94A3B8;">Akun</span>
+            <div class="fcc-admin-stat-info" style="min-width:0;flex:1;">
+                <p class="fcc-admin-stat-lbl" style="margin:0;font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Admin Biasa</p>
+                <p class="fcc-admin-stat-val" style="margin:2px 0 0;font-size:22px;font-weight:900;color:#131218;">
+                    {{ $totalRegularAdmin ?? 0 }} <span class="fcc-admin-stat-sub" style="font-size:12px;font-weight:700;color:#94A3B8;">Akun</span>
                 </p>
             </div>
         </div>
@@ -634,10 +685,10 @@ function closeEditModal() {
 }
 
 // Close on backdrop click
-document.getElementById('add-admin-modal').addEventListener('click', function(e) {
+document.getElementById('add-admin-modal')?.addEventListener('click', function(e) {
     if (e.target === this) closeAddModal();
 });
-document.getElementById('edit-admin-modal').addEventListener('click', function(e) {
+document.getElementById('edit-admin-modal')?.addEventListener('click', function(e) {
     if (e.target === this) closeEditModal();
 });
 

@@ -22,6 +22,11 @@
         if (yearLbl) yearLbl.textContent = yr;
 
         try {
+            if (typeof Chart === 'undefined') {
+                setTimeout(loadCharts, 100);
+                return;
+            }
+
             const [rPend, rDaft] = await Promise.all([
                 fetch(`${BASE}/chart/pendapatan?tahun=${yr}`).then(r => r.json()),
                 fetch(`${BASE}/chart/pendaftaran?tahun=${yr}`).then(r => r.json())
@@ -41,10 +46,17 @@
             const dataPendaftaran = rDaft.datasets?.[0]?.data || [];
 
             const datasets = [];
+            // Deteksi strictly berbasis media query layar (hanya aktif di ponsel/layar sempit < 640px)
+            const isMobile = window.matchMedia('(max-width: 639px)').matches;
             const scales = {
                 x: {
                     grid: { display: false },
-                    ticks: { font: { size: 11, weight: '700' }, color: '#64748B' }
+                    ticks: {
+                        font: { size: isMobile ? 9.5 : 11, weight: '700' },
+                        color: '#64748B',
+                        maxRotation: 0,
+                        padding: isMobile ? 2 : 4,
+                    }
                 }
             };
 
@@ -61,7 +73,7 @@
                     pointBackgroundColor: '#FFC81A',
                     pointBorderColor: '#131218',
                     pointBorderWidth: 2,
-                    pointRadius: 5,
+                    pointRadius: isMobile ? 3.5 : 5,
                     yAxisID: metric === 'semua' ? 'yPendapatan' : 'y',
                 });
 
@@ -70,9 +82,37 @@
                     position: 'left',
                     grid: { color: '#F1F5F9' },
                     ticks: {
-                        font: { size: 11, weight: '700' },
+                        font: { size: isMobile ? 10 : 11, weight: '700' },
                         color: '#131218',
-                        callback: v => 'Rp ' + (v >= 1e6 ? (v/1e6).toFixed(1)+'jt' : (v/1e3).toFixed(0)+'k')
+                        padding: isMobile ? 3 : 6,
+                        maxTicksLimit: isMobile ? 5 : 7,
+                        callback: function(v) {
+                            if (v === 0) return '0';
+                            if (isMobile) {
+                                // Tampilan mobile ringkas (contoh: 25jt, 10jt) agar grafik lebih lebar
+                                if (v >= 1e6) {
+                                    const val = v / 1e6;
+                                    return (val % 1 === 0 ? val.toFixed(0) : val.toFixed(1)) + 'jt';
+                                }
+                                if (v >= 1e3) {
+                                    return (v / 1e3).toFixed(0) + 'k';
+                                }
+                                return v;
+                            }
+                            // Tampilan desktop tetap format lengkap standar FCC (Rp 25jt, Rp 10jt)
+                            if (v >= 1e9) {
+                                const val = v / 1e9;
+                                return 'Rp ' + (val % 1 === 0 ? val.toFixed(0) : val.toFixed(1)) + 'M';
+                            }
+                            if (v >= 1e6) {
+                                const val = v / 1e6;
+                                return 'Rp ' + (val % 1 === 0 ? val.toFixed(0) : val.toFixed(1)) + 'jt';
+                            }
+                            if (v >= 1e3) {
+                                return 'Rp ' + (v / 1e3).toFixed(0) + 'k';
+                            }
+                            return 'Rp ' + v;
+                        }
                     }
                 };
             }
@@ -84,7 +124,7 @@
                     data: dataPendaftaran,
                     backgroundColor: '#3B82F6',
                     hoverBackgroundColor: '#2563EB',
-                    borderRadius: 6,
+                    borderRadius: isMobile ? 4 : 6,
                     yAxisID: metric === 'semua' ? 'yPendaftaran' : 'y',
                 });
 
@@ -94,10 +134,19 @@
                     grid: metric === 'pendaftaran' ? { color: '#F1F5F9' } : { display: false },
                     beginAtZero: true,
                     ticks: {
-                        font: { size: 11, weight: '700' },
+                        font: { size: isMobile ? 10 : 11, weight: '700' },
                         color: '#3B82F6',
                         precision: 0,
-                        callback: v => v + ' Siswa'
+                        padding: isMobile ? 3 : 6,
+                        maxTicksLimit: isMobile ? 5 : 7,
+                        callback: function(v) {
+                            if (isMobile) {
+                                // Tampilan mobile ringkas (hanya angka) tanpa kata 'Siswa'
+                                return v;
+                            }
+                            // Tampilan desktop tetap format lengkap (... Siswa)
+                            return v + ' Siswa';
+                        }
                     }
                 };
             }
@@ -108,6 +157,14 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: isMobile ? 0 : 4,
+                            right: isMobile ? 0 : 4,
+                            top: 4,
+                            bottom: 0,
+                        }
+                    },
                     interaction: { mode: 'index', intersect: false },
                     plugins: {
                         legend: { display: false },
@@ -214,12 +271,12 @@
                     const count = rStatus.datasets[0].data[i];
                     const pct = total > 0 ? Math.round((count / total) * 100) : 0;
                     return `
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px dashed #F1F5F9;font-size:12px;">
-                            <span style="display:inline-flex;align-items:center;gap:6px;font-weight:600;color:#475569;">
-                                <span style="width:8px;height:8px;border-radius:50%;background:${rStatus.datasets[0].backgroundColor[i]}"></span>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed #F1F5F9;font-size:12px;width:100%;box-sizing:border-box;">
+                            <span style="display:inline-flex;align-items:center;gap:7px;font-weight:600;color:#475569;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                <span style="width:8px;height:8px;border-radius:50%;background:${rStatus.datasets[0].backgroundColor[i]};flex-shrink:0;"></span>
                                 ${l}
                             </span>
-                            <span style="font-weight:800;color:#0F172A;">${count} <span style="font-size:10.5px;color:#94A3B8;font-weight:600;">(${pct}%)</span></span>
+                            <span style="font-weight:800;color:#0F172A;white-space:nowrap;flex-shrink:0;margin-left:8px;">${count} <span style="font-size:10.5px;color:#94A3B8;font-weight:600;">(${pct}%)</span></span>
                         </div>`;
                 }).join('');
             }
@@ -286,6 +343,23 @@
                 if (chartStatusPendaftar) try { chartStatusPendaftar.resize(); } catch(_) {}
                 if (chartJenis) try { chartJenis.resize(); } catch(_) {}
             }, 480);
+
+            // Auto-switch tampilan chart jika berpindah antara mobile dan desktop
+            if (!window._fccResizeAttached) {
+                window._fccResizeAttached = true;
+                let lastIsMobile = window.matchMedia('(max-width: 639px)').matches;
+                window.addEventListener('resize', () => {
+                    const nowIsMobile = window.matchMedia('(max-width: 639px)').matches;
+                    if (nowIsMobile !== lastIsMobile) {
+                        lastIsMobile = nowIsMobile;
+                        loadCharts();
+                    } else {
+                        if (chartCombo) try { chartCombo.resize(); } catch(_) {}
+                    }
+                    if (chartStatusPendaftar) try { chartStatusPendaftar.resize(); } catch(_) {}
+                    if (chartJenis) try { chartJenis.resize(); } catch(_) {}
+                });
+            }
         }, 50);
     }
 
@@ -338,7 +412,7 @@ window.loadCalendarMonth = function (targetMonth) {
 
             // Empty leading cells
             for (let i = 0; i < data.start_day_of_week; i++) {
-                html += `<div style="padding:6px;font-size:12px;color:#CBD5E1;"></div>`;
+                html += `<div style="padding:6px;font-size:12px;color:#CBD5E1;min-height:36px;aspect-ratio:1;"></div>`;
             }
 
             // Days
@@ -368,8 +442,8 @@ window.loadCalendarMonth = function (targetMonth) {
 
                 html += `
                     <div class="calendar-day-cell" title="${titleAttr}" ${tooltipAttr}
-                         style="position:relative;padding:7px 0;font-size:12px;font-weight:${isToday || hasActivity ? '900' : '600'};border-radius:10px;cursor:${hasActivity ? 'pointer' : 'default'};
-                                background:${bg};color:${color};border:${border};box-shadow:${shadow};">
+                         style="position:relative;display:flex;align-items:center;justify-content:center;min-height:36px;aspect-ratio:1;padding:6px 0;font-size:12px;font-weight:${isToday || hasActivity ? '900' : '600'};border-radius:10px;cursor:${hasActivity ? 'pointer' : 'default'};
+                                background:${bg};color:${color};border:${border};box-shadow:${shadow};box-sizing:border-box;">
                         ${day}
                         ${dotsHtml}
                     </div>

@@ -108,8 +108,14 @@
             display: block !important;
         }
         .fcc-admin-header {
+            height: 62px !important;
             padding: 0 12px !important;
             gap: 8px !important;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
         }
         .fcc-admin-header-userinfo {
             display: none !important;

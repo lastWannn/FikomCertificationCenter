@@ -397,12 +397,33 @@
   }
 
   /* Right Side Widgets */
-  .fcc-widget-card {
+  .fcc-widget-card,
+  #mini-calendar-widget {
+    width: 100%;
+    box-sizing: border-box;
     padding: 22px;
     border-radius: 20px;
     background: #FFFFFF;
     border: 2px solid #E5E7EB;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+  .fcc-widget-full-on-grid {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .fcc-verif-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-top: 1px solid #F8FAFC;
+    text-decoration: none;
+    transition: background .18s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .fcc-verif-item:hover {
+    background: #F8FAFC;
   }
 
   /* ══════════════════════════════════════════════════════════════════
@@ -421,7 +442,8 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 20px;
-      align-items: start;
+      align-items: stretch;
+      width: 100%;
     }
     .fcc-widget-full-on-grid {
       grid-column: span 2;
@@ -456,13 +478,15 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 18px;
-      align-items: start;
+      align-items: stretch;
+      width: 100%;
     }
     .fcc-widget-full-on-grid {
       grid-column: span 2;
     }
     .fcc-chart-card,
-    .fcc-widget-card {
+    .fcc-widget-card,
+    #mini-calendar-widget {
       padding: 20px 18px;
     }
     .fcc-chart-canvas-wrapper {
@@ -502,13 +526,15 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 16px;
-      align-items: start;
+      align-items: stretch;
+      width: 100%;
     }
     .fcc-widget-full-on-grid {
       grid-column: span 2;
     }
     .fcc-chart-card,
-    .fcc-widget-card {
+    .fcc-widget-card,
+    #mini-calendar-widget {
       padding: 18px 16px;
     }
     .fcc-chart-header {
@@ -530,7 +556,7 @@
      ══════════════════════════════════════════════════════════════════ */
   @media (max-width: 639px) {
     .fcc-dashboard-wrapper {
-      padding: 14px 10px;
+      padding: 14px 12px;
     }
     .fcc-stats-grid {
       grid-template-columns: repeat(2, 1fr) !important;
@@ -597,14 +623,31 @@
     .fcc-dashboard-main-grid {
       grid-template-columns: 1fr !important;
       gap: 16px !important;
+      width: 100% !important;
+    }
+    .fcc-dashboard-main-col {
+      width: 100% !important;
+      gap: 16px !important;
     }
     .fcc-dashboard-sidebar-widgets {
       display: flex !important;
       flex-direction: column !important;
       gap: 16px !important;
+      width: 100% !important;
+      align-items: stretch !important;
+      box-sizing: border-box !important;
     }
     .fcc-widget-full-on-grid {
       grid-column: auto !important;
+      width: 100% !important;
+    }
+    .fcc-widget-card,
+    #mini-calendar-widget,
+    .fcc-table-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      align-self: stretch !important;
     }
 
     /* Action Banner Mobile Stacking */
@@ -614,6 +657,8 @@
       padding: 14px 14px;
       gap: 12px;
       border-radius: 16px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .fcc-action-banner-body {
       gap: 12px;
@@ -642,6 +687,8 @@
     .fcc-expired-card {
       padding: 14px 14px;
       border-radius: 16px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .fcc-expired-header {
       flex-direction: column;
@@ -658,6 +705,8 @@
     .fcc-chart-card {
       padding: 16px 14px;
       border-radius: 16px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .fcc-chart-header {
       flex-direction: column;
@@ -693,6 +742,8 @@
     /* Kegiatan Aktif Dual Layout */
     .fcc-table-card {
       border-radius: 16px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .fcc-table-header {
       padding: 14px 16px;
@@ -712,13 +763,19 @@
     }
     #mini-calendar-widget {
       padding: 16px 14px;
+      border-radius: 16px;
     }
     .calendar-day-cell {
-      padding: 6px 0 !important;
-      font-size: 11.5px !important;
+      min-height: 36px !important;
+      padding: 4px 0 !important;
+      font-size: 12px !important;
     }
     .calendar-day-cell[data-tooltip]:hover::after {
       display: none !important;
+    }
+    .fcc-verif-item {
+      padding: 12px 14px !important;
+      gap: 10px !important;
     }
   }
 
@@ -727,7 +784,7 @@
      ══════════════════════════════════════════════════════════════════ */
   @media (max-width: 419px) {
     .fcc-dashboard-wrapper {
-      padding: 12px 8px;
+      padding: 12px 10px;
     }
     .fcc-stats-grid {
       grid-template-columns: 1fr !important;
@@ -754,8 +811,10 @@
       height: 200px;
     }
     .calendar-day-cell {
-      padding: 5px 0 !important;
+      min-height: 32px !important;
+      padding: 2px 0 !important;
       font-size: 11px !important;
+      border-radius: 8px !important;
     }
     .fcc-kegiatan-m-meta {
       flex-direction: column;
@@ -969,7 +1028,7 @@
                 <span style="width:12px;height:12px;border-radius:3px;background:#FFC81A;border:1px solid #131218;"></span> Pendapatan (Rp)
               </span>
               <span style="display:inline-flex;align-items:center;gap:6px;color:#3B82F6;">
-                <span style="width:12px;height:12px;border-radius:3px;background:#3B82F6;"></span> Pendaftaran
+                <span style="width:12px;height:12px;border-radius:3px;background:#3B82F6;"></span> Pendaftaran (Siswa)
               </span>
             </div>
             <div class="fcc-chart-selects">
@@ -1113,9 +1172,9 @@
         <div style="display:grid;grid-template-columns:repeat(7, 1fr);gap:4px;text-align:center;font-size:11px;font-weight:800;color:#94A3B8;margin-bottom:8px;">
           <span>Mg</span><span>Sn</span><span>Sl</span><span>Rb</span><span>Km</span><span>Jm</span><span>St</span>
         </div>
-        <div id="cal-days-grid" style="display:grid;grid-template-columns:repeat(7, 1fr);gap:4px;text-align:center;">
+        <div id="cal-days-grid" style="display:grid;grid-template-columns:repeat(7, 1fr);gap:4px;text-align:center;width:100%;box-sizing:border-box;">
           @for($i = 0; $i < $startDayOfWeek; $i++)
-            <div style="padding:6px;font-size:12px;color:#CBD5E1;"></div>
+            <div style="padding:6px;font-size:12px;color:#CBD5E1;min-height:36px;aspect-ratio:1;"></div>
           @endfor
           @for($day = 1; $day <= $daysInMonth; $day++)
             @php 
@@ -1126,11 +1185,11 @@
             <div class="calendar-day-cell"
                  title="{{ $hasActivity ? $activityTitles : ($isToday ? 'Hari ini' : '') }}"
                  @if($hasActivity) data-tooltip="{{ $activityTitles }}" @endif
-                 style="position:relative;padding:7px 0;font-size:12px;font-weight:{{ ($isToday || $hasActivity) ? '900' : '600' }};border-radius:10px;cursor:{{ $hasActivity ? 'pointer' : 'default' }};
+                 style="position:relative;display:flex;align-items:center;justify-content:center;min-height:36px;aspect-ratio:1;padding:6px 0;font-size:12px;font-weight:{{ ($isToday || $hasActivity) ? '900' : '600' }};border-radius:10px;cursor:{{ $hasActivity ? 'pointer' : 'default' }};
                         background:{{ $isToday ? '#FFC81A' : 'transparent' }};
                         color:{{ $isToday ? '#131218' : ($hasActivity ? '#131218' : '#334155') }};
                         border:{{ $isToday ? '1.5px solid #131218' : 'none' }};
-                        box-shadow:{{ $isToday ? '0 4px 12px rgba(255, 200, 26, 0.35)' : 'none' }};">
+                        box-shadow:{{ $isToday ? '0 4px 12px rgba(255, 200, 26, 0.35)' : 'none' }};box-sizing:border-box;">
               {{ $day }}
               @if($hasActivity)
                 <div style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);display:flex;gap:2.5px;align-items:center;">
@@ -1144,7 +1203,7 @@
         </div>
 
         {{-- Legenda Kalender --}}
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1.5px solid #F1F5F9;font-size:10.5px;font-weight:700;flex-wrap:wrap;gap:6px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1.5px solid #F1F5F9;font-size:10.5px;font-weight:700;flex-wrap:wrap;gap:6px;width:100%;box-sizing:border-box;">
           <span style="display:inline-flex;align-items:center;gap:5px;color:#131218;">
             <span style="width:10px;height:10px;border-radius:3px;background:#FFC81A;border:1px solid #131218;"></span> Hari Ini
           </span>
@@ -1155,35 +1214,35 @@
       </div>
 
       {{-- Status Pendaftar Chart Widget --}}
-      <div class="fcc-card fcc-widget-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div class="fcc-card fcc-widget-card" style="width:100%;box-sizing:border-box;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;width:100%;">
           <h3 style="margin:0;font-size:15px;font-weight:900;color:#131218;">Status Pendaftar</h3>
           <span style="font-size:10.5px;font-weight:800;color:#131218;background:#FFC81A;padding:3px 8px;border-radius:6px;border:1px solid #131218;">Transaksi</span>
         </div>
-        <div style="position:relative;height:150px;margin-bottom:10px;">
+        <div style="position:relative;height:150px;width:100%;margin-bottom:10px;">
           <canvas id="chartStatusPendaftar"></canvas>
         </div>
-        <div id="status-pendaftar-legend" style="display:flex;flex-direction:column;gap:2px;margin-top:8px;"></div>
+        <div id="status-pendaftar-legend" style="display:flex;flex-direction:column;gap:2px;margin-top:8px;width:100%;"></div>
       </div>
 
       {{-- Menunggu Verifikasi List Widget --}}
-      <div class="fcc-card fcc-table-card fcc-widget-full-on-grid">
-        <div style="padding:16px 20px;border-bottom:2px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center;background:#F8FAFC;">
+      <div class="fcc-card fcc-table-card fcc-widget-full-on-grid" style="width:100%;box-sizing:border-box;">
+        <div style="padding:16px 20px;border-bottom:2px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center;background:#F8FAFC;width:100%;box-sizing:border-box;">
           <h3 style="margin:0;font-size:15px;font-weight:900;color:#131218;">Menunggu Verifikasi</h3>
           @if($pendingBayar)
           <span style="background:#FFC81A;color:#131218;font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;border:1px solid #131218;">{{ $pendingBayar }}</span>
           @endif
         </div>
         @forelse($pembayaranMenunggu as $p)
-        <a href="{{ route('admin.pembayaran.show', $p) }}" class="fcc-verif-item" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid #F8FAFC;text-decoration:none;transition:background .18s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''">
+        <a href="{{ route('admin.pembayaran.show', $p) }}" class="fcc-verif-item" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid #F8FAFC;text-decoration:none;transition:background .18s;width:100%;box-sizing:border-box;">
           <div style="width:36px;height:36px;border-radius:12px;background:#FFC81A;border:1.5px solid #131218;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(255,200,26,0.25);">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#131218" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
           <div style="flex:1;min-width:0;">
             <p style="margin:0;font-size:13px;font-weight:900;color:#131218;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $p->pendaftaran->peserta->nama }}</p>
-            <p style="margin:0;font-size:11px;color:#64748B;">{{ Str::limit($p->pendaftaran->kegiatan->judul, 22) }}</p>
+            <p style="margin:0;font-size:11px;color:#64748B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $p->pendaftaran->kegiatan->judul }}</p>
           </div>
-          <p style="margin:0;font-size:12.5px;font-weight:900;color:#131218;white-space:nowrap;">{{ $p->jumlah_bayar_format }}</p>
+          <p style="margin:0;font-size:12.5px;font-weight:900;color:#131218;white-space:nowrap;flex-shrink:0;margin-left:8px;">{{ $p->jumlah_bayar_format }}</p>
         </a>
         @empty
         <div style="padding:24px;text-align:center;color:#94A3B8;font-size:13px;">Tidak ada pembayaran menunggu.</div>

@@ -371,6 +371,9 @@
       width: 100% !important;
       justify-content: space-between !important;
     }
+    .fcc-chart-main-card {
+      padding: 16px 14px !important;
+    }
   }
 
   @media (max-width: 419px) {
@@ -835,7 +838,7 @@
     <div style="display:flex;flex-direction:column;gap:24px;min-width:0;">
 
       {{-- Chart 1: Tren Pendapatan & Pendaftaran Bulanan --}}
-      <div class="fcc-card" style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
+      <div class="fcc-card fcc-chart-main-card" style="padding:24px;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 16px rgba(0,0,0,0.04);min-width:0;">
         <div class="fcc-chart-header-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;">
           <div>
             <h4 style="margin:0;font-size:16px;font-weight:900;color:#131218;">{{ $chartTitle }}</h4>
@@ -1093,6 +1096,11 @@
   let chartBulananInstance, chartStatusInstance, chartJenisInstance;
 
   function initLaporanCharts() {
+    if (typeof Chart === 'undefined') {
+      setTimeout(initLaporanCharts, 100);
+      return;
+    }
+
     // Data dari Server (Dynamic Harian / Bulanan)
     const bulanLabels = {!! json_encode($chartLabels) !!};
     const dataPendapatan = {!! json_encode($pendapatanChartData) !!};
@@ -1111,8 +1119,16 @@
       if (chartBulananInstance) chartBulananInstance.destroy();
 
       const datasets = [];
+      const isMobileView = window.matchMedia('(max-width: 639px)').matches;
       const scales = {
-        x: { grid: { display: false }, ticks: { font: { size: isMobile ? 10 : 12 } } }
+        x: { 
+          grid: { display: false }, 
+          ticks: { 
+            font: { size: isMobileView ? 10 : 12 },
+            autoSkip: true,
+            maxTicksLimit: isMobileView ? 8 : 31
+          } 
+        }
       };
 
       if (metric === 'semua' || metric === 'pendapatan') {
@@ -1126,7 +1142,7 @@
           pointBackgroundColor: '#FFC81A',
           pointBorderColor: '#131218',
           pointBorderWidth: 2,
-          pointRadius: isMobile ? 3 : 5,
+          pointRadius: isMobileView ? 3 : 5,
           tension: 0.35,
           fill: true,
           yAxisID: metric === 'semua' ? 'yPendapatan' : 'y',
@@ -1138,10 +1154,41 @@
           position: 'left',
           grid: { color: '#F0F1F5' },
           ticks: {
-            font: { size: isMobile ? 10 : 11 },
+            font: { size: isMobileView ? 10 : 11, weight: '700' },
             callback: function(val) {
-              if (val >= 1000000) return 'Rp ' + (val/1000000).toFixed(1) + 'M';
-              if (val >= 1000) return 'Rp ' + (val/1000).toFixed(0) + 'k';
+              const isMob = window.matchMedia('(max-width: 639px)').matches;
+              if (val === 0) return isMob ? '0' : 'Rp 0';
+
+              if (isMob) {
+                // Tampilan mobile ringkas (contoh: 25jt, 500rb) agar grafik tetap proporsional & lebar
+                if (val >= 1e9) {
+                  const b = val / 1e9;
+                  return (b % 1 === 0 ? b.toFixed(0) : b.toFixed(1)) + 'M';
+                }
+                if (val >= 1e6) {
+                  const m = val / 1e6;
+                  return (m % 1 === 0 ? m.toFixed(0) : m.toFixed(1)) + 'jt';
+                }
+                if (val >= 1e3) {
+                  const k = val / 1e3;
+                  return (k % 1 === 0 ? k.toFixed(0) : k.toFixed(1)) + 'rb';
+                }
+                return val;
+              }
+
+              // Tampilan desktop format standar Indonesia (Rp 25jt, Rp 500rb, atau Rp 1M jika milyar)
+              if (val >= 1e9) {
+                const b = val / 1e9;
+                return 'Rp ' + (b % 1 === 0 ? b.toFixed(0) : b.toFixed(1)) + 'M';
+              }
+              if (val >= 1e6) {
+                const m = val / 1e6;
+                return 'Rp ' + (m % 1 === 0 ? m.toFixed(0) : m.toFixed(1)) + 'jt';
+              }
+              if (val >= 1e3) {
+                const k = val / 1e3;
+                return 'Rp ' + (k % 1 === 0 ? k.toFixed(0) : k.toFixed(1)) + 'rb';
+              }
               return 'Rp ' + val;
             }
           }
@@ -1155,7 +1202,7 @@
           type: 'bar',
           backgroundColor: '#3B82F6',
           hoverBackgroundColor: '#2563EB',
-          borderRadius: 6,
+          borderRadius: isMobileView ? 4 : 6,
           yAxisID: metric === 'semua' ? 'yPendaftaran' : 'y',
           order: 2
         });
@@ -1164,7 +1211,15 @@
           type: 'linear',
           position: metric === 'semua' ? 'right' : 'left',
           grid: metric === 'pendaftaran' ? { color: '#F0F1F5' } : { drawOnChartArea: false },
-          ticks: { precision: 0, font: { size: isMobile ? 10 : 11 } }
+          ticks: { 
+            precision: 0, 
+            font: { size: isMobileView ? 10 : 11, weight: '700' },
+            callback: function(val) {
+              const isMob = window.matchMedia('(max-width: 639px)').matches;
+              if (isMob) return val;
+              return metric === 'pendaftaran' ? val + ' Siswa' : val;
+            }
+          }
         };
       }
 
