@@ -78,53 +78,61 @@
     padding-top: 16px;
   }
 
-  @media (max-width: 1024px) {
+  /* ═══ TABLET BREAKPOINT (< 1024px) ═══ */
+  @media (max-width: 1023px) {
     .fcc-detail-grid {
       grid-template-columns: 1fr !important;
       gap: 20px;
     }
   }
 
-  @media (max-width: 768px) {
-    .fcc-schedule-item-inner {
-      flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 12px;
-    }
-    .fcc-schedule-actions {
-      width: 100% !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: space-between !important;
-      padding-top: 10px;
-      border-top: 1px dashed #E2E8F0;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .fcc-schedule-actions form {
-      flex: 1 1 auto;
-    }
-    .fcc-schedule-actions select {
-      width: 100%;
-      height: 34px;
-    }
-  }
-
-  @media (max-width: 640px) {
+  /* ═══ MOBILE BREAKPOINT (< 768px) ═══ */
+  @media (max-width: 767px) {
     .fcc-detail-container {
-      padding: 14px !important;
+      padding: 16px 14px 44px !important;
     }
     .fcc-header-actions {
-      width: 100%;
+      width: 100% !important;
+      margin-top: 10px !important;
+      gap: 8px !important;
     }
     .fcc-header-actions > button,
     .fcc-header-actions > a {
-      flex: 1 1 calc(50% - 6px);
-      justify-content: center;
-      text-align: center;
-      padding-left: 12px !important;
-      padding-right: 12px !important;
-      font-size: 12px !important;
+      flex: 1 1 0 !important;
+      justify-content: center !important;
+      padding: 11px 12px !important;
+      font-size: 12.5px !important;
+      border-radius: 12px !important;
+    }
+    /* Remove double card nesting on mobile: let schedule cards breathe */
+    .fcc-schedule-main-card {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      overflow: visible !important;
+    }
+    .fcc-schedule-card-header {
+      padding: 0 4px 14px 4px !important;
+      background: transparent !important;
+      border-bottom: none !important;
+    }
+    .fcc-schedule-card-header h3 {
+      font-size: 16px !important;
+    }
+    .fcc-schedule-add-btn {
+      display: none !important;
+    }
+    .fcc-schedule-list-wrap {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 14px !important;
+      padding: 0 !important;
+      background: transparent !important;
+    }
+    .fcc-schedule-info-grid {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 8px !important;
     }
     .fcc-modal-overlay {
       padding: 10px !important;
@@ -151,14 +159,23 @@
       width: 100%;
       justify-content: center;
     }
+    /* Floating Pagination Capsule on Mobile */
     .fcc-pagination-bar {
+      background: #FFFFFF !important;
+      border: 1.5px solid #E2E8F0 !important;
+      border-radius: 16px !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+      padding: 16px 14px !important;
+      margin-top: 8px !important;
       flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 12px !important;
+      align-items: center !important;
+      text-align: center !important;
+      gap: 14px !important;
     }
     .fcc-pagination-bar > div {
       justify-content: center !important;
       display: flex !important;
+      width: 100% !important;
       text-align: center;
     }
   }
@@ -196,110 +213,153 @@
   <div class="fcc-detail-grid">
     {{-- Kiri: Jadwal --}}
     <div>
-      <div class="fcc-card" style="padding:0;overflow:hidden;">
-        <div style="padding:14px 18px;border-bottom:1px solid #E2E4EB;display:flex;justify-content:space-between;align-items:center;">
-          <p style="margin:0;font-size:14px;font-weight:800;color:#131218;">Jadwal ({{ $jadwal->total() }})</p>
-          <button type="button" onclick="openJadwalModal()" style="font-size:12px;color:#FFC81A;font-weight:800;background:#131218;padding:4px 12px;border-radius:14px;border:none;cursor:pointer;">+ Tambah Jadwal</button>
+      <div class="fcc-card fcc-schedule-main-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+        <div class="fcc-schedule-card-header" style="padding:16px 20px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <h3 style="margin:0;font-size:15px;font-weight:900;color:#131218;letter-spacing:-0.01em;">Daftar Batch Jadwal</h3>
+            <span style="background:#131218;color:#FFC81A;font-size:11px;font-weight:900;padding:2px 8px;border-radius:12px;">{{ $jadwal->total() }}</span>
+          </div>
+          <button type="button" class="fcc-schedule-add-btn" onclick="openJadwalModal()" style="font-size:12px;color:#131218;font-weight:900;background:#FFC81A;border:1.5px solid #131218;padding:6px 14px;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 6px rgba(255,200,26,0.3);transition:all .18s;"
+             onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">
+            @include('components.icon',['name'=>'calendar','size'=>13]) + Tambah Batch
+          </button>
         </div>
+
+        <div class="fcc-schedule-list-wrap" style="padding:16px;display:flex;flex-direction:column;gap:14px;background:#F8FAFC;">
         @forelse($jadwal as $j)
-        @php $ks = $j->kegiatanSertifikasi; @endphp
-        <div style="padding:12px 18px;border-top:1px solid #F0F1F5;">
-          <div class="fcc-schedule-item-inner">
-            <div>
-              @php
-                $isPassedSchedule = $j->tgl_pelaksanaan && $j->tgl_pelaksanaan->lte(now()->startOfDay());
-                $isRegClosedSchedule = $j->tgl_batas_daftar && $j->tgl_batas_daftar->lt(now()->startOfDay());
-              @endphp
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
-                @if($j->nama_kegiatan)
-                  <span style="font-size:13.5px;font-weight:900;color:#131218;">{{ $j->nama_kegiatan }}</span>
-                @else
-                  <span style="font-size:13.5px;font-weight:900;color:#131218;">Batch {{ $j->tgl_pelaksanaan?->format('d M Y') }}</span>
-                @endif
+        @php
+          $ks = $j->kegiatanSertifikasi;
+          $isPassedSchedule = $j->tgl_pelaksanaan && $j->tgl_pelaksanaan->lte(now()->startOfDay());
+          $isRegClosedSchedule = $j->tgl_batas_daftar && $j->tgl_batas_daftar->lt(now()->startOfDay());
+        @endphp
+        <div class="fcc-schedule-card-item" style="background:#FFFFFF;border:1.5px solid #E2E8F0;border-left:4px solid {{ $isPassedSchedule ? '#94A3B8' : '#FFC81A' }};border-radius:16px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.02);position:relative;">
+          {{-- Header Batch: Nama & Status Badges --}}
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:180px;">
+              <h4 style="font-size:14.5px;font-weight:900;color:#131218;margin:0 0 4px;line-height:1.35;">
+                {{ $j->nama_kegiatan ?: ('Batch ' . ($j->tgl_pelaksanaan?->format('d M Y') ?? '—')) }}
+              </h4>
+              <span style="font-size:11px;color:#64748B;font-weight:600;display:inline-flex;align-items:center;gap:4px;">
+                <span>ID Batch:</span> <code style="background:#F1F5F9;padding:1px 6px;border-radius:4px;color:#334155;font-weight:700;">#{{ $j->id }}</code>
+              </span>
+            </div>
+            
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              {{-- Status Execution Badge --}}
+              @if($isPassedSchedule)
+                <span style="background:#F1F5F9;color:#475569;border:1.5px solid #CBD5E1;font-size:10.5px;font-weight:900;padding:2.5px 9px;border-radius:12px;display:inline-flex;align-items:center;gap:4px;">
+                  ✓ Telah Dilaksanakan
+                </span>
+              @else
+                <span style="background:#FFFDF5;color:#131218;border:1.5px solid #FFC81A;font-size:10.5px;font-weight:900;padding:2.5px 9px;border-radius:12px;display:inline-flex;align-items:center;gap:4px;">
+                  ⏱ Akan Datang
+                </span>
+              @endif
 
-                {{-- Status Execution Badge --}}
-                @if($isPassedSchedule)
-                  <span style="background:#F1F5F9;color:#475569;border:1.5px solid #CBD5E1;font-size:10px;font-weight:900;padding:2px 8px;border-radius:12px;display:inline-flex;align-items:center;gap:4px;">
-                    ✓ Telah Dilaksanakan
-                  </span>
-                @else
-                  <span style="background:#FFFDF5;color:#131218;border:1.5px solid #FFC81A;font-size:10px;font-weight:900;padding:2px 8px;border-radius:12px;display:inline-flex;align-items:center;gap:4px;">
-                    ⏱ Akan Datang
-                  </span>
-                @endif
-
-                {{-- Status Registration Badge --}}
-                @if($isRegClosedSchedule)
-                  <span style="background:#FEF2F2;color:#EF4444;border:1px solid #FCA5A5;font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;">
-                    Pendaftaran Ditutup
-                  </span>
-                @elseif($j->tgl_batas_daftar)
-                  <span style="background:#ECFDF5;color:#10B981;border:1px solid #A7F3D0;font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;">
-                    Buka s/d {{ $j->tgl_batas_daftar->format('d M Y') }}
-                  </span>
-                @endif
-              </div>
-
-              <p style="margin:0;font-size:11.5px;color:#64748B;font-weight:500;">
-                Pelaksanaan: <strong style="color:#131218;">{{ $j->tgl_pelaksanaan?->format('d M Y') }}</strong> &bull; {{ $j->jam_mulai ? substr($j->jam_mulai, 0, 5) : '08:00' }} – {{ $j->jam_selesai ? substr($j->jam_selesai, 0, 5) : '12:00' }} &bull; Kuota: <strong style="color:#131218;">{{ $j->kuota_peserta }}</strong>
-              </p>
-              
-              @php
-                $effectiveBiaya = $ks?->kegiatan?->biaya;
-              @endphp
-              @if($effectiveBiaya && $effectiveBiaya->isNotEmpty())
-              <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;">
-                @foreach($effectiveBiaya as $b)
-                <span style="font-size:10px;font-weight:700;background:#F8F9FB;border:1px solid #E2E4EB;color:#6B7280;padding:2px 8px;border-radius:12px;">{{ $b->nama_jenis }}: Rp{{ number_format($b->nominal,0,',','.') }}</span>
-                @endforeach
-              </div>
-              @elseif(!empty($j->biaya_setup) && is_array($j->biaya_setup))
-              <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;">
-                @foreach($j->biaya_setup as $b)
-                <span style="font-size:10px;font-weight:700;background:#F8F9FB;border:1px solid #E2E4EB;color:#6B7280;padding:2px 8px;border-radius:12px;">{{ $b['nama'] }}: Rp{{ number_format($b['nominal'],0,',','.') }}</span>
-                @endforeach
-              </div>
+              {{-- Status Registration Badge --}}
+              @if($isRegClosedSchedule)
+                <span style="background:#FEF2F2;color:#EF4444;border:1px solid #FCA5A5;font-size:10.5px;font-weight:800;padding:2.5px 9px;border-radius:12px;">
+                  Pendaftaran Ditutup
+                </span>
+              @elseif($j->tgl_batas_daftar)
+                <span style="background:#ECFDF5;color:#059669;border:1px solid #A7F3D0;font-size:10.5px;font-weight:800;padding:2.5px 9px;border-radius:12px;">
+                  Buka s/d {{ $j->tgl_batas_daftar->format('d M Y') }}
+                </span>
               @endif
             </div>
-            <div class="fcc-schedule-actions">
-              {{-- STATUS DROPDOWN SELECTOR --}}
+          </div>
+
+          {{-- Schedule Info Grid (3 Capsule Metrics) --}}
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:8px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:10px 12px;margin-bottom:12px;">
+            <div>
+              <div style="font-size:10px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:4px;margin-bottom:3px;">
+                <span>📅</span> Pelaksanaan
+              </div>
+              <div style="font-size:12.5px;font-weight:900;color:#131218;">
+                {{ $j->tgl_pelaksanaan?->format('d M Y') ?? '—' }}
+              </div>
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:4px;margin-bottom:3px;">
+                <span>⏰</span> Waktu
+              </div>
+              <div style="font-size:12.5px;font-weight:900;color:#131218;">
+                {{ $j->jam_mulai ? substr($j->jam_mulai, 0, 5) : '08:00' }} – {{ $j->jam_selesai ? substr($j->jam_selesai, 0, 5) : '12:00' }}
+              </div>
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:4px;margin-bottom:3px;">
+                <span>👥</span> Kuota Peserta
+              </div>
+              <div style="font-size:12.5px;font-weight:900;color:#131218;">
+                {{ $j->kuota_peserta }} <span style="font-size:11px;font-weight:700;color:#64748B;">({{ $j->untuk_peserta === 'LP' ? 'Semua' : ($j->untuk_peserta === 'L' ? 'Pria' : 'Wanita') }})</span>
+              </div>
+            </div>
+          </div>
+
+          {{-- Biaya Pendaftaran --}}
+          @php
+            $effectiveBiaya = $ks?->kegiatan?->biaya;
+          @endphp
+          @if($effectiveBiaya && $effectiveBiaya->isNotEmpty())
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+              @foreach($effectiveBiaya as $b)
+                <span style="font-size:11px;font-weight:800;background:#FFFFFF;border:1px solid #CBD5E1;color:#131218;padding:3px 9px;border-radius:8px;display:inline-flex;align-items:center;gap:4px;">
+                  <span style="color:#64748B;font-weight:600;">{{ $b->nama_jenis }}:</span> <strong style="color:#059669;">Rp{{ number_format($b->nominal,0,',','.') }}</strong>
+                </span>
+              @endforeach
+            </div>
+          @elseif(!empty($j->biaya_setup) && is_array($j->biaya_setup))
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+              @foreach($j->biaya_setup as $b)
+                <span style="font-size:11px;font-weight:800;background:#FFFFFF;border:1px solid #CBD5E1;color:#131218;padding:3px 9px;border-radius:8px;display:inline-flex;align-items:center;gap:4px;">
+                  <span style="color:#64748B;font-weight:600;">{{ $b['nama'] }}:</span> <strong style="color:#059669;">Rp{{ number_format($b['nominal'],0,',','.') }}</strong>
+                </span>
+              @endforeach
+            </div>
+          @endif
+
+          {{-- Action Row: Status dropdown & action buttons --}}
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:12px;border-top:1px dashed #E2E8F0;flex-wrap:wrap;">
+            {{-- Status dropdown --}}
+            <div style="flex:1;min-width:140px;">
               @php
                 $st = $ks?->kegiatan?->status ?? 'draf';
               @endphp
-              <form action="{{ route('admin.jadwal-sertifikasi.status', $j) }}" method="POST" style="margin:0;display:inline-block;">
+              <form action="{{ route('admin.jadwal-sertifikasi.status', $j) }}" method="POST" style="margin:0;width:100%;">
                 @csrf
                 <select name="status" onchange="this.form.submit()" title="Ubah Status Publikasi Jadwal"
-                        style="padding:6px 10px;font-size:11.5px;font-weight:800;border-radius:10px;border:1.5px solid #131218;cursor:pointer;outline:none;
+                        style="width:100%;height:36px;padding:0 12px;font-size:12px;font-weight:800;border-radius:10px;border:1.5px solid #131218;cursor:pointer;outline:none;
                                background:{{ $st === 'public' ? '#ECFDF5' : ($st === 'comingsoon' ? '#FFFDF5' : '#F8FAFC') }};
                                color:{{ $st === 'public' ? '#059669' : ($st === 'comingsoon' ? '#D97706' : '#64748B') }};">
-                  <option value="draf" {{ $st === 'draf' ? 'selected' : '' }}>Draft</option>
-                  <option value="comingsoon" {{ $st === 'comingsoon' ? 'selected' : '' }}>Coming Soon</option>
-                  <option value="public" {{ $st === 'public' ? 'selected' : '' }}>Publik</option>
+                  <option value="draf" {{ $st === 'draf' ? 'selected' : '' }}>• Draft</option>
+                  <option value="comingsoon" {{ $st === 'comingsoon' ? 'selected' : '' }}>• Coming Soon</option>
+                  <option value="public" {{ $st === 'public' ? 'selected' : '' }}>• Publik</option>
                 </select>
               </form>
+            </div>
 
+            {{-- Action buttons --}}
+            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
               @if($ks)
-                {{-- Lihat Halaman Detail Kegiatan Icon Button --}}
                 <a href="{{ route('admin.kegiatan.show', $ks->kegiatan) }}" target="_blank" title="Lihat Detail Kegiatan"
-                   style="width:32px;height:32px;border-radius:9px;background:#EFF6FF;border:1.5px solid #93C5FD;display:flex;align-items:center;justify-content:center;color:#3B82F6;text-decoration:none;transition:all .18s;"
+                   style="width:36px;height:36px;border-radius:10px;background:#EFF6FF;border:1.5px solid #93C5FD;display:flex;align-items:center;justify-content:center;color:#3B82F6;text-decoration:none;transition:all .18s;"
                    onmouseover="this.style.background='#3B82F6';this.style.color='#FFFFFF';this.style.borderColor='#3B82F6';" onmouseout="this.style.background='#EFF6FF';this.style.color='#3B82F6';this.style.borderColor='#93C5FD';">
-                  @include('components.icon',['name'=>'eye','size'=>15])
+                  @include('components.icon',['name'=>'eye','size'=>16])
                 </a>
               @endif
 
-              {{-- Edit Button (Modal Trigger) --}}
               <button type="button" onclick="document.getElementById('edit-jadwal-modal-{{ $j->id }}').style.display='flex'" title="Edit Jadwal"
-                 style="width:32px;height:32px;border-radius:9px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#131218;cursor:pointer;transition:all .18s;padding:0;"
-                 onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#E2E8F0';">
-                @include('components.icon',['name'=>'edit','size'=>15])
+                 style="width:36px;height:36px;border-radius:10px;background:#F8FAFC;border:1.5px solid #CBD5E1;display:flex;align-items:center;justify-content:center;color:#131218;cursor:pointer;transition:all .18s;padding:0;"
+                 onmouseover="this.style.background='#FFC81A';this.style.borderColor='#131218';" onmouseout="this.style.background='#F8FAFC';this.style.borderColor='#CBD5E1';">
+                @include('components.icon',['name'=>'edit','size'=>16])
               </button>
 
-              {{-- Hapus Button --}}
               <form action="{{ route('admin.jadwal-sertifikasi.destroy', $j) }}" method="POST" style="margin:0;" onsubmit="return fccConfirmDelete(event, this, 'Hapus Jadwal', 'Apakah Anda yakin ingin menghapus jadwal sertifikasi ini?')">
                 @csrf @method('DELETE')
-                <button type="submit" style="width:32px;height:32px;border-radius:9px;background:#FEF2F2;border:1.5px solid #FCA5A5;display:flex;align-items:center;justify-content:center;color:#EF4444;cursor:pointer;transition:all .18s;padding:0;" title="Hapus Jadwal"
+                <button type="submit" style="width:36px;height:36px;border-radius:10px;background:#FEF2F2;border:1.5px solid #FCA5A5;display:flex;align-items:center;justify-content:center;color:#EF4444;cursor:pointer;transition:all .18s;padding:0;" title="Hapus Jadwal"
                         onmouseover="this.style.background='#EF4444';this.style.color='#FFFFFF';this.style.borderColor='#EF4444';" onmouseout="this.style.background='#FEF2F2';this.style.color='#EF4444';this.style.borderColor='#FCA5A5';">
-                  @include('components.icon',['name'=>'trash','size'=>15])
+                  @include('components.icon',['name'=>'trash','size'=>16])
                 </button>
               </form>
             </div>
@@ -431,10 +491,18 @@
         }
         </script>
         @empty
-        <div style="padding:24px;text-align:center;color:#94A3B8;font-size:13px;font-weight:600;">
-          Belum ada jadwal pelaksanaan. <button type="button" onclick="openJadwalModal()" style="color:#FFC81A;background:none;border:none;font-weight:800;cursor:pointer;padding:0;">Tambah batch jadwal &rarr;</button>
+        <div style="background:#FFFFFF;border:1.5px dashed #CBD5E1;border-radius:16px;padding:36px 20px;text-align:center;">
+          <div style="width:48px;height:48px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;color:#94A3B8;">
+            @include('components.icon',['name'=>'calendar','size'=>22])
+          </div>
+          <h4 style="font-size:14px;font-weight:900;color:#131218;margin:0 0 4px;">Belum Ada Batch Jadwal</h4>
+          <p style="font-size:12.5px;color:#64748B;margin:0 0 14px;">Program sertifikasi ini belum memiliki jadwal pelaksanaan aktif.</p>
+          <button type="button" onclick="openJadwalModal()" style="font-size:12px;color:#131218;font-weight:900;background:#FFC81A;border:1.5px solid #131218;padding:6px 16px;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(255,200,26,0.35);">
+            + Tambah Jadwal Sekarang
+          </button>
         </div>
         @endforelse
+        </div>
 
         <div class="fcc-pagination-bar" style="padding:14px 20px;border-top:1px solid #E2E4EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
           <div style="display:flex;align-items:center;gap:10px;">

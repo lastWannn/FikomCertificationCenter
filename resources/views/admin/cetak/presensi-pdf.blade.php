@@ -6,7 +6,7 @@
 <style>
   @page {
     size: A4 landscape;
-    margin: 0px;
+    margin: 10mm 12mm 10mm 12mm;
   }
   * {
     box-sizing: border-box;
@@ -19,31 +19,34 @@
     color: #000000;
     background: #FFFFFF;
     line-height: 1.25;
-    padding: 24px 36px 20px 36px;
+    margin: 0;
+    padding: 0;
   }
 
   @media screen {
     body {
-      background: #FFFFFF;
-      padding: 0;
+      background: #F8FAFC;
+      padding: 20px 0;
     }
     .pdf-page {
       background: #FFFFFF;
       max-width: 297mm;
       margin: 0 auto;
-      padding: 24px 36px 20px 36px;
-      box-shadow: none;
-      border-radius: 0;
+      padding: 10mm 12mm;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
     }
   }
 
   @media print {
     body {
       background: #FFFFFF;
-      padding: 24px 36px 20px 36px;
+      margin: 0;
+      padding: 0;
     }
     .pdf-page {
       padding: 0;
+      margin: 0;
       box-shadow: none;
       background: #FFFFFF;
     }
@@ -120,6 +123,9 @@
     text-align: center;
     line-height: 1.2;
   }
+  .attendance-table tr {
+    page-break-inside: avoid;
+  }
   .attendance-table td {
     border: 1.5px solid #000000;
     padding: 3px 5px;
@@ -154,6 +160,7 @@
     margin-top: 8px;
     border-collapse: collapse;
     table-layout: fixed;
+    page-break-inside: avoid;
   }
   .footer-statement {
     width: 60%;

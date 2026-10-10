@@ -89,100 +89,75 @@
         }
       }
 
-      /* ═══ SMALL TABLET / PHABLET (640px – 767px) ═══ */
-      @media (min-width: 640px) and (max-width: 767px) {
-        .fcc-kegiatan-container {
-          padding: 16px 14px !important;
-        }
-        .fcc-kegiatan-stats-grid {
-          grid-template-columns: repeat(2, 1fr) !important;
-          gap: 10px !important;
-          margin-bottom: 18px !important;
-        }
-        .fcc-kegiatan-stat-card {
-          padding: 14px 12px !important;
-        }
-        .fcc-kegiatan-col-title {
-          white-space: nowrap !important;
-          min-width: 220px !important;
-        }
+    /* ═══ MOBILE BREAKPOINT (< 768px) ═══ */
+    @media (max-width: 767px) {
+      .fcc-kegiatan-container {
+        padding: 16px 14px 44px !important;
       }
-
-      /* ═══ MOBILE BREAKPOINT (< 640px) ═══ */
-      @media (max-width: 639px) {
-        .fcc-kegiatan-container {
-          padding: 14px 10px !important;
-        }
-        .fcc-kegiatan-desktop-table {
-          display: none !important;
-        }
-        .fcc-kegiatan-mobile-list {
-          display: block !important;
-        }
-        .fcc-kegiatan-header-actions {
-          width: 100% !important;
-        }
-        .fcc-kegiatan-header-btn {
-          width: 100% !important;
-          justify-content: center !important;
-        }
-        .fcc-kegiatan-stats-grid {
-          grid-template-columns: repeat(2, 1fr) !important;
-          gap: 10px !important;
-          margin-bottom: 16px !important;
-        }
-        .fcc-kegiatan-stat-card {
-          flex-direction: column !important;
-          align-items: flex-start !important;
-          justify-content: space-between !important;
-          padding: 14px 12px !important;
-          border-radius: 16px !important;
-          height: 100% !important;
-          min-height: 120px !important;
-          gap: 10px !important;
-        }
-        .fcc-kegiatan-card-header {
-          flex-direction: column !important;
-          align-items: flex-start !important;
-          gap: 10px !important;
-        }
-        .fcc-kegiatan-pagination-bar {
-          flex-direction: column !important;
-          align-items: stretch !important;
-          gap: 12px !important;
-        }
-        .fcc-kegiatan-pagination-bar > div {
-          justify-content: center !important;
-          width: 100% !important;
-          display: flex !important;
-        }
+      .fcc-kegiatan-desktop-table {
+        display: none !important;
       }
-
-      /* ═══ COMPACT MOBILE (< 420px) ═══ */
-      @media (max-width: 419px) {
-        .fcc-kegiatan-container {
-          padding: 12px 8px !important;
-        }
-        .fcc-kegiatan-stats-grid {
-          grid-template-columns: 1fr !important;
-          gap: 8px !important;
-        }
-        .fcc-kegiatan-stat-card {
-          flex-direction: row !important;
-          align-items: center !important;
-          min-height: auto !important;
-          padding: 12px 14px !important;
-        }
-        .fcc-kegiatan-mobile-actions {
-          flex-wrap: wrap !important;
-        }
-        .fcc-kegiatan-mobile-actions > * {
-          flex: 1 1 auto !important;
-          justify-content: center !important;
-          text-align: center !important;
-        }
+      /* Remove double-nested card on mobile: let cards breathe on the page background */
+      .fcc-kegiatan-main-card {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        overflow: visible !important;
       }
-    </style>
+      .fcc-kegiatan-card-header {
+        padding: 0 4px 14px 4px !important;
+        background: transparent !important;
+        border-bottom: none !important;
+      }
+      .fcc-kegiatan-mobile-list {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 14px !important;
+        padding: 0 !important;
+        background: transparent !important;
+      }
+      .fcc-kegiatan-header-actions {
+        width: 100% !important;
+      }
+      .fcc-kegiatan-header-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 12px 20px !important;
+        font-size: 13.5px !important;
+        border-radius: 14px !important;
+      }
+      .fcc-kegiatan-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        margin-bottom: 22px !important;
+      }
+      .fcc-kegiatan-stat-card {
+        padding: 14px 12px !important;
+        border-radius: 16px !important;
+        background: #FFFFFF !important;
+        border: 1.5px solid #E2E8F0 !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02) !important;
+      }
+      /* Floating Pagination Capsule on Mobile */
+      .fcc-kegiatan-pagination-bar {
+        background: #FFFFFF !important;
+        border: 1.5px solid #E2E8F0 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+        padding: 16px 14px !important;
+        margin-top: 8px !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 14px !important;
+      }
+      .fcc-kegiatan-pagination-bar > div {
+        justify-content: center !important;
+        width: 100% !important;
+      }
+    }
+  </style>
 
     <div id="kegiatan-skeleton-overlay" class="no-print" style="opacity:1;visibility:visible;position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;background:#F6F8FB;padding:24px;box-sizing:border-box;pointer-events:none;">
       {{-- Header Skeleton --}}
@@ -296,7 +271,7 @@
     </div>
 
     {{-- Main Neo-Brutalist Table Card --}}
-    <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+    <div class="fcc-card fcc-kegiatan-main-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
         <div class="fcc-kegiatan-card-header" style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
             <h3 style="margin:0;font-size:16px;font-weight:900;color:#131218;">Daftar Kegiatan Aktif</h3>
             <div style="display:flex;align-items:center;gap:12px;">
@@ -470,9 +445,9 @@
                 $isPassed = $k->isPassed();
                 $detail = $k->detail;
             @endphp
-            <div style="padding:16px;border-top:1px solid #F1F5F9;background:{{ $isPassed ? '#FFFDF5' : '#FFFFFF' }};">
-                {{-- Top Badges: Jenis & Status --}}
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+            <div class="fcc-mobile-item-card" style="background:#FFFFFF;border:1.5px solid #E2E8F0;border-left:4px solid {{ $isPassed ? '#F59E0B' : '#FFC81A' }};border-radius:16px;padding:16px 18px;box-shadow:0 3px 12px rgba(0,0,0,0.03);position:relative;">
+                {{-- 1. Top Badges: Jenis & Status --}}
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
                     <div style="display:flex;align-items:center;gap:6px;">
                         <span style="font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;background:{{ $isPel?'#FFFDF5':'#EFF6FF' }};color:{{ $isPel?'#B38F00':'#2563EB' }};border:1px solid {{ $isPel?'#FFC81A':'#93C5FD' }};display:inline-flex;align-items:center;gap:4px;">
                             @include('components.icon',['name'=>$isPel?'book-open':'award','size'=>12,'style'=>'color:'.($isPel?'#B38F00':'#2563EB')])
@@ -500,13 +475,13 @@
                     </div>
                 </div>
 
-                {{-- Judul Kegiatan --}}
-                <a href="{{ route('admin.kegiatan.show', $k) }}" style="font-size:14.5px;font-weight:900;color:#131218;text-decoration:none;margin:0 0 10px;display:block;line-height:1.35;word-break:break-word;">
+                {{-- 2. Judul Kegiatan --}}
+                <a href="{{ route('admin.kegiatan.show', $k) }}" style="font-size:14.5px;font-weight:900;color:#131218;text-decoration:none;margin:0 0 12px;display:block;line-height:1.35;word-break:break-word;">
                     {{ $k->judul }}
                 </a>
 
-                {{-- Info Box: Jadwal, Biaya, Kuota --}}
-                <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px;margin-bottom:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                {{-- 3. Info Box: Jadwal, Biaya, Kuota --}}
+                <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                     <div>
                         <span style="font-size:10px;font-weight:800;color:#64748B;display:block;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">Jadwal</span>
                         <p style="margin:0;font-size:12.5px;font-weight:800;color:#131218;">{{ $k->jadwal?->tgl_pelaksanaan?->translatedFormat('d M Y') ?? 'TBA' }}</p>
@@ -542,32 +517,32 @@
                     </div>
                 </div>
 
-                {{-- Action Buttons on Mobile --}}
-                <div class="fcc-kegiatan-mobile-actions" style="display:flex;justify-content:flex-end;align-items:center;gap:8px;padding-top:2px;">
+                {{-- 4. Action Buttons Bar (Lega, Bersih, Touch-Friendly) --}}
+                <div style="display:grid;grid-template-columns:1fr 1fr 38px;gap:8px;padding-top:12px;border-top:1px dashed #E2E8F0;">
                     <a href="{{ route('admin.kegiatan.show', $k) }}"
-                       style="padding:6px 14px;font-size:12px;font-weight:800;background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:18px;color:#131218;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
-                        @include('components.icon',['name'=>'eye','size'=>13])
+                       style="height:38px;padding:0 12px;font-size:12.5px;font-weight:800;background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:10px;color:#131218;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;">
+                        @include('components.icon',['name'=>'eye','size'=>14])
                         <span>Detail</span>
                     </a>
                     <button type="button" onclick="document.getElementById('edit-kegiatan-modal-{{ $k->id }}').style.display='flex'"
-                            style="padding:6px 14px;font-size:12px;font-weight:800;color:#131218;background:#FFC81A;border:1.5px solid #131218;border-radius:18px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
-                        @include('components.icon',['name'=>'edit','size'=>13])
+                            style="height:38px;padding:0 12px;font-size:12.5px;font-weight:800;color:#131218;background:#FFC81A;border:1.5px solid #131218;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;">
+                        @include('components.icon',['name'=>'edit','size'=>14])
                         <span>Edit</span>
                     </button>
                     <form action="{{ route('admin.kegiatan.destroy', $k) }}" method="POST" style="margin:0;display:inline-flex;">
                         @csrf @method('DELETE')
                         <button type="button" onclick="fccConfirmDelete(this, '{{ $k->isPassed() ? 'Pindahkan ke Arsip' : 'Hapus Kegiatan' }}', '{{ $k->isPassed() ? 'Kegiatan telah selesai. Apakah Anda yakin ingin memindahkannya ke Arsip Kegiatan?' : 'Apakah Anda yakin ingin menghapus kegiatan '.addslashes($k->judul).'?' }}')"
-                                style="padding:6px 14px;font-size:12px;font-weight:800;color:{{ $k->isPassed() ? '#10B981' : '#EF4444' }};background:{{ $k->isPassed() ? '#ECFDF5' : '#FEF2F2' }};border:1.5px solid {{ $k->isPassed() ? '#A7F3D0' : '#FCA5A5' }};border-radius:18px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
-                            @include('components.icon',['name'=>$k->isPassed() ? 'archive' : 'trash','size'=>13])
-                            <span>{{ $k->isPassed() ? 'Arsip' : 'Hapus' }}</span>
+                                style="width:38px;height:38px;font-size:12px;font-weight:800;color:{{ $k->isPassed() ? '#10B981' : '#EF4444' }};background:{{ $k->isPassed() ? '#ECFDF5' : '#FEF2F2' }};border:1.5px solid {{ $k->isPassed() ? '#A7F3D0' : '#FCA5A5' }};border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;padding:0;"
+                                title="{{ $k->isPassed() ? 'Arsipkan Kegiatan' : 'Hapus Kegiatan' }}">
+                            @include('components.icon',['name'=>$k->isPassed() ? 'archive' : 'trash','size'=>15])
                         </button>
                     </form>
                 </div>
             </div>
             @empty
-            <div style="padding:40px 20px;text-align:center;color:#94A3B8;">
-                <div style="width:52px;height:52px;border-radius:16px;background:#F8FAFC;border:2px solid #E2E8F0;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#94A3B8;">
-                    @include('components.icon',['name'=>'zap','size'=>24])
+            <div style="padding:48px 20px;text-align:center;color:#94A3B8;background:#FFFFFF;border-radius:16px;border:1.5px dashed #CBD5E1;">
+                <div style="width:48px;height:48px;border-radius:14px;background:#F8FAFC;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#94A3B8;">
+                    @include('components.icon',['name'=>'zap','size'=>22])
                 </div>
                 <p style="font-size:14.5px;font-weight:900;color:#131218;margin:0 0 4px;">Belum Ada Kegiatan Aktif</p>
                 <p style="font-size:12.5px;color:#64748B;margin:0;">Aktifkan jadwal pelatihan atau sertifikasi untuk mulai menerima pendaftaran publik.</p>

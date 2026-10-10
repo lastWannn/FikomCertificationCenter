@@ -95,22 +95,56 @@
 
 /* ── Switch to Mobile Cards (< 768px) ── */
 @media (max-width: 767px) {
+  .fcc-kategori-container {
+    padding: 16px 14px 44px !important;
+  }
   .fcc-kategori-desktop-table {
     display: none !important;
+  }
+  /* Remove double-nested card on mobile: let cards breathe on the page background */
+  .fcc-kategori-main-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+  }
+  .fcc-kategori-card-header {
+    padding: 0 4px 14px 4px !important;
+    background: transparent !important;
+    border-bottom: none !important;
   }
   .fcc-kategori-mobile-list {
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
-    padding: 14px !important;
+    gap: 14px !important;
+    padding: 0 !important;
+    background: transparent !important;
   }
   .fcc-kategori-stats-grid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
-    margin-bottom: 18px !important;
+    gap: 10px !important;
+    margin-bottom: 22px !important;
   }
   .fcc-kategori-stats-grid > div:last-child {
     grid-column: span 2 !important;
+  }
+  /* Floating Pagination Capsule on Mobile */
+  .fcc-pagination-bar {
+    background: #FFFFFF !important;
+    border: 1.5px solid #E2E8F0 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+    padding: 16px 14px !important;
+    margin-top: 8px !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 14px !important;
+  }
+  .fcc-pagination-bar > div {
+    justify-content: center !important;
+    width: 100% !important;
   }
 }
 
@@ -367,7 +401,7 @@
     </div>
 
     {{-- Main Neo-Brutalist Table Card --}}
-    <div class="fcc-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);position:relative;">
+    <div class="fcc-card fcc-kategori-main-card" style="padding:0;overflow:hidden;border-radius:20px;background:#FFFFFF;border:2px solid #E5E7EB;box-shadow:0 4px 20px rgba(0,0,0,0.04);position:relative;">
         <div class="fcc-kategori-card-header" style="padding:18px 24px;border-bottom:2px solid #E5E7EB;background:#F8FAFC;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
             <div style="display:flex;align-items:center;gap:8px;">
                 <h3 style="margin:0;font-size:16px;font-weight:900;color:#131218;">Master Kategori Program</h3>
@@ -480,7 +514,7 @@
         {{-- Mobile Cards List View (< 768px) --}}
         <div class="fcc-kategori-mobile-list">
             @forelse($kategori as $index => $kat)
-            <div class="fcc-mobile-card-item" style="background:#FFFFFF;border:1.5px solid #E2E8F0;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;flex-direction:column;gap:12px;">
+            <div class="fcc-mobile-card-item" style="background:#FFFFFF;border:1.5px solid #E2E8F0;border-left:4px solid #FFC81A;border-radius:16px;padding:16px 18px;box-shadow:0 3px 12px rgba(0,0,0,0.03);display:flex;flex-direction:column;gap:12px;">
                 {{-- Header Item: Number, Icon, Title --}}
                 <div style="display:flex;align-items:flex-start;gap:10px;">
                     <span style="display:inline-flex;width:28px;height:28px;border-radius:8px;background:#F1F5F9;border:1px solid #CBD5E1;align-items:center;justify-content:center;color:#131218;font-weight:900;font-size:12px;flex-shrink:0;">
